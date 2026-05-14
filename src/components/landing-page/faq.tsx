@@ -2,32 +2,10 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { faqs } from "@/constants/landing-page";
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-80px" } as const;
-
-const faqs = [
-  {
-    q: "What is SkillBridge?",
-    a: "SkillBridge is a career growth platform that helps you learn the right skills, prove your work with verified data, and get discovered by employers.",
-  },
-  {
-    q: "How does SkillBridge verify talent?",
-    a: "SkillBridge verifies talent through completed work, skill signals, and profile data that helps employers understand readiness.",
-  },
-  {
-    q: "Is SkillBridge free for candidates?",
-    a: "Candidates can create a profile and start building proof of skill on SkillBridge.",
-  },
-  {
-    q: "Who can use SkillBridge?",
-    a: "SkillBridge is for candidates building career proof and employers looking for credible, job-ready talent.",
-  },
-  {
-    q: "What happens if I'm not job-ready yet?",
-    a: "You can keep learning, improving your profile, and building verified proof until you are ready for opportunities.",
-  },
-];
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);

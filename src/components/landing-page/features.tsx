@@ -2,37 +2,7 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-
-const featureCards = [
-  {
-    title: "Skill Assessments",
-    description:
-      "Complete role-specific assessments designed to evaluate real-world skills and job readiness accurately.",
-    accent: "bg-emerald-100",
-    img: "/assets/skill_assessments.svg",
-  },
-  {
-    title: "Verified Scoring",
-    description:
-      "Receive a standardized employability score based on actual performance across all assessment stages.",
-    accent: "bg-rose-100",
-    img: "/assets/verified_scoring.svg",
-  },
-  {
-    title: "Personalized Guidance",
-    description:
-      "Get targeted feedback and curated resources to help you improve faster and close skill gaps.",
-    accent: "bg-sky-100",
-    img: "/assets/personalized_guidance.svg",
-  },
-  {
-    title: "Verified Profile",
-    description:
-      "Build a verified profile employers can trust and make it discoverable for hiring opportunities.",
-    accent: "bg-yellow-100",
-    img: "/assets/verified_profile.svg",
-  },
-];
+import { featureCards } from "@/constants/landing-page";
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-80px" } as const;

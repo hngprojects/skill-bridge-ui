@@ -2,24 +2,11 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-
-const talentList = [
-  { name: "Anita Mensah", role: "Virtual Assistant" },
-  { name: "Joy Kins", role: "Digital Marketer" },
-  { name: "Peace John", role: "Product Manager" },
-  { name: "Jason Reed", role: "DevOps" },
-  { name: "Ruth Chukwu", role: "Product Designer" },
-  { name: "Teo Brown", role: "Frontend Dev" },
-];
-
-const avatarColors = [
-  "bg-violet-500",
-  "bg-sky-500",
-  "bg-emerald-500",
-  "bg-orange-500",
-  "bg-rose-500",
-  "bg-teal-500",
-];
+import {
+  talentList,
+  avatarColors,
+  hiringFeatures,
+} from "@/constants/landing-page";
 
 function Initials({ name, index }: { name: string; index: number }) {
   const initials = name
@@ -35,32 +22,6 @@ function Initials({ name, index }: { name: string; index: number }) {
     </div>
   );
 }
-
-const hiringFeatures = [
-  {
-    title: "Verified Talent Pool",
-    description:
-      "View candidates who have already been assessed, scored, and verified.",
-    isSlider: true,
-  },
-  {
-    title: "Standardized Scoring",
-    description: "Compare candidates based on performance description text.",
-    img: "/assets/scoring.svg",
-  },
-  {
-    title: "Faster Screening",
-    description:
-      "Reduce screening time and focus only on qualified job-ready talent.",
-    img: "/assets/screening.svg",
-  },
-  {
-    title: "Direct Candidate Access",
-    description:
-      "Connect directly with job-ready candidates from a single, unified dashboard.",
-    img: "/assets/access.svg",
-  },
-];
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-80px" } as const;

@@ -2,16 +2,10 @@
 
 import { motion } from "motion/react";
 import { CheckIcon } from "lucide-react";
+import { missionBullets } from "@/constants/about-page";
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-60px" } as const;
-
-const bullets = [
-  "Designed to support talent across Africa and emerging markets",
-  "Built to create long-term impact through verified growth and opportunity",
-  "Helping users turn skills, projects, and internships into measurable proof",
-  "Focused on transparency, accountability, and career readiness at every stage",
-];
 
 export function AboutMissionSection() {
   return (
@@ -43,7 +37,7 @@ export function AboutMissionSection() {
             transition={{ duration: 0.6, delay: 0.1, ease }}
             viewport={viewport}
           >
-            {bullets.map((text, i) => (
+            {missionBullets.map((text, i) => (
               <motion.li
                 key={i}
                 className="flex items-start gap-4"

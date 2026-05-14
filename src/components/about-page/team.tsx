@@ -2,32 +2,10 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
+import { team } from "@/constants/about-page";
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-60px" } as const;
-
-const team = [
-  {
-    name: "Spencer Fry",
-    role: "PO",
-    img: "/assets/teams/spencer-fry.png",
-  },
-  {
-    name: "Len Markidan",
-    role: "APO",
-    img: "/assets/teams/len-markidan.png",
-  },
-  {
-    name: "Jamie Lawrence",
-    role: "CTO",
-    img: "/assets/teams/jamie-lawrence.png",
-  },
-  {
-    name: "Katherine Pan",
-    role: "VP Creator Support",
-    img: "/assets/teams/katherine-pan.png",
-  },
-];
 
 export function AboutTeamSection() {
   return (
