@@ -1,9 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-
 import { cn } from "@/lib/utils";
-
 import { OnboardingIntroHeader } from "@/components/onboarding/onboarding-intro-header";
 import { OnboardingMobileProgress } from "@/components/onboarding/onboarding-mobile-progress";
 import { OnboardingShellFooter } from "@/components/onboarding/onboarding-shell-footer";
@@ -45,43 +43,59 @@ function OnboardingShell({
   const fallbackTitle = stepMeta?.title ?? "Onboarding";
   const isGenerateRoadmap = currentStepId === "generate-roadmap";
 
+  if (isGenerateRoadmap) {
+    return (
+      <div className="flex w-full min-h-[calc(100vh-72px)] flex-col items-center justify-center gap-8 bg-white px-4">
+        <OnboardingIntroHeader
+          resolvedTitle={resolvedTitle}
+          description={description}
+          fallbackTitle={fallbackTitle}
+          hasIntro={hasIntro}
+          centered={true}
+        />
+        {children}
+      </div>
+    );
+  }
+
   return (
-    <div
-      className={cn(
-        "flex w-full flex-col gap-10 lg:flex-row lg:gap-12 xl:gap-16",
-        className,
-      )}
-    >
-      <OnboardingSidebar
-        currentStepId={currentStepId}
-        className={cn("hidden lg:block", isGenerateRoadmap && "lg:hidden")}
-      />
+    <div className="flex w-full flex-1 flex-col bg-white pb-20">
+      <div className="container mx-auto max-w-360 flex-1 px-6 lg:px-16 pt-10">
+        <div className={cn("flex flex-col lg:flex-row lg:gap-x-24", className)}>
+          <aside className="hidden lg:block lg:w-64 shrink-0">
+            <OnboardingSidebar currentStepId={currentStepId} />
+          </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-10">
-        <section
-          className="flex min-w-0 flex-1 flex-col gap-10 lg:gap-16"
-          aria-labelledby="onboarding-step-heading"
-        >
-          <OnboardingMobileProgress currentStepId={currentStepId} />
-          <OnboardingIntroHeader
-            resolvedTitle={resolvedTitle}
-            description={description}
-            fallbackTitle={fallbackTitle}
-            hasIntro={hasIntro}
-            centered={isGenerateRoadmap}
-          />
-          <div className="min-w-0">{children}</div>
-        </section>
+          <main className="flex-1">
+            <div className="w-full lg:max-w-150">
+              <div className="lg:hidden">
+                <OnboardingMobileProgress currentStepId={currentStepId} />
+              </div>
 
-        {!isGenerateRoadmap && (
-          <OnboardingShellFooter
-            showBack={showBack}
-            showNext={showNext}
-            nextDisabled={nextDisabled}
-            onBack={onBack}
-            onNext={onNext}
-          />
-        )}
+              <section className="flex flex-col gap-6 lg:gap-8">
+                <OnboardingIntroHeader
+                  resolvedTitle={resolvedTitle}
+                  description={description}
+                  fallbackTitle={fallbackTitle}
+                  hasIntro={hasIntro}
+                  centered={false}
+                />
+
+                <div className="w-full">{children}</div>
+              </section>
+
+              <div className="pb-20">
+                <OnboardingShellFooter
+                  showBack={showBack}
+                  showNext={showNext}
+                  nextDisabled={nextDisabled}
+                  onBack={onBack}
+                  onNext={onNext}
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );
