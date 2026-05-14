@@ -3,6 +3,7 @@
 import { useState, useTransition, SubmitEvent } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import AudienceOption from "./audience-option";
 import Field from "./field";
 import SelectInput from "./select-input";
@@ -160,7 +161,13 @@ const FormStep = ({
           <Button
             type="submit"
             disabled={isPending}
-            className="h-10 w-full rounded-[5.82px] border-[0.44px] border-[#3F7F95] bg-primary-900 text-base font-normal leading-5 tracking-[0.017em] text-white hover:bg-primary-900 disabled:cursor-not-allowed disabled:opacity-60 sm:mx-auto sm:w-70.5 sm:rounded-lg sm:border-[0.6px] sm:font-semibold"
+            className={cn(
+              "h-10 w-full rounded-[5.82px] border-[0.44px] border-[#3F7F95]",
+              "bg-primary-900 text-white hover:bg-primary-900",
+              "text-base font-normal leading-5 tracking-[0.017em]",
+              "disabled:cursor-not-allowed disabled:opacity-60",
+              "sm:mx-auto sm:w-70.5 sm:rounded-lg sm:border-[0.6px] sm:font-semibold",
+            )}
           >
             {isPending ? (
               <>
@@ -175,7 +182,13 @@ const FormStep = ({
             type="button"
             onClick={onCancel}
             disabled={isPending}
-            className="h-[34.55px] w-full rounded-[5.82px] border-[0.2px] border-[#E35151] bg-white text-base font-normal leading-5 tracking-[0.017em] text-[#B01E1E] hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 sm:hidden"
+            className={cn(
+              "h-[34.55px] w-full rounded-[5.82px] border-[0.2px] border-[#E35151]",
+              "bg-white text-[#B01E1E] hover:bg-red-50",
+              "text-base font-normal leading-5 tracking-[0.017em]",
+              "disabled:cursor-not-allowed disabled:opacity-60",
+              "sm:hidden",
+            )}
           >
             Cancel
           </Button>
