@@ -1,0 +1,51 @@
+import { privacySections, tableOfContents } from "@/constants/privacy-policy";
+import { CookieBanner } from "@/components/custom/cookie-banner";
+
+import { PrivacyHero } from "./_components/privacy-hero";
+import { PrivacyToc } from "./_components/privacy-toc";
+import { PrivacySection } from "./_components/privacy-section";
+
+export default function PrivacyPage() {
+  return (
+    <main className="relative bg-[#FAFAFA]">
+      <PrivacyHero />
+
+      <section
+        className="
+          relative z-10
+          mx-auto
+          flex
+          max-w-[1440px]
+          flex-col
+          gap-10
+          px-4
+          py-10
+          lg:flex-row
+          lg:items-start
+          lg:gap-20
+          lg:px-[120px]
+        "
+      >
+        {/* TOC */}
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <PrivacyToc items={tableOfContents} />
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-1 flex-col gap-10 md:gap-16">
+          {privacySections.map((section) => (
+            <PrivacySection
+              key={section.id}
+              id={section.id}
+              title={section.title}
+              description={section.description}
+              items={section.items}
+            />
+          ))}
+        </div>
+      </section>
+
+      <CookieBanner />
+    </main>
+  );
+}
