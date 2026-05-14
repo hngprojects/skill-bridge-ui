@@ -1,42 +1,51 @@
-import type { Metadata } from "next";
-
-import { Footer } from "@/components/layout/footer";
-import { Navbar } from "@/components/layout/navbar";
 import { privacySections, tableOfContents } from "@/constants/privacy-policy";
 import { CookieBanner } from "@/components/custom/cookie-banner";
 
 import { PrivacyHero } from "./_components/privacy-hero";
-import { PrivacySection } from "./_components/privacy-section";
 import { PrivacyToc } from "./_components/privacy-toc";
+import { PrivacySection } from "./_components/privacy-section";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description:
-    "Your privacy is important to us. This policy explains how we collect, use and protect your data.",
-};
-
-export default function PrivacyPolicyPage() {
+export default function PrivacyPage() {
   return (
-    <div className="flex flex-1 flex-col bg-background text-foreground">
-      <Navbar />
-
+    <main className="relative bg-[#FAFAFA]">
       <PrivacyHero />
 
-      <PrivacyToc items={tableOfContents} />
+      <section
+        className="
+          relative z-10
+          mx-auto
+          flex
+          max-w-[1440px]
+          flex-col
+          gap-10
+          px-4
+          py-10
+          lg:flex-row
+          lg:items-start
+          lg:gap-20
+          lg:px-[120px]
+        "
+      >
+        {/* TOC */}
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <PrivacyToc items={tableOfContents} />
+        </div>
 
-      <main className="mx-auto w-full max-w-4xl space-y-16 px-6 py-12">
-        {privacySections.map((section) => (
-          <PrivacySection
-            key={section.id}
-            id={section.id}
-            title={section.title}
-            description={section.description}
-            items={section.items}
-          />
-        ))}
-      </main>
+        {/* Content */}
+        <div className="flex flex-1 flex-col gap-10 md:gap-16">
+          {privacySections.map((section) => (
+            <PrivacySection
+              key={section.id}
+              id={section.id}
+              title={section.title}
+              description={section.description}
+              items={section.items}
+            />
+          ))}
+        </div>
+      </section>
+
       <CookieBanner />
-      <Footer />
-    </div>
+    </main>
   );
 }

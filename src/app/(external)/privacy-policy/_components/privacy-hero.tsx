@@ -1,44 +1,42 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-
 export function PrivacyHero() {
   return (
-    <section className="border-b border-border/60 bg-muted/30">
-      <div className="mx-auto w-full max-w-4xl px-6 py-16 sm:py-20">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Legal
-        </p>
+    <section className="relative overflow-hidden bg-[#FAFAFA]">
+      {/* Desktop curve */}
+      <div
+        className="absolute left-1/2 hidden -translate-x-1/2 bg-white md:block"
+        style={{
+          width: "2550px",
+          height: "1440px",
+          top: "-1000px",
+          borderRadius: "50%",
+          zIndex: 0,
+        }}
+      />
 
-        <h1 className="font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
-          Privacy Policy
-        </h1>
+      {/* Mobile curve */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 bg-white md:hidden"
+        style={{
+          width: "1196px",
+          height: "675px",
+          top: "-420px",
+          borderRadius: "50%",
+          zIndex: 0,
+        }}
+      />
 
-        <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
-          Your privacy is important to us. This policy explains how we collect,
-          use and protect your data.
-        </p>
+      {/* Content */}
+      <div className="relative z-10 mx-auto flex h-[320px] max-w-[1440px] items-center justify-center px-4 md:h-[530px]">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <h1 className="text-[32px] font-bold leading-[150%] text-[#091417] md:text-[48px]">
+            Privacy Policy
+          </h1>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-          <span>Last updated May 31, 2025</span>
-          <span>|</span>
-          <span>Version 1.0</span>
-        </div>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Button asChild variant="outline" size="sm">
-            <a href="#" download>
-              Download PDF
-            </a>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => window.print()}
-          >
-            Print this page
-          </Button>
+          <p className="text-sm text-[#64748B] md:text-base">
+            Last updated: May 12, 2026
+          </p>
         </div>
       </div>
     </section>
