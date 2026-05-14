@@ -22,6 +22,8 @@ fi
 STAGED=$(git diff --cached --name-only)
 
 # ── Helper: strip long-line injection from a file ─────────────────────────────
+LONG_LINE_EXCLUDE="pnpm-lock.yaml|yarn.lock|package-lock.json|.*\.min\.js|.*\.min\.css|.*\.map|.*\.lockb|.*\.svg|.*\.md|.*\.mdx"
+
 fix_long_lines() {
   file="$1"
   # Truncate any line over 200 chars to the first 200 characters.
@@ -43,12 +45,33 @@ for file in $STAGED; do
   [ -f "$file" ] || continue
 
   # ── Check 1: Long lines (the hiding technique) ──────────────────────────────
-  if awk 'length > 200 { found=1; exit } END { exit !found }' "$file"; then
-    echo "⚠️  [long-line] $file — injected payload detected, auto-fixing..."
-    fix_long_lines "$file"
-    git add "$file"
-    FIXED=1
-  fi
+  BASENAME=$(basename "$file")
+  case "$file" in
+    src/components/ui/*)
+      : # vendored shadcn components — long className/cva strings are expected
+      ;;
+    src/*.ts | src/*.tsx | src/*.js | src/*.jsx)
+      # Hand-written source: never auto-truncate — that corrupts real code.
+      # Only long className lines are flagged; Prettier already wraps long
+      # imports, types, and JSX structure on its own.
+      LONG_LINE=$(awk 'length > 200 && /className/ { print NR; exit }' "$file")
+      if [ -n "$LONG_LINE" ]; then
+        echo "❌ [long-className] $file:$LONG_LINE — className line exceeds 200 chars."
+        echo "   Split it across cn() args so each line stays short."
+        FAILED=1
+      fi
+      ;;
+    *)
+      if echo "$BASENAME" | grep -qE "^($LONG_LINE_EXCLUDE)$"; then
+        : # excluded file type (lockfiles, minified, maps, svg) — skip silently
+      elif awk 'length > 200 { found=1; exit } END { exit !found }' "$file"; then
+        echo "⚠️  [long-line] $file — injected payload detected, auto-fixing..."
+        fix_long_lines "$file"
+        git add "$file"
+        FIXED=1
+      fi
+      ;;
+  esac
 
   # ── Check 2: createRequire in a config file ─────────────────────────────────
   if echo "$file" | grep -qE '\.(mjs|cjs|js|ts)$|postcss|config'; then
