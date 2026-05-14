@@ -1,0 +1,96 @@
+"use client";
+
+import { motion } from "motion/react";
+import Image from "next/image";
+import { processSteps } from "@/constants/landing-page";
+
+const ease = [0.4, 0, 0.2, 1] as const;
+const viewport = { once: true, margin: "-100px" } as const;
+
+export function HowItWorks() {
+  return (
+    <section
+      id="how-it-works"
+      className="relative overflow-hidden bg-white py-12 sm:py-24 lg:py-40"
+    >
+      <div className="mx-auto w-full max-w-6xl px-6">
+        <motion.h2
+          className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl text-center"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease }}
+          viewport={viewport}
+        >
+          How it Works
+        </motion.h2>
+
+        <div className="flex flex-col gap-4">
+          {processSteps.map((step) => {
+            const imgX = step.reverse ? 60 : -60;
+            const textX = step.reverse ? -60 : 60;
+
+            return (
+              <div
+                key={step.id}
+                className={`flex flex-col items-center gap-6 sm:gap-10 lg:gap-24 ${
+                  step.reverse ? "lg:flex-row-reverse" : "lg:flex-row"
+                }`}
+              >
+                {/* Image */}
+                <motion.div
+                  className="w-full lg:w-1/2 flex justify-center"
+                  initial={{ opacity: 0, x: imgX }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, ease }}
+                  viewport={viewport}
+                >
+                  <div className="relative flex h-64 sm:h-80 lg:h-87.5 w-full max-w-xl items-center justify-center overflow-hidden">
+                    <div className="relative h-full w-full">
+                      <Image
+                        src={step.img}
+                        alt={step.title}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Text */}
+                <motion.div
+                  className="w-full lg:w-1/2 max-w-xl"
+                  initial={{ opacity: 0, x: textX }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.1, ease }}
+                  viewport={viewport}
+                >
+                  <p className="mb-4 text-sm font-bold tracking-[0.15em] text-slate-500 uppercase">
+                    {step.eyebrow}
+                  </p>
+                  <h3 className="mb-6 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+                    {step.title}
+                  </h3>
+                  <p className="leading-relaxed text-slate-600">
+                    {step.description}
+                  </p>
+                </motion.div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="absolute z-10 bottom-0 w-full">
+        <svg
+          className="w-full h-auto"
+          viewBox="0 0 1440 140"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <ellipse cx="720" cy="720" rx="1275" ry="720" fill="#EFF7FF" />
+        </svg>
+      </div>
+    </section>
+  );
+}
