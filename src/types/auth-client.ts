@@ -1,3 +1,5 @@
+import type { LoginResponseData, VerifyEmailResponseData } from "@/types/api";
+
 export type CredentialSignInParams = {
   email: string;
   accessToken?: string | null;
@@ -5,3 +7,7 @@ export type CredentialSignInParams = {
   name: string;
   image?: string | null;
 };
+
+export type CredentialSignInFromAuthResponse =
+  | LoginResponseData
+  | VerifyEmailResponseData;
