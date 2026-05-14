@@ -22,7 +22,7 @@ fi
 STAGED=$(git diff --cached --name-only)
 
 # ── Helper: strip long-line injection from a file ─────────────────────────────
-LONG_LINE_EXCLUDE="pnpm-lock.yaml|yarn.lock|package-lock.json|.*\.min\.js|.*\.min\.css|.*\.map|.*\.lockb|.*\.svg|.*\.md|.*\.png|.*\.jpe?g|.*\.gif|.*\.webp|.*\.avif|.*\.ico|.*\.woff2?|.*\.ttf|.*\.otf"
+LONG_LINE_EXCLUDE="pnpm-lock.yaml|yarn.lock|package-lock.json|.*\.min\.js|.*\.min\.css|.*\.map|.*\.lockb|.*\.svg|.*\.md|.*\.png|.*\.jpe?g|.*\.ico"
 
 fix_long_lines() {
   file="$1"
