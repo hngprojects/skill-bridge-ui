@@ -56,16 +56,19 @@ jobs:
           BRANCH="${{ github.ref_name }}"
           if [ "$BRANCH" = "dev" ]; then
             ENV_FILE="$DEV_ENV_FILE"
+            SECRET_NAME="DEV_ENV_FILE"
           elif [ "$BRANCH" = "staging" ]; then
             ENV_FILE="$STAGING_ENV_FILE"
+            SECRET_NAME="STAGING_ENV_FILE"
           elif [ "$BRANCH" = "main" ]; then
             ENV_FILE="$PRODUCTION_ENV_FILE"
+            SECRET_NAME="PRODUCTION_ENV_FILE"
           fi
           if [ -z "$ENV_FILE" ]; then
-            echo "::error::ENV_FILE secret for '$BRANCH' is empty or unset. Add it under Settings → Environments → $BRANCH → Secrets."
+            echo "::error::$SECRET_NAME secret is empty or unset. Add it under Settings → Environments → $BRANCH → Secrets → $SECRET_NAME."
             exit 1
           fi
-          echo "ENV_FILE is set (${#ENV_FILE} chars)"
+          echo "$SECRET_NAME is set"
           {
             echo "DOTENV<<__SB_UI_DOTENV__"
             echo "$ENV_FILE"
@@ -73,7 +76,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
           DOTENV: ${{ env.DOTENV }}
         with:
@@ -82,7 +85,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           envs: DOTENV
           script: |
-            set -e
+            set -euo pipefail
 
             DEPLOY_DIR="$HOME/skillbridge/frontend/${{ steps.target.outputs.dir }}"
             APP_NAME="${{ steps.target.outputs.app }}"
