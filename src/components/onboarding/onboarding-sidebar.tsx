@@ -16,20 +16,20 @@ function OnboardingSidebar({
   return (
     <nav
       aria-label="Onboarding progress"
-      className={cn("w-full shrink-0 sm:w-52 lg:w-56", className)}
+      className={cn("w-full shrink-0", className)}
     >
-      <ol className="flex flex-col gap-0">
+      <ol className="flex flex-col gap-4">
         {ONBOARDING_STEPS.filter((step) => step.id !== "generate-roadmap").map(
           (step) => {
             const active = step.id === currentStepId;
             return (
-              <li key={step.id} className="py-3 pl-4">
+              <li key={step.id}>
                 <div
                   className={cn(
-                    "border-l-4 pl-3 py-1 text-sm font-medium transition-colors",
+                    "border-l-4 py-1.5 pl-4 text-base transition-all duration-200",
                     active
-                      ? "border-l-[#ff7854] font-bold text-foreground"
-                      : "border-l-transparent text-muted-foreground",
+                      ? "border-l-[#FF7854] font-bold text-[#151515]"
+                      : "border-l-transparent font-normal text-[#757575]",
                   )}
                 >
                   {step.title}
