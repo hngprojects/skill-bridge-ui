@@ -6,9 +6,13 @@ import * as React from "react";
 import { OnboardingShell } from "@/components/onboarding/onboarding-shell";
 import CompleteProfileStep from "@/components/onboarding/steps/complete-profile-step";
 import { GenerateRoadmapStep } from "@/components/onboarding/steps/generating-step";
+import { SetGoalStep } from "@/components/onboarding/steps/set-goal-step";
+import { SelectTrackStep } from "@/components/onboarding/steps/select-track-step";
 import {
   ONBOARDING_STEPS,
   type OnboardingStepId,
+  // type GoalOptionId,
+  // type TrackOptionId,
 } from "@/constants/talent-onboarding";
 
 function stepIndex(id: OnboardingStepId): number {
@@ -19,7 +23,12 @@ function OnboardingPageClient() {
   // const { data: session } = useSession();
 
   const [currentStepId, setCurrentStepId] =
-    React.useState<OnboardingStepId>("select-track");
+    React.useState<OnboardingStepId>("set-goal");
+
+  // const [selectedGoalId, setSelectedGoalId] =
+  //   React.useState<GoalOptionId | "">("");
+  // const [selectedTrackIds, setSelectedTrackIds] =
+  //   React.useState<TrackOptionId[]>([]);
 
   const i = stepIndex(currentStepId);
   const isFirst = i <= 0;
@@ -40,10 +49,16 @@ function OnboardingPageClient() {
   let content: React.ReactNode;
 
   switch (currentStepId) {
+    case "set-goal":
+      title = `Hello, Alex Smith! 👋`;
+      description =
+        "Help us personalize your experience using our app. Get started by telling us your goal.";
+      content = <SetGoalStep />;
+      break;
     case "select-track":
       description =
         "Choose the path that best matches how you want to use SkillBridge.";
-      content = null;
+      content = <SelectTrackStep />;
       break;
     case "complete-profile":
       title = "Great choice! Tell us about yourself";
