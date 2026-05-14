@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signInWithCredentials, signInWithGoogle } from "@/lib/auth-client";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,13 +60,12 @@ function SignInForm() {
         password: data.password,
       });
 
-      const result = await signIn("credentials", {
+      const result = await signInWithCredentials({
         email: login.user.email,
         accessToken: login.tokens?.access_token,
         userId: login.user.id,
         name: displayName(login.user),
         image: login.user.profile_pic_url ?? login.user.avatar_url ?? undefined,
-        redirect: false,
       });
 
       if (result?.error) {
@@ -85,7 +84,7 @@ function SignInForm() {
 
   const onGoogleSignIn = async () => {
     setRootError(null);
-    await signIn("google", { callbackUrl: "/dashboard" });
+    await signInWithGoogle();
   };
 
   return (

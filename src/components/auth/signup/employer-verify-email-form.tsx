@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signInWithCredentials } from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -68,13 +68,12 @@ function EmployerVerifyEmailForm() {
         otp: values.code,
       });
 
-      const signResult = await signIn("credentials", {
+      const signResult = await signInWithCredentials({
         email: data.user.email,
         accessToken: data.tokens?.access_token,
         userId: data.user.id,
         name: displayName(data.user),
         image: data.user.profile_pic_url ?? data.user.avatar_url ?? undefined,
-        redirect: false,
       });
 
       if (signResult?.error) {
