@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const navBtnShape = "rounded-lg px-8 h-12";
+const navBtnShape = "rounded-lg px-4 h-11 min-w-48";
 
 type OnboardingShellFooterProps = {
   showBack: boolean;
