@@ -116,4 +116,14 @@ if [ "$FAILED" -eq 1 ]; then
   exit 1
 fi
 
+# ── lint-staged ──────────────────────────────────────────
+echo ""
+echo "🧹 Running lint-staged on staged files..."
+if npx --no-install lint-staged; then
+  echo "✅ lint-staged passed — proceeding with commit."
+else
+  echo "❌ lint-staged failed — fix the issues above, re-stage, then commit again."
+  exit 1
+fi
+
 exit 0
