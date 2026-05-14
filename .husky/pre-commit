@@ -44,13 +44,6 @@ fix_create_require() {
 for file in $STAGED; do
   [ -f "$file" ] || continue
 
-  # ── Skip binary files — the text-oriented checks below would corrupt them ───
-  # grep -I treats binary files as non-matching, so this fails for binaries
-  # (and empty files, which have nothing to scan anyway).
-  if ! grep -Iq . "$file"; then
-    continue
-  fi
-
   # ── Check 1: Long lines (the hiding technique) ──────────────────────────────
   BASENAME=$(basename "$file")
   case "$file" in
