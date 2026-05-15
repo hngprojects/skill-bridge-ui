@@ -2,39 +2,7 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-
-const processSteps = [
-  {
-    id: "assessments",
-    eyebrow: "Assessments",
-    title: "Complete Assessments",
-    description:
-      "Candidates complete structured assessments, practical tasks, and interviews designed to measure real-world ability and target-role readiness.",
-    img: "/assets/step-assessments.svg",
-    accent: "bg-sky-200",
-    reverse: false,
-  },
-  {
-    id: "verification",
-    eyebrow: "Verification",
-    title: "Get Verified",
-    description:
-      "SkillBridge evaluates overall performance and assigns a standardized employability score employers can trust and compare easily.",
-    img: "/assets/step-verification.svg",
-    accent: "bg-violet-200",
-    reverse: true,
-  },
-  {
-    id: "connect",
-    eyebrow: "Connect",
-    title: "Connect Directly",
-    description:
-      "Job-ready candidates become discoverable to employers actively hiring verified talent for real opportunities and open roles.",
-    img: "/assets/step-connect.svg",
-    accent: "bg-orange-300",
-    reverse: false,
-  },
-];
+import { processSteps } from "@/constants/landing-page";
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-100px" } as const;
