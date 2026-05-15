@@ -15,7 +15,7 @@ function OnboardingMobileProgress({
     getOnboardingStepProgress(currentStepId);
 
   return (
-    <div className="w-full max-w-2xl lg:hidden">
+    <div className="w-full lg:hidden">
       <p className="mb-2 text-sm font-semibold text-foreground">
         {stepMeta?.title}
       </p>
