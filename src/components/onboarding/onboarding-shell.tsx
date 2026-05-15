@@ -60,7 +60,7 @@ function OnboardingShell({
   }
 
   return (
-    <div className="flex w-full flex-1 flex-col bg-white pb-20">
+    <div className="flex w-full flex-1 flex-col bg-white pb-20 max-w-360 mx-auto sm:px-4 md:px-16">
       <div className="container mx-auto max-w-360 flex-1 px-6 lg:px-16 pt-10">
         <div className={cn("flex flex-col lg:flex-row lg:gap-x-24", className)}>
           <aside className="hidden lg:block lg:w-64 shrink-0">

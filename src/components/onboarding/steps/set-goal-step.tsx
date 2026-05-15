@@ -24,7 +24,7 @@ function SetGoalStep({ onSelectionChange }: SetGoalStepProps) {
           setGoalId(id);
           onSelectionChange?.(id);
         }}
-        className="grid w-full max-w-2xl  gap-3"
+        className="grid w-full  gap-3"
       >
         {GOAL_OPTIONS.map((option) => {
           const selected = goalId === option.id;

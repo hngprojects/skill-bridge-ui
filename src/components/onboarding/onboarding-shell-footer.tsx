@@ -54,7 +54,7 @@ function OnboardingShellFooter({
         ) : null}
       </div>
 
-      <div className="hidden w-full max-w-2xl items-center pt-2 sm:flex">
+      <div className="hidden w-full items-center pt-2 sm:flex">
         <div className="flex min-w-0 flex-1 justify-start">
           {showBack ? (
             <Button
