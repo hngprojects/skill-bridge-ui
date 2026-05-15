@@ -1,14 +1,6 @@
 "use client";
 
-import * as React from "react";
-
-type OnboardingIntroHeaderProps = {
-  resolvedTitle: React.ReactNode | null | undefined;
-  description: React.ReactNode | undefined;
-  fallbackTitle: string;
-  hasIntro: boolean;
-  centered?: boolean;
-};
+import type { OnboardingIntroHeaderProps } from "@/types/onboarding";
 
 function OnboardingIntroHeader({
   resolvedTitle,

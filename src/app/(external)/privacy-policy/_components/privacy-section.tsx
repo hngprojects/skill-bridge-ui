@@ -12,10 +12,7 @@ export function PrivacySection({
   items,
 }: PrivacySectionProps) {
   return (
-    <section
-      id={id}
-      className="border-b border-[#6B7280]/50 pb-6"
-    >
+    <section id={id} className="border-b border-[#6B7280]/50 pb-6">
       <div className="flex flex-col gap-6">
         <h2 className="text-[20px] font-bold leading-[25px] text-[#0F0F14] md:text-[28px] md:leading-[35px]">
           {title}

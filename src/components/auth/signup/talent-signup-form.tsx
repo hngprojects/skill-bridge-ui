@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signInWithGoogle } from "@/lib/auth-client";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -81,7 +81,7 @@ function TalentSignupForm() {
 
   const onGoogleSignIn = async () => {
     setRootError(null);
-    await signIn("google", { callbackUrl: "/dashboard" });
+    await signInWithGoogle();
   };
 
   return (

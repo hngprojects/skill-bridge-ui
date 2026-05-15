@@ -29,8 +29,7 @@ export function PrivacyToc({ items }: PrivacyTocProps) {
     }
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -58,18 +57,14 @@ export function PrivacyToc({ items }: PrivacyTocProps) {
 
       {/* Mobile */}
       <div className="relative z-20 flex flex-col gap-2 lg:hidden">
-        <span className="text-xs font-semibold text-[#091417]">
-          Jump to:
-        </span>
+        <span className="text-xs font-semibold text-[#091417]">Jump to:</span>
 
         {/* Toggle Button */}
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           className="flex items-center justify-between rounded-2xl bg-[#F5F5F5] px-3 py-4"
         >
-          <span className="text-[18px] text-[#1A3F4A]">
-            Table of Contents
-          </span>
+          <span className="text-[18px] text-[#1A3F4A]">Table of Contents</span>
 
           <ChevronDown
             className={`h-5 w-5 text-[#757575] transition-transform duration-200 ${
