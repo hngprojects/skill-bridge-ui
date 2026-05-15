@@ -5,6 +5,9 @@ import { cn } from "@/lib/utils";
 
 const navBtnShape = "rounded-lg px-4 h-11 min-w-48";
 
+const nextDisabledStyles =
+  "disabled:opacity-100 disabled:rounded-[8px] disabled:border-[0.6px] disabled:border-[#CBD5E1] disabled:bg-[#F1F5F9] disabled:text-slate-600";
+
 type OnboardingShellFooterProps = {
   showBack: boolean;
   showNext: boolean;
@@ -29,7 +32,7 @@ function OnboardingShellFooter({
           <Button
             type="button"
             size="lg"
-            className={cn(navBtnShape, "w-full")}
+            className={cn(navBtnShape, "w-full", nextDisabledStyles)}
             disabled={nextDisabled}
             onClick={onNext}
           >
@@ -78,7 +81,11 @@ function OnboardingShellFooter({
             <Button
               type="button"
               size="lg"
-              className={cn(navBtnShape, "min-w-32")}
+              className={cn(
+                navBtnShape,
+                "min-w-32 md:w-60 lg:min-w-60 lg:max-w-60",
+                nextDisabledStyles,
+              )}
               disabled={nextDisabled}
               onClick={onNext}
             >
