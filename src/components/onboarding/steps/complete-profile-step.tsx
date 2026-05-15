@@ -1,6 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { REGIONS, EDUCATION_LEVELS } from "@/constants/complete-profile";
 import { ProfileImageUploader } from "../complete-profile/profile-image-holder";
 import { ReadOnlyField } from "../complete-profile/read-only-field";
@@ -14,8 +15,22 @@ interface ProfileFormValues {
   profileImage?: File;
 }
 
-const CompleteProfileStep = () => {
-  const { register, setValue, handleSubmit } = useForm<ProfileFormValues>();
+type CompleteProfileStepProps = {
+  onReadyChange?: (ready: boolean) => void;
+};
+
+const CompleteProfileStep = ({ onReadyChange }: CompleteProfileStepProps) => {
+  const { register, setValue, handleSubmit, control } =
+    useForm<ProfileFormValues>({
+      defaultValues: { region: "", education: "", linkedin: "" },
+    });
+
+  const region = useWatch({ control, name: "region" });
+  const education = useWatch({ control, name: "education" });
+
+  useEffect(() => {
+    onReadyChange?.(Boolean(region && education));
+  }, [region, education, onReadyChange]);
 
   return (
     <form
