@@ -1,48 +1,17 @@
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProjectsCard from "./projects-card";
 import TalentsCard from "./talents-card";
 import { mobileCopy } from "./data";
 import SkillsCard from "./skills-card";
+import HeroMobileFloatingImages from "./hero-mobile-floating-images";
 
 type HeroMobileProps = { onJoinClick: () => void };
 
 const HeroMobile = ({ onJoinClick }: HeroMobileProps) => {
   return (
     <section className="relative overflow-hidden bg-[#f5f5f5] sm:hidden">
-      <Image
-        aria-hidden
-        src="/waitlist-icons/yellow-html.svg"
-        alt=""
-        width={98}
-        height={98}
-        className="pointer-events-none absolute top-24 -left-10.75 z-0"
-      />
-      <Image
-        aria-hidden
-        src="/waitlist-icons/cyan-computer.svg"
-        alt=""
-        width={161}
-        height={161}
-        className="pointer-events-none absolute top-99.75 -left-6.25 z-0"
-      />
-      <Image
-        aria-hidden
-        src="/waitlist-icons/purple-storage.svg"
-        alt=""
-        width={80}
-        height={80}
-        className="pointer-events-none absolute top-20.5 right-5 z-0"
-      />
-      <Image
-        aria-hidden
-        src="/waitlist-icons/light-yellow-upload.svg"
-        alt=""
-        width={98}
-        height={98}
-        className="pointer-events-none absolute top-101.5 -right-2.5 z-0"
-      />
+      <HeroMobileFloatingImages />
 
       <div className="relative z-10 mx-auto flex w-full max-w-md flex-col items-center px-6 pt-29.5 text-center">
         <h1 className="text-[28px] font-bold leading-8.75 text-[#0D2025]">
