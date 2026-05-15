@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signInWithCredentials } from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -42,23 +42,6 @@ function startInterval(
       return prev - 1;
     });
   }, 1000);
-}
-
-function displayName(user: {
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  first_name?: string;
-  last_name?: string;
-  fullname?: string;
-}) {
-  return (
-    user.fullname ||
-    [user.firstName ?? user.first_name, user.lastName ?? user.last_name]
-      .filter(Boolean)
-      .join(" ") ||
-    user.email
-  );
 }
 
 function TalentVerifyEmailForm() {
@@ -105,14 +88,7 @@ function TalentVerifyEmailForm() {
         otp: values.code,
       });
 
-      const signResult = await signIn("credentials", {
-        email: data.user.email,
-        accessToken: data.tokens?.access_token,
-        userId: data.user.id,
-        name: displayName(data.user),
-        image: data.user.profile_pic_url ?? data.user.avatar_url ?? undefined,
-        redirect: false,
-      });
+      const signResult = await signInWithCredentials(data);
 
       if (signResult?.error) {
         setRootError(

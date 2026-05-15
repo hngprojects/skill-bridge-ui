@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signInWithCredentials, signInWithGoogle } from "@/lib/auth-client";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,23 +15,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { authFailureMessage } from "@/lib/api";
 import { signInFormSchema, type SignInFormValues } from "@/types/form-schema";
-
-function displayName(user: {
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  first_name?: string;
-  last_name?: string;
-  fullname?: string;
-}) {
-  return (
-    user.fullname ||
-    [user.firstName ?? user.first_name, user.lastName ?? user.last_name]
-      .filter(Boolean)
-      .join(" ") ||
-    user.email
-  );
-}
 
 function SignInForm() {
   const router = useRouter();
@@ -60,14 +43,7 @@ function SignInForm() {
         password: data.password,
       });
 
-      const result = await signIn("credentials", {
-        email: login.user.email,
-        accessToken: login.tokens?.access_token,
-        userId: login.user.id,
-        name: displayName(login.user),
-        image: login.user.profile_pic_url ?? login.user.avatar_url ?? undefined,
-        redirect: false,
-      });
+      const result = await signInWithCredentials(login);
 
       if (result?.error) {
         setRootError(
@@ -85,7 +61,7 @@ function SignInForm() {
 
   const onGoogleSignIn = async () => {
     setRootError(null);
-    await signIn("google", { callbackUrl: "/dashboard" });
+    await signInWithGoogle();
   };
 
   return (

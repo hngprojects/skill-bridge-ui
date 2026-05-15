@@ -67,7 +67,7 @@ function normalizeToken(token: string | undefined): string | undefined {
 
 async function getAuthToken(): Promise<string | undefined> {
   if (typeof window === "undefined") {
-    const { auth } = await import("@/auth");
+    const { auth } = await import("@/lib/auth");
     const session = await auth();
     return normalizeToken(session?.accessToken);
   }
