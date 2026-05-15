@@ -10,6 +10,7 @@ import { roles, sources } from "./data";
 import { addToWaitlist } from "@/actions/waitlist.actions";
 import WaitlistFormCTA from "./waitlist-form-cta";
 import WaitlistErrorDisplay from "./waitlist-error-display";
+import Link from "next/link";
 
 type Props = {
   onCancel: () => void;
@@ -93,7 +94,7 @@ const WaitlistForm = ({ onCancel, onSubmit }: Props) => {
         />
       </Field>
 
-      <Field label="What is your preferred role" htmlFor="role">
+      <Field label="What is your preferred role" htmlFor="preferredRole">
         <SelectInput
           id="preferredRole"
           name="preferredRole"
@@ -108,7 +109,7 @@ const WaitlistForm = ({ onCancel, onSubmit }: Props) => {
         </SelectInput>
       </Field>
 
-      <Field label="How did you hear about us?" htmlFor="source">
+      <Field label="How did you hear about us?" htmlFor="referralSource">
         <SelectInput
           id="referralSource"
           name="referralSource"
@@ -125,13 +126,13 @@ const WaitlistForm = ({ onCancel, onSubmit }: Props) => {
       <WaitlistErrorDisplay error={error} />
       <p className="text-xs font-normal leading-3.75 tracking-[0.017em] text-[#64748B] sm:text-base sm:font-semibold sm:leading-5 sm:text-center">
         By joining, you agree to Skillbridge data{" "}
-        <a className="font-semibold underline" href="#">
+        <Link href={"terms-of-use"} className="font-semibold underline">
           Terms of Use
-        </a>{" "}
+        </Link>{" "}
         and{" "}
-        <a className="font-semibold underline" href="#">
+        <Link href={"privacy-policy"} className="font-semibold underline">
           Privacy Policy.
-        </a>
+        </Link>
       </p>
       <WaitlistFormCTA onCancel={onCancel} isPending={isPending} />
     </form>
