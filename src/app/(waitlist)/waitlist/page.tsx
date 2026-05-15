@@ -1,7 +1,7 @@
-import React from "react";
+import WaitlistPage from "@/components/waitlist/waitlist-page";
 
-const WaitlistPage = () => {
-  return <div>WaitlistPage</div>;
+const Page = () => {
+  return <WaitlistPage />;
 };
 
-export default WaitlistPage;
+export default Page;
