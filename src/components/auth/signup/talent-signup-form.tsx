@@ -1,0 +1,194 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signInWithGoogle } from "@/lib/auth-client";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  register as registerAccount,
+  talentRegisterBody,
+} from "@/actions/auth";
+import { FormInput } from "@/components/custom/form-input";
+import { GoogleButton } from "@/components/custom/google-button";
+import { Button } from "@/components/ui/button";
+import { authFailureMessage } from "@/lib/api";
+import { useSignupFlowStore } from "@/stores/signup-flow-store";
+import {
+  signupFormSchema,
+  type SignupFormValues,
+  type TalentSignup,
+} from "@/types/form-schema";
+
+function TalentSignupForm() {
+  const router = useRouter();
+  const setTalentSignup = useSignupFlowStore((s) => s.setTalentSignup);
+  const [rootError, setRootError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormValues>({
+    resolver: zodResolver(signupFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const passwordValue = useWatch({ control, name: "password" }) ?? "";
+  const confirmPasswordValue =
+    useWatch({ control, name: "confirmPassword" }) ?? "";
+
+  const isPasswordValid =
+    !errors.password &&
+    passwordValue.length >= 8 &&
+    /[A-Z]/.test(passwordValue) &&
+    /[a-z]/.test(passwordValue) &&
+    /[0-9]/.test(passwordValue);
+
+  const passwordsMatch =
+    passwordValue === confirmPasswordValue && confirmPasswordValue !== "";
+
+  const onSubmit = async (data: SignupFormValues) => {
+    setRootError(null);
+    try {
+      await registerAccount(
+        talentRegisterBody({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          password: data.password,
+        }),
+      );
+      setTalentSignup({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+      } satisfies TalentSignup);
+      router.push("/signup/verify-talent");
+      router.refresh();
+    } catch (e) {
+      setRootError(authFailureMessage(e));
+    }
+  };
+
+  const onGoogleSignIn = async () => {
+    setRootError(null);
+    await signInWithGoogle();
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+      className="flex w-full min-w-0 flex-col gap-6 font-sans"
+    >
+      {rootError ? (
+        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {rootError}
+        </p>
+      ) : null}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <FormInput
+          label="First name"
+          required
+          placeholder="Enter your first name"
+          error={errors.firstName?.message}
+          {...register("firstName")}
+        />
+        <FormInput
+          label="Last name"
+          required
+          placeholder="Enter your last name"
+          error={errors.lastName?.message}
+          {...register("lastName")}
+        />
+      </div>
+
+      <FormInput
+        label="Email"
+        required
+        type="email"
+        validateEmail
+        placeholder="Enter your email address"
+        error={errors.email?.message}
+        {...register("email")}
+      />
+
+      <FormInput
+        label="Create password"
+        required
+        type="password"
+        placeholder="Password must be 8 characters"
+        error={errors.password?.message}
+        success={isPasswordValid}
+        {...register("password")}
+      />
+
+      <FormInput
+        label="Confirm password"
+        required
+        type="password"
+        placeholder="Password must be 8 characters"
+        error={errors.confirmPassword?.message}
+        success={passwordsMatch && !errors.confirmPassword}
+        {...register("confirmPassword")}
+      />
+
+      <p className="body-2 mx-auto w-full max-w-100 text-center font-light text-muted-foreground">
+        By continuing, you agree to Skillbridge Talent&apos;s{" "}
+        <Link
+          href="/terms-of-use"
+          className="underline decoration-muted-foreground underline-offset-4 transition-colors hover:text-foreground"
+        >
+          Terms of Use
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="/privacy-policy"
+          className="underline decoration-muted-foreground underline-offset-4 transition-colors hover:text-foreground"
+        >
+          Privacy Policy
+        </Link>
+        .
+      </p>
+
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="h-12 w-full rounded-xl bg-primary-900 text-base font-bold text-primary-foreground transition-all hover:bg-primary-900/90 active:scale-[0.98] disabled:opacity-60"
+      >
+        {isSubmitting ? "Creating account..." : "Sign Up"}
+      </Button>
+
+      <div className="relative flex items-center gap-4" role="separator">
+        <div className="h-px flex-1 bg-border" />
+        <span className="body-2 shrink-0 text-muted-foreground">or</span>
+        <div className="h-px flex-1 bg-border" />
+      </div>
+
+      <GoogleButton onClick={() => void onGoogleSignIn()} />
+
+      <p className="body-2 text-center font-light text-muted-foreground">
+        Already have an account? Click{" "}
+        <Link
+          href="/login"
+          className="font-normal text-foreground underline decoration-foreground underline-offset-4 transition-all hover:opacity-80"
+        >
+          here
+        </Link>{" "}
+        to Log in
+      </p>
+    </form>
+  );
+}
+
+export { TalentSignupForm };
