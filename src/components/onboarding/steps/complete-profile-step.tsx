@@ -3,6 +3,11 @@
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { REGIONS, EDUCATION_LEVELS } from "@/constants/complete-profile";
+import {
+  onboardingUserEmail,
+  onboardingUserFullName,
+} from "@/constants/talent-onboarding";
+import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import { ProfileImageUploader } from "../complete-profile/profile-image-holder";
 import { ReadOnlyField } from "../complete-profile/read-only-field";
 import { SelectField } from "../complete-profile/select-field";
@@ -20,6 +25,10 @@ type CompleteProfileStepProps = {
 };
 
 const CompleteProfileStep = ({ onReadyChange }: CompleteProfileStepProps) => {
+  const talentSignup = useSignupFlowStore((s) => s.talentSignup);
+  const fullName = onboardingUserFullName(talentSignup);
+  const email = onboardingUserEmail(talentSignup);
+
   const { register, setValue, handleSubmit, control } =
     useForm<ProfileFormValues>({
       defaultValues: { region: "", education: "", linkedin: "" },
@@ -42,8 +51,8 @@ const CompleteProfileStep = ({ onReadyChange }: CompleteProfileStepProps) => {
       />
 
       <div className="flex flex-col w-full gap-7">
-        <ReadOnlyField label="Full name" value="Alex Smith" />
-        <ReadOnlyField label="Email" value="alexsmith75@gmail.com" />
+        <ReadOnlyField label="Full name" value={fullName} />
+        <ReadOnlyField label="Email" value={email} />
         <SelectField
           label="Select your region"
           options={REGIONS}

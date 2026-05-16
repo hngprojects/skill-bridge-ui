@@ -79,11 +79,11 @@ function AuthShell({
               SHELL_MAX_W,
             )}
           >
-            <div className="body font-light text-primary-foreground">
+            <div className="body font-light text-[#5B5D60]">
               © 2026 SkillBridge Inc. All rights reserved.
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-primary-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-[#5B5D60]">
               <Link
                 href="terms-of-use"
                 className="body font-light hover:opacity-80"
