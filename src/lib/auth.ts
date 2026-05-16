@@ -10,6 +10,7 @@ import type {
   LoginResponseData,
   MeResponseData,
   UserRole,
+  VerifyEmailResponseData,
 } from "@/types/api";
 
 const passwordLoginSchema = z.object({
@@ -37,8 +38,14 @@ const googleCodeSchema = z.object({
   role: z.literal("talent"),
 });
 
+const verifyEmailSchema = z.object({
+  verificationEmail: z.email(),
+  otp: z.string().min(1),
+});
+
 const credentialsSchema = z.union([
   googleCodeSchema,
+  verifyEmailSchema,
   postVerifySchema,
   passwordLoginSchema,
 ]);
@@ -57,6 +64,83 @@ function avatarFromAuthUser(user: AuthUser): string | undefined {
   return user.profile_pic_url ?? user.avatar_url ?? undefined;
 }
 
+function isAuthUser(value: unknown): value is AuthUser {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    "email" in value &&
+    "role" in value
+  );
+}
+
+function authPayloadUser(payload: unknown): AuthUser | undefined {
+  if (isAuthUser(payload)) return payload;
+
+  if (typeof payload === "object" && payload !== null && "user" in payload) {
+    const user = (payload as { user?: unknown }).user;
+    if (isAuthUser(user)) return user;
+  }
+
+  if (typeof payload === "object" && payload !== null && "data" in payload) {
+    return authPayloadUser((payload as { data?: unknown }).data);
+  }
+
+  return undefined;
+}
+
+function authPayloadAccessToken(payload: unknown): string | undefined {
+  if (typeof payload !== "object" || payload === null) return undefined;
+
+  if ("tokens" in payload) {
+    const tokens = (payload as { tokens?: { access_token?: unknown } }).tokens;
+    return typeof tokens?.access_token === "string"
+      ? tokens.access_token
+      : undefined;
+  }
+
+  if ("data" in payload) {
+    return authPayloadAccessToken((payload as { data?: unknown }).data);
+  }
+
+  return undefined;
+}
+
+function verifiedSessionUserFromCredentials(rawCredentials: unknown) {
+  if (typeof rawCredentials !== "object" || rawCredentials === null) {
+    return null;
+  }
+
+  const credentials = rawCredentials as Record<string, unknown>;
+  if (credentials.sessionUser !== "true") return null;
+
+  const id = credentials.userId;
+  const email = credentials.email;
+  const name = credentials.name;
+  const image = credentials.image;
+  const role = credentials.role;
+
+  if (
+    typeof id !== "string" ||
+    typeof email !== "string" ||
+    typeof name !== "string" ||
+    !["talent", "employer", "admin"].includes(String(role))
+  ) {
+    return null;
+  }
+
+  return {
+    id,
+    email,
+    name,
+    image:
+      typeof image === "string" && image !== "" && image !== "undefined"
+        ? image
+        : undefined,
+    role: role as UserRole,
+  };
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -70,8 +154,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         role: { label: "Role", type: "text" },
         googleCode: { label: "Google code", type: "text" },
         redirectUri: { label: "Redirect URI", type: "text" },
+        verificationEmail: { label: "Verification email", type: "email" },
+        otp: { label: "Verification code", type: "text" },
+        verifiedUserId: { label: "Verified user id", type: "text" },
+        verifiedEmail: { label: "Verified email", type: "email" },
+        verifiedName: { label: "Verified name", type: "text" },
+        verifiedImage: { label: "Verified image", type: "text" },
+        verifiedRole: { label: "Verified role", type: "text" },
+        sessionUser: { label: "Session user", type: "text" },
       },
       async authorize(rawCredentials) {
+        const verifiedSessionUser =
+          verifiedSessionUserFromCredentials(rawCredentials);
+        if (verifiedSessionUser) {
+          return verifiedSessionUser;
+        }
+
         const parsed = credentialsSchema.safeParse(rawCredentials);
         if (!parsed.success) return null;
 
@@ -94,6 +192,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               email: u.email,
               image: avatarFromAuthUser(u),
               accessToken: login.tokens?.access_token,
+              role: u.role,
+            };
+          } catch {
+            return null;
+          }
+        }
+
+        if ("verificationEmail" in parsed.data) {
+          try {
+            const { data: envelope } = await publicApi.post<
+              ApiEnvelope<VerifyEmailResponseData>
+            >("/auth/verify-email", {
+              email: parsed.data.verificationEmail,
+              otp: parsed.data.otp,
+            });
+            const u = authPayloadUser(envelope.data ?? envelope);
+            if (!u) return null;
+
+            return {
+              id: u.id,
+              name: displayNameFromAuthUser(u),
+              email: u.email,
+              image: avatarFromAuthUser(u),
+              accessToken: authPayloadAccessToken(envelope.data ?? envelope),
               role: u.role,
             };
           } catch {
