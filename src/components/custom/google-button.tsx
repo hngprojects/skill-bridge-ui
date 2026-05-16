@@ -5,21 +5,29 @@ import { cn } from "@/lib/utils";
 
 type GoogleButtonProps = {
   className?: string;
+  disabled?: boolean;
+  label?: string;
   onClick?: () => void;
 };
 
-function GoogleButton({ className, onClick }: GoogleButtonProps) {
+function GoogleButton({
+  className,
+  disabled = false,
+  label = "Continue with Google",
+  onClick,
+}: GoogleButtonProps) {
   return (
     <div className="flex justify-center">
       <Button
         type="button"
+        disabled={disabled}
         onClick={onClick}
         className={cn(
           "group flex h-11 w-[240px] items-center justify-between rounded-md bg-google p-1 pr-1 pl-4 text-sm font-semibold text-white transition-colors hover:bg-google-hover",
           className,
         )}
       >
-        <span className="flex-1 text-center">Continue with Google</span>
+        <span className="flex-1 text-center">{label}</span>
         <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-background">
           <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden>
             <path

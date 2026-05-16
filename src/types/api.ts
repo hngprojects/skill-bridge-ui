@@ -21,6 +21,7 @@ export type AuthUser = {
   emailVerified?: boolean;
   is_verified?: boolean;
   onboardingComplete?: boolean;
+  onboarding_complete?: boolean;
   profile_pic_url?: string | null;
   avatar_url?: string | null;
 };
@@ -64,6 +65,17 @@ export type LoginInput = {
 };
 
 export type LoginResponseData = {
+  user: AuthUser;
+  tokens?: AuthTokens;
+};
+
+export type GoogleVerifyCodeInput = {
+  code: string;
+  redirectUri: "postmessage";
+  role: RegisterRole;
+};
+
+export type GoogleVerifyCodeResponseData = {
   user: AuthUser;
   tokens?: AuthTokens;
 };
