@@ -72,7 +72,7 @@ export type LoginResponseData = {
 export type GoogleVerifyCodeInput = {
   code: string;
   redirectUri: "postmessage";
-  role: RegisterRole;
+  role: "talent";
 };
 
 export type GoogleVerifyCodeResponseData = {
