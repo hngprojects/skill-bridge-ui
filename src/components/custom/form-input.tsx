@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Eye, EyeOff, AlertCircle, Check } from "lucide-react";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -190,11 +190,10 @@ function FormInput(props: FormInputProps) {
             formFieldControlClass,
             "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
             icon ? "pl-10" : "",
-            props.type === "password"
-              ? hasError || success
-                ? "pr-20"
-                : "pr-10"
-              : "",
+            props.type === "password" ? (hasError ? "pr-20" : "pr-10") : "",
+            success &&
+              !hasError &&
+              "border-success focus-visible:border-success focus-visible:ring-success/25",
             inputProps.className,
           )}
           onBlur={(event) => {
@@ -210,8 +209,6 @@ function FormInput(props: FormInputProps) {
                 className="size-4 text-error-foreground"
                 aria-hidden="true"
               />
-            ) : success ? (
-              <Check className="size-4 text-success" aria-hidden="true" />
             ) : null}
             <button
               type="button"
