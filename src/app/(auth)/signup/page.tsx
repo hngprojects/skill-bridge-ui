@@ -83,7 +83,7 @@ function SignupContent() {
         </div>
       ) : (
         <div className="mx-auto flex w-full max-w-360 flex-col items-center px-4 py-6 lg:px-14 lg:py-8 xl:px-16">
-          <div className="w-full max-w-92.5 lg:max-w-130">
+          <div className="w-full max-w-130 mx-auto">
             {/* HEADER */}
             <div className="mb-4 text-center flex flex-col gap-2 lg:mb-6">
               <h1 className="text-[32px] leading-[110%] font-semibold tracking-[-0.02em] text-foreground lg:text-[48px]">

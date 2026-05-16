@@ -11,12 +11,15 @@ import {
   ONBOARDING_STEPS,
   type OnboardingStepId,
 } from "@/constants/talent-onboarding";
+import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 
 function stepIndex(id: OnboardingStepId): number {
   return ONBOARDING_STEPS.findIndex((s) => s.id === id);
 }
 
 function OnboardingPageClient() {
+  const { fullName: userName, isLoading: isSessionLoading } =
+    useSessionUserProfile();
   const [currentStepId, setCurrentStepId] =
     React.useState<OnboardingStepId>("set-goal");
   const [canGoNext, setCanGoNext] = React.useState(false);
@@ -43,7 +46,8 @@ function OnboardingPageClient() {
 
   switch (currentStepId) {
     case "set-goal":
-      title = `Hello, Alex Smith! 👋`;
+      title =
+        !isSessionLoading && userName ? `Hello, ${userName}! 👋` : "Hello! 👋";
       description =
         "Help us personalize your experience using our app. Get started by telling us your goal.";
       content = (
