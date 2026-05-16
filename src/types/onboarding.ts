@@ -17,6 +17,7 @@ export type OnboardingShellProps = {
   showBack?: boolean;
   showNext?: boolean;
   nextDisabled?: boolean;
+  nextLoading?: boolean;
   title?: ReactNode;
   description?: ReactNode;
   children: ReactNode;

@@ -12,6 +12,7 @@ type OnboardingShellFooterProps = {
   showBack: boolean;
   showNext: boolean;
   nextDisabled: boolean;
+  nextLoading?: boolean;
   onBack: () => void;
   onNext: () => void;
 };
@@ -20,9 +21,11 @@ function OnboardingShellFooter({
   showBack,
   showNext,
   nextDisabled,
+  nextLoading = false,
   onBack,
   onNext,
 }: OnboardingShellFooterProps) {
+  const nextBlocked = nextDisabled || nextLoading;
   if (!showBack && !showNext) return null;
 
   return (
@@ -33,10 +36,10 @@ function OnboardingShellFooter({
             type="button"
             size="lg"
             className={cn(navBtnShape, "w-full", nextDisabledStyles)}
-            disabled={nextDisabled}
+            disabled={nextBlocked}
             onClick={onNext}
           >
-            Next
+            {nextLoading ? "Saving…" : "Next"}
           </Button>
         ) : null}
         {showBack ? (
@@ -50,6 +53,7 @@ function OnboardingShellFooter({
               "hover:bg-[#BCC9D9] hover:text-[#94A3B8]",
               "focus-visible:ring-[#94A3B8]/30",
             )}
+            disabled={nextLoading}
             onClick={onBack}
           >
             Back
@@ -70,6 +74,7 @@ function OnboardingShellFooter({
                 "hover:bg-[#BCC9D9] hover:text-[#94A3B8]",
                 "focus-visible:ring-[#94A3B8]/30",
               )}
+              disabled={nextLoading}
               onClick={onBack}
             >
               Back
@@ -86,10 +91,10 @@ function OnboardingShellFooter({
                 "min-w-32 md:w-60 lg:min-w-60 lg:max-w-60",
                 nextDisabledStyles,
               )}
-              disabled={nextDisabled}
+              disabled={nextBlocked}
               onClick={onNext}
             >
-              Next
+              {nextLoading ? "Saving…" : "Next"}
             </Button>
           ) : null}
         </div>

@@ -8,9 +8,20 @@ import { GenerateRoadmapStep } from "@/components/onboarding/steps/generating-st
 import { SetGoalStep } from "@/components/onboarding/steps/set-goal-step";
 import { SelectTrackStep } from "@/components/onboarding/steps/select-track-step";
 import {
+  goalIdToApiGoal,
   ONBOARDING_STEPS,
+  trackIdsToApiRoleTracks,
+  type GoalOptionId,
   type OnboardingStepId,
+  type TrackOptionId,
 } from "@/constants/talent-onboarding";
+import {
+  useSaveTalentOnboardingGoal,
+  useSaveTalentOnboardingTracks,
+  useUpdateTalentOnboardingGoal,
+  useUpdateTalentOnboardingTracks,
+} from "@/hooks/api/use-talent-onboarding";
+import { authFailureMessage } from "@/lib/api";
 
 function stepIndex(id: OnboardingStepId): number {
   return ONBOARDING_STEPS.findIndex((s) => s.id === id);
@@ -20,21 +31,90 @@ function OnboardingPageClient() {
   const [currentStepId, setCurrentStepId] =
     React.useState<OnboardingStepId>("set-goal");
   const [canGoNext, setCanGoNext] = React.useState(false);
+  const [selectedGoalId, setSelectedGoalId] = React.useState<
+    GoalOptionId | undefined
+  >();
+  const [selectedTrackIds, setSelectedTrackIds] = React.useState<
+    TrackOptionId[]
+  >([]);
+  const [goalSaved, setGoalSaved] = React.useState(false);
+  const [tracksSaved, setTracksSaved] = React.useState(false);
+  const [saveError, setSaveError] = React.useState<string | null>(null);
+
+  const { mutateAsync: saveGoal, isPending: isSavingGoal } =
+    useSaveTalentOnboardingGoal();
+  const { mutateAsync: updateGoal, isPending: isUpdatingGoal } =
+    useUpdateTalentOnboardingGoal();
+  const { mutateAsync: saveTracks, isPending: isSavingTracks } =
+    useSaveTalentOnboardingTracks();
+  const { mutateAsync: updateTracks, isPending: isUpdatingTracks } =
+    useUpdateTalentOnboardingTracks();
+
+  const isSaving =
+    isSavingGoal || isUpdatingGoal || isSavingTracks || isUpdatingTracks;
 
   const i = stepIndex(currentStepId);
   const isFirst = i <= 0;
   const isLast = i >= ONBOARDING_STEPS.length - 1;
 
-  const goNext = () => {
-    if (isLast || !canGoNext) return;
+  const advanceStep = () => {
     setCanGoNext(false);
+    setSaveError(null);
     setCurrentStepId(ONBOARDING_STEPS[i + 1].id as OnboardingStepId);
   };
 
+  const goNext = async () => {
+    if (isLast || !canGoNext || isSaving) return;
+
+    setSaveError(null);
+
+    try {
+      if (currentStepId === "set-goal" && selectedGoalId) {
+        const body = { goal: goalIdToApiGoal(selectedGoalId) };
+        if (goalSaved) {
+          await updateGoal(body);
+        } else {
+          await saveGoal(body);
+          setGoalSaved(true);
+        }
+        advanceStep();
+        return;
+      }
+
+      if (currentStepId === "select-track" && selectedTrackIds.length > 0) {
+        const body = {
+          roleTracks: trackIdsToApiRoleTracks(selectedTrackIds),
+        };
+        if (tracksSaved) {
+          await updateTracks(body);
+        } else {
+          await saveTracks(body);
+          setTracksSaved(true);
+        }
+        advanceStep();
+        return;
+      }
+
+      advanceStep();
+    } catch (error) {
+      setSaveError(authFailureMessage(error));
+    }
+  };
+
   const goBack = () => {
-    if (isFirst) return;
-    setCanGoNext(false);
-    setCurrentStepId(ONBOARDING_STEPS[i - 1].id as OnboardingStepId);
+    if (isFirst || isSaving) return;
+
+    const prevStepId = ONBOARDING_STEPS[i - 1].id as OnboardingStepId;
+    setSaveError(null);
+    setCurrentStepId(prevStepId);
+
+    if (prevStepId === "set-goal") {
+      setCanGoNext(Boolean(selectedGoalId));
+    } else if (prevStepId === "select-track") {
+      setCanGoNext(selectedTrackIds.length > 0);
+    } else {
+      setCanGoNext(false);
+    }
   };
 
   let title: React.ReactNode | undefined;
@@ -47,7 +127,13 @@ function OnboardingPageClient() {
       description =
         "Help us personalize your experience using our app. Get started by telling us your goal.";
       content = (
-        <SetGoalStep onSelectionChange={(id) => setCanGoNext(Boolean(id))} />
+        <SetGoalStep
+          value={selectedGoalId}
+          onValueChange={(id) => {
+            setSelectedGoalId(id);
+            setCanGoNext(Boolean(id));
+          }}
+        />
       );
       break;
     case "select-track":
@@ -55,7 +141,11 @@ function OnboardingPageClient() {
         "Choose the path that best matches how you want to use SkillBridge.";
       content = (
         <SelectTrackStep
-          onSelectionChange={(ids) => setCanGoNext(ids.length > 0)}
+          value={selectedTrackIds}
+          onValueChange={(ids) => {
+            setSelectedTrackIds(ids);
+            setCanGoNext(ids.length > 0);
+          }}
         />
       );
       break;
@@ -87,7 +177,13 @@ function OnboardingPageClient() {
       showBack={!isFirst}
       showNext={!isLast}
       nextDisabled={!canGoNext}
+      nextLoading={isSaving}
     >
+      {saveError ? (
+        <p className="mb-4 text-sm text-destructive" role="alert">
+          {saveError}
+        </p>
+      ) : null}
       {content}
     </OnboardingShell>
   );

@@ -29,11 +29,12 @@ const TRACK_ICONS: Record<TrackOptionId, React.ElementType> = {
 };
 
 type SelectTrackStepProps = {
-  onSelectionChange?: (trackIds: TrackOptionId[]) => void;
+  value?: TrackOptionId[];
+  onValueChange?: (trackIds: TrackOptionId[]) => void;
 };
 
-function SelectTrackStep({ onSelectionChange }: SelectTrackStepProps) {
-  const [selected, setSelected] = React.useState<Set<TrackOptionId>>(new Set());
+function SelectTrackStep({ value = [], onValueChange }: SelectTrackStepProps) {
+  const selected = new Set(value);
 
   function toggle(id: TrackOptionId) {
     const next = new Set(selected);
@@ -42,8 +43,7 @@ function SelectTrackStep({ onSelectionChange }: SelectTrackStepProps) {
     } else {
       next.add(id);
     }
-    setSelected(next);
-    onSelectionChange?.([...next]);
+    onValueChange?.([...next]);
   }
 
   return (
