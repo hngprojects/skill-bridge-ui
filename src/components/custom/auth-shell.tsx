@@ -84,11 +84,17 @@ function AuthShell({
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-primary-foreground">
-              <Link href="#" className="body font-light hover:opacity-80">
+              <Link
+                href="terms-of-use"
+                className="body font-light hover:opacity-80"
+              >
                 Talent Terms
               </Link>
               <span className="size-0.75 rounded-full bg-primary-foreground/20" />
-              <Link href="#" className="body font-light hover:opacity-80">
+              <Link
+                href="terms-of-use"
+                className="body font-light hover:opacity-80"
+              >
                 Employer Terms
               </Link>
               <span className="size-0.75 rounded-full bg-primary-foreground/20" />
@@ -99,7 +105,10 @@ function AuthShell({
                 Privacy Policy
               </Link>
               <span className="size-0.75 rounded-full bg-primary-foreground/20" />
-              <Link href="#" className="body font-light hover:opacity-80">
+              <Link
+                href="terms-of-use"
+                className="body font-light hover:opacity-80"
+              >
                 Cookies Settings
               </Link>
             </div>
