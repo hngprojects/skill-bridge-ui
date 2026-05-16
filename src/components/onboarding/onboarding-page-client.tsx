@@ -9,18 +9,17 @@ import { SetGoalStep } from "@/components/onboarding/steps/set-goal-step";
 import { SelectTrackStep } from "@/components/onboarding/steps/select-track-step";
 import {
   ONBOARDING_STEPS,
-  onboardingUserFullName,
   type OnboardingStepId,
 } from "@/constants/talent-onboarding";
-import { useSignupFlowStore } from "@/stores/signup-flow-store";
+import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 
 function stepIndex(id: OnboardingStepId): number {
   return ONBOARDING_STEPS.findIndex((s) => s.id === id);
 }
 
 function OnboardingPageClient() {
-  const talentSignup = useSignupFlowStore((s) => s.talentSignup);
-  const userName = onboardingUserFullName(talentSignup);
+  const { fullName: userName, isLoading: isSessionLoading } =
+    useSessionUserProfile();
   const [currentStepId, setCurrentStepId] =
     React.useState<OnboardingStepId>("set-goal");
   const [canGoNext, setCanGoNext] = React.useState(false);
@@ -47,7 +46,8 @@ function OnboardingPageClient() {
 
   switch (currentStepId) {
     case "set-goal":
-      title = `Hello, ${userName}! 👋`;
+      title =
+        !isSessionLoading && userName ? `Hello, ${userName}! 👋` : "Hello! 👋";
       description =
         "Help us personalize your experience using our app. Get started by telling us your goal.";
       content = (

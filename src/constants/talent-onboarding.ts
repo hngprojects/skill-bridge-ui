@@ -1,29 +1,5 @@
 import { cn } from "@/lib/utils";
 
-import type { TalentSignup } from "@/types/form-schema";
-
-export const ONBOARDING_DEMO_USER = {
-  fullName: "Alex Smith",
-  email: "alexsmith75@gmail.com",
-} as const;
-
-export function onboardingUserFullName(
-  signup: Pick<TalentSignup, "firstName" | "lastName"> | null | undefined,
-): string {
-  const name = [signup?.firstName, signup?.lastName]
-    .map((part) => part?.trim())
-    .filter(Boolean)
-    .join(" ");
-
-  return name || ONBOARDING_DEMO_USER.fullName;
-}
-
-export function onboardingUserEmail(
-  signup: Pick<TalentSignup, "email"> | null | undefined,
-): string {
-  return signup?.email?.trim() || ONBOARDING_DEMO_USER.email;
-}
-
 export const ONBOARDING_NAV_BTN_SHAPE = "h-11 min-w-48 rounded-lg px-4";
 
 export const ONBOARDING_NEXT_BTN_CLASSNAME = cn(
