@@ -33,7 +33,16 @@ declare global {
 
 const GOOGLE_SCRIPT_SRC = "https://accounts.google.com/gsi/client";
 
-let googleScriptPromise: Promise<void> | null = null;
+let googleScriptPromise: Promise<void> | undefined;
+
+function handleGoogleScriptLoadError(
+  script: HTMLScriptElement,
+  reject: (reason?: unknown) => void,
+) {
+  script.remove();
+  googleScriptPromise = undefined;
+  reject(new Error("Could not load Google auth."));
+}
 
 function loadGoogleScript() {
   if (typeof window === "undefined") {
@@ -53,7 +62,7 @@ function loadGoogleScript() {
       existing.addEventListener("load", () => resolve(), { once: true });
       existing.addEventListener(
         "error",
-        () => reject(new Error("Could not load Google auth.")),
+        () => handleGoogleScriptLoadError(existing, reject),
         { once: true },
       );
       return;
@@ -64,7 +73,7 @@ function loadGoogleScript() {
     script.async = true;
     script.defer = true;
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Could not load Google auth."));
+    script.onerror = () => handleGoogleScriptLoadError(script, reject);
     document.head.appendChild(script);
   });
 
