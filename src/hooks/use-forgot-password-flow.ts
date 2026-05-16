@@ -13,6 +13,7 @@ const OTP_EXPIRY_SECONDS = 5 * 60;
 const UPPERCASE_REGEX = /[A-Z]/;
 const LOWERCASE_REGEX = /[a-z]/;
 const NUMBER_REGEX = /[0-9]/;
+const OTP_REGEX = /^\d{6}$/;
 
 type ForgotPasswordStep = "email" | "intro" | "code" | "password" | "success";
 
@@ -112,7 +113,7 @@ function useForgotPasswordFlow(initialEmail = "") {
       return;
     }
 
-    if (otp.length !== 6) {
+    if (!OTP_REGEX.test(otp)) {
       setOtpError("Enter the complete 6-digit code.");
       return;
     }
