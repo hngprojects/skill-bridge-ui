@@ -10,10 +10,10 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <div>
+    <main>
       <HeroSection />
       <ContactForm />
       <ReachOut />
-    </div>
+    </main>
   );
 }
