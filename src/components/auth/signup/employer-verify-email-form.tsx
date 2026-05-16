@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { signInWithCredentials } from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
@@ -22,9 +23,6 @@ function EmployerVerifyEmailForm() {
   const employerLead = useSignupFlowStore((s) => s.employerLead);
   const clearEmployerLead = useSignupFlowStore((s) => s.clearEmployerLead);
   const [codeValue, setCodeValue] = useState("");
-  const [rootError, setRootError] = useState<string | null>(null);
-  const [resendHint, setResendHint] = useState<string | null>(null);
-
   const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
   const { mutateAsync: resendVerification, isPending: resending } =
     useResendVerification();
@@ -40,8 +38,6 @@ function EmployerVerifyEmailForm() {
   });
 
   const onSubmit = async (values: EmailVerificationCodeValues) => {
-    setRootError(null);
-    setResendHint(null);
     const email = employerLead?.email;
     if (!email) return;
 
@@ -54,7 +50,7 @@ function EmployerVerifyEmailForm() {
       const signResult = await signInWithCredentials(data);
 
       if (signResult?.error) {
-        setRootError(
+        appToast.error(
           "Your email was verified but we couldn't start your session. Try signing in.",
         );
         return;
@@ -64,21 +60,19 @@ function EmployerVerifyEmailForm() {
       router.push("/dashboard");
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
   const onResend = async () => {
-    setRootError(null);
-    setResendHint(null);
     const email = employerLead?.email;
     if (!email) return;
 
     try {
       await resendVerification({ email });
-      setResendHint("If that email is registered, a new code was sent.");
+      appToast.success("If that email is registered, a new code was sent.");
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
@@ -102,17 +96,6 @@ function EmployerVerifyEmailForm() {
       noValidate
       className="flex flex-col gap-4 font-sans"
     >
-      {rootError ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {rootError}
-        </p>
-      ) : null}
-      {resendHint ? (
-        <p className="rounded-lg border border-muted bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
-          {resendHint}
-        </p>
-      ) : null}
-
       <FormInput
         {...register("code")}
         label="Verification code"

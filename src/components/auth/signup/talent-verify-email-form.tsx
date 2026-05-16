@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { signInWithCredentials } from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
@@ -48,8 +49,6 @@ function TalentVerifyEmailForm() {
   const router = useRouter();
   const talentSignup = useSignupFlowStore((s) => s.talentSignup);
   const clearTalentSignup = useSignupFlowStore((s) => s.clearTalentSignup);
-  const [rootError, setRootError] = useState<string | null>(null);
-  const [resendHint, setResendHint] = useState<string | null>(null);
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
   const [codeValue, setCodeValue] = useState("");
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -77,8 +76,6 @@ function TalentVerifyEmailForm() {
   }, []);
 
   const onSubmit = async (values: EmailVerificationCodeValues) => {
-    setRootError(null);
-    setResendHint(null);
     const email = talentSignup?.email;
     if (!email) return;
 
@@ -91,7 +88,7 @@ function TalentVerifyEmailForm() {
       const signResult = await signInWithCredentials(data);
 
       if (signResult?.error) {
-        setRootError(
+        appToast.error(
           "Your email was verified but we couldn't start your session. Try signing in.",
         );
         return;
@@ -101,23 +98,21 @@ function TalentVerifyEmailForm() {
       router.push("/dashboard");
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
   const onResend = async () => {
-    setRootError(null);
-    setResendHint(null);
     const email = talentSignup?.email;
     if (!email) return;
 
     try {
       await resendVerification({ email });
-      setResendHint("If that email is registered, a new code was sent.");
+      appToast.success("If that email is registered, a new code was sent.");
       setSecondsLeft(RESEND_SECONDS);
       startInterval(intervalRef, setSecondsLeft);
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
@@ -143,17 +138,6 @@ function TalentVerifyEmailForm() {
       noValidate
       className="flex w-full min-w-0 flex-col gap-4 font-sans"
     >
-      {rootError ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {rootError}
-        </p>
-      ) : null}
-      {resendHint ? (
-        <p className="rounded-lg border border-muted bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
-          {resendHint}
-        </p>
-      ) : null}
-
       <FormInput
         {...register("code")}
         label="Verification code"

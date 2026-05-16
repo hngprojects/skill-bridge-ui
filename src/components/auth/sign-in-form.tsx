@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { appToast } from "@/lib/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,7 +26,6 @@ import { signInFormSchema, type SignInFormValues } from "@/types/form-schema";
 function SignInForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [rootError, setRootError] = useState<string | null>(null);
   const [isGooglePending, setIsGooglePending] = useState(false);
 
   const {
@@ -43,8 +43,6 @@ function SignInForm() {
   });
 
   const onSubmit = async (data: SignInFormValues) => {
-    setRootError(null);
-
     try {
       const login = await loginAccount({
         email: data.email,
@@ -57,7 +55,7 @@ function SignInForm() {
       });
 
       if (result?.error) {
-        setRootError(
+        appToast.error(
           "Signed in with the API, but couldn't start your session. Try again.",
         );
         return;
@@ -67,19 +65,18 @@ function SignInForm() {
       router.replace(postAuthRedirectForUser(login.user));
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
   const onGoogleSignIn = async () => {
-    setRootError(null);
     setIsGooglePending(true);
 
     try {
       const { result, redirectTo } = await signInWithGoogle();
 
       if (result?.error) {
-        setRootError(
+        appToast.error(
           "Signed in with Google, but couldn't start your session. Try again.",
         );
         return;
@@ -89,7 +86,7 @@ function SignInForm() {
       router.replace(redirectTo);
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     } finally {
       setIsGooglePending(false);
     }
@@ -101,12 +98,6 @@ function SignInForm() {
       noValidate
       className="flex w-full min-w-0 flex-col gap-4 [font-family:var(--font-outfit),sans-serif]"
     >
-      {rootError ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {rootError}
-        </p>
-      ) : null}
-
       <FormInput
         label="Email"
         required

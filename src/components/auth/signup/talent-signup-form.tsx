@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { appToast } from "@/lib/toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -28,7 +29,6 @@ function TalentSignupForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const setTalentSignup = useSignupFlowStore((s) => s.setTalentSignup);
-  const [rootError, setRootError] = useState<string | null>(null);
   const [isGooglePending, setIsGooglePending] = useState(false);
   const {
     register,
@@ -61,7 +61,6 @@ function TalentSignupForm() {
     passwordValue === confirmPasswordValue && confirmPasswordValue !== "";
 
   const onSubmit = async (data: SignupFormValues) => {
-    setRootError(null);
     try {
       await registerAccount(
         talentRegisterBody({
@@ -79,19 +78,18 @@ function TalentSignupForm() {
       router.push("/signup/verify-talent");
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
   const onGoogleSignIn = async () => {
-    setRootError(null);
     setIsGooglePending(true);
 
     try {
       const { result, redirectTo } = await signInWithGoogle();
 
       if (result?.error) {
-        setRootError(
+        appToast.error(
           "Signed in with Google, but couldn't start your session. Try again.",
         );
         return;
@@ -101,7 +99,7 @@ function TalentSignupForm() {
       router.replace(redirectTo);
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     } finally {
       setIsGooglePending(false);
     }
@@ -113,12 +111,6 @@ function TalentSignupForm() {
       noValidate
       className="flex w-full min-w-0 flex-col gap-6 font-sans"
     >
-      {rootError ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {rootError}
-        </p>
-      ) : null}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <FormInput
           label="First name"
