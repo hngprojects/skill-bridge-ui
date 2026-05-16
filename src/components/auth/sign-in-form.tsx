@@ -173,7 +173,7 @@ function SignInForm() {
       </div>
 
       <GoogleButton
-        disabled={isGooglePending}
+        disabled={isGooglePending || isSubmitting}
         label={isGooglePending ? "Connecting..." : "Continue with Google"}
         onClick={() => void onGoogleSignIn()}
       />
