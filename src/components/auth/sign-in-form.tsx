@@ -15,17 +15,26 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { authKeys } from "@/hooks/api/keys";
-import { authFailureMessage } from "@/lib/api";
+import { ApiError, authFailureMessage } from "@/lib/api";
 import {
   postAuthRedirectForUser,
   signInWithGoogle,
   signInWithPassword,
 } from "@/lib/auth-client";
+import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import { signInFormSchema, type SignInFormValues } from "@/types/form-schema";
+
+type UnverifiedLoginErrorBody = {
+  error?: string;
+  email?: string;
+  role?: string;
+};
 
 function SignInForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const setTalentSignup = useSignupFlowStore((s) => s.setTalentSignup);
+  const setEmployerLead = useSignupFlowStore((s) => s.setEmployerLead);
   const [isGooglePending, setIsGooglePending] = useState(false);
 
   const {
@@ -65,6 +74,25 @@ function SignInForm() {
       router.replace(postAuthRedirectForUser(login.user));
       router.refresh();
     } catch (e) {
+      if (e instanceof ApiError && e.status === 403) {
+        const body = e.data as UnverifiedLoginErrorBody | undefined;
+        if (body?.error === "EMAIL_NOT_VERIFIED" && body.email?.trim()) {
+          const email = body.email.trim();
+          const resumePayload = { email, firstName: "", lastName: "" };
+
+          if (body.role === "employer") {
+            setEmployerLead(resumePayload);
+            router.push("/signup/verify-employer?autoResend=1");
+          } else {
+            setTalentSignup(resumePayload);
+            router.push("/signup/verify-talent?autoResend=1");
+          }
+
+          appToast.error(authFailureMessage(e));
+          return;
+        }
+      }
+
       appToast.error(authFailureMessage(e));
     }
   };

@@ -52,6 +52,7 @@ function TalentVerifyEmailForm() {
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
   const [codeValue, setCodeValue] = useState("");
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const autoResendTriggeredRef = useRef(false);
 
   const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
   const { mutateAsync: resendVerification, isPending: resending } =
@@ -115,6 +116,19 @@ function TalentVerifyEmailForm() {
       appToast.error(authFailureMessage(e));
     }
   };
+
+  useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      new URLSearchParams(window.location.search).get("autoResend") !== "1" ||
+      !talentSignup?.email ||
+      autoResendTriggeredRef.current
+    ) {
+      return;
+    }
+    autoResendTriggeredRef.current = true;
+    void onResend();
+  });
 
   const isCodeComplete = codeValue.length === 6;
 

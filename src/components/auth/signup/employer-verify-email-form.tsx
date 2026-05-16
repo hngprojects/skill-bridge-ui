@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { signInWithCredentials } from "@/lib/auth-client";
@@ -23,6 +23,7 @@ function EmployerVerifyEmailForm() {
   const employerLead = useSignupFlowStore((s) => s.employerLead);
   const clearEmployerLead = useSignupFlowStore((s) => s.clearEmployerLead);
   const [codeValue, setCodeValue] = useState("");
+  const autoResendTriggeredRef = useRef(false);
   const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
   const { mutateAsync: resendVerification, isPending: resending } =
     useResendVerification();
@@ -75,6 +76,19 @@ function EmployerVerifyEmailForm() {
       appToast.error(authFailureMessage(e));
     }
   };
+
+  useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      new URLSearchParams(window.location.search).get("autoResend") !== "1" ||
+      !employerLead?.email ||
+      autoResendTriggeredRef.current
+    ) {
+      return;
+    }
+    autoResendTriggeredRef.current = true;
+    void onResend();
+  });
 
   if (!employerLead?.email) {
     return (
