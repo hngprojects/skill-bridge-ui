@@ -92,7 +92,7 @@ function AuthShell({
               </Link>
               <span className="size-0.75 rounded-full bg-primary-foreground/20" />
               <Link
-                href="terms-of-use"
+                href="/privacy-policy"
                 className="body font-light hover:opacity-80"
               >
                 Employer Terms
@@ -106,7 +106,7 @@ function AuthShell({
               </Link>
               <span className="size-0.75 rounded-full bg-primary-foreground/20" />
               <Link
-                href="terms-of-use"
+                href="/terms-of-use"
                 className="body font-light hover:opacity-80"
               >
                 Cookies Settings
