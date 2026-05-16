@@ -1,72 +1,17 @@
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProjectsCard from "./projects-card";
 import TalentsCard from "./talents-card";
 import { desktopCopy } from "./data";
 import SkillsCard from "./skills-card";
+import HeroDesktopFloatingImages from "./hero-desktop-floating-images";
 
 type HeroDesktopProps = { onJoinClick: () => void };
 
 const HeroDesktop = ({ onJoinClick }: HeroDesktopProps) => {
   return (
     <section className="relative hidden overflow-hidden bg-[#f5f5f5] pt-16 sm:block">
-      <Image
-        aria-hidden
-        src="/waitlist-icons/yellow-html.svg"
-        alt=""
-        width={98}
-        height={98}
-        className="pointer-events-none absolute top-16 left-4.25 z-0"
-      />
-      <Image
-        aria-hidden
-        src="/waitlist-icons/cyan-computer.svg"
-        alt=""
-        width={161}
-        height={161}
-        className="pointer-events-none absolute top-46.75 left-68.75 z-0"
-      />
-      <Image
-        aria-hidden
-        src="/waitlist-icons/green-palette.svg"
-        alt=""
-        width={80}
-        height={80}
-        className="pointer-events-none absolute top-123 -left-5.5 z-0"
-      />
-      <Image
-        aria-hidden
-        src="/waitlist-icons/purple-storage.svg"
-        alt=""
-        width={80}
-        height={80}
-        className="pointer-events-none absolute top-0 right-82.5 z-0"
-      />
-      <Image
-        aria-hidden
-        src="/waitlist-icons/blue-picker.svg"
-        alt=""
-        width={99}
-        height={99}
-        className="pointer-events-none absolute top-26 right-23.75 z-0"
-      />
-      <Image
-        aria-hidden
-        src="/waitlist-icons/light-yellow-upload.svg"
-        alt=""
-        width={98}
-        height={98}
-        className="pointer-events-none absolute top-54.75 right-54 z-0"
-      />
-      <Image
-        aria-hidden
-        src="/waitlist-icons/dark-blue-tsx.svg"
-        alt=""
-        width={170}
-        height={170}
-        className="pointer-events-none absolute top-85 -right-5.5 z-0"
-      />
+      <HeroDesktopFloatingImages />
 
       <div className="relative z-10 mx-auto w-full max-w-3xl px-6 text-center">
         <h1 className="font-extrabold text-5xl leading-15 text-primary-900">
