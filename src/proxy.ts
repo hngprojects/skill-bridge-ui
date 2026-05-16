@@ -1,4 +1,7 @@
-import { NextResponse, type NextProxy } from "next/server";
+import { NextResponse } from "next/server";
+
+import { auth } from "@/lib/auth";
+import type { UserRole } from "@/types/api";
 
 const SECURITY_HEADERS: Record<string, string> = {
   "X-Frame-Options": "DENY",
@@ -7,9 +10,10 @@ const SECURITY_HEADERS: Record<string, string> = {
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
 };
 
-export const proxy: NextProxy = (request) => {
-  const requestId =
-    request.headers.get("x-request-id") ?? crypto.randomUUID();
+const PROTECTED_ROUTES = ["/talent/onboarding"];
+
+function continueWithSecurityHeaders(request: Request): NextResponse {
+  const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-request-id", requestId);
@@ -24,7 +28,33 @@ export const proxy: NextProxy = (request) => {
   response.headers.set("x-request-id", requestId);
 
   return response;
-};
+}
+
+export const proxy = auth((request) => {
+  const { pathname } = request.nextUrl;
+
+  const isTalentProtected = PROTECTED_ROUTES.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+
+  if (isTalentProtected) {
+    const user = request.auth?.user as
+      | { id?: string; role?: UserRole }
+      | undefined;
+
+    if (!user?.id) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    if (user.role && user.role !== "talent") {
+      return NextResponse.redirect(new URL("/forbidden", request.url));
+    }
+  }
+
+  return continueWithSecurityHeaders(request);
+});
 
 export const config = {
   matcher: [
