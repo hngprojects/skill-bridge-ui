@@ -2,6 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import {
+  useForgotPassword,
+  useResetPassword,
+  useVerifyPasswordResetOtp,
+} from "@/hooks/api/use-auth";
+import { authFailureMessage } from "@/lib/api";
+
 const OTP_EXPIRY_SECONDS = 5 * 60;
 const UPPERCASE_REGEX = /[A-Z]/;
 const LOWERCASE_REGEX = /[a-z]/;
@@ -24,8 +31,13 @@ function useForgotPasswordFlow(initialEmail = "") {
   const [otpExpiresAt, setOtpExpiresAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [otpAttemptsRemaining, setOtpAttemptsRemaining] = useState(3);
-  const [isSendingCode, setIsSendingCode] = useState(false);
-  const [isResettingPassword, setIsResettingPassword] = useState(false);
+
+  const { mutateAsync: requestPasswordReset, isPending: isSendingCode } =
+    useForgotPassword();
+  const { mutateAsync: verifyResetOtp, isPending: isVerifyingOtp } =
+    useVerifyPasswordResetOtp();
+  const { mutateAsync: resetPassword, isPending: isResettingPassword } =
+    useResetPassword();
 
   const otpSecondsRemaining = useMemo(() => {
     if (!otpExpiresAt) return 0;
@@ -77,11 +89,12 @@ function useForgotPasswordFlow(initialEmail = "") {
     setOtp("");
     setOtpError("");
 
-    setIsSendingCode(true);
-    window.setTimeout(() => {
-      setIsSendingCode(false);
+    try {
+      await requestPasswordReset({ email: trimmedEmail });
       setStep("intro");
-    }, 400);
+    } catch (error) {
+      setRootError(authFailureMessage(error));
+    }
   };
 
   const validateOtp = async () => {
@@ -104,8 +117,17 @@ function useForgotPasswordFlow(initialEmail = "") {
       return;
     }
 
-    setOtpError("");
-    setStep("password");
+    try {
+      await verifyResetOtp({
+        email: resetEmail.trim(),
+        otp,
+      });
+      setOtpError("");
+      setStep("password");
+    } catch (error) {
+      setOtpAttemptsRemaining((remaining) => Math.max(0, remaining - 1));
+      setOtpError(authFailureMessage(error));
+    }
   };
 
   const validatePasswords = async () => {
@@ -126,12 +148,18 @@ function useForgotPasswordFlow(initialEmail = "") {
     setPasswordError(nextPasswordError);
     setConfirmPasswordError(nextConfirmPasswordError);
 
-    if (!nextPasswordError && !nextConfirmPasswordError) {
-      setIsResettingPassword(true);
-      window.setTimeout(() => {
-        setIsResettingPassword(false);
-        setStep("success");
-      }, 400);
+    if (nextPasswordError || nextConfirmPasswordError) return;
+
+    try {
+      await resetPassword({
+        email: resetEmail.trim(),
+        otp,
+        password,
+        confirmPassword,
+      });
+      setStep("success");
+    } catch (error) {
+      setRootError(authFailureMessage(error));
     }
   };
 
@@ -141,14 +169,15 @@ function useForgotPasswordFlow(initialEmail = "") {
 
     clearMessages();
 
-    setIsSendingCode(true);
-    window.setTimeout(() => {
-      setIsSendingCode(false);
+    try {
+      await requestPasswordReset({ email: trimmedEmail });
       setOtp("");
       setOtpError("");
       startOtpCountdown();
       setResendHint("A new code was sent.");
-    }, 400);
+    } catch (error) {
+      setRootError(authFailureMessage(error));
+    }
   };
 
   const showOtpStep = () => {
@@ -174,6 +203,7 @@ function useForgotPasswordFlow(initialEmail = "") {
     canResendCode,
     maxOtpAttemptsReached,
     isSendingCode,
+    isVerifyingOtp,
     isResettingPassword,
     setResetEmail,
     setEmailError,

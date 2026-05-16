@@ -15,6 +15,7 @@ import type {
   ResetPasswordInput,
   VerifyEmailInput,
   VerifyEmailResponseData,
+  VerifyPasswordResetOtpInput,
 } from "@/types/api";
 
 import { unwrapData } from "./utils";
@@ -114,6 +115,16 @@ export async function forgotPassword(
 ): Promise<EmptyData> {
   const res = await publicApi.post<ApiEnvelope<EmptyData>>(
     "/auth/forgot-password",
+    body,
+  );
+  return unwrapData(res);
+}
+
+export async function verifyPasswordResetOtp(
+  body: VerifyPasswordResetOtpInput,
+): Promise<EmptyData> {
+  const res = await publicApi.post<ApiEnvelope<EmptyData>>(
+    "/auth/verify-reset-otp",
     body,
   );
   return unwrapData(res);

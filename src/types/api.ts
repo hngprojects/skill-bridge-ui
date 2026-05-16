@@ -84,8 +84,14 @@ export type ForgotPasswordInput = {
   email: string;
 };
 
+export type VerifyPasswordResetOtpInput = {
+  email: string;
+  otp: string;
+};
+
 export type ResetPasswordInput = {
-  token: string;
+  email: string;
+  otp: string;
   password: string;
   confirmPassword: string;
 };
