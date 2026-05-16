@@ -23,6 +23,7 @@ import {
   useUpdateTalentOnboardingTracks,
 } from "@/hooks/api";
 import { authFailureMessage } from "@/lib/api";
+import { appToast } from "@/lib/toast";
 
 function stepIndex(id: OnboardingStepId): number {
   return ONBOARDING_STEPS.findIndex((s) => s.id === id);
@@ -42,7 +43,6 @@ function OnboardingPageClient() {
   >([]);
   const [goalSaved, setGoalSaved] = React.useState(false);
   const [tracksSaved, setTracksSaved] = React.useState(false);
-  const [saveError, setSaveError] = React.useState<string | null>(null);
 
   const { mutateAsync: saveGoal, isPending: isSavingGoal } =
     useSaveTalentOnboardingGoal();
@@ -62,14 +62,11 @@ function OnboardingPageClient() {
 
   const advanceStep = () => {
     setCanGoNext(false);
-    setSaveError(null);
     setCurrentStepId(ONBOARDING_STEPS[i + 1].id as OnboardingStepId);
   };
 
   const goNext = async () => {
     if (isLast || !canGoNext || isSaving) return;
-
-    setSaveError(null);
 
     try {
       if (currentStepId === "set-goal" && selectedGoalId) {
@@ -100,7 +97,7 @@ function OnboardingPageClient() {
 
       advanceStep();
     } catch (error) {
-      setSaveError(authFailureMessage(error));
+      appToast.error(authFailureMessage(error));
     }
   };
 
@@ -108,7 +105,6 @@ function OnboardingPageClient() {
     if (isFirst || isSaving) return;
 
     const prevStepId = ONBOARDING_STEPS[i - 1].id as OnboardingStepId;
-    setSaveError(null);
     setCurrentStepId(prevStepId);
 
     if (prevStepId === "set-goal") {
@@ -183,11 +179,6 @@ function OnboardingPageClient() {
       nextDisabled={!canGoNext}
       nextLoading={isSaving}
     >
-      {saveError ? (
-        <p className="mb-4 text-sm text-destructive" role="alert">
-          {saveError}
-        </p>
-      ) : null}
       {content}
     </OnboardingShell>
   );
