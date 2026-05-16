@@ -7,7 +7,7 @@ import {
   useResetPassword,
   useVerifyPasswordResetOtp,
 } from "@/hooks/api/use-auth";
-import { authFailureMessage } from "@/lib/api";
+import { ApiError, authFailureMessage } from "@/lib/api";
 
 const OTP_EXPIRY_SECONDS = 5 * 60;
 const UPPERCASE_REGEX = /[A-Z]/;
@@ -126,8 +126,17 @@ function useForgotPasswordFlow(initialEmail = "") {
       setOtpError("");
       setStep("password");
     } catch (error) {
-      setOtpAttemptsRemaining((remaining) => Math.max(0, remaining - 1));
-      setOtpError(authFailureMessage(error));
+      const message = authFailureMessage(error);
+      const invalidCodeMessage = /\b(invalid|incorrect)\s+(otp|code)\b/i;
+      const isInvalidOtp =
+        error instanceof ApiError &&
+        error.status === 400 &&
+        invalidCodeMessage.test(message);
+
+      if (isInvalidOtp) {
+        setOtpAttemptsRemaining((remaining) => Math.max(0, remaining - 1));
+      }
+      setOtpError(message);
     }
   };
 
