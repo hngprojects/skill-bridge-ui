@@ -19,6 +19,11 @@ type GoogleCodeClientConfig = {
   error_callback?: (error: unknown) => void;
 };
 
+type GoogleErrorResponse = {
+  type?: string;
+  message?: string;
+};
+
 declare global {
   interface Window {
     google?: {
@@ -42,6 +47,47 @@ function handleGoogleScriptLoadError(
   script.remove();
   googleScriptPromise = undefined;
   reject(new Error("Could not load Google auth."));
+}
+
+function googleAuthErrorMessage(error: unknown): string {
+  const message = error instanceof Error ? error.message : undefined;
+  const normalizedMessage = message?.toLowerCase();
+
+  if (
+    normalizedMessage?.includes("popup") &&
+    normalizedMessage.includes("closed")
+  ) {
+    return "Google sign-in was cancelled. Please try again when you're ready.";
+  }
+
+  if (
+    normalizedMessage?.includes("popup") &&
+    (normalizedMessage.includes("blocked") ||
+      normalizedMessage.includes("failed to open"))
+  ) {
+    return "Google sign-in popup was blocked. Please allow popups and try again.";
+  }
+
+  if (message) return message;
+
+  if (typeof error === "object" && error !== null) {
+    const googleError = error as GoogleErrorResponse;
+
+    if (
+      googleError.type === "popup_closed" ||
+      googleError.type === "popup_closed_by_user"
+    ) {
+      return "Google sign-in was cancelled. Please try again when you're ready.";
+    }
+
+    if (googleError.type === "popup_failed_to_open") {
+      return "Google sign-in popup was blocked. Please allow popups and try again.";
+    }
+
+    if (googleError.message) return googleError.message;
+  }
+
+  return "Google sign-in failed. Please try again.";
 }
 
 function loadGoogleScript() {
@@ -114,9 +160,7 @@ export async function requestGoogleAuthCode(): Promise<string> {
         );
       },
       error_callback: (error) => {
-        reject(
-          error instanceof Error ? error : new Error("Google sign-in failed."),
-        );
+        reject(new Error(googleAuthErrorMessage(error)));
       },
     });
 
