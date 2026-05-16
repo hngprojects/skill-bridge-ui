@@ -2,10 +2,13 @@
 
 import { signIn, type SignInResponse } from "next-auth/react";
 
+import { getMe, verifyGoogleCode } from "@/actions/auth";
+import { requestGoogleAuthCode } from "@/lib/google-auth";
 import type { AuthUser } from "@/types/api";
 import type {
   CredentialSignInFromAuthResponse,
   CredentialSignInParams,
+  GoogleSignInResult,
 } from "@/types/auth-client";
 
 function authUserDisplayName(user: AuthUser): string {
@@ -16,6 +19,17 @@ function authUserDisplayName(user: AuthUser): string {
       .join(" ") ||
     user.email
   );
+}
+
+function isOnboardingComplete(user: AuthUser): boolean | undefined {
+  return user.onboardingComplete ?? user.onboarding_complete;
+}
+
+export function postAuthRedirectForUser(user: AuthUser): string {
+  if (user.role === "talent" && isOnboardingComplete(user) === false) {
+    return "/talent/onboarding";
+  }
+  return "/dashboard";
 }
 
 function isAuthResponsePayload(
@@ -37,6 +51,7 @@ function toCredentialSignInParams(
     userId: user.id,
     name: authUserDisplayName(user),
     image: user.profile_pic_url ?? user.avatar_url ?? undefined,
+    role: user.role,
   };
 }
 
@@ -50,10 +65,33 @@ export async function signInWithCredentials(
     userId: p.userId,
     name: p.name,
     image: p.image ?? undefined,
+    role: p.role,
     redirect: false,
   });
 }
 
-export async function signInWithGoogle(callbackUrl = "/dashboard") {
-  await signIn("google", { callbackUrl });
+export async function signInWithGoogle(): Promise<GoogleSignInResult> {
+  const code = await requestGoogleAuthCode();
+  const login = await verifyGoogleCode({
+    code,
+    redirectUri: "postmessage",
+    role: "talent",
+  });
+
+  const result = await signInWithCredentials(login);
+  if (result?.error) {
+    return {
+      result,
+      user: login.user,
+      redirectTo: postAuthRedirectForUser(login.user),
+    };
+  }
+
+  let user = login.user;
+  try {
+    user = await getMe();
+  } catch {
+    user = login.user;
+  }
+  return { result, user, redirectTo: postAuthRedirectForUser(user) };
 }
