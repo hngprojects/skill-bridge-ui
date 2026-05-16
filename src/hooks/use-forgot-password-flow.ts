@@ -8,6 +8,7 @@ import {
   useVerifyPasswordResetOtp,
 } from "@/hooks/api/use-auth";
 import { ApiError, authFailureMessage } from "@/lib/api";
+import { appToast } from "@/lib/toast";
 
 const OTP_EXPIRY_SECONDS = 5 * 60;
 const UPPERCASE_REGEX = /[A-Z]/;
@@ -92,9 +93,12 @@ function useForgotPasswordFlow(initialEmail = "") {
 
     try {
       await requestPasswordReset({ email: trimmedEmail });
+      appToast.success("Password reset email sent.");
       setStep("intro");
     } catch (error) {
-      setRootError(authFailureMessage(error));
+      const message = authFailureMessage(error);
+      appToast.error(message);
+      setRootError(message);
     }
   };
 
@@ -124,6 +128,7 @@ function useForgotPasswordFlow(initialEmail = "") {
         otp,
       });
       setOtpError("");
+      appToast.success("Code verified.");
       setStep("password");
     } catch (error) {
       const message = authFailureMessage(error);
@@ -136,6 +141,7 @@ function useForgotPasswordFlow(initialEmail = "") {
       if (isInvalidOtp) {
         setOtpAttemptsRemaining((remaining) => Math.max(0, remaining - 1));
       }
+      appToast.error(message);
       setOtpError(message);
     }
   };
@@ -167,9 +173,12 @@ function useForgotPasswordFlow(initialEmail = "") {
         password,
         confirmPassword,
       });
+      appToast.success("Password changed successfully.");
       setStep("success");
     } catch (error) {
-      setRootError(authFailureMessage(error));
+      const message = authFailureMessage(error);
+      appToast.error(message);
+      setRootError(message);
     }
   };
 
@@ -184,9 +193,12 @@ function useForgotPasswordFlow(initialEmail = "") {
       setOtp("");
       setOtpError("");
       startOtpCountdown();
+      appToast.success("A new code was sent.");
       setResendHint("A new code was sent.");
     } catch (error) {
-      setRootError(authFailureMessage(error));
+      const message = authFailureMessage(error);
+      appToast.error(message);
+      setRootError(message);
     }
   };
 
