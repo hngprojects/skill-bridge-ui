@@ -2,10 +2,13 @@
 
 import { signIn, type SignInResponse } from "next-auth/react";
 
+import { getMe } from "@/actions/auth";
+import { requestGoogleAuthCode } from "@/lib/google-auth";
 import type { AuthUser } from "@/types/api";
 import type {
   CredentialSignInFromAuthResponse,
   CredentialSignInParams,
+  GoogleSignInResult,
 } from "@/types/auth-client";
 
 function authUserDisplayName(user: AuthUser): string {
@@ -16,6 +19,17 @@ function authUserDisplayName(user: AuthUser): string {
       .join(" ") ||
     user.email
   );
+}
+
+function isOnboardingComplete(user: AuthUser): boolean | undefined {
+  return user.onboardingComplete ?? user.onboarding_complete;
+}
+
+export function postAuthRedirectForUser(user: AuthUser): string {
+  if (user.role === "talent" && isOnboardingComplete(user) === false) {
+    return "/talent/onboarding";
+  }
+  return "/dashboard";
 }
 
 function isAuthResponsePayload(
@@ -37,6 +51,7 @@ function toCredentialSignInParams(
     userId: user.id,
     name: authUserDisplayName(user),
     image: user.profile_pic_url ?? user.avatar_url ?? undefined,
+    role: user.role,
   };
 }
 
@@ -50,10 +65,39 @@ export async function signInWithCredentials(
     userId: p.userId,
     name: p.name,
     image: p.image ?? undefined,
+    role: p.role,
     redirect: false,
   });
 }
 
-export async function signInWithGoogle(callbackUrl = "/dashboard") {
-  await signIn("google", { callbackUrl });
+export async function signInWithPassword(params: {
+  email: string;
+  password: string;
+}): Promise<SignInResponse | undefined> {
+  return signIn("credentials", {
+    email: params.email,
+    password: params.password,
+    redirect: false,
+  });
+}
+
+export async function signInWithGoogle(): Promise<GoogleSignInResult> {
+  const code = await requestGoogleAuthCode();
+
+  const result = await signIn("credentials", {
+    googleCode: code,
+    redirectUri: "postmessage",
+    role: "talent",
+    redirect: false,
+  });
+
+  if (result?.error) {
+    return {
+      result,
+      redirectTo: "/dashboard",
+    };
+  }
+
+  const user = await getMe();
+  return { result, user, redirectTo: postAuthRedirectForUser(user) };
 }

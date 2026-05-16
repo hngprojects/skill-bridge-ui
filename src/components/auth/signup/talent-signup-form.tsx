@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signInWithGoogle } from "@/lib/auth-client";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,7 +14,9 @@ import {
 import { FormInput } from "@/components/custom/form-input";
 import { GoogleButton } from "@/components/custom/google-button";
 import { Button } from "@/components/ui/button";
+import { authKeys } from "@/hooks/api/keys";
 import { authFailureMessage } from "@/lib/api";
+import { signInWithGoogle } from "@/lib/auth-client";
 import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import {
   signupFormSchema,
@@ -24,8 +26,10 @@ import {
 
 function TalentSignupForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const setTalentSignup = useSignupFlowStore((s) => s.setTalentSignup);
   const [rootError, setRootError] = useState<string | null>(null);
+  const [isGooglePending, setIsGooglePending] = useState(false);
   const {
     register,
     handleSubmit,
@@ -81,7 +85,26 @@ function TalentSignupForm() {
 
   const onGoogleSignIn = async () => {
     setRootError(null);
-    await signInWithGoogle();
+    setIsGooglePending(true);
+
+    try {
+      const { result, redirectTo } = await signInWithGoogle();
+
+      if (result?.error) {
+        setRootError(
+          "Signed in with Google, but couldn't start your session. Try again.",
+        );
+        return;
+      }
+
+      queryClient.removeQueries({ queryKey: authKeys.all });
+      router.replace(redirectTo);
+      router.refresh();
+    } catch (e) {
+      setRootError(authFailureMessage(e));
+    } finally {
+      setIsGooglePending(false);
+    }
   };
 
   return (
@@ -175,7 +198,11 @@ function TalentSignupForm() {
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <GoogleButton onClick={() => void onGoogleSignIn()} />
+      <GoogleButton
+        disabled={isGooglePending || isSubmitting}
+        label={isGooglePending ? "Connecting..." : "Continue with Google"}
+        onClick={() => void onGoogleSignIn()}
+      />
 
       <p className="body-2 text-center font-light text-muted-foreground">
         Already have an account? Click{" "}

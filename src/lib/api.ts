@@ -77,10 +77,7 @@ async function getAuthToken(): Promise<string | undefined> {
 }
 
 const baseConfig = {
-  baseURL:
-    typeof window === "undefined"
-      ? (process.env.NEXT_PUBLIC_API_URL ?? "")
-      : "/api/proxy-v1",
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "",
   /** Send cookies for refresh / logout / cookie-based session with the API. */
   withCredentials: true,
   headers: {
