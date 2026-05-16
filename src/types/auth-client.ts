@@ -22,6 +22,6 @@ export type CredentialSignInFromAuthResponse =
 
 export type GoogleSignInResult = {
   result: SignInResponse | undefined;
-  user: AuthUser;
+  user?: AuthUser;
   redirectTo: string;
 };

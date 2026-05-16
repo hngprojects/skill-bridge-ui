@@ -15,7 +15,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { authKeys } from "@/hooks/api/keys";
 import { authFailureMessage } from "@/lib/api";
-import { signInWithCredentials, signInWithGoogle } from "@/lib/auth-client";
+import {
+  postAuthRedirectForUser,
+  signInWithGoogle,
+  signInWithPassword,
+} from "@/lib/auth-client";
 import { signInFormSchema, type SignInFormValues } from "@/types/form-schema";
 
 function SignInForm() {
@@ -47,7 +51,10 @@ function SignInForm() {
         password: data.password,
       });
 
-      const result = await signInWithCredentials(login);
+      const result = await signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
 
       if (result?.error) {
         setRootError(
@@ -57,7 +64,7 @@ function SignInForm() {
       }
 
       queryClient.removeQueries({ queryKey: authKeys.all });
-      router.replace("/dashboard");
+      router.replace(postAuthRedirectForUser(login.user));
       router.refresh();
     } catch (e) {
       setRootError(authFailureMessage(e));
