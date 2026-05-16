@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { signInWithCredentials } from "@/lib/auth-client";
@@ -65,7 +65,7 @@ function EmployerVerifyEmailForm() {
     }
   };
 
-  const onResend = async () => {
+  const onResend = useCallback(async () => {
     const email = employerLead?.email;
     if (!email) return;
 
@@ -75,11 +75,10 @@ function EmployerVerifyEmailForm() {
     } catch (e) {
       appToast.error(authFailureMessage(e));
     }
-  };
+  }, [employerLead?.email, resendVerification]);
 
   useEffect(() => {
     if (
-      typeof window === "undefined" ||
       new URLSearchParams(window.location.search).get("autoResend") !== "1" ||
       !employerLead?.email ||
       autoResendTriggeredRef.current
@@ -88,7 +87,7 @@ function EmployerVerifyEmailForm() {
     }
     autoResendTriggeredRef.current = true;
     void onResend();
-  });
+  }, [employerLead?.email, onResend]);
 
   if (!employerLead?.email) {
     return (

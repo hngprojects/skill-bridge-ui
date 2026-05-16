@@ -48,7 +48,7 @@ export const proxy = auth((request) => {
       return NextResponse.redirect(loginUrl);
     }
 
-    if (user.role && user.role !== "talent") {
+    if (user.role !== "talent") {
       return NextResponse.redirect(new URL("/forbidden", request.url));
     }
   }

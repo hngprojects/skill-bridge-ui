@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { signInWithCredentials } from "@/lib/auth-client";
@@ -102,7 +102,7 @@ function TalentVerifyEmailForm() {
     }
   };
 
-  const onResend = async () => {
+  const onResend = useCallback(async () => {
     const email = talentSignup?.email;
     if (!email) return;
 
@@ -114,11 +114,10 @@ function TalentVerifyEmailForm() {
     } catch (e) {
       appToast.error(authFailureMessage(e));
     }
-  };
+  }, [talentSignup?.email, resendVerification]);
 
   useEffect(() => {
     if (
-      typeof window === "undefined" ||
       new URLSearchParams(window.location.search).get("autoResend") !== "1" ||
       !talentSignup?.email ||
       autoResendTriggeredRef.current
@@ -127,7 +126,7 @@ function TalentVerifyEmailForm() {
     }
     autoResendTriggeredRef.current = true;
     void onResend();
-  });
+  }, [talentSignup?.email, onResend]);
 
   const isCodeComplete = codeValue.length === 6;
 
