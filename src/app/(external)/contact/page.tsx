@@ -1,6 +1,6 @@
-import { ContactForm } from "./contact-form";
-import { HeroSection } from "./contact-hero";
-import { ReachOut } from "./reach-out";
+import { ContactForm } from "@/components/contact/contact-form";
+import { HeroSection } from "@/components/contact/contact-hero";
+import { ReachOut } from "@/components/contact/reach-out";
 
 export const metadata = {
   title: "Contact Us | SkillBridge",
