@@ -1,3 +1,20 @@
+import { cn } from "@/lib/utils";
+
+export const ONBOARDING_NAV_BTN_SHAPE = "h-11 min-w-48 rounded-lg px-4";
+
+export const ONBOARDING_NEXT_BTN_CLASSNAME = cn(
+  ONBOARDING_NAV_BTN_SHAPE,
+  "w-full sm:min-w-32 sm:w-auto md:w-60 lg:min-w-60 lg:max-w-60",
+);
+
+export const ONBOARDING_BACK_BTN_CLASSNAME = cn(
+  ONBOARDING_NAV_BTN_SHAPE,
+  "w-full sm:min-w-32 sm:w-auto",
+  "border-0 bg-[#CBD5E1] text-[#94A3B8] shadow-none",
+  "hover:bg-[#BCC9D9] hover:text-[#94A3B8]",
+  "focus-visible:ring-[#94A3B8]/30",
+);
+
 export const ONBOARDING_STEPS = [
   { id: "set-goal", title: "Set a Goal" },
   { id: "select-track", title: "Select your Track" },

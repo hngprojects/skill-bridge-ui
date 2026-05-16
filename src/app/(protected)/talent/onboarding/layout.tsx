@@ -9,7 +9,7 @@ export default function OnboardingLayout({
 }) {
   return (
     <AuthShell
-      className="bg-white [--primary-foreground:#5B5D60] [&_footer]:hidden [&_footer]:sm:block"
+      className="bg-white [&_footer]:hidden [&_footer]:sm:block"
       mainClassName="!p-0 !justify-start"
       simpleFooter
     >
