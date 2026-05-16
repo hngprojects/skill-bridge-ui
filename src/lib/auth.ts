@@ -156,11 +156,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         redirectUri: { label: "Redirect URI", type: "text" },
         verificationEmail: { label: "Verification email", type: "email" },
         otp: { label: "Verification code", type: "text" },
-        verifiedUserId: { label: "Verified user id", type: "text" },
-        verifiedEmail: { label: "Verified email", type: "email" },
-        verifiedName: { label: "Verified name", type: "text" },
-        verifiedImage: { label: "Verified image", type: "text" },
-        verifiedRole: { label: "Verified role", type: "text" },
         sessionUser: { label: "Session user", type: "text" },
       },
       async authorize(rawCredentials) {
