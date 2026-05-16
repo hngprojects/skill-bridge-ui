@@ -12,7 +12,6 @@ import { FormInput } from "@/components/custom/form-input";
 import { Button } from "@/components/ui/button";
 import { useResendVerification, useVerifyEmail } from "@/hooks/api/use-auth";
 import { authFailureMessage } from "@/lib/api";
-import { cn } from "@/lib/utils";
 import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import {
   emailVerificationCodeSchema,
@@ -193,12 +192,7 @@ function TalentVerifyEmailForm() {
       <Button
         type="submit"
         disabled={isSubmitting || verifying || !isCodeComplete}
-        className={cn(
-          "h-12 min-h-12 w-full rounded-lg text-sm font-semibold transition-colors",
-          isCodeComplete
-            ? "bg-primary-900 text-primary-foreground hover:bg-primary-900/90"
-            : "bg-muted text-muted-foreground cursor-not-allowed",
-        )}
+        className="h-12 min-h-12 w-full rounded-lg text-sm font-semibold"
       >
         {isSubmitting || verifying ? "Verifying..." : "Verify Email"}
       </Button>

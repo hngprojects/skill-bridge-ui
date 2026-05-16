@@ -130,7 +130,7 @@ function EmployerVerifyEmailForm() {
       <Button
         type="submit"
         disabled={isSubmitting || verifying || codeValue.length !== 6}
-        className="mt-1 h-12 w-full rounded-lg bg-primary-900 label-sm text-primary-foreground hover:bg-primary-900/90 disabled:opacity-60"
+        className="mt-1 h-12 w-full rounded-lg label-sm"
       >
         {isSubmitting || verifying ? "Verifying..." : "Verify Email"}
       </Button>
