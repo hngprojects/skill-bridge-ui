@@ -12,6 +12,7 @@ import {
   resendVerification,
   resetPassword,
   verifyEmail,
+  verifyPasswordResetOtp,
 } from "@/actions/auth";
 import type {
   ForgotPasswordInput,
@@ -20,6 +21,7 @@ import type {
   ResendVerificationInput,
   ResetPasswordInput,
   VerifyEmailInput,
+  VerifyPasswordResetOtpInput,
 } from "@/types/api";
 
 import { authKeys } from "./keys";
@@ -51,6 +53,13 @@ export function useLogin() {
 export function useForgotPassword() {
   return useMutation({
     mutationFn: (body: ForgotPasswordInput) => forgotPassword(body),
+  });
+}
+
+export function useVerifyPasswordResetOtp() {
+  return useMutation({
+    mutationFn: (body: VerifyPasswordResetOtpInput) =>
+      verifyPasswordResetOtp(body),
   });
 }
 

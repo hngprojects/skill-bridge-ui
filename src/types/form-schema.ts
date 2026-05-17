@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+import {
+  EMPLOYER_DESIRED_ROLE_IDS,
+  EMPLOYER_HIRING_COUNT_VALUES,
+  EMPLOYER_REGION_VALUES,
+} from "@/constants/employer-onboarding";
+
 export const onboardingFormSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required."),
   lastName: z.string().trim().min(1, "Last name is required."),
@@ -35,6 +41,41 @@ export const employerOnboardingFormSchema = z.object({
 
 export type EmployerOnboardingFormValues = z.infer<
   typeof employerOnboardingFormSchema
+>;
+
+export const employerOnboardingProfileSchema = z.object({
+  joiningAs: z.enum(["recruiter", "founder", "agency"], {
+    message: "Select how you are joining",
+  }),
+  desiredRoles: z
+    .array(z.enum(EMPLOYER_DESIRED_ROLE_IDS))
+    .min(1, "Select at least one role"),
+  region: z.enum(EMPLOYER_REGION_VALUES, {
+    message: "Select your region",
+  }),
+  hiringCountRange: z.enum(EMPLOYER_HIRING_COUNT_VALUES, {
+    message: "Select hiring volume",
+  }),
+  companyWebsite: z
+    .string()
+    .trim()
+    .min(1, "Company website is required")
+    .refine(
+      (value) => {
+        try {
+          const url = value.startsWith("http") ? value : `https://${value}`;
+          new URL(url);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Enter a valid website URL" },
+    ),
+});
+
+export type EmployerOnboardingProfileValues = z.infer<
+  typeof employerOnboardingProfileSchema
 >;
 
 /** UPDATED: Talent Signup Schema with Confirm Password */

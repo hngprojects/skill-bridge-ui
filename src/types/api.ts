@@ -1,3 +1,9 @@
+import type {
+  EmployerHiringCountRange,
+  EmployerJoiningRoleId,
+  EmployerRegion,
+} from "@/constants/employer-onboarding";
+
 /** HNG-style API envelope */
 export type ApiEnvelope<T> = {
   status_code: number;
@@ -84,8 +90,14 @@ export type ForgotPasswordInput = {
   email: string;
 };
 
+export type VerifyPasswordResetOtpInput = {
+  email: string;
+  otp: string;
+};
+
 export type ResetPasswordInput = {
-  token: string;
+  email: string;
+  otp: string;
   password: string;
   confirmPassword: string;
 };
@@ -141,23 +153,21 @@ export type CandidateOnboardingResponseData = {
 };
 
 export type EmployerOnboardingInput = {
-  companyName: string;
-  companySize: string;
-  industry: string;
-  websiteUrl: string;
-  companyDescription: string;
-  hiringRegion: string;
+  joiningAs: EmployerJoiningRoleId;
+  desiredRoles: string[];
+  region: EmployerRegion;
+  hiringCountRange: EmployerHiringCountRange;
+  companyWebsite: string;
 };
 
 export type EmployerProfile = {
   id: string;
   userId: string;
-  companyName: string;
-  companySize: string;
-  industry: string;
-  websiteUrl: string;
-  companyDescription: string;
-  hiringRegion: string;
+  joiningAs: EmployerJoiningRoleId;
+  desiredRoles: string[];
+  region: EmployerRegion;
+  hiringCountRange: EmployerHiringCountRange;
+  companyWebsite: string;
 };
 
 export type EmployerOnboardingResponseData = {
