@@ -16,14 +16,14 @@ const logos = [
 export function EmployerLogoMarquee() {
   return (
     <motion.div
-      className="w-full overflow-hidden opacity-40 grayscale"
+      className="w-full max-w-full overflow-hidden opacity-40 grayscale"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 0.4 }}
       transition={{ duration: 0.8, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
       viewport={{ once: true, margin: "-80px" }}
     >
       <motion.div
-        className="flex min-w-max items-center gap-x-5"
+        className="flex min-w-max items-center gap-x-3 lg:gap-x-4 xl:gap-x-5"
         animate={{ x: ["0%", "-50%"] }}
         transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
       >
@@ -34,7 +34,7 @@ export function EmployerLogoMarquee() {
             alt=""
             width={72}
             height={28}
-            className="h-auto w-14"
+            className="h-auto w-10 lg:w-12 xl:w-14"
           />
         ))}
       </motion.div>
