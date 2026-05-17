@@ -9,12 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
-  EMPLOYER_HIRING_VOLUME_OPTIONS,
+  EMPLOYER_HIRING_COUNT_OPTIONS,
   EMPLOYER_JOINING_ROLES,
   EMPLOYER_REGION_OPTIONS,
   EMPLOYER_TALENT_ROLE_OPTIONS,
   type EmployerJoiningRoleId,
 } from "@/constants/employer-onboarding";
+import { trackIdsToApiRoleTracks } from "@/constants/talent-onboarding";
+import type { TrackOptionId } from "@/constants/talent-onboarding";
 import { useEmployerOnboarding } from "@/hooks/api/use-employer";
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
@@ -37,26 +39,27 @@ function EmployerOnboardingForm() {
   } = useForm({
     resolver: zodResolver(employerOnboardingProfileSchema),
     defaultValues: {
-      talentRoles: "",
+      desiredRoles: [] as TrackOptionId[],
       region: "",
-      hiringVolume: "",
+      hiringCountRange: "",
       companyWebsite: "",
     },
   });
 
   const onSubmit = async (data: EmployerOnboardingProfileValues) => {
-    const websiteUrl = data.companyWebsite.startsWith("http")
+    const companyWebsite = data.companyWebsite.startsWith("http")
       ? data.companyWebsite
       : `https://${data.companyWebsite}`;
 
     try {
       await completeOnboarding({
-        companyName: data.joiningRole,
-        companySize: data.hiringVolume,
-        industry: data.talentRoles,
-        websiteUrl,
-        companyDescription: `Joining as ${data.joiningRole}`,
-        hiringRegion: data.region,
+        joiningAs: data.joiningAs,
+        desiredRoles: trackIdsToApiRoleTracks(
+          data.desiredRoles as TrackOptionId[],
+        ),
+        region: data.region,
+        hiringCountRange: data.hiringCountRange,
+        companyWebsite,
       });
       router.push("/dashboard");
       router.refresh();
@@ -72,7 +75,7 @@ function EmployerOnboardingForm() {
       className="flex w-full min-w-0 flex-col gap-6 font-sans"
     >
       <Controller
-        name="joiningRole"
+        name="joiningAs"
         control={control}
         render={({ field }) => (
           <div className="flex w-full flex-col gap-1.5">
@@ -93,7 +96,7 @@ function EmployerOnboardingForm() {
                     key={role.id}
                     htmlFor={`employer-role-${role.id}`}
                     className={cn(
-                      "flex cursor-pointer items-center justify-between gap-4 rounded-[5px] border bg-card text-left text-sm font-medium text-foreground shadow-sm transition-colors px-4 py-2.5",
+                      "flex cursor-pointer items-center justify-between gap-4 rounded-[5px] border bg-card px-4 py-2.5 text-left text-sm font-medium text-foreground shadow-sm transition-colors",
                       selected
                         ? "border-primary ring-1 ring-primary/20"
                         : "border-border hover:border-muted-foreground/30",
@@ -109,9 +112,9 @@ function EmployerOnboardingForm() {
                 );
               })}
             </RadioGroup>
-            {errors.joiningRole ? (
+            {errors.joiningAs ? (
               <p className="font-sans text-sm text-error" role="alert">
-                {errors.joiningRole.message}
+                {errors.joiningAs.message}
               </p>
             ) : null}
           </div>
@@ -119,18 +122,19 @@ function EmployerOnboardingForm() {
       />
 
       <Controller
-        name="talentRoles"
+        name="desiredRoles"
         control={control}
         render={({ field }) => (
           <FormInput
             mode="select"
+            selection="multiple"
             label="Which role(s) are you looking talents?"
             required
-            placeholder="Select role"
+            placeholder="Select role(s)"
             options={EMPLOYER_TALENT_ROLE_OPTIONS}
             value={field.value}
             onValueChange={field.onChange}
-            error={errors.talentRoles?.message}
+            error={errors.desiredRoles?.message}
           />
         )}
       />
@@ -153,7 +157,7 @@ function EmployerOnboardingForm() {
       />
 
       <Controller
-        name="hiringVolume"
+        name="hiringCountRange"
         control={control}
         render={({ field }) => (
           <FormInput
@@ -161,10 +165,10 @@ function EmployerOnboardingForm() {
             label="How many talents are you looking to hire?"
             required
             placeholder="Select amount"
-            options={EMPLOYER_HIRING_VOLUME_OPTIONS}
+            options={EMPLOYER_HIRING_COUNT_OPTIONS}
             value={field.value}
             onValueChange={field.onChange}
-            error={errors.hiringVolume?.message}
+            error={errors.hiringCountRange?.message}
           />
         )}
       />
@@ -180,7 +184,7 @@ function EmployerOnboardingForm() {
       <Button
         type="submit"
         disabled={isPending}
-        className="w-full rounded-lg p-5 "
+        className="w-full rounded-lg p-5"
       >
         {isPending ? "Creating account..." : "Create account"}
       </Button>

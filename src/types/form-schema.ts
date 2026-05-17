@@ -38,12 +38,12 @@ export type EmployerOnboardingFormValues = z.infer<
 >;
 
 export const employerOnboardingProfileSchema = z.object({
-  joiningRole: z.enum(["recruiter", "founder", "agency"], {
+  joiningAs: z.enum(["recruiter", "founder", "agency"], {
     message: "Select how you are joining",
   }),
-  talentRoles: z.string().min(1, "Select a role"),
+  desiredRoles: z.array(z.string()).min(1, "Select at least one role"),
   region: z.string().min(1, "Select your region"),
-  hiringVolume: z.string().min(1, "Select hiring volume"),
+  hiringCountRange: z.string().min(1, "Select hiring volume"),
   companyWebsite: z
     .string()
     .trim()

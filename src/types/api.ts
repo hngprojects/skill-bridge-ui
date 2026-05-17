@@ -147,23 +147,21 @@ export type CandidateOnboardingResponseData = {
 };
 
 export type EmployerOnboardingInput = {
-  companyName: string;
-  companySize: string;
-  industry: string;
-  websiteUrl: string;
-  companyDescription: string;
-  hiringRegion: string;
+  joiningAs: string;
+  desiredRoles: string[];
+  region: string;
+  hiringCountRange: string;
+  companyWebsite: string;
 };
 
 export type EmployerProfile = {
   id: string;
   userId: string;
-  companyName: string;
-  companySize: string;
-  industry: string;
-  websiteUrl: string;
-  companyDescription: string;
-  hiringRegion: string;
+  joiningAs: string;
+  desiredRoles: string[];
+  region: string;
+  hiringCountRange: string;
+  companyWebsite: string;
 };
 
 export type EmployerOnboardingResponseData = {
