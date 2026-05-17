@@ -21,6 +21,7 @@ export type AuthUser = {
   emailVerified?: boolean;
   is_verified?: boolean;
   onboardingComplete?: boolean;
+  onboarding_complete?: boolean;
   profile_pic_url?: string | null;
   avatar_url?: string | null;
 };
@@ -68,6 +69,17 @@ export type LoginResponseData = {
   tokens?: AuthTokens;
 };
 
+export type GoogleVerifyCodeInput = {
+  code: string;
+  redirectUri: "postmessage";
+  role: "talent";
+};
+
+export type GoogleVerifyCodeResponseData = {
+  user: AuthUser;
+  tokens?: AuthTokens;
+};
+
 export type ForgotPasswordInput = {
   email: string;
 };
@@ -83,6 +95,30 @@ export type RefreshResponseData = {
 };
 
 export type MeResponseData = AuthUser;
+
+export type TalentOnboardingGoalInput = {
+  goal: string;
+};
+
+export type TalentOnboardingTrackCreateInput = {
+  track: string;
+};
+
+export type TalentOnboardingTracksUpdateInput = {
+  roleTracks: string[];
+};
+
+export type TalentOnboardingGoalResponseData = {
+  goal: string;
+};
+
+export type TalentOnboardingTrackCreateResponseData = {
+  track: string;
+};
+
+export type TalentOnboardingTracksUpdateResponseData = {
+  roleTracks: string[];
+};
 
 export type CandidateOnboardingInput = {
   roleTrack: string;
@@ -193,3 +229,19 @@ export type HealthResponse = {
 };
 
 export type EmptyData = Record<string, never>;
+export type TalentOnboardingProfileInput = {
+  region: string;
+  educationLevel: string;
+  linkedinUrl?: string;
+};
+
+export type TalentOnboardingProfileResponseData = {
+  region: string;
+  education_level: string;
+  onboarding_step: number;
+  onboardingComplete: boolean;
+};
+export type TalentOnboardingPersonaliseResponseData = {
+  message: string;
+  status: string;
+};

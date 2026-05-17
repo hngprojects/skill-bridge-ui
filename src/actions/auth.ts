@@ -3,6 +3,8 @@ import type {
   ApiEnvelope,
   EmptyData,
   ForgotPasswordInput,
+  GoogleVerifyCodeInput,
+  GoogleVerifyCodeResponseData,
   LoginInput,
   LoginResponseData,
   MeResponseData,
@@ -92,6 +94,16 @@ export async function resendVerification(
 export async function login(body: LoginInput): Promise<LoginResponseData> {
   const res = await publicApi.post<ApiEnvelope<LoginResponseData>>(
     "/auth/login",
+    body,
+  );
+  return unwrapData(res);
+}
+
+export async function verifyGoogleCode(
+  body: GoogleVerifyCodeInput,
+): Promise<GoogleVerifyCodeResponseData> {
+  const res = await publicApi.post<ApiEnvelope<GoogleVerifyCodeResponseData>>(
+    "/auth/google/verify-code",
     body,
   );
   return unwrapData(res);

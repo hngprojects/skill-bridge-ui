@@ -1,4 +1,10 @@
-import type { LoginResponseData, VerifyEmailResponseData } from "@/types/api";
+import type {
+  AuthUser,
+  GoogleVerifyCodeResponseData,
+  LoginResponseData,
+  VerifyEmailResponseData,
+} from "@/types/api";
+import type { SignInResponse } from "next-auth/react";
 
 export type CredentialSignInParams = {
   email: string;
@@ -6,8 +12,16 @@ export type CredentialSignInParams = {
   userId: string | number;
   name: string;
   image?: string | null;
+  role?: AuthUser["role"];
 };
 
 export type CredentialSignInFromAuthResponse =
   | LoginResponseData
-  | VerifyEmailResponseData;
+  | VerifyEmailResponseData
+  | GoogleVerifyCodeResponseData;
+
+export type GoogleSignInResult = {
+  result: SignInResponse | undefined;
+  user?: AuthUser;
+  redirectTo: string;
+};

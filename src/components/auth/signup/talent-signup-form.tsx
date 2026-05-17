@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { appToast } from "@/lib/toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signInWithGoogle } from "@/lib/auth-client";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,7 +15,9 @@ import {
 import { FormInput } from "@/components/custom/form-input";
 import { GoogleButton } from "@/components/custom/google-button";
 import { Button } from "@/components/ui/button";
+import { authKeys } from "@/hooks/api/keys";
 import { authFailureMessage } from "@/lib/api";
+import { signInWithGoogle } from "@/lib/auth-client";
 import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import {
   signupFormSchema,
@@ -24,8 +27,9 @@ import {
 
 function TalentSignupForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const setTalentSignup = useSignupFlowStore((s) => s.setTalentSignup);
-  const [rootError, setRootError] = useState<string | null>(null);
+  const [isGooglePending, setIsGooglePending] = useState(false);
   const {
     register,
     handleSubmit,
@@ -57,7 +61,6 @@ function TalentSignupForm() {
     passwordValue === confirmPasswordValue && confirmPasswordValue !== "";
 
   const onSubmit = async (data: SignupFormValues) => {
-    setRootError(null);
     try {
       await registerAccount(
         talentRegisterBody({
@@ -75,13 +78,31 @@ function TalentSignupForm() {
       router.push("/signup/verify-talent");
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
   const onGoogleSignIn = async () => {
-    setRootError(null);
-    await signInWithGoogle();
+    setIsGooglePending(true);
+
+    try {
+      const { result, redirectTo } = await signInWithGoogle();
+
+      if (result?.error) {
+        appToast.error(
+          "Signed in with Google, but couldn't start your session. Try again.",
+        );
+        return;
+      }
+
+      queryClient.removeQueries({ queryKey: authKeys.all });
+      router.replace(redirectTo);
+      router.refresh();
+    } catch (e) {
+      appToast.error(authFailureMessage(e));
+    } finally {
+      setIsGooglePending(false);
+    }
   };
 
   return (
@@ -90,12 +111,6 @@ function TalentSignupForm() {
       noValidate
       className="flex w-full min-w-0 flex-col gap-6 font-sans"
     >
-      {rootError ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {rootError}
-        </p>
-      ) : null}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <FormInput
           label="First name"
@@ -175,7 +190,11 @@ function TalentSignupForm() {
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <GoogleButton onClick={() => void onGoogleSignIn()} />
+      <GoogleButton
+        disabled={isGooglePending || isSubmitting}
+        label={isGooglePending ? "Connecting..." : "Continue with Google"}
+        onClick={() => void onGoogleSignIn()}
+      />
 
       <p className="body-2 text-center font-light text-muted-foreground">
         Already have an account? Click{" "}
