@@ -229,3 +229,19 @@ export type HealthResponse = {
 };
 
 export type EmptyData = Record<string, never>;
+export type TalentOnboardingProfileInput = {
+  region: string;
+  educationLevel: string;
+  linkedinUrl?: string;
+};
+
+export type TalentOnboardingProfileResponseData = {
+  region: string;
+  education_level: string;
+  onboarding_step: number;
+  onboardingComplete: boolean;
+};
+export type TalentOnboardingPersonaliseResponseData = {
+  message: string;
+  status: string;
+};

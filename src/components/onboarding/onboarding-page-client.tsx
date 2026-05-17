@@ -18,6 +18,7 @@ import {
   useSaveTalentOnboardingTrack,
   useUpdateTalentOnboardingGoal,
   useUpdateTalentOnboardingTracks,
+  useSaveTalentOnboardingProfile,
 } from "@/hooks/api";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 import { authFailureMessage } from "@/lib/api";
@@ -38,11 +39,19 @@ function OnboardingPageClient() {
     selectedTrackIds,
     goalSaved,
     tracksSaved,
+    profileRegion,
+    profileEducation,
+    profileLinkedin,
+    profileSaved,
     setCurrentStepId,
     setSelectedGoalId,
     setSelectedTrackIds,
     setGoalSaved,
     setTracksSaved,
+    setProfileRegion,
+    setProfileEducation,
+    setProfileLinkedin,
+    setProfileSaved,
   } = useTalentOnboardingStore();
 
   const [profileStepReady, setProfileStepReady] = React.useState(false);
@@ -55,9 +64,15 @@ function OnboardingPageClient() {
     useSaveTalentOnboardingTrack();
   const { mutateAsync: updateTracks, isPending: isUpdatingTracks } =
     useUpdateTalentOnboardingTracks();
+  const { mutateAsync: saveProfile, isPending: isSavingProfile } =
+    useSaveTalentOnboardingProfile();
 
   const isSaving =
-    isSavingGoal || isUpdatingGoal || isSavingTrack || isUpdatingTracks;
+    isSavingGoal ||
+    isUpdatingGoal ||
+    isSavingTrack ||
+    isUpdatingTracks ||
+    isSavingProfile;
 
   const canGoNext =
     currentStepId === "set-goal"
@@ -76,6 +91,23 @@ function OnboardingPageClient() {
     setProfileStepReady(false);
     setCurrentStepId(ONBOARDING_STEPS[i + 1].id as OnboardingStepId);
   };
+
+  const onProfileValueChange = React.useCallback(
+    ({
+      region,
+      education,
+      linkedin,
+    }: {
+      region: string;
+      education: string;
+      linkedin: string;
+    }) => {
+      setProfileRegion(region);
+      setProfileEducation(education);
+      setProfileLinkedin(linkedin);
+    },
+    [setProfileRegion, setProfileEducation, setProfileLinkedin],
+  );
 
   const goNext = async () => {
     if (isLast || !canGoNext || isSaving) return;
@@ -107,6 +139,25 @@ function OnboardingPageClient() {
         return;
       }
 
+      if (currentStepId === "complete-profile" && profileStepReady) {
+        if (profileSaved) {
+          await saveProfile({
+            region: profileRegion,
+            educationLevel: profileEducation,
+            ...(profileLinkedin ? { linkedinUrl: profileLinkedin } : {}),
+          });
+        } else {
+          await saveProfile({
+            region: profileRegion,
+            educationLevel: profileEducation,
+            ...(profileLinkedin ? { linkedinUrl: profileLinkedin } : {}),
+          });
+          setProfileSaved(true);
+        }
+        advanceStep();
+        return;
+      }
+
       advanceStep();
     } catch (error) {
       appToast.error(authFailureMessage(error));
@@ -115,7 +166,6 @@ function OnboardingPageClient() {
 
   const goBack = () => {
     if (isFirst || isSaving) return;
-
     setCurrentStepId(ONBOARDING_STEPS[i - 1].id as OnboardingStepId);
   };
 
@@ -150,7 +200,12 @@ function OnboardingPageClient() {
       title = "Great choice! Tell us about yourself";
       description =
         "Please provide your details below to help us verify your identity and customize your learning journey.";
-      content = <CompleteProfileStep onReadyChange={setProfileStepReady} />;
+      content = (
+        <CompleteProfileStep
+          onReadyChange={setProfileStepReady}
+          onValueChange={onProfileValueChange}
+        />
+      );
       break;
     case "generate-roadmap":
       title = "Generating assessments...";
