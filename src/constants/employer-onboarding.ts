@@ -1,3 +1,4 @@
+import { COUNTRY_LIST, type CountryName } from "@/constants/country-list";
 import {
   TRACK_OPTIONS,
   type TrackOptionId,
@@ -12,20 +13,12 @@ export const EMPLOYER_JOINING_ROLES = [
 export type EmployerJoiningRoleId =
   (typeof EMPLOYER_JOINING_ROLES)[number]["id"];
 
-export const EMPLOYER_REGION_VALUES = [
-  "Nigeria",
-  "Kenya",
-  "Ghana",
-  "South Africa",
-  "Egypt",
-  "Rwanda",
-  "Uganda",
-  "Other",
-] as const;
+/** Allowed `region` values for employer onboarding (full country list). */
+export const EMPLOYER_REGION_VALUES = COUNTRY_LIST;
 
-export type EmployerRegion = (typeof EMPLOYER_REGION_VALUES)[number];
+export type EmployerRegion = CountryName;
 
-export const EMPLOYER_REGION_OPTIONS = EMPLOYER_REGION_VALUES.map((value) => ({
+export const EMPLOYER_REGION_OPTIONS = COUNTRY_LIST.map((value) => ({
   value,
   label: value,
 }));
