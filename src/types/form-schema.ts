@@ -37,6 +37,35 @@ export type EmployerOnboardingFormValues = z.infer<
   typeof employerOnboardingFormSchema
 >;
 
+export const employerOnboardingProfileSchema = z.object({
+  joiningRole: z.enum(["recruiter", "founder", "agency"], {
+    message: "Select how you are joining",
+  }),
+  talentRoles: z.string().min(1, "Select a role"),
+  region: z.string().min(1, "Select your region"),
+  hiringVolume: z.string().min(1, "Select hiring volume"),
+  companyWebsite: z
+    .string()
+    .trim()
+    .min(1, "Company website is required")
+    .refine(
+      (value) => {
+        try {
+          const url = value.startsWith("http") ? value : `https://${value}`;
+          new URL(url);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Enter a valid website URL" },
+    ),
+});
+
+export type EmployerOnboardingProfileValues = z.infer<
+  typeof employerOnboardingProfileSchema
+>;
+
 /** UPDATED: Talent Signup Schema with Confirm Password */
 export const signupFormSchema = z
   .object({
