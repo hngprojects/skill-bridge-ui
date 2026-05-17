@@ -7,11 +7,14 @@ import {
   saveTalentOnboardingTrack,
   updateTalentOnboardingGoal,
   updateTalentOnboardingTracks,
+  saveTalentOnboardingProfile,
+  personaliseTalentDashboard,
 } from "@/actions/talent-onboarding";
 import type {
   TalentOnboardingGoalInput,
   TalentOnboardingTrackCreateInput,
   TalentOnboardingTracksUpdateInput,
+  TalentOnboardingProfileInput,
 } from "@/types/api";
 
 export function useSaveTalentOnboardingGoal() {
@@ -39,5 +42,18 @@ export function useUpdateTalentOnboardingTracks() {
   return useMutation({
     mutationFn: (body: TalentOnboardingTracksUpdateInput) =>
       updateTalentOnboardingTracks(body),
+  });
+}
+
+export function useSaveTalentOnboardingProfile() {
+  return useMutation({
+    mutationFn: (body: TalentOnboardingProfileInput) =>
+      saveTalentOnboardingProfile(body),
+  });
+}
+
+export function usePersonaliseTalentDashboard() {
+  return useMutation({
+    mutationFn: () => personaliseTalentDashboard(),
   });
 }
