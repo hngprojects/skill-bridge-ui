@@ -81,6 +81,31 @@ export async function signInWithPassword(params: {
   });
 }
 
+export async function signInWithEmailVerification(params: {
+  email: string;
+  otp: string;
+}): Promise<SignInResponse | undefined> {
+  return signIn("credentials", {
+    verificationEmail: params.email,
+    otp: params.otp,
+    redirect: false,
+  });
+}
+
+export async function signInWithVerifiedUser(
+  user: AuthUser,
+): Promise<SignInResponse | undefined> {
+  return signIn("credentials", {
+    sessionUser: "true",
+    userId: user.id,
+    email: user.email,
+    name: authUserDisplayName(user),
+    image: user.profile_pic_url ?? user.avatar_url ?? undefined,
+    role: user.role,
+    redirect: false,
+  });
+}
+
 export async function signInWithGoogle(): Promise<GoogleSignInResult> {
   const code = await requestGoogleAuthCode();
 

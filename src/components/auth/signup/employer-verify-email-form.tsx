@@ -4,7 +4,11 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
-import { signInWithCredentials } from "@/lib/auth-client";
+import { getMe } from "@/actions/auth";
+import {
+  postAuthRedirectForUser,
+  signInWithVerifiedUser,
+} from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -24,9 +28,9 @@ function EmployerVerifyEmailForm() {
   const clearEmployerLead = useSignupFlowStore((s) => s.clearEmployerLead);
   const [codeValue, setCodeValue] = useState("");
   const autoResendTriggeredRef = useRef(false);
-  const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
   const { mutateAsync: resendVerification, isPending: resending } =
     useResendVerification();
+  const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
 
   const {
     register,
@@ -43,12 +47,18 @@ function EmployerVerifyEmailForm() {
     if (!email) return;
 
     try {
-      const data = await verifyEmail({
+      const verified = await verifyEmail({
         email,
         otp: values.code,
       });
+      let user = verified.user;
+      try {
+        user = await getMe();
+      } catch {
+        user = verified.user;
+      }
 
-      const signResult = await signInWithCredentials(data);
+      const signResult = await signInWithVerifiedUser(user);
 
       if (signResult?.error) {
         appToast.error(
@@ -58,7 +68,7 @@ function EmployerVerifyEmailForm() {
       }
 
       clearEmployerLead();
-      router.push("/dashboard");
+      router.push(postAuthRedirectForUser(user));
       router.refresh();
     } catch (e) {
       appToast.error(authFailureMessage(e));
