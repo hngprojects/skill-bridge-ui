@@ -100,7 +100,11 @@ export type TalentOnboardingGoalInput = {
   goal: string;
 };
 
-export type TalentOnboardingTracksInput = {
+export type TalentOnboardingTrackCreateInput = {
+  track: string;
+};
+
+export type TalentOnboardingTracksUpdateInput = {
   roleTracks: string[];
 };
 
@@ -108,7 +112,11 @@ export type TalentOnboardingGoalResponseData = {
   goal: string;
 };
 
-export type TalentOnboardingTracksResponseData = {
+export type TalentOnboardingTrackCreateResponseData = {
+  track: string;
+};
+
+export type TalentOnboardingTracksUpdateResponseData = {
   roleTracks: string[];
 };
 

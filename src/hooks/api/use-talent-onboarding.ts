@@ -4,13 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 
 import {
   saveTalentOnboardingGoal,
-  saveTalentOnboardingTracks,
+  saveTalentOnboardingTrack,
   updateTalentOnboardingGoal,
   updateTalentOnboardingTracks,
 } from "@/actions/talent-onboarding";
 import type {
   TalentOnboardingGoalInput,
-  TalentOnboardingTracksInput,
+  TalentOnboardingTrackCreateInput,
+  TalentOnboardingTracksUpdateInput,
 } from "@/types/api";
 
 export function useSaveTalentOnboardingGoal() {
@@ -27,16 +28,16 @@ export function useUpdateTalentOnboardingGoal() {
   });
 }
 
-export function useSaveTalentOnboardingTracks() {
+export function useSaveTalentOnboardingTrack() {
   return useMutation({
-    mutationFn: (body: TalentOnboardingTracksInput) =>
-      saveTalentOnboardingTracks(body),
+    mutationFn: (body: TalentOnboardingTrackCreateInput) =>
+      saveTalentOnboardingTrack(body),
   });
 }
 
 export function useUpdateTalentOnboardingTracks() {
   return useMutation({
-    mutationFn: (body: TalentOnboardingTracksInput) =>
+    mutationFn: (body: TalentOnboardingTracksUpdateInput) =>
       updateTalentOnboardingTracks(body),
   });
 }

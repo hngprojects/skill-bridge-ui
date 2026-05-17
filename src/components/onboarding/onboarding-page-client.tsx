@@ -18,7 +18,7 @@ import {
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 import {
   useSaveTalentOnboardingGoal,
-  useSaveTalentOnboardingTracks,
+  useSaveTalentOnboardingTrack,
   useUpdateTalentOnboardingGoal,
   useUpdateTalentOnboardingTracks,
 } from "@/hooks/api";
@@ -48,13 +48,13 @@ function OnboardingPageClient() {
     useSaveTalentOnboardingGoal();
   const { mutateAsync: updateGoal, isPending: isUpdatingGoal } =
     useUpdateTalentOnboardingGoal();
-  const { mutateAsync: saveTracks, isPending: isSavingTracks } =
-    useSaveTalentOnboardingTracks();
+  const { mutateAsync: saveTrack, isPending: isSavingTrack } =
+    useSaveTalentOnboardingTrack();
   const { mutateAsync: updateTracks, isPending: isUpdatingTracks } =
     useUpdateTalentOnboardingTracks();
 
   const isSaving =
-    isSavingGoal || isUpdatingGoal || isSavingTracks || isUpdatingTracks;
+    isSavingGoal || isUpdatingGoal || isSavingTrack || isUpdatingTracks;
 
   const i = stepIndex(currentStepId);
   const isFirst = i <= 0;
@@ -82,13 +82,13 @@ function OnboardingPageClient() {
       }
 
       if (currentStepId === "select-track" && selectedTrackIds.length > 0) {
-        const body = {
-          roleTracks: trackIdsToApiRoleTracks(selectedTrackIds),
-        };
+        const apiTracks = trackIdsToApiRoleTracks(selectedTrackIds);
         if (tracksSaved) {
-          await updateTracks(body);
+          await updateTracks({ roleTracks: apiTracks });
         } else {
-          await saveTracks(body);
+          for (const track of apiTracks) {
+            await saveTrack({ track });
+          }
           setTracksSaved(true);
         }
         advanceStep();

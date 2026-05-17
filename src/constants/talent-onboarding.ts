@@ -38,7 +38,7 @@ export const GOAL_TO_API: Record<GoalOptionId, string> = {
   "first-role": "land_first_role",
   "technical-skills": "build_technical_skills",
   "validate-ability": "validate_current_ability",
-  employability: "increase_employability",
+  employability: "become_more_employable",
 };
 
 export function goalIdToApiGoal(id: GoalOptionId): string {
@@ -87,7 +87,7 @@ export const TRACK_OPTIONS = [
 
 export type TrackOptionId = (typeof TRACK_OPTIONS)[number]["id"];
 
-/** API `roleTracks` values (snake_case) for POST/PATCH `/talent/onboarding/tracks`. */
+/** API track values (snake_case): POST `{ track }` per selection; PATCH `{ roleTracks: [...] }`. */
 export function trackIdToApiRoleTrack(id: TrackOptionId): string {
   return id.replace(/-/g, "_");
 }
