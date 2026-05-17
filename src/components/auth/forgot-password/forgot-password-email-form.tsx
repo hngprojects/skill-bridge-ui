@@ -28,7 +28,7 @@ function ForgotPasswordEmailForm({
         alt="Password reset illustration"
       />
 
-      <h1 className="section-h2 font-bold text-center text-foreground">
+      <h1 className="section-h2 font-bold! text-center text-foreground">
         Forgot password?
       </h1>
 

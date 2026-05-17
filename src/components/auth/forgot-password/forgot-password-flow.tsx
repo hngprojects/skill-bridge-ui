@@ -5,7 +5,7 @@ import { ForgotPasswordNewPasswordForm } from "./forgot-password-new-password-fo
 import { ForgotPasswordOtpForm } from "./forgot-password-otp-form";
 import { ForgotPasswordResetNotice } from "./forgot-password-reset-notice";
 import { ForgotPasswordSuccessState } from "./forgot-password-success-state";
-import { useForgotPasswordFlow } from "./use-forgot-password-flow";
+import { useForgotPasswordFlow } from "@/hooks/use-forgot-password-flow";
 
 type ForgotPasswordFlowProps = {
   initialEmail?: string;
@@ -48,7 +48,7 @@ function ForgotPasswordFlow({ initialEmail = "" }: ForgotPasswordFlowProps) {
           otpError={flow.otpError}
           secondsRemaining={flow.otpSecondsRemaining}
           canResend={flow.canResendCode || flow.maxOtpAttemptsReached}
-          isSubmitting={false}
+          isSubmitting={flow.isVerifyingOtp}
           onOtpChange={(nextOtp) => {
             flow.setOtp(nextOtp);
             flow.setOtpError("");
