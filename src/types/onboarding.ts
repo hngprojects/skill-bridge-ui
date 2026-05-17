@@ -5,18 +5,25 @@ import type {
   OnboardingStepId,
   TrackOptionId,
 } from "@/constants/talent-onboarding";
-
 export type TalentOnboardingState = {
   currentStepId: OnboardingStepId;
   selectedGoalId: GoalOptionId | null;
   selectedTrackIds: TrackOptionId[];
   goalSaved: boolean;
   tracksSaved: boolean;
+  profileRegion: string;
+  profileEducation: string;
+  profileLinkedin: string;
+  profileSaved: boolean;
   setCurrentStepId: (id: OnboardingStepId) => void;
   setSelectedGoalId: (id: GoalOptionId | undefined) => void;
   setSelectedTrackIds: (ids: TrackOptionId[]) => void;
   setGoalSaved: (saved: boolean) => void;
   setTracksSaved: (saved: boolean) => void;
+  setProfileRegion: (region: string) => void;
+  setProfileEducation: (education: string) => void;
+  setProfileLinkedin: (linkedin: string) => void;
+  setProfileSaved: (saved: boolean) => void;
 };
 
 export type OnboardingIntroHeaderProps = {
