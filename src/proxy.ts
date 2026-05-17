@@ -10,7 +10,10 @@ const SECURITY_HEADERS: Record<string, string> = {
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
 };
 
-const PROTECTED_ROUTES = ["/talent/onboarding"];
+const ROLE_PROTECTED_ROUTES: { path: string; role: UserRole }[] = [
+  { path: "/talent/onboarding", role: "talent" },
+  { path: "/employer/onboarding", role: "employer" },
+];
 
 function continueWithSecurityHeaders(request: Request): NextResponse {
   const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
@@ -33,11 +36,11 @@ function continueWithSecurityHeaders(request: Request): NextResponse {
 export const proxy = auth((request) => {
   const { pathname } = request.nextUrl;
 
-  const isTalentProtected = PROTECTED_ROUTES.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  const protectedRoute = ROLE_PROTECTED_ROUTES.find(
+    ({ path }) => pathname === path || pathname.startsWith(`${path}/`),
   );
 
-  if (isTalentProtected) {
+  if (protectedRoute) {
     const user = request.auth?.user as
       | { id?: string; role?: UserRole }
       | undefined;
@@ -48,7 +51,7 @@ export const proxy = auth((request) => {
       return NextResponse.redirect(loginUrl);
     }
 
-    if (user.role !== "talent") {
+    if (user.role !== protectedRoute.role) {
       return NextResponse.redirect(new URL("/forbidden", request.url));
     }
   }
