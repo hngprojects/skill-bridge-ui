@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+import {
+  EMPLOYER_DESIRED_ROLE_IDS,
+  EMPLOYER_HIRING_COUNT_VALUES,
+  EMPLOYER_REGION_VALUES,
+} from "@/constants/employer-onboarding";
+
 export const onboardingFormSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required."),
   lastName: z.string().trim().min(1, "Last name is required."),
@@ -41,9 +47,15 @@ export const employerOnboardingProfileSchema = z.object({
   joiningAs: z.enum(["recruiter", "founder", "agency"], {
     message: "Select how you are joining",
   }),
-  desiredRoles: z.array(z.string()).min(1, "Select at least one role"),
-  region: z.string().min(1, "Select your region"),
-  hiringCountRange: z.string().min(1, "Select hiring volume"),
+  desiredRoles: z
+    .array(z.enum(EMPLOYER_DESIRED_ROLE_IDS))
+    .min(1, "Select at least one role"),
+  region: z.enum(EMPLOYER_REGION_VALUES, {
+    message: "Select your region",
+  }),
+  hiringCountRange: z.enum(EMPLOYER_HIRING_COUNT_VALUES, {
+    message: "Select hiring volume",
+  }),
   companyWebsite: z
     .string()
     .trim()

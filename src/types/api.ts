@@ -1,3 +1,9 @@
+import type {
+  EmployerHiringCountRange,
+  EmployerJoiningRoleId,
+  EmployerRegion,
+} from "@/constants/employer-onboarding";
+
 /** HNG-style API envelope */
 export type ApiEnvelope<T> = {
   status_code: number;
@@ -147,20 +153,20 @@ export type CandidateOnboardingResponseData = {
 };
 
 export type EmployerOnboardingInput = {
-  joiningAs: string;
+  joiningAs: EmployerJoiningRoleId;
   desiredRoles: string[];
-  region: string;
-  hiringCountRange: string;
+  region: EmployerRegion;
+  hiringCountRange: EmployerHiringCountRange;
   companyWebsite: string;
 };
 
 export type EmployerProfile = {
   id: string;
   userId: string;
-  joiningAs: string;
+  joiningAs: EmployerJoiningRoleId;
   desiredRoles: string[];
-  region: string;
-  hiringCountRange: string;
+  region: EmployerRegion;
+  hiringCountRange: EmployerHiringCountRange;
   companyWebsite: string;
 };
 

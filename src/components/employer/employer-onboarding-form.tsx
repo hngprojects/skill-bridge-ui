@@ -16,7 +16,6 @@ import {
   type EmployerJoiningRoleId,
 } from "@/constants/employer-onboarding";
 import { trackIdsToApiRoleTracks } from "@/constants/talent-onboarding";
-import type { TrackOptionId } from "@/constants/talent-onboarding";
 import { useEmployerOnboarding } from "@/hooks/api/use-employer";
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
@@ -39,9 +38,7 @@ function EmployerOnboardingForm() {
   } = useForm({
     resolver: zodResolver(employerOnboardingProfileSchema),
     defaultValues: {
-      desiredRoles: [] as TrackOptionId[],
-      region: "",
-      hiringCountRange: "",
+      desiredRoles: [],
       companyWebsite: "",
     },
   });
@@ -54,9 +51,7 @@ function EmployerOnboardingForm() {
     try {
       await completeOnboarding({
         joiningAs: data.joiningAs,
-        desiredRoles: trackIdsToApiRoleTracks(
-          data.desiredRoles as TrackOptionId[],
-        ),
+        desiredRoles: trackIdsToApiRoleTracks(data.desiredRoles),
         region: data.region,
         hiringCountRange: data.hiringCountRange,
         companyWebsite,
@@ -128,7 +123,7 @@ function EmployerOnboardingForm() {
           <FormInput
             mode="select"
             selection="multiple"
-            label="Which role(s) are you looking talents?"
+            label="Which role(s) are you looking to hire for?"
             required
             placeholder="Select role(s)"
             options={EMPLOYER_TALENT_ROLE_OPTIONS}
@@ -149,7 +144,7 @@ function EmployerOnboardingForm() {
             required
             placeholder="Select region"
             options={EMPLOYER_REGION_OPTIONS}
-            value={field.value}
+            value={field.value ?? ""}
             onValueChange={field.onChange}
             error={errors.region?.message}
           />
@@ -166,7 +161,7 @@ function EmployerOnboardingForm() {
             required
             placeholder="Select amount"
             options={EMPLOYER_HIRING_COUNT_OPTIONS}
-            value={field.value}
+            value={field.value ?? ""}
             onValueChange={field.onChange}
             error={errors.hiringCountRange?.message}
           />
