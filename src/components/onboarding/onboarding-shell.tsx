@@ -18,6 +18,7 @@ function OnboardingShell({
   showBack = true,
   showNext = true,
   nextDisabled = false,
+  nextLoading = false,
   title,
   description,
   children,
@@ -75,6 +76,7 @@ function OnboardingShell({
                 showBack={showBack}
                 showNext={showNext}
                 nextDisabled={nextDisabled}
+                nextLoading={nextLoading}
                 onBack={onBack}
                 onNext={onNext}
               />

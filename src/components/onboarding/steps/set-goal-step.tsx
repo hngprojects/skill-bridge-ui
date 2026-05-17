@@ -9,20 +9,22 @@ import { GOAL_OPTIONS } from "@/constants/talent-onboarding";
 import { cn } from "@/lib/utils";
 
 type SetGoalStepProps = {
-  onSelectionChange?: (goalId: GoalOptionId | undefined) => void;
+  value?: GoalOptionId;
+  onValueChange?: (goalId: GoalOptionId | undefined) => void;
 };
 
-function SetGoalStep({ onSelectionChange }: SetGoalStepProps) {
-  const [goalId, setGoalId] = React.useState<GoalOptionId | "">("");
+function SetGoalStep({ value, onValueChange }: SetGoalStepProps) {
+  const goalId = value ?? "";
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-8">
       <RadioGroup
         value={goalId}
         onValueChange={(v) => {
-          const id = v as GoalOptionId;
-          setGoalId(id);
-          onSelectionChange?.(id);
+          const id = GOAL_OPTIONS.find((option) => option.id === v)
+            ? (v as GoalOptionId)
+            : undefined;
+          onValueChange?.(id);
         }}
         className="grid w-full  gap-3"
       >

@@ -10,6 +10,7 @@ type OnboardingShellFooterProps = {
   showBack: boolean;
   showNext: boolean;
   nextDisabled: boolean;
+  nextLoading?: boolean;
   onBack: () => void;
   onNext: () => void;
 };
@@ -18,6 +19,7 @@ function OnboardingShellFooter({
   showBack,
   showNext,
   nextDisabled,
+  nextLoading = false,
   onBack,
   onNext,
 }: OnboardingShellFooterProps) {
@@ -31,10 +33,10 @@ function OnboardingShellFooter({
             type="button"
             size="lg"
             className={ONBOARDING_NEXT_BTN_CLASSNAME}
-            disabled={nextDisabled}
+            disabled={nextDisabled || nextLoading}
             onClick={onNext}
           >
-            Next
+            {nextLoading ? "Saving…" : "Next"}
           </Button>
         ) : null}
         {showBack ? (
@@ -70,10 +72,10 @@ function OnboardingShellFooter({
               type="button"
               size="lg"
               className={ONBOARDING_NEXT_BTN_CLASSNAME}
-              disabled={nextDisabled}
+              disabled={nextDisabled || nextLoading}
               onClick={onNext}
             >
-              Next
+              {nextLoading ? "Saving…" : "Next"}
             </Button>
           ) : null}
         </div>
