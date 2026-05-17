@@ -15,22 +15,37 @@ function GenerateRoadmapStep() {
   const [dots, setDots] = React.useState("");
   const { mutateAsync: personalise } = usePersonaliseTalentDashboard();
 
+  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMountedRef = React.useRef(true);
+
+  React.useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
   const handleGenerate = async () => {
     if (isGenerating) return;
     setIsGenerating(true);
 
-    const dotsInterval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setDots((d) => (d.length >= 3 ? "" : d + "."));
     }, 500);
 
     try {
       await personalise();
-      setTimeout(() => {
-        clearInterval(dotsInterval);
+
+      timeoutRef.current = setTimeout(() => {
+        if (!isMountedRef.current) return;
+        if (intervalRef.current) clearInterval(intervalRef.current);
         router.push("/dashboard");
       }, REDIRECT_DELAY);
     } catch (error) {
-      clearInterval(dotsInterval);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (!isMountedRef.current) return; // guard
       setIsGenerating(false);
       setDots("");
       appToast.error(authFailureMessage(error));

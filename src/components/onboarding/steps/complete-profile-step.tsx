@@ -45,7 +45,10 @@ const CompleteProfileStep = ({
   }, [region, education, linkedin, onReadyChange, onValueChange]);
 
   return (
-    <form className="flex flex-col items-start gap-6 w-full max-w-2xl font-sans">
+    <form
+      className="flex flex-col items-start gap-6 w-full max-w-2xl font-sans"
+      onSubmit={(e) => e.preventDefault()}
+    >
       <ProfileImageUploader
         onChange={(file) => setValue("profileImage", file)}
       />
