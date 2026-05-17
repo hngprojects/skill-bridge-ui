@@ -33,7 +33,7 @@ function OnboardingShellFooter({
             type="button"
             size="lg"
             className={ONBOARDING_NEXT_BTN_CLASSNAME}
-            disabled={nextDisabled}
+            disabled={nextDisabled || nextLoading}
             onClick={onNext}
           >
             {nextLoading ? "Saving…" : "Next"}
@@ -72,7 +72,7 @@ function OnboardingShellFooter({
               type="button"
               size="lg"
               className={ONBOARDING_NEXT_BTN_CLASSNAME}
-              disabled={nextDisabled}
+              disabled={nextDisabled || nextLoading}
               onClick={onNext}
             >
               {nextLoading ? "Saving…" : "Next"}

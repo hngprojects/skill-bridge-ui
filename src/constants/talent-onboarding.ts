@@ -24,6 +24,28 @@ export const ONBOARDING_STEPS = [
 
 export type OnboardingStepId = (typeof ONBOARDING_STEPS)[number]["id"];
 
+export function resumeOnboardingStep(state: {
+  goal?: string | null;
+  roleTracks?: string[] | null;
+}): OnboardingStepId {
+  const hasGoal = Boolean(state.goal);
+  const hasTracks = (state.roleTracks?.length ?? 0) > 0;
+  if (hasGoal && hasTracks) return "complete-profile";
+  if (hasGoal) return "select-track";
+  return "set-goal";
+}
+
+export function resumeOnboardingStepFromSelections(
+  goalId: GoalOptionId | null | undefined,
+  trackIds: TrackOptionId[],
+): OnboardingStepId {
+  const hasGoal = Boolean(goalId);
+  const hasTracks = trackIds.length > 0;
+  if (hasGoal && hasTracks) return "complete-profile";
+  if (hasGoal) return "select-track";
+  return "set-goal";
+}
+
 export const GOAL_OPTIONS = [
   { id: "first-role", label: "Land my first role" },
   { id: "technical-skills", label: "Build stronger technical skills" },
@@ -86,6 +108,29 @@ export const TRACK_OPTIONS = [
 ] as const;
 
 export type TrackOptionId = (typeof TRACK_OPTIONS)[number]["id"];
+
+const API_TO_GOAL = Object.fromEntries(
+  Object.entries(GOAL_TO_API).map(([id, api]) => [api, id]),
+) as Record<string, GoalOptionId>;
+
+const TRACK_IDS = new Set(TRACK_OPTIONS.map((t) => t.id));
+
+export function apiGoalToGoalId(apiGoal: string): GoalOptionId | undefined {
+  return API_TO_GOAL[apiGoal];
+}
+
+export function apiRoleTrackToTrackId(
+  apiTrack: string,
+): TrackOptionId | undefined {
+  const id = apiTrack.replace(/_/g, "-") as TrackOptionId;
+  return TRACK_IDS.has(id) ? id : undefined;
+}
+
+export function apiRoleTracksToTrackIds(apiTracks: string[]): TrackOptionId[] {
+  return apiTracks
+    .map(apiRoleTrackToTrackId)
+    .filter((id): id is TrackOptionId => id !== undefined);
+}
 
 /** API track values (snake_case): POST `{ track }` per selection; PATCH `{ roleTracks: [...] }`. */
 export function trackIdToApiRoleTrack(id: TrackOptionId): string {

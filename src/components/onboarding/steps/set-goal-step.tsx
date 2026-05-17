@@ -21,7 +21,9 @@ function SetGoalStep({ value, onValueChange }: SetGoalStepProps) {
       <RadioGroup
         value={goalId}
         onValueChange={(v) => {
-          const id = v as GoalOptionId;
+          const id = GOAL_OPTIONS.find((option) => option.id === v)
+            ? (v as GoalOptionId)
+            : undefined;
           onValueChange?.(id);
         }}
         className="grid w-full  gap-3"

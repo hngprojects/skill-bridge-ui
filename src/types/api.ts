@@ -120,6 +120,12 @@ export type TalentOnboardingTracksUpdateResponseData = {
   roleTracks: string[];
 };
 
+/** GET `/talent/onboarding` — saved goal/tracks for pre-filling onboarding forms. */
+export type TalentOnboardingStateResponseData = {
+  goal?: string | null;
+  roleTracks?: string[] | null;
+};
+
 export type CandidateOnboardingInput = {
   roleTrack: string;
   bio: string;

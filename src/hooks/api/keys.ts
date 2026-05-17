@@ -16,3 +16,8 @@ export const healthKeys = {
   all: ["health"] as const,
   check: () => [...healthKeys.all, "check"] as const,
 };
+
+export const talentOnboardingKeys = {
+  all: ["talent-onboarding"] as const,
+  state: () => [...talentOnboardingKeys.all, "state"] as const,
+};

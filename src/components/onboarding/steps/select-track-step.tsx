@@ -29,8 +29,8 @@ const TRACK_ICONS: Record<TrackOptionId, React.ElementType> = {
 };
 
 type SelectTrackStepProps = {
-  value?: TrackOptionId[];
-  onValueChange?: (trackIds: TrackOptionId[]) => void;
+  value: TrackOptionId[];
+  onValueChange: (trackIds: TrackOptionId[]) => void;
 };
 
 function SelectTrackStep({ value = [], onValueChange }: SelectTrackStepProps) {

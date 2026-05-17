@@ -3,17 +3,24 @@ import type {
   ApiEnvelope,
   TalentOnboardingGoalInput,
   TalentOnboardingGoalResponseData,
+  TalentOnboardingStateResponseData,
   TalentOnboardingTrackCreateInput,
   TalentOnboardingTrackCreateResponseData,
   TalentOnboardingTracksUpdateInput,
   TalentOnboardingTracksUpdateResponseData,
 } from "@/types/api";
 
+import { normalizeTalentOnboardingState } from "@/lib/talent-onboarding-state";
+
 import { unwrapData } from "./utils";
 
-/** POST create uses singular path + `track`; PATCH update uses plural path + `roleTracks`. */
-const TALENT_ONBOARDING_TRACK_CREATE_PATH = "/talent/onboarding/track";
-const TALENT_ONBOARDING_TRACK_UPDATE_PATH = "/talent/onboarding/tracks";
+export async function getTalentOnboardingState(): Promise<TalentOnboardingStateResponseData> {
+  const res =
+    await authApi.get<ApiEnvelope<TalentOnboardingStateResponseData>>(
+      "/talent/onboarding",
+    );
+  return normalizeTalentOnboardingState(unwrapData(res));
+}
 
 export async function saveTalentOnboardingGoal(
   body: TalentOnboardingGoalInput,
@@ -39,7 +46,7 @@ export async function saveTalentOnboardingTrack(
 ): Promise<TalentOnboardingTrackCreateResponseData> {
   const res = await authApi.post<
     ApiEnvelope<TalentOnboardingTrackCreateResponseData>
-  >(TALENT_ONBOARDING_TRACK_CREATE_PATH, body);
+  >("/talent/onboarding/track", body);
   return unwrapData(res);
 }
 
@@ -48,6 +55,6 @@ export async function updateTalentOnboardingTracks(
 ): Promise<TalentOnboardingTracksUpdateResponseData> {
   const res = await authApi.patch<
     ApiEnvelope<TalentOnboardingTracksUpdateResponseData>
-  >(TALENT_ONBOARDING_TRACK_UPDATE_PATH, body);
+  >("/talent/onboarding/tracks", body);
   return unwrapData(res);
 }
