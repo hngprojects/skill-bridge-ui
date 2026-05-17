@@ -18,28 +18,34 @@ interface ProfileFormValues {
 
 type CompleteProfileStepProps = {
   onReadyChange?: (ready: boolean) => void;
+  onValueChange?: (values: {
+    region: string;
+    education: string;
+    linkedin: string;
+  }) => void;
 };
 
-const CompleteProfileStep = ({ onReadyChange }: CompleteProfileStepProps) => {
+const CompleteProfileStep = ({
+  onReadyChange,
+  onValueChange,
+}: CompleteProfileStepProps) => {
   const { fullName, email } = useSessionUserProfile();
 
-  const { register, setValue, handleSubmit, control } =
-    useForm<ProfileFormValues>({
-      defaultValues: { region: "", education: "", linkedin: "" },
-    });
+  const { register, setValue, control } = useForm<ProfileFormValues>({
+    defaultValues: { region: "", education: "", linkedin: "" },
+  });
 
   const region = useWatch({ control, name: "region" });
   const education = useWatch({ control, name: "education" });
+  const linkedin = useWatch({ control, name: "linkedin" });
 
   useEffect(() => {
     onReadyChange?.(Boolean(region && education));
-  }, [region, education, onReadyChange]);
+    onValueChange?.({ region, education, linkedin });
+  }, [region, education, linkedin, onReadyChange, onValueChange]);
 
   return (
-    <form
-      onSubmit={handleSubmit((data) => console.log("Form Data:", data))}
-      className="flex flex-col items-start gap-6 w-full max-w-2xl font-sans"
-    >
+    <form className="flex flex-col items-start gap-6 w-full max-w-2xl font-sans">
       <ProfileImageUploader
         onChange={(file) => setValue("profileImage", file)}
       />
