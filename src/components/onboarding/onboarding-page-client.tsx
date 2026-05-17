@@ -1,10 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { OnboardingShell } from "@/components/onboarding/onboarding-shell";
-import { Spinner } from "@/components/ui/spinner";
 import CompleteProfileStep from "@/components/onboarding/steps/complete-profile-step";
 import { GenerateRoadmapStep } from "@/components/onboarding/steps/generating-step";
 import { SetGoalStep } from "@/components/onboarding/steps/set-goal-step";
@@ -12,67 +10,40 @@ import { SelectTrackStep } from "@/components/onboarding/steps/select-track-step
 import {
   goalIdToApiGoal,
   ONBOARDING_STEPS,
-  resumeOnboardingStepFromSelections,
   trackIdsToApiRoleTracks,
+  type GoalOptionId,
   type OnboardingStepId,
+  type TrackOptionId,
 } from "@/constants/talent-onboarding";
 import {
   useSaveTalentOnboardingGoal,
   useSaveTalentOnboardingTrack,
-  useTalentOnboardingState,
   useUpdateTalentOnboardingGoal,
   useUpdateTalentOnboardingTracks,
 } from "@/hooks/api";
-import { talentOnboardingKeys } from "@/hooks/api/keys";
-import { useTalentOnboardingStoreHydrated } from "@/hooks/use-talent-onboarding-store-hydrated";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
-import { useTalentOnboardingStore } from "@/stores/talent-onboarding-store";
 
 function stepIndex(id: OnboardingStepId): number {
   return ONBOARDING_STEPS.findIndex((s) => s.id === id);
 }
 
-function hasPersistedGoal(
-  state: { goal?: string | null } | undefined,
-): boolean {
-  return Boolean(state?.goal);
-}
-
-function hasPersistedTracks(
-  state: { roleTracks?: string[] | null } | undefined,
-): boolean {
-  return (state?.roleTracks?.length ?? 0) > 0;
-}
-
 function OnboardingPageClient() {
   const { fullName: userName, isLoading: isSessionLoading } =
     useSessionUserProfile();
-  const queryClient = useQueryClient();
-  const storeHydrated = useTalentOnboardingStoreHydrated();
-  const {
-    selectedGoalId,
-    selectedTrackIds,
-    currentStepId,
-    setSelectedGoalId,
-    setSelectedTrackIds,
-    setCurrentStepId,
-    mergeFromServer,
-  } = useTalentOnboardingStore();
 
-  const {
-    data: onboardingState,
-    isPending: isOnboardingStateLoading,
-    isFetched: isOnboardingStateFetched,
-  } = useTalentOnboardingState();
-
-  const [profileStepReady, setProfileStepReady] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!isOnboardingStateFetched || onboardingState === undefined) return;
-    mergeFromServer(onboardingState);
-  }, [isOnboardingStateFetched, onboardingState, mergeFromServer]);
+  const [currentStepId, setCurrentStepId] =
+    React.useState<OnboardingStepId>("set-goal");
+  const [canGoNext, setCanGoNext] = React.useState(false);
+  const [selectedGoalId, setSelectedGoalId] = React.useState<
+    GoalOptionId | undefined
+  >();
+  const [selectedTrackIds, setSelectedTrackIds] = React.useState<
+    TrackOptionId[]
+  >([]);
+  const [goalSaved, setGoalSaved] = React.useState(false);
+  const [tracksSaved, setTracksSaved] = React.useState(false);
 
   const { mutateAsync: saveGoal, isPending: isSavingGoal } =
     useSaveTalentOnboardingGoal();
@@ -85,74 +56,42 @@ function OnboardingPageClient() {
 
   const isSaving =
     isSavingGoal || isUpdatingGoal || isSavingTrack || isUpdatingTracks;
-  const isResolvingPersistedState = isOnboardingStateLoading;
 
-  const activeStepId: OnboardingStepId =
-    currentStepId ??
-    resumeOnboardingStepFromSelections(
-      selectedGoalId ?? undefined,
-      selectedTrackIds,
-    );
-
-  const effectiveGoalId = selectedGoalId ?? undefined;
-  const effectiveTrackIds = selectedTrackIds;
-
-  const canGoNext = React.useMemo(() => {
-    switch (activeStepId) {
-      case "set-goal":
-        return Boolean(effectiveGoalId);
-      case "select-track":
-        return effectiveTrackIds.length > 0;
-      case "complete-profile":
-        return profileStepReady;
-      default:
-        return false;
-    }
-  }, [
-    activeStepId,
-    effectiveGoalId,
-    effectiveTrackIds.length,
-    profileStepReady,
-  ]);
-
-  const i = stepIndex(activeStepId);
+  const i = stepIndex(currentStepId);
   const isFirst = i <= 0;
   const isLast = i >= ONBOARDING_STEPS.length - 1;
 
   const advanceStep = () => {
+    setCanGoNext(false);
     setCurrentStepId(ONBOARDING_STEPS[i + 1].id as OnboardingStepId);
   };
 
   const goNext = async () => {
-    if (isLast || !canGoNext || isSaving || isResolvingPersistedState) return;
+    if (isLast || !canGoNext || isSaving) return;
 
     try {
-      if (activeStepId === "set-goal" && effectiveGoalId) {
-        const body = { goal: goalIdToApiGoal(effectiveGoalId) };
-        if (hasPersistedGoal(onboardingState)) {
+      if (currentStepId === "set-goal" && selectedGoalId) {
+        const body = { goal: goalIdToApiGoal(selectedGoalId) };
+        if (goalSaved) {
           await updateGoal(body);
         } else {
           await saveGoal(body);
+          setGoalSaved(true);
         }
-        await queryClient.refetchQueries({
-          queryKey: talentOnboardingKeys.state(),
-        });
         advanceStep();
         return;
       }
 
-      if (activeStepId === "select-track" && effectiveTrackIds.length > 0) {
-        const apiTracks = trackIdsToApiRoleTracks(effectiveTrackIds);
-        if (hasPersistedTracks(onboardingState)) {
+      if (currentStepId === "select-track" && selectedTrackIds.length > 0) {
+        const apiTracks = trackIdsToApiRoleTracks(selectedTrackIds);
+        if (tracksSaved) {
           await updateTracks({ roleTracks: apiTracks });
         } else {
           for (const track of apiTracks) {
             await saveTrack({ track });
           }
+          setTracksSaved(true);
         }
-        await queryClient.refetchQueries({
-          queryKey: talentOnboardingKeys.state(),
-        });
         advanceStep();
         return;
       }
@@ -164,15 +103,25 @@ function OnboardingPageClient() {
   };
 
   const goBack = () => {
-    if (isFirst || isSaving || isResolvingPersistedState) return;
-    setCurrentStepId(ONBOARDING_STEPS[i - 1].id as OnboardingStepId);
+    if (isFirst || isSaving) return;
+
+    const prevStepId = ONBOARDING_STEPS[i - 1].id as OnboardingStepId;
+    setCurrentStepId(prevStepId);
+
+    if (prevStepId === "set-goal") {
+      setCanGoNext(Boolean(selectedGoalId));
+    } else if (prevStepId === "select-track") {
+      setCanGoNext(selectedTrackIds.length > 0);
+    } else {
+      setCanGoNext(false);
+    }
   };
 
   let title: React.ReactNode | undefined;
   let description: React.ReactNode | undefined;
   let content: React.ReactNode;
 
-  switch (activeStepId) {
+  switch (currentStepId) {
     case "set-goal":
       title =
         !isSessionLoading && userName ? `Hello, ${userName}! 👋` : "Hello! 👋";
@@ -180,8 +129,11 @@ function OnboardingPageClient() {
         "Help us personalize your experience using our app. Get started by telling us your goal.";
       content = (
         <SetGoalStep
-          value={effectiveGoalId}
-          onValueChange={setSelectedGoalId}
+          value={selectedGoalId}
+          onValueChange={(id) => {
+            setSelectedGoalId(id);
+            setCanGoNext(Boolean(id));
+          }}
         />
       );
       break;
@@ -190,8 +142,11 @@ function OnboardingPageClient() {
         "Choose the path that best matches how you want to use SkillBridge.";
       content = (
         <SelectTrackStep
-          value={effectiveTrackIds}
-          onValueChange={setSelectedTrackIds}
+          value={selectedTrackIds}
+          onValueChange={(ids) => {
+            setSelectedTrackIds(ids);
+            setCanGoNext(ids.length > 0);
+          }}
         />
       );
       break;
@@ -199,7 +154,7 @@ function OnboardingPageClient() {
       title = "Great choice! Tell us about yourself";
       description =
         "Please provide your details below to help us verify your identity and customize your learning journey.";
-      content = <CompleteProfileStep onReadyChange={setProfileStepReady} />;
+      content = <CompleteProfileStep onReadyChange={setCanGoNext} />;
       break;
     case "generate-roadmap":
       title = "Generating assessments...";
@@ -213,24 +168,16 @@ function OnboardingPageClient() {
       content = null;
   }
 
-  if (!storeHydrated) {
-    return (
-      <div className="flex min-h-[calc(100vh-72px)] items-center justify-center bg-white">
-        <Spinner className="size-8 text-primary" />
-      </div>
-    );
-  }
-
   return (
     <OnboardingShell
-      currentStepId={activeStepId}
+      currentStepId={currentStepId}
       title={title}
       description={description}
       onNext={goNext}
       onBack={goBack}
       showBack={!isFirst}
       showNext={!isLast}
-      nextDisabled={!canGoNext || isResolvingPersistedState}
+      nextDisabled={!canGoNext}
       nextLoading={isSaving}
     >
       {content}

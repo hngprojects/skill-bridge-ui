@@ -3,24 +3,13 @@ import type {
   ApiEnvelope,
   TalentOnboardingGoalInput,
   TalentOnboardingGoalResponseData,
-  TalentOnboardingStateResponseData,
   TalentOnboardingTrackCreateInput,
   TalentOnboardingTrackCreateResponseData,
   TalentOnboardingTracksUpdateInput,
   TalentOnboardingTracksUpdateResponseData,
 } from "@/types/api";
 
-import { normalizeTalentOnboardingState } from "@/lib/talent-onboarding-state";
-
 import { unwrapData } from "./utils";
-
-export async function getTalentOnboardingState(): Promise<TalentOnboardingStateResponseData> {
-  const res =
-    await authApi.get<ApiEnvelope<TalentOnboardingStateResponseData>>(
-      "/talent/onboarding",
-    );
-  return normalizeTalentOnboardingState(unwrapData(res));
-}
 
 export async function saveTalentOnboardingGoal(
   body: TalentOnboardingGoalInput,
