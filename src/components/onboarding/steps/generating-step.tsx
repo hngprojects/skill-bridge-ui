@@ -3,6 +3,9 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { OrbitAnimation } from "../generating-steps/orbit-animation";
+import { usePersonaliseTalentDashboard } from "@/hooks/api";
+import { authFailureMessage } from "@/lib/api";
+import { appToast } from "@/lib/toast";
 
 const REDIRECT_DELAY = 2000;
 
@@ -10,8 +13,9 @@ function GenerateRoadmapStep() {
   const router = useRouter();
   const [isGenerating, setIsGenerating] = React.useState(false);
   const [dots, setDots] = React.useState("");
+  const { mutateAsync: personalise } = usePersonaliseTalentDashboard();
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (isGenerating) return;
     setIsGenerating(true);
 
@@ -19,10 +23,18 @@ function GenerateRoadmapStep() {
       setDots((d) => (d.length >= 3 ? "" : d + "."));
     }, 500);
 
-    setTimeout(() => {
+    try {
+      await personalise();
+      setTimeout(() => {
+        clearInterval(dotsInterval);
+        router.push("/dashboard");
+      }, REDIRECT_DELAY);
+    } catch (error) {
       clearInterval(dotsInterval);
-      router.push("/dashboard");
-    }, REDIRECT_DELAY);
+      setIsGenerating(false);
+      setDots("");
+      appToast.error(authFailureMessage(error));
+    }
   };
 
   return (
