@@ -7,6 +7,9 @@ import type {
   TalentOnboardingTrackCreateResponseData,
   TalentOnboardingTracksUpdateInput,
   TalentOnboardingTracksUpdateResponseData,
+  TalentOnboardingProfileInput,
+  TalentOnboardingProfileResponseData,
+  TalentOnboardingPersonaliseResponseData,
 } from "@/types/api";
 
 import { unwrapData } from "./utils";
@@ -45,5 +48,21 @@ export async function updateTalentOnboardingTracks(
   const res = await authApi.patch<
     ApiEnvelope<TalentOnboardingTracksUpdateResponseData>
   >("/talent/onboarding/tracks", body);
+  return unwrapData(res);
+}
+
+export async function saveTalentOnboardingProfile(
+  body: TalentOnboardingProfileInput,
+): Promise<TalentOnboardingProfileResponseData> {
+  const res = await authApi.patch<
+    ApiEnvelope<TalentOnboardingProfileResponseData>
+  >("/talent/onboarding/profile", body);
+  return unwrapData(res);
+}
+
+export async function personaliseTalentDashboard(): Promise<TalentOnboardingPersonaliseResponseData> {
+  const res = await authApi.post<
+    ApiEnvelope<TalentOnboardingPersonaliseResponseData>
+  >("/talent/onboarding/personalise");
   return unwrapData(res);
 }
