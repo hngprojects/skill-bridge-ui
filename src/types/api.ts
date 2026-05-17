@@ -96,6 +96,30 @@ export type RefreshResponseData = {
 
 export type MeResponseData = AuthUser;
 
+export type TalentOnboardingGoalInput = {
+  goal: string;
+};
+
+export type TalentOnboardingTrackCreateInput = {
+  track: string;
+};
+
+export type TalentOnboardingTracksUpdateInput = {
+  roleTracks: string[];
+};
+
+export type TalentOnboardingGoalResponseData = {
+  goal: string;
+};
+
+export type TalentOnboardingTrackCreateResponseData = {
+  track: string;
+};
+
+export type TalentOnboardingTracksUpdateResponseData = {
+  roleTracks: string[];
+};
+
 export type CandidateOnboardingInput = {
   roleTrack: string;
   bio: string;
