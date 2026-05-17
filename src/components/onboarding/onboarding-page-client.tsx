@@ -11,9 +11,7 @@ import {
   goalIdToApiGoal,
   ONBOARDING_STEPS,
   trackIdsToApiRoleTracks,
-  type GoalOptionId,
   type OnboardingStepId,
-  type TrackOptionId,
 } from "@/constants/talent-onboarding";
 import {
   useSaveTalentOnboardingGoal,
@@ -24,6 +22,7 @@ import {
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
+import { useTalentOnboardingStore } from "@/stores/talent-onboarding-store";
 
 function stepIndex(id: OnboardingStepId): number {
   return ONBOARDING_STEPS.findIndex((s) => s.id === id);
@@ -33,17 +32,20 @@ function OnboardingPageClient() {
   const { fullName: userName, isLoading: isSessionLoading } =
     useSessionUserProfile();
 
-  const [currentStepId, setCurrentStepId] =
-    React.useState<OnboardingStepId>("set-goal");
-  const [canGoNext, setCanGoNext] = React.useState(false);
-  const [selectedGoalId, setSelectedGoalId] = React.useState<
-    GoalOptionId | undefined
-  >();
-  const [selectedTrackIds, setSelectedTrackIds] = React.useState<
-    TrackOptionId[]
-  >([]);
-  const [goalSaved, setGoalSaved] = React.useState(false);
-  const [tracksSaved, setTracksSaved] = React.useState(false);
+  const {
+    currentStepId,
+    selectedGoalId,
+    selectedTrackIds,
+    goalSaved,
+    tracksSaved,
+    setCurrentStepId,
+    setSelectedGoalId,
+    setSelectedTrackIds,
+    setGoalSaved,
+    setTracksSaved,
+  } = useTalentOnboardingStore();
+
+  const [profileStepReady, setProfileStepReady] = React.useState(false);
 
   const { mutateAsync: saveGoal, isPending: isSavingGoal } =
     useSaveTalentOnboardingGoal();
@@ -57,12 +59,21 @@ function OnboardingPageClient() {
   const isSaving =
     isSavingGoal || isUpdatingGoal || isSavingTrack || isUpdatingTracks;
 
+  const canGoNext =
+    currentStepId === "set-goal"
+      ? Boolean(selectedGoalId)
+      : currentStepId === "select-track"
+        ? selectedTrackIds.length > 0
+        : currentStepId === "complete-profile"
+          ? profileStepReady
+          : false;
+
   const i = stepIndex(currentStepId);
   const isFirst = i <= 0;
   const isLast = i >= ONBOARDING_STEPS.length - 1;
 
   const advanceStep = () => {
-    setCanGoNext(false);
+    setProfileStepReady(false);
     setCurrentStepId(ONBOARDING_STEPS[i + 1].id as OnboardingStepId);
   };
 
@@ -105,16 +116,7 @@ function OnboardingPageClient() {
   const goBack = () => {
     if (isFirst || isSaving) return;
 
-    const prevStepId = ONBOARDING_STEPS[i - 1].id as OnboardingStepId;
-    setCurrentStepId(prevStepId);
-
-    if (prevStepId === "set-goal") {
-      setCanGoNext(Boolean(selectedGoalId));
-    } else if (prevStepId === "select-track") {
-      setCanGoNext(selectedTrackIds.length > 0);
-    } else {
-      setCanGoNext(false);
-    }
+    setCurrentStepId(ONBOARDING_STEPS[i - 1].id as OnboardingStepId);
   };
 
   let title: React.ReactNode | undefined;
@@ -129,11 +131,8 @@ function OnboardingPageClient() {
         "Help us personalize your experience using our app. Get started by telling us your goal.";
       content = (
         <SetGoalStep
-          value={selectedGoalId}
-          onValueChange={(id) => {
-            setSelectedGoalId(id);
-            setCanGoNext(Boolean(id));
-          }}
+          value={selectedGoalId ?? undefined}
+          onValueChange={setSelectedGoalId}
         />
       );
       break;
@@ -143,10 +142,7 @@ function OnboardingPageClient() {
       content = (
         <SelectTrackStep
           value={selectedTrackIds}
-          onValueChange={(ids) => {
-            setSelectedTrackIds(ids);
-            setCanGoNext(ids.length > 0);
-          }}
+          onValueChange={setSelectedTrackIds}
         />
       );
       break;
@@ -154,7 +150,7 @@ function OnboardingPageClient() {
       title = "Great choice! Tell us about yourself";
       description =
         "Please provide your details below to help us verify your identity and customize your learning journey.";
-      content = <CompleteProfileStep onReadyChange={setCanGoNext} />;
+      content = <CompleteProfileStep onReadyChange={setProfileStepReady} />;
       break;
     case "generate-roadmap":
       title = "Generating assessments...";

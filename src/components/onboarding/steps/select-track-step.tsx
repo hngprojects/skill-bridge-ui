@@ -58,7 +58,7 @@ function SelectTrackStep({ value = [], onValueChange }: SelectTrackStepProps) {
             type="button"
             onClick={() => toggle(track.id)}
             className={cn(
-              "flex flex-col items-center gap-2 rounded-[5px] border bg-card px-3 py-5 text-center transition-colors",
+              "hover:bg-muted hover:text-foreground hover:cursor-pointer flex flex-col items-center gap-2 rounded-[5px] border bg-card px-3 py-5 text-center transition-colors",
               isSelected
                 ? "border-primary ring-1 ring-primary/20"
                 : "border-[#D9D9D9] hover:border-muted-foreground/30",
