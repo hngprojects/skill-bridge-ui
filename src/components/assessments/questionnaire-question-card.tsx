@@ -2,23 +2,54 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { QUESTION_BANK_TOTAL_QUESTIONS } from "@/constants/question-bank";
+import {
+  QuestionnaireQuestionField,
+  type Question,
+} from "@/components/assessments/questionnaire-question-field";
 
-export function QuestionnaireQuestionCard() {
-  const currentQuestion = 1;
-  const progressPercent =
-    (currentQuestion / QUESTION_BANK_TOTAL_QUESTIONS) * 100;
+type QuestionnaireQuestionCardProps = {
+  question: Question;
+  value: string | string[] | undefined;
+  otherValue: string;
+  onChange: (value: string | string[]) => void;
+  onOtherChange: (value: string) => void;
+  onNext: () => void;
+  questionNumber: number;
+  totalQuestions: number;
+  isLast: boolean;
+};
+
+export function QuestionnaireQuestionCard({
+  question,
+  value,
+  otherValue,
+  onChange,
+  onOtherChange,
+  onNext,
+  questionNumber,
+  totalQuestions,
+  isLast,
+}: QuestionnaireQuestionCardProps) {
+  const progressPercent = (questionNumber / totalQuestions) * 100;
 
   return (
     <Card className="min-h-128 flex-1 gap-0 py-0 ring-border/60">
-      <CardContent className="flex min-h-96 flex-1 flex-col py-8" />
+      <CardContent className="flex min-h-96 flex-1 flex-col py-8">
+        <QuestionnaireQuestionField
+          question={question}
+          value={value}
+          otherValue={otherValue}
+          onChange={onChange}
+          onOtherChange={onOtherChange}
+        />
+      </CardContent>
       <CardFooter className="flex flex-col gap-4 border-t border-border/60 py-6">
         <div
           className="h-1 w-full overflow-hidden rounded-full bg-muted"
           role="progressbar"
-          aria-valuenow={currentQuestion}
+          aria-valuenow={questionNumber}
           aria-valuemin={0}
-          aria-valuemax={QUESTION_BANK_TOTAL_QUESTIONS}
+          aria-valuemax={totalQuestions}
           aria-label="Question progress"
         >
           <div
@@ -28,14 +59,15 @@ export function QuestionnaireQuestionCard() {
         </div>
         <div className="w-full flex items-center justify-between gap-4">
           <p className="font-sans text-sm text-muted-foreground">
-            Question {currentQuestion}/{QUESTION_BANK_TOTAL_QUESTIONS}
+            Question {questionNumber}/{totalQuestions}
           </p>
           <Button
             type="button"
-            disabled
-            className="min-w-24 rounded-lg bg-muted-foreground/25 text-foreground hover:bg-muted-foreground/25"
+            onClick={onNext}
+            disabled={isLast}
+            className="min-w-24 rounded-lg disabled:bg-muted-foreground/25 disabled:text-foreground disabled:opacity-100"
           >
-            Next
+            {isLast ? "Submit" : "Next"}
           </Button>
         </div>
       </CardFooter>
