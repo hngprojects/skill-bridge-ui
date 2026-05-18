@@ -32,7 +32,7 @@ export function QuestionnaireToolbar({
   }, []);
 
   return (
-    <div className="flex items-center justify-between gap-4 py-4">
+    <div className="flex items-center justify-between gap-4 py-6">
       <div className="flex items-center gap-3">
         <div
           className="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-success"

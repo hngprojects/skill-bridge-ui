@@ -1,9 +1,5 @@
-import { QuestionnaireToolbar } from "@/components/assessments/questionnaire-toolbar";
+import { QuestionnairePageClient } from "@/components/assessments/questionnaire-page-client";
 
 export default function QuestionnairePage() {
-  return (
-    <div>
-      <QuestionnaireToolbar />
-    </div>
-  );
+  return <QuestionnairePageClient />;
 }

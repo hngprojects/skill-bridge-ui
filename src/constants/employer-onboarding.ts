@@ -25,8 +25,7 @@ export const EMPLOYER_REGION_OPTIONS = COUNTRY_LIST.map((value) => ({
 
 /** API `hiringCountRange` values for POST `/employer/onboarding`. */
 export const EMPLOYER_HIRING_COUNT_VALUES = [
-  "1",
-  "2_5",
+  "1_5",
   "6_10",
   "11_20",
   "20_plus",
@@ -36,10 +35,9 @@ export type EmployerHiringCountRange =
   (typeof EMPLOYER_HIRING_COUNT_VALUES)[number];
 
 const HIRING_COUNT_LABELS: Record<EmployerHiringCountRange, string> = {
-  "1": "1",
-  "2_5": "2–5",
-  "6_10": "6–10",
-  "11_20": "11–20",
+  "1_5": "1-5",
+  "6_10": "6-10",
+  "11_20": "11-20",
   "20_plus": "20+",
 };
 

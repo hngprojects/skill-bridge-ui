@@ -712,4 +712,19 @@ export const QUESTION_BANK = {
       ],
     },
   ],
-};
+} as const;
+
+export type QuestionBankSection = (typeof QUESTION_BANK.sections)[number];
+
+export const QUESTION_BANK_SECTIONS = QUESTION_BANK.sections.map(
+  (section, index) => ({
+    id: section.id,
+    number: index + 1,
+    title: section.title,
+  }),
+);
+
+export type QuestionBankSectionId =
+  (typeof QUESTION_BANK_SECTIONS)[number]["id"];
+
+export const QUESTION_BANK_TOTAL_QUESTIONS = QUESTION_BANK.meta.total_questions;
