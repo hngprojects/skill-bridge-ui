@@ -27,7 +27,7 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
   );
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-[#DBDBDB] bg-white">
+    <article className="animate-in fade-in slide-in-from-bottom-1 overflow-hidden rounded-2xl border border-[#DBDBDB] bg-white duration-300 transition-all hover:-translate-y-0.5 hover:shadow-sm">
       <div className="flex flex-col lg:flex-row">
         <div
           className={cn(

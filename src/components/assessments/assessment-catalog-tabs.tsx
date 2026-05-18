@@ -29,7 +29,7 @@ export function AssessmentCatalogTabs({
               key={tab.id}
               href={`/t/assessments/${tab.id}`}
               className={cn(
-                "inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm tracking-[0.016em] transition-colors sm:min-w-[193px] sm:px-6 sm:text-base",
+                "inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm tracking-[0.016em] transition-all duration-300 hover:-translate-y-0.5 sm:min-w-[193px] sm:px-6 sm:text-base",
                 isActive
                   ? "bg-[#EBEBEB] font-medium text-[#151515]"
                   : "bg-[#FBFBFB] font-normal text-[#757575] hover:text-[#151515]",

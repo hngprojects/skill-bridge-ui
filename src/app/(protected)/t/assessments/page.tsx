@@ -1,5 +1,5 @@
-import { AssessmentOverviewPage } from "@/components/assessments/assessment-overview-page";
+import { AssessmentCatalogPage } from "@/components/assessments/assessment-catalog-page";
 
 export default function MainAssessmentPage() {
-  return <AssessmentOverviewPage />;
+  return <AssessmentCatalogPage activeTab="job-assessment" />;
 }

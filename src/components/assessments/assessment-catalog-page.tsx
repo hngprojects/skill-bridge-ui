@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ASSESSMENT_CATALOG_STEPS,
   ASSESSMENT_CATALOG_TABS,
@@ -20,7 +22,7 @@ export function AssessmentCatalogPage({
       : ASSESSMENT_CATALOG_STEPS.filter((step) => step.category === activeTab);
 
   return (
-    <div className="mx-auto max-w-[1096px] px-1 py-6 sm:px-0 sm:py-8">
+    <div className="mx-auto max-w-[1096px] animate-in fade-in slide-in-from-bottom-1 px-1 py-6 duration-500 sm:px-0 sm:py-8">
       <AssessmentCatalogTabs
         tabs={ASSESSMENT_CATALOG_TABS}
         activeTab={activeTab}

@@ -23,7 +23,7 @@ export function RoadmapSection({ steps }: RoadmapSectionProps) {
   const completedSteps = steps.filter((step) => step.tab === "completed");
 
   return (
-    <section className="py-10">
+    <section className="animate-in fade-in slide-in-from-bottom-1 py-10 duration-500">
       <Tabs defaultValue="in-progress" className="gap-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-[22px] leading-[1.5] font-bold tracking-[0.016em] text-[#151515] sm:text-[32px] sm:leading-[1.2] sm:tracking-[-0.02em]">
