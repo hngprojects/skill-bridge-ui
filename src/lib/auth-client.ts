@@ -26,8 +26,9 @@ function isOnboardingComplete(user: AuthUser): boolean | undefined {
 }
 
 export function postAuthRedirectForUser(user: AuthUser): string {
-  if (user.role === "talent" && isOnboardingComplete(user) === false) {
-    return "/talent/onboarding";
+  if (isOnboardingComplete(user) === false) {
+    if (user.role === "talent") return "/talent/onboarding";
+    if (user.role === "employer") return "/employer/onboarding";
   }
   return "/dashboard";
 }

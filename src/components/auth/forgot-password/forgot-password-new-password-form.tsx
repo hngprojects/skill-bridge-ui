@@ -52,7 +52,7 @@ function ForgotPasswordNewPasswordForm({
         alt="Secure password reset illustration"
       />
 
-      <h1 className="section-h2 font-bold text-center text-foreground">
+      <h1 className="section-h2 font-bold! text-center text-foreground">
         Reset your password
       </h1>
 

@@ -3,6 +3,9 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { OrbitAnimation } from "../generating-steps/orbit-animation";
+import { usePersonaliseTalentDashboard } from "@/hooks/api";
+import { authFailureMessage } from "@/lib/api";
+import { appToast } from "@/lib/toast";
 
 const REDIRECT_DELAY = 2000;
 
@@ -10,19 +13,43 @@ function GenerateRoadmapStep() {
   const router = useRouter();
   const [isGenerating, setIsGenerating] = React.useState(false);
   const [dots, setDots] = React.useState("");
+  const { mutateAsync: personalise } = usePersonaliseTalentDashboard();
 
-  const handleGenerate = () => {
+  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMountedRef = React.useRef(true);
+
+  React.useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const handleGenerate = async () => {
     if (isGenerating) return;
     setIsGenerating(true);
 
-    const dotsInterval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setDots((d) => (d.length >= 3 ? "" : d + "."));
     }, 500);
 
-    setTimeout(() => {
-      clearInterval(dotsInterval);
-      router.push("/dashboard");
-    }, REDIRECT_DELAY);
+    try {
+      await personalise();
+
+      timeoutRef.current = setTimeout(() => {
+        if (!isMountedRef.current) return;
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        router.push("/dashboard");
+      }, REDIRECT_DELAY);
+    } catch (error) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (!isMountedRef.current) return; // guard
+      setIsGenerating(false);
+      setDots("");
+      appToast.error(authFailureMessage(error));
+    }
   };
 
   return (

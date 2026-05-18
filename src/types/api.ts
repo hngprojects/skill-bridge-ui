@@ -1,3 +1,9 @@
+import type {
+  EmployerHiringCountRange,
+  EmployerJoiningRoleId,
+  EmployerRegion,
+} from "@/constants/employer-onboarding";
+
 /** HNG-style API envelope */
 export type ApiEnvelope<T> = {
   status_code: number;
@@ -84,8 +90,14 @@ export type ForgotPasswordInput = {
   email: string;
 };
 
+export type VerifyPasswordResetOtpInput = {
+  email: string;
+  otp: string;
+};
+
 export type ResetPasswordInput = {
-  token: string;
+  email: string;
+  otp: string;
   password: string;
   confirmPassword: string;
 };
@@ -95,6 +107,30 @@ export type RefreshResponseData = {
 };
 
 export type MeResponseData = AuthUser;
+
+export type TalentOnboardingGoalInput = {
+  goal: string;
+};
+
+export type TalentOnboardingTrackCreateInput = {
+  track: string;
+};
+
+export type TalentOnboardingTracksUpdateInput = {
+  roleTracks: string[];
+};
+
+export type TalentOnboardingGoalResponseData = {
+  goal: string;
+};
+
+export type TalentOnboardingTrackCreateResponseData = {
+  track: string;
+};
+
+export type TalentOnboardingTracksUpdateResponseData = {
+  roleTracks: string[];
+};
 
 export type CandidateOnboardingInput = {
   roleTrack: string;
@@ -117,23 +153,21 @@ export type CandidateOnboardingResponseData = {
 };
 
 export type EmployerOnboardingInput = {
-  companyName: string;
-  companySize: string;
-  industry: string;
-  websiteUrl: string;
-  companyDescription: string;
-  hiringRegion: string;
+  joiningAs: EmployerJoiningRoleId;
+  desiredRoles: string[];
+  region: EmployerRegion;
+  hiringCountRange: EmployerHiringCountRange;
+  companyWebsite: string;
 };
 
 export type EmployerProfile = {
   id: string;
   userId: string;
-  companyName: string;
-  companySize: string;
-  industry: string;
-  websiteUrl: string;
-  companyDescription: string;
-  hiringRegion: string;
+  joiningAs: EmployerJoiningRoleId;
+  desiredRoles: string[];
+  region: EmployerRegion;
+  hiringCountRange: EmployerHiringCountRange;
+  companyWebsite: string;
 };
 
 export type EmployerOnboardingResponseData = {
@@ -205,3 +239,19 @@ export type HealthResponse = {
 };
 
 export type EmptyData = Record<string, never>;
+export type TalentOnboardingProfileInput = {
+  region: string;
+  educationLevel: string;
+  linkedinUrl?: string;
+};
+
+export type TalentOnboardingProfileResponseData = {
+  region: string;
+  education_level: string;
+  onboarding_step: number;
+  onboardingComplete: boolean;
+};
+export type TalentOnboardingPersonaliseResponseData = {
+  message: string;
+  status: string;
+};
