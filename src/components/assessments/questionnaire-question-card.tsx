@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import {
-  QuestionnaireQuestionField,
-  type Question,
-} from "@/components/assessments/questionnaire-question-field";
+import { QuestionnaireQuestionField } from "@/components/assessments/questionnaire-question-field";
+import type { Question } from "@/types/questionnaire";
 
 type QuestionnaireQuestionCardProps = {
   question: Question;

@@ -1,4 +1,4 @@
-import type { Question } from "@/components/assessments/questionnaire-question-field-body";
+import type { Question } from "@/types/questionnaire";
 
 export const QUESTIONNAIRE_DEMO_QUESTIONS: Question[] = [
   {

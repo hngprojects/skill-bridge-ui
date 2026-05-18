@@ -2,20 +2,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import type { Question } from "@/types/questionnaire";
 
 const MULTI_PICK_PILL_THRESHOLD = 8;
-
-export type QuestionInputType = "text" | "single_pick" | "multi_pick";
-
-export type Question = {
-  id: string;
-  question: string;
-  hint?: string;
-  input_type: QuestionInputType;
-  required: boolean;
-  options?: readonly string[];
-  conditional?: { trigger_option: string; reveals: "free_text_input" };
-};
 
 export function isOtherReveal(question: Question, value: string): boolean {
   return question.conditional?.trigger_option === value;

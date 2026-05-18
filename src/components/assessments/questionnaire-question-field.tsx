@@ -2,10 +2,8 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   QuestionnaireQuestionFieldBody,
   hasOtherReveal,
-  type Question,
 } from "@/components/assessments/questionnaire-question-field-body";
-
-export type { Question } from "@/components/assessments/questionnaire-question-field-body";
+import type { Question } from "@/types/questionnaire";
 
 type QuestionnaireQuestionFieldProps = {
   question: Question;
