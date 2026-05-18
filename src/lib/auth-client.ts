@@ -25,12 +25,17 @@ function isOnboardingComplete(user: AuthUser): boolean | undefined {
   return user.onboardingComplete ?? user.onboarding_complete;
 }
 
+export function dashboardPathForRole(role: AuthUser["role"]): string {
+  if (role === "talent") return "/t/dashboard";
+  return "/dashboard";
+}
+
 export function postAuthRedirectForUser(user: AuthUser): string {
   if (isOnboardingComplete(user) === false) {
     if (user.role === "talent") return "/talent/onboarding";
     if (user.role === "employer") return "/employer/onboarding";
   }
-  return "/dashboard";
+  return dashboardPathForRole(user.role);
 }
 
 function isAuthResponsePayload(
@@ -121,7 +126,7 @@ export async function signInWithGoogle(): Promise<GoogleSignInResult> {
     return {
       result,
       user: login.user,
-      redirectTo: "/dashboard",
+      redirectTo: "/t/dashboard",
     };
   }
 

@@ -41,7 +41,7 @@ function GenerateRoadmapStep() {
       timeoutRef.current = setTimeout(() => {
         if (!isMountedRef.current) return;
         if (intervalRef.current) clearInterval(intervalRef.current);
-        router.push("/dashboard");
+        router.push("/t/dashboard");
       }, REDIRECT_DELAY);
     } catch (error) {
       if (intervalRef.current) clearInterval(intervalRef.current);
