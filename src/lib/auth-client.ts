@@ -2,7 +2,7 @@
 
 import { signIn, type SignInResponse } from "next-auth/react";
 
-import { getMe } from "@/actions/auth";
+import { verifyGoogleCode } from "@/actions/auth";
 import { requestGoogleAuthCode } from "@/lib/google-auth";
 import type { AuthUser } from "@/types/api";
 import type {
@@ -114,21 +114,22 @@ export async function signInWithVerifiedUser(
 
 export async function signInWithGoogle(): Promise<GoogleSignInResult> {
   const code = await requestGoogleAuthCode();
-
-  const result = await signIn("credentials", {
-    googleCode: code,
+  const login = await verifyGoogleCode({
+    code,
     redirectUri: "postmessage",
     role: "talent",
-    redirect: false,
   });
+
+  const result = await signInWithVerifiedUser(login.user);
 
   if (result?.error) {
     return {
       result,
+      user: login.user,
       redirectTo: "/t/dashboard",
     };
   }
 
-  const user = await getMe();
+  const user = login.user;
   return { result, user, redirectTo: postAuthRedirectForUser(user) };
 }
