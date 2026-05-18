@@ -1,7 +1,13 @@
-import React from "react";
+import { AssessmentPreviewPage } from "@/components/assessments/assessment-preview-page";
 
-const AssessmentPage = () => {
-  return <main>AssessmentPage</main>;
+type AssessmentPageProps = {
+  params: Promise<{
+    name: string;
+  }>;
 };
 
-export default AssessmentPage;
+export default async function AssessmentPage({ params }: AssessmentPageProps) {
+  const { name } = await params;
+
+  return <AssessmentPreviewPage assessmentName={name} />;
+}
