@@ -1,7 +1,5 @@
-import React from "react";
+import { AssessmentOverviewPage } from "@/components/assessments/assessment-overview-page";
 
-const MainAssessmentPage = () => {
-  return <div>MainAssessmentPage</div>;
-};
-
-export default MainAssessmentPage;
+export default function MainAssessmentPage() {
+  return <AssessmentOverviewPage />;
+}
