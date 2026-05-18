@@ -10,7 +10,7 @@ function AssessmentPreviewPage({ assessmentName }: AssessmentPreviewPageProps) {
 
   return (
     <div className="flex min-h-[calc(100dvh-72px)] items-start justify-center pt-11 pb-14 sm:pt-14 lg:pt-16">
-      <div className="w-full max-w-[680px]">
+      <div className="w-full max-w-[750px]">
         <AssessmentPreviewCard assessment={assessment} />
       </div>
     </div>
