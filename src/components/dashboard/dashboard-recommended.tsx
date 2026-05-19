@@ -55,7 +55,7 @@ function RecommendedItemRow({ item }: { item: RecommendedItem }) {
       {/* Thumbnail */}
       <div
         className={cn(
-          "flex size-[80px] shrink-0 items-center justify-center rounded-xl",
+          "flex size-[72px] shrink-0 items-center justify-center rounded-xl",
           item.thumbnailBg,
         )}
       >
