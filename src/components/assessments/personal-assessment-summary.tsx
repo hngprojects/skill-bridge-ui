@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { Button } from "../ui/button";
-import NextUpCard from "./next-up-card";
-import AssessmentContainer from "./assessment-container";
+import { Button } from "@/components/ui/button";
+import NextUpCard from "@/components/assessments/next-up-card";
+import AssessmentContainer from "@/components/assessments/assessment-container";
 
 const userTrack = "Frontend Development";
 

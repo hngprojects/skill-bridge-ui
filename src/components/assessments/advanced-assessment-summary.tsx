@@ -1,7 +1,7 @@
-import { Button } from "../ui/button";
-import AssessmentContainer from "./assessment-container";
+import { Button } from "@/components/ui/button";
+import AssessmentContainer from "@/components/assessments/assessment-container";
 import Image from "next/image";
-import NextUpCard from "./next-up-card";
+import NextUpCard from "@/components/assessments/next-up-card";
 
 const AdvancedAssessmentSummary = () => {
   return (

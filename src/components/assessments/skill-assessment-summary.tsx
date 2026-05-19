@@ -1,6 +1,6 @@
 import Image from "next/image";
-import NextUpCard from "./next-up-card";
-import { Button } from "../ui/button";
+import NextUpCard from "@/components/assessments/next-up-card";
+import { Button } from "@/components/ui/button";
 import AssessmentContainer from "@/components/assessments/assessment-container";
 import { Dot } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
