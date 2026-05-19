@@ -1,8 +1,8 @@
-import { DashboardWelcome } from "@/components/dashboard/dashboard-welcome";
-import { DashboardStatusCard } from "@/components/dashboard/dashboard-status-card";
-import { DashboardSkillBreakdown } from "@/components/dashboard/dashboard-skill-breakdown";
-import { DashboardJobRoadmap } from "@/components/dashboard/dashboard-job-roadmap";
-import { DashboardRecommended } from "@/components/dashboard/dashboard-recommended";
+import { DashboardWelcome } from "@/components/dashboard/emerging-user/dashboard-welcome";
+import { DashboardStatusCard } from "@/components/dashboard/emerging-user/dashboard-status-card";
+import { DashboardSkillBreakdown } from "@/components/dashboard/emerging-user/dashboard-skill-breakdown";
+import { DashboardJobRoadmap } from "@/components/dashboard/emerging-user/dashboard-job-roadmap";
+import { DashboardRecommended } from "@/components/dashboard/emerging-user/dashboard-recommended";
 
 export default function TalentDashboard() {
   return (

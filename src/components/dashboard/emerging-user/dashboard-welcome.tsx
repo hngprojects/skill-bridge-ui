@@ -24,8 +24,7 @@ export function DashboardWelcome({
           Welcome, {firstName}!
         </h1>
         <p className="body mt-1 text-muted-foreground">
-          Your Goal:{" "}
-          <span className="italic">{goal}</span>
+          Your Goal: <span className="italic">{goal}</span>
         </p>
       </div>
 
