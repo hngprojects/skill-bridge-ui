@@ -1,7 +1,20 @@
-import React from "react";
+import { notFound } from "next/navigation";
 
-const AssessmentPage = () => {
-  return <main>AssessmentPage</main>;
+import { AssessmentPreviewPage } from "@/components/assessments/assessment-preview-page";
+import { isAssessmentSlug } from "@/constants/assessment-previews";
+
+type AssessmentPageProps = {
+  params: Promise<{
+    name: string;
+  }>;
 };
 
-export default AssessmentPage;
+export default async function AssessmentPage({ params }: AssessmentPageProps) {
+  const { name } = await params;
+
+  if (!isAssessmentSlug(name)) {
+    notFound();
+  }
+
+  return <AssessmentPreviewPage assessmentName={name} />;
+}

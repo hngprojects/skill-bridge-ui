@@ -13,7 +13,7 @@ export function DashboardNavbarSearch() {
   return (
     <InputGroup
       className={cn(
-        "hidden h-10 max-w-md flex-1 border border-gray-200 bg-white shadow-none sm:flex lg:w-80",
+        "hidden h-10 w-[240px] shrink-0 border border-gray-200 bg-white shadow-none sm:flex",
         "has-[[data-slot=input-group-control]:focus-visible]:ring-0",
       )}
     >
