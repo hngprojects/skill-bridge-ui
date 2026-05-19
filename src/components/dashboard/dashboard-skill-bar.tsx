@@ -45,8 +45,11 @@ export function DashboardSkillBar({
 
           {/* Thumb dot */}
           <div
-            className="absolute top-1/2 size-3.5 -translate-y-1/2 rounded-full bg-foreground ring-2 ring-white"
-            style={{ left: `${clampedPct}%`, transform: "translate(-50%, -50%)" }}
+            className="absolute top-2.5 size-3.5 -translate-y-1/2 rounded-full bg-foreground ring-2 ring-white"
+            style={{
+              left: `${clampedPct}%`,
+              transform: "translate(-50%, -50%)",
+            }}
           />
 
           {/* Mid-point tick */}
@@ -67,7 +70,7 @@ export function DashboardSkillBar({
           <span
             className={cn(
               "absolute caption font-medium text-foreground",
-              "rounded border border-border bg-white px-1 py-0.5 leading-none",
+              "rounded border border-border bg-white px-1 py-0.5 leading-none shadow-sm",
               "-translate-x-1/2",
             )}
             style={{ left: `${clampedPct}%` }}
@@ -86,15 +89,15 @@ export function DashboardSkillBar({
       <div
         className={cn(
           "flex items-center gap-2 rounded-lg px-3 py-2.5",
-          insightVariant === "success"
-            ? "bg-emerald-50"
-            : "bg-amber-50",
+          insightVariant === "success" ? "bg-emerald-50" : "bg-amber-50",
         )}
       >
         <Sparkles
           className={cn(
             "size-4 shrink-0",
-            insightVariant === "success" ? "text-emerald-500" : "text-amber-500",
+            insightVariant === "success"
+              ? "text-emerald-500"
+              : "text-amber-500",
           )}
           aria-hidden="true"
         />

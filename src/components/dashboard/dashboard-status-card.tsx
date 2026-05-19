@@ -16,7 +16,7 @@ function CircularProgress({
   value,
   size = 112,
   strokeWidth = 10,
-  color = "#F97316",
+  color = "#F59E0C",
 }: CircularProgressProps) {
   const center = 50;
   const radius = center - strokeWidth / 2 - 1;
@@ -50,7 +50,6 @@ function CircularProgress({
           fill="none"
           stroke={color}
           strokeWidth={strokeWidth}
-          strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           style={{ transition: "stroke-dashoffset 0.6s ease" }}
