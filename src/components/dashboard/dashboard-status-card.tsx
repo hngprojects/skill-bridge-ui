@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -99,7 +99,7 @@ export function DashboardStatusCard({
                 {description}
               </p>
             </div>
-            <CircularProgress value={score} />    
+            <CircularProgress value={score} />
           </div>
           <div
             className={cn(
@@ -110,7 +110,10 @@ export function DashboardStatusCard({
             <div className="flex items-center gap-2">
               {/* Orange clock badge */}
               <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-100">
-                <AlertCircle className="size-3.5 text-orange-500" aria-hidden="true" />
+                <AlertCircle
+                  className="size-3.5 text-orange-500"
+                  aria-hidden="true"
+                />
               </span>
               <p className="body-3 text-muted-foreground">
                 {coolingDays}-day cooling period between attempts
@@ -130,7 +133,6 @@ export function DashboardStatusCard({
             </Link>
           </div>
         </div>
-
       </div>
     </div>
   );
