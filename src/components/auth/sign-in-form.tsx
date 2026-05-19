@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signInWithCredentials, signInWithGoogle } from "@/lib/auth-client";
 import { useState } from "react";
+import { appToast } from "@/lib/toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -13,12 +14,28 @@ import { GoogleButton } from "@/components/custom/google-button";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { authFailureMessage } from "@/lib/api";
+import { authKeys } from "@/hooks/api/keys";
+import { ApiError, authFailureMessage } from "@/lib/api";
+import {
+  postAuthRedirectForUser,
+  signInWithGoogle,
+  signInWithPassword,
+} from "@/lib/auth-client";
+import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import { signInFormSchema, type SignInFormValues } from "@/types/form-schema";
+
+type UnverifiedLoginErrorBody = {
+  error?: string;
+  email?: string;
+  role?: string;
+};
 
 function SignInForm() {
   const router = useRouter();
-  const [rootError, setRootError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const setTalentSignup = useSignupFlowStore((s) => s.setTalentSignup);
+  const setEmployerLead = useSignupFlowStore((s) => s.setEmployerLead);
+  const [isGooglePending, setIsGooglePending] = useState(false);
 
   const {
     register,
@@ -35,33 +52,72 @@ function SignInForm() {
   });
 
   const onSubmit = async (data: SignInFormValues) => {
-    setRootError(null);
-
     try {
       const login = await loginAccount({
         email: data.email,
         password: data.password,
       });
 
-      const result = await signInWithCredentials(login);
+      const result = await signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
 
       if (result?.error) {
-        setRootError(
+        appToast.error(
           "Signed in with the API, but couldn't start your session. Try again.",
         );
         return;
       }
 
-      router.push("/dashboard");
+      queryClient.removeQueries({ queryKey: authKeys.all });
+      router.replace(postAuthRedirectForUser(login.user));
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      if (e instanceof ApiError && e.status === 403) {
+        const body = e.data as UnverifiedLoginErrorBody | undefined;
+        if (body?.error === "EMAIL_NOT_VERIFIED" && body.email?.trim()) {
+          const email = body.email.trim();
+          const resumePayload = { email, firstName: "", lastName: "" };
+
+          if (body.role === "employer") {
+            setEmployerLead(resumePayload);
+            router.push("/signup/verify-employer?autoResend=1");
+          } else {
+            setTalentSignup(resumePayload);
+            router.push("/signup/verify-talent?autoResend=1");
+          }
+
+          appToast.error(authFailureMessage(e));
+          return;
+        }
+      }
+
+      appToast.error(authFailureMessage(e));
     }
   };
 
   const onGoogleSignIn = async () => {
-    setRootError(null);
-    await signInWithGoogle();
+    setIsGooglePending(true);
+
+    try {
+      const { result, redirectTo } = await signInWithGoogle();
+
+      if (result?.error) {
+        appToast.error(
+          "Signed in with Google, but couldn't start your session. Try again.",
+        );
+        return;
+      }
+
+      queryClient.removeQueries({ queryKey: authKeys.all });
+      router.replace(redirectTo);
+      router.refresh();
+    } catch (e) {
+      appToast.error(authFailureMessage(e));
+    } finally {
+      setIsGooglePending(false);
+    }
   };
 
   return (
@@ -70,12 +126,6 @@ function SignInForm() {
       noValidate
       className="flex w-full min-w-0 flex-col gap-4 [font-family:var(--font-outfit),sans-serif]"
     >
-      {rootError ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {rootError}
-        </p>
-      ) : null}
-
       <FormInput
         label="Email"
         required
@@ -141,7 +191,11 @@ function SignInForm() {
         <div className="h-px flex-1 bg-[#E2E8F0]" />
       </div>
 
-      <GoogleButton onClick={() => void onGoogleSignIn()} />
+      <GoogleButton
+        disabled={isGooglePending || isSubmitting}
+        label={isGooglePending ? "Connecting..." : "Continue with Google"}
+        onClick={() => void onGoogleSignIn()}
+      />
 
       <p className="mt-5 text-center text-xs leading-relaxed text-[#64748B] sm:mt-6 sm:text-sm">
         Don&apos;t have an account?{" "}

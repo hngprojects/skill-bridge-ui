@@ -7,7 +7,7 @@ import { PrivacySection } from "./_components/privacy-section";
 
 export default function PrivacyPage() {
   return (
-    <main className="relative bg-[#FAFAFA]">
+    <main data-privacy-policy className="relative bg-[#FAFAFA]">
       <PrivacyHero />
 
       <section

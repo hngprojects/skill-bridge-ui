@@ -3,6 +3,8 @@ import type {
   ApiEnvelope,
   EmptyData,
   ForgotPasswordInput,
+  GoogleVerifyCodeInput,
+  GoogleVerifyCodeResponseData,
   LoginInput,
   LoginResponseData,
   MeResponseData,
@@ -13,6 +15,7 @@ import type {
   ResetPasswordInput,
   VerifyEmailInput,
   VerifyEmailResponseData,
+  VerifyPasswordResetOtpInput,
 } from "@/types/api";
 
 import { unwrapData } from "./utils";
@@ -97,11 +100,31 @@ export async function login(body: LoginInput): Promise<LoginResponseData> {
   return unwrapData(res);
 }
 
+export async function verifyGoogleCode(
+  body: GoogleVerifyCodeInput,
+): Promise<GoogleVerifyCodeResponseData> {
+  const res = await publicApi.post<ApiEnvelope<GoogleVerifyCodeResponseData>>(
+    "/auth/google/verify-code",
+    body,
+  );
+  return unwrapData(res);
+}
+
 export async function forgotPassword(
   body: ForgotPasswordInput,
 ): Promise<EmptyData> {
   const res = await publicApi.post<ApiEnvelope<EmptyData>>(
     "/auth/forgot-password",
+    body,
+  );
+  return unwrapData(res);
+}
+
+export async function verifyPasswordResetOtp(
+  body: VerifyPasswordResetOtpInput,
+): Promise<EmptyData> {
+  const res = await publicApi.post<ApiEnvelope<EmptyData>>(
+    "/auth/verify-reset-otp",
     body,
   );
   return unwrapData(res);

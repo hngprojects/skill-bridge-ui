@@ -2,10 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import {
+  useForgotPassword,
+  useResetPassword,
+  useVerifyPasswordResetOtp,
+} from "@/hooks/api/use-auth";
+import { ApiError, authFailureMessage } from "@/lib/api";
+import { appToast } from "@/lib/toast";
+
 const OTP_EXPIRY_SECONDS = 5 * 60;
 const UPPERCASE_REGEX = /[A-Z]/;
 const LOWERCASE_REGEX = /[a-z]/;
 const NUMBER_REGEX = /[0-9]/;
+const OTP_REGEX = /^\d{6}$/;
 
 type ForgotPasswordStep = "email" | "intro" | "code" | "password" | "success";
 
@@ -24,8 +33,13 @@ function useForgotPasswordFlow(initialEmail = "") {
   const [otpExpiresAt, setOtpExpiresAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [otpAttemptsRemaining, setOtpAttemptsRemaining] = useState(3);
-  const [isSendingCode, setIsSendingCode] = useState(false);
-  const [isResettingPassword, setIsResettingPassword] = useState(false);
+
+  const { mutateAsync: requestPasswordReset, isPending: isSendingCode } =
+    useForgotPassword();
+  const { mutateAsync: verifyResetOtp, isPending: isVerifyingOtp } =
+    useVerifyPasswordResetOtp();
+  const { mutateAsync: resetPassword, isPending: isResettingPassword } =
+    useResetPassword();
 
   const otpSecondsRemaining = useMemo(() => {
     if (!otpExpiresAt) return 0;
@@ -77,11 +91,15 @@ function useForgotPasswordFlow(initialEmail = "") {
     setOtp("");
     setOtpError("");
 
-    setIsSendingCode(true);
-    window.setTimeout(() => {
-      setIsSendingCode(false);
+    try {
+      await requestPasswordReset({ email: trimmedEmail });
+      appToast.success("Password reset email sent.");
       setStep("intro");
-    }, 400);
+    } catch (error) {
+      const message = authFailureMessage(error);
+      appToast.error(message);
+      setRootError(message);
+    }
   };
 
   const validateOtp = async () => {
@@ -99,13 +117,33 @@ function useForgotPasswordFlow(initialEmail = "") {
       return;
     }
 
-    if (otp.length !== 6) {
+    if (!OTP_REGEX.test(otp)) {
       setOtpError("Enter the complete 6-digit code.");
       return;
     }
 
-    setOtpError("");
-    setStep("password");
+    try {
+      await verifyResetOtp({
+        email: resetEmail.trim(),
+        otp,
+      });
+      setOtpError("");
+      appToast.success("Code verified.");
+      setStep("password");
+    } catch (error) {
+      const message = authFailureMessage(error);
+      const invalidCodeMessage = /\b(invalid|incorrect)\s+(otp|code)\b/i;
+      const isInvalidOtp =
+        error instanceof ApiError &&
+        error.status === 400 &&
+        invalidCodeMessage.test(message);
+
+      if (isInvalidOtp) {
+        setOtpAttemptsRemaining((remaining) => Math.max(0, remaining - 1));
+      }
+      appToast.error(message);
+      setOtpError(message);
+    }
   };
 
   const validatePasswords = async () => {
@@ -113,25 +151,36 @@ function useForgotPasswordFlow(initialEmail = "") {
     const nextPasswordError =
       password.length < 8
         ? "Password must be at least 8 characters"
-        : !UPPERCASE_REGEX.test(password)
-          ? "Password must include at least one uppercase letter"
-          : !LOWERCASE_REGEX.test(password)
-            ? "Password must include at least one lowercase letter"
-            : !NUMBER_REGEX.test(password)
-              ? "Password must include at least one number"
-              : "";
+        : password.length > 64
+          ? "Password must be at most 64 characters"
+          : !UPPERCASE_REGEX.test(password)
+            ? "Password must include at least one uppercase letter"
+            : !LOWERCASE_REGEX.test(password)
+              ? "Password must include at least one lowercase letter"
+              : !NUMBER_REGEX.test(password)
+                ? "Password must include at least one number"
+                : "";
     const nextConfirmPasswordError =
       confirmPassword !== password ? "Passwords do not match" : "";
 
     setPasswordError(nextPasswordError);
     setConfirmPasswordError(nextConfirmPasswordError);
 
-    if (!nextPasswordError && !nextConfirmPasswordError) {
-      setIsResettingPassword(true);
-      window.setTimeout(() => {
-        setIsResettingPassword(false);
-        setStep("success");
-      }, 400);
+    if (nextPasswordError || nextConfirmPasswordError) return;
+
+    try {
+      await resetPassword({
+        email: resetEmail.trim(),
+        otp,
+        password,
+        confirmPassword,
+      });
+      appToast.success("Password changed successfully.");
+      setStep("success");
+    } catch (error) {
+      const message = authFailureMessage(error);
+      appToast.error(message);
+      setRootError(message);
     }
   };
 
@@ -141,14 +190,18 @@ function useForgotPasswordFlow(initialEmail = "") {
 
     clearMessages();
 
-    setIsSendingCode(true);
-    window.setTimeout(() => {
-      setIsSendingCode(false);
+    try {
+      await requestPasswordReset({ email: trimmedEmail });
       setOtp("");
       setOtpError("");
       startOtpCountdown();
+      appToast.success("A new code was sent.");
       setResendHint("A new code was sent.");
-    }, 400);
+    } catch (error) {
+      const message = authFailureMessage(error);
+      appToast.error(message);
+      setRootError(message);
+    }
   };
 
   const showOtpStep = () => {
@@ -174,6 +227,7 @@ function useForgotPasswordFlow(initialEmail = "") {
     canResendCode,
     maxOtpAttemptsReached,
     isSendingCode,
+    isVerifyingOtp,
     isResettingPassword,
     setResetEmail,
     setEmailError,

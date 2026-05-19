@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { appToast } from "@/lib/toast";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -24,7 +24,6 @@ import { useSignupFlowStore } from "@/stores/signup-flow-store";
 function EmployerFinalSignupForm() {
   const router = useRouter();
   const setEmployerLead = useSignupFlowStore((s) => s.setEmployerLead);
-  const [rootError, setRootError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -56,7 +55,6 @@ function EmployerFinalSignupForm() {
     passwordValue === confirmPasswordValue && confirmPasswordValue !== "";
 
   const onSubmit = async (data: EmployerSignupFinalValues) => {
-    setRootError(null);
     try {
       await registerAccount(
         employerRegisterBody({
@@ -74,7 +72,7 @@ function EmployerFinalSignupForm() {
       router.push("/signup/verify-employer");
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
@@ -84,12 +82,6 @@ function EmployerFinalSignupForm() {
       noValidate
       className="flex w-full min-w-0 flex-col gap-6 font-sans"
     >
-      {rootError ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {rootError}
-        </p>
-      ) : null}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <FormInput
           label="First name"

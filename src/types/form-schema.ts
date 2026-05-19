@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+import {
+  EMPLOYER_DESIRED_ROLE_IDS,
+  EMPLOYER_HIRING_COUNT_VALUES,
+  EMPLOYER_REGION_VALUES,
+} from "@/constants/employer-onboarding";
+
 export const onboardingFormSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required."),
   lastName: z.string().trim().min(1, "Last name is required."),
@@ -7,6 +13,7 @@ export const onboardingFormSchema = z.object({
   password: z
     .string()
     .min(8, "Password must be at least 8 characters.")
+    .max(64, "Password must be at most 64 characters.")
     .regex(/[A-Z]/, "Password must include at least one uppercase letter.")
     .regex(/[a-z]/, "Password must include at least one lowercase letter.")
     .regex(/[0-9]/, "Password must include at least one number."),
@@ -28,6 +35,7 @@ export const employerOnboardingFormSchema = z.object({
   password: z
     .string()
     .min(14, "Password must be at least 14 characters")
+    .max(64, "Password must be at most 64 characters")
     .regex(/[a-z]/, "Must include a lowercase character")
     .regex(/[A-Z]/, "Must include an uppercase character")
     .regex(/[0-9]/, "Must include a number"),
@@ -35,6 +43,41 @@ export const employerOnboardingFormSchema = z.object({
 
 export type EmployerOnboardingFormValues = z.infer<
   typeof employerOnboardingFormSchema
+>;
+
+export const employerOnboardingProfileSchema = z.object({
+  joiningAs: z.enum(["recruiter", "founder", "agency"], {
+    message: "Select how you are joining",
+  }),
+  desiredRoles: z
+    .array(z.enum(EMPLOYER_DESIRED_ROLE_IDS))
+    .min(1, "Select at least one role"),
+  region: z.enum(EMPLOYER_REGION_VALUES, {
+    message: "Select your region",
+  }),
+  hiringCountRange: z.enum(EMPLOYER_HIRING_COUNT_VALUES, {
+    message: "Select hiring volume",
+  }),
+  companyWebsite: z
+    .string()
+    .trim()
+    .min(1, "Company website is required")
+    .refine(
+      (value) => {
+        try {
+          const url = value.startsWith("http") ? value : `https://${value}`;
+          new URL(url);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Enter a valid website URL" },
+    ),
+});
+
+export type EmployerOnboardingProfileValues = z.infer<
+  typeof employerOnboardingProfileSchema
 >;
 
 /** UPDATED: Talent Signup Schema with Confirm Password */
@@ -46,6 +89,7 @@ export const signupFormSchema = z
     password: z
       .string()
       .min(8, "Password must be at least 8 characters.")
+      .max(64, "Password must be at most 64 characters.")
       .regex(/[A-Z]/, "Password must include at least one uppercase letter.")
       .regex(/[a-z]/, "Password must include at least one lowercase letter.")
       .regex(/[0-9]/, "Password must include at least one number."),
@@ -79,6 +123,7 @@ export const employerSignupFinalSchema = z
     password: z
       .string()
       .min(8, "Password must be at least 8 characters.")
+      .max(64, "Password must be at most 64 characters.")
       .regex(/[A-Z]/, "Password must include at least one uppercase letter.")
       .regex(/[a-z]/, "Password must include at least one lowercase letter.")
       .regex(/[0-9]/, "Password must include at least one number."),
@@ -109,7 +154,10 @@ export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 export const signInFormSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
-  password: z.string().min(1, "Password is required."),
+  password: z
+    .string()
+    .min(1, "Password is required.")
+    .max(64, "Password must be at most 64 characters."),
   rememberMe: z.boolean().optional(),
 });
 
