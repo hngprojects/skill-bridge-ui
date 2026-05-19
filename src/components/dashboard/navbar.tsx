@@ -11,7 +11,7 @@ import { DashboardNavbarSearch } from "@/components/dashboard/navbar-search";
 import { DashboardNavbarUserMenu } from "@/components/dashboard/navbar-user-menu";
 import { cn } from "@/lib/utils";
 
-const LOGO = "/assets/logo/logo-with-text.svg";
+const LOGO = "/assets/logo/logo.svg";
 
 export default function DashboardNavbar() {
   const pathname = usePathname();
@@ -21,25 +21,29 @@ export default function DashboardNavbar() {
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
       <div
         className={cn(
-          "mx-auto flex h-16 w-full max-w-[1440px] items-center gap-4 px-4 sm:px-6 lg:h-[72px] lg:gap-8",
+          "mx-auto flex h-16 w-full max-w-[1440px] items-center px-4 sm:px-6 lg:h-[72px]",
         )}
       >
         <Link
           href="/t/dashboard"
-          className="relative h-9 w-32 shrink-0 sm:w-36"
+          className="inline-flex shrink-0 items-center gap-2"
+          aria-label="SkillBridge home"
         >
           <Image
             src={LOGO}
-            alt="SkillBridge"
-            fill
-            className="object-contain object-left"
+            alt=""
+            width={36}
+            height={36}
+            className="size-9 object-contain"
             priority
-            sizes="(max-width: 640px) 128px, 144px"
           />
+          <span className="font-sans text-xl font-bold text-primary-900 sm:text-2xl">
+            SkillBridge
+          </span>
         </Link>
 
         <nav
-          className="hidden flex-1 items-center justify-center gap-8 lg:flex"
+          className="hidden items-center lg:ml-[70px] lg:flex"
           aria-label="Dashboard"
         >
           <DashboardNavLinks
