@@ -26,7 +26,7 @@ export function RoadmapSection({ steps }: RoadmapSectionProps) {
     <section className="animate-in fade-in slide-in-from-bottom-1 py-10 duration-500">
       <Tabs defaultValue="in-progress" className="gap-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-[22px] leading-normal font-bold tracking-[0.016em] text-[#151515] sm:text-22px] sm:leading-[1.2] sm:tracking-[-0.02em]">
+          <h2 className="text-[22px] leading-normal font-bold tracking-[0.016em] text-[#151515] sm:text-[22px] sm:leading-[1.2] sm:tracking-[-0.02em]">
             Job assessment roadmap
           </h2>
 
