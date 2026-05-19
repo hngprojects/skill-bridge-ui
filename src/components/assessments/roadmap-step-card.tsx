@@ -114,7 +114,7 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
                   "h-10 w-full rounded-lg text-base font-semibold tracking-[0.016em] sm:w-42.5",
                   isCompleted
                     ? "bg-[#0F766E] text-white hover:bg-[#0F766E]"
-                    : "bg-[#322B2B] text-white hover:bg-[#322B2B]/95",
+                    : "bg-primary text-white hover:bg-primary/95",
                 )}
               >
                 <Link href={`/t/assessments/${step.slug}`}>
