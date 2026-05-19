@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type {
   AssessmentCatalogCategory,
@@ -12,11 +10,13 @@ import { cn } from "@/lib/utils";
 type AssessmentCatalogTabsProps = {
   tabs: AssessmentCatalogTab[];
   activeTab: AssessmentCatalogCategory;
+  onTabChange: (tab: AssessmentCatalogCategory) => void;
 };
 
 export function AssessmentCatalogTabs({
   tabs,
   activeTab,
+  onTabChange,
 }: AssessmentCatalogTabsProps) {
   return (
     <ScrollArea className="w-full whitespace-nowrap">
@@ -25,9 +25,10 @@ export function AssessmentCatalogTabs({
           const isActive = tab.id === activeTab;
 
           return (
-            <Link
+            <button
+              type="button"
               key={tab.id}
-              href={`/t/assessments/${tab.id}`}
+              onClick={() => onTabChange(tab.id)}
               className={cn(
                 "inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm tracking-[0.016em] transition-all duration-300 hover:-translate-y-0.5 sm:min-w-[193px] sm:px-6 sm:text-base",
                 isActive
@@ -36,7 +37,7 @@ export function AssessmentCatalogTabs({
               )}
             >
               {tab.label}
-            </Link>
+            </button>
           );
         })}
       </div>

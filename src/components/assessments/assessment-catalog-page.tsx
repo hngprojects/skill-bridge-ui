@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   ASSESSMENT_CATALOG_STEPS,
   ASSESSMENT_CATALOG_TABS,
@@ -10,12 +12,13 @@ import { AssessmentCatalogCard } from "./assessment-catalog-card";
 import { AssessmentCatalogTabs } from "./assessment-catalog-tabs";
 
 type AssessmentCatalogPageProps = {
-  activeTab: AssessmentCatalogCategory;
+  initialActiveTab: AssessmentCatalogCategory;
 };
 
 export function AssessmentCatalogPage({
-  activeTab,
+  initialActiveTab,
 }: AssessmentCatalogPageProps) {
+  const [activeTab, setActiveTab] = useState(initialActiveTab);
   const visibleSteps =
     activeTab === "all"
       ? ASSESSMENT_CATALOG_STEPS
@@ -26,6 +29,7 @@ export function AssessmentCatalogPage({
       <AssessmentCatalogTabs
         tabs={ASSESSMENT_CATALOG_TABS}
         activeTab={activeTab}
+        onTabChange={setActiveTab}
       />
 
       <div className="mt-6 space-y-6 sm:mt-8 sm:space-y-4">
