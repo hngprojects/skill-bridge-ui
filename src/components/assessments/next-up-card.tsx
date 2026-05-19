@@ -34,7 +34,7 @@ const NextUpCard = ({ assessement, title, duration, route }: Props) => {
           }
         />
         <div className="flex flex-1 flex-col">
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-col gap-y-2 mb-1 sm:flex-row justify-between sm:items-center">
             <h4 className="font-semibold text-lg">{title}</h4>
             {assessement === "advanced" && (
               <Button

@@ -1,9 +1,9 @@
 import Image from "next/image";
 import NextUpCard from "./next-up-card";
 import { Button } from "../ui/button";
-import AssessmentContainer from "./assessment-container";
+import AssessmentContainer from "@/components/assessments/assessment-container";
 import { Dot } from "lucide-react";
-import { Progress } from "../ui/progress";
+import { Progress } from "@/components/ui/progress";
 
 const SkillAssessementSummary = () => {
   return (
