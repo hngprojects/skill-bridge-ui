@@ -1,8 +1,11 @@
 import { AssessmentPreviewCard } from "@/components/assessments/assessment-preview-card";
-import { getAssessmentPreview } from "@/constants/assessment-previews";
+import {
+  getAssessmentPreview,
+  type AssessmentSlug,
+} from "@/constants/assessment-previews";
 
 type AssessmentPreviewPageProps = {
-  assessmentName: string;
+  assessmentName: AssessmentSlug;
 };
 
 function AssessmentPreviewPage({ assessmentName }: AssessmentPreviewPageProps) {

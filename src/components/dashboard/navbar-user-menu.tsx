@@ -25,14 +25,20 @@ export function DashboardNavbarUserMenu() {
         <Button
           type="button"
           variant="ghost"
-          className="h-10 gap-1.5 rounded-full border border-gray-200 px-1.5 hover:bg-muted/50"
+          className="h-10 gap-2 rounded-md px-0 hover:bg-transparent"
         >
-          <Avatar size="sm" className="size-9 border-0 bg-white after:hidden">
-            <AvatarFallback className="bg-white text-sm font-semibold text-foreground">
+          <Avatar
+            size="lg"
+            className="rounded-full border border-gray-300 bg-white after:hidden"
+          >
+            <AvatarFallback className="rounded-full bg-white text-sm font-semibold text-foreground font p-3">
               {initials}
             </AvatarFallback>
           </Avatar>
-          <ChevronDown className="size-4 text-foreground/60" aria-hidden />
+          <ChevronDown
+            className="size-4 shrink-0 text-foreground/60"
+            aria-hidden
+          />
           <span className="sr-only">Account menu</span>
         </Button>
       </DropdownMenuTrigger>
