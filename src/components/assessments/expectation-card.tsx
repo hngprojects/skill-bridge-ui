@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import type { AssessmentExpectation } from "@/constants/assessment-roadmap";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +18,18 @@ export function ExpectationCard({ item }: ExpectationCardProps) {
         "duration-300 transition-transform hover:-translate-y-0.5 hover:shadow-sm",
       )}
     >
-      <Icon className="size-6 text-[#6B7280]" strokeWidth={1.75} />
+      {item.iconSrc ? (
+        <Image
+          src={item.iconSrc}
+          alt=""
+          width={24}
+          height={24}
+          aria-hidden
+          className="size-6 object-contain"
+        />
+      ) : Icon ? (
+        <Icon className="size-6 text-[#6B7280]" strokeWidth={1.75} />
+      ) : null}
       <p className="max-w-[190px] text-sm leading-[1.5] tracking-[0.016em] text-[#151515]">
         {item.title}
       </p>

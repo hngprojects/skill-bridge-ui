@@ -2,12 +2,10 @@ import type { LucideIcon } from "lucide-react";
 import {
   BriefcaseBusiness,
   CheckCircle2,
-  FileBadge2,
   LaptopMinimal,
   MonitorPlay,
   MonitorCog,
   TestTubeDiagonal,
-  UserRound,
 } from "lucide-react";
 
 export type AssessmentRoadmapTab = "in-progress" | "completed";
@@ -22,7 +20,8 @@ export type AssessmentCatalogCategory =
 export type AssessmentExpectation = {
   id: string;
   title: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
+  iconSrc?: string;
 };
 
 export type AssessmentRoadmapStep = {
@@ -70,22 +69,22 @@ export const ASSESSMENT_EXPECTATIONS: AssessmentExpectation[] = [
   {
     id: "personal",
     title: "Personal Assessment to find your level",
-    icon: UserRound,
+    iconSrc: "/assets/assessments/personal-assessment-icon.svg",
   },
   {
     id: "career",
     title: "Skill/Career assessment to determine your level",
-    icon: MonitorCog,
+    iconSrc: "/assets/assessments/skill-assessment-icon.svg",
   },
   {
     id: "advanced",
     title: "Advanced Assessment to evaluate your core knowledge",
-    icon: LaptopMinimal,
+    iconSrc: "/assets/assessments/advanced-assessment-icon.svg",
   },
   {
     id: "score",
     title: "Get your score and be job-ready",
-    icon: FileBadge2,
+    iconSrc: "/file.svg",
   },
 ];
 
