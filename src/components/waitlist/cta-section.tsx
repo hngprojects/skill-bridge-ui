@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import CTAFloatingImages from "./cta-floating-images";
 
 type Props = { onJoinClick: () => void };
 
@@ -22,62 +22,7 @@ const CtaSection = ({ onJoinClick }: Props) => {
         </svg>
       </div>
       <div className="relative bg-[#05060F] max-sm:px-3 pb-16 pt-6 sm:min-h-141.25 sm:pb-24 sm:pt-25.75">
-        <Image
-          aria-hidden
-          src="/waitlist-icons/yellow-html.svg"
-          alt=""
-          width={98}
-          height={98}
-          className="pointer-events-none absolute -top-1.25 left-4.25 z-0 hidden sm:block"
-        />
-        <Image
-          aria-hidden
-          src="/waitlist-icons/cyan-computer.svg"
-          alt=""
-          width={161}
-          height={161}
-          className="pointer-events-none absolute top-29.5 left-68.75 z-0 hidden sm:block"
-        />
-        <Image
-          aria-hidden
-          src="/waitlist-icons/green-palette.svg"
-          alt=""
-          width={80}
-          height={80}
-          className="pointer-events-none absolute top-105.75 -left-5.5 z-0 hidden sm:block"
-        />
-        <Image
-          aria-hidden
-          src="/waitlist-icons/purple-storage.svg"
-          alt=""
-          width={80}
-          height={80}
-          className="pointer-events-none absolute -top-17.25 right-82.5 z-0 hidden sm:block"
-        />
-        <Image
-          aria-hidden
-          src="/waitlist-icons/blue-picker.svg"
-          alt=""
-          width={99}
-          height={99}
-          className="pointer-events-none absolute top-8.75 right-23.75 z-0 hidden sm:block"
-        />
-        <Image
-          aria-hidden
-          src="/waitlist-icons/light-yellow-upload.svg"
-          alt=""
-          width={98}
-          height={98}
-          className="pointer-events-none absolute top-37.5 right-54 z-0 hidden sm:block"
-        />
-        <Image
-          aria-hidden
-          src="/waitlist-icons/dark-blue-tsx.svg"
-          alt=""
-          width={170}
-          height={170}
-          className="pointer-events-none absolute top-67.75 -right-5.5 z-0 hidden sm:block"
-        />
+        <CTAFloatingImages />
 
         <div className="relative z-10 mx-auto max-w-138 text-center">
           <h2 className="text-2xl font-medium leading-tight text-white sm:hidden">

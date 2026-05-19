@@ -1,11 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { Eye, EyeOff, AlertCircle, Check } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, ChevronDownIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -16,7 +22,9 @@ import {
 import type {
   FormInputProps,
   InputModeProps,
+  MultipleSelectModeProps,
   SelectOption,
+  SingleSelectModeProps,
 } from "@/types/form-input";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -33,7 +41,7 @@ const formFieldLabelClass =
 const formFieldControlClass =
   "h-9 w-full min-w-0 rounded-[5px] border border-border bg-background px-3 py-2 text-base font-normal leading-5 tracking-[0.017em] md:text-base md:leading-5 " +
   "text-foreground shadow-none outline-none transition-[color,box-shadow,border-color] " +
-  "font-sans placeholder:text-muted-foreground " +
+  "font-sans placeholder:text-sm placeholder:text-muted-foreground " +
   "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/25 " +
   "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 " +
   "aria-invalid:border-error aria-invalid:ring-2 aria-invalid:ring-error/20";
@@ -43,6 +51,106 @@ const formFieldHintClass =
 
 const formFieldErrorClass =
   "font-sans text-sm font-normal leading-[18px] text-error";
+
+function FormMultiSelect({
+  inputId,
+  placeholder,
+  options,
+  value,
+  onValueChange,
+  disabled,
+  hasError,
+  success,
+  errorId,
+  descriptionId,
+  description,
+}: {
+  inputId: string;
+  placeholder?: string;
+  options: SelectOption[];
+  value: string[];
+  onValueChange?: (value: string[]) => void;
+  disabled?: boolean;
+  hasError: boolean;
+  success?: boolean;
+  errorId: string;
+  descriptionId: string;
+  description?: string;
+}) {
+  const [open, setOpen] = React.useState(false);
+
+  const selectedLabels = options
+    .filter((option) => value.includes(option.value))
+    .map((option) => option.label);
+
+  const displayText =
+    selectedLabels.length === 0
+      ? (placeholder ?? "Select options")
+      : selectedLabels.join(", ");
+
+  const toggleOption = (optionValue: string, checked: boolean) => {
+    const next = checked
+      ? [...value, optionValue]
+      : value.filter((v) => v !== optionValue);
+    onValueChange?.(next);
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          id={inputId}
+          disabled={disabled}
+          aria-describedby={
+            hasError ? errorId : description ? descriptionId : undefined
+          }
+          className={cn(
+            formFieldControlClass,
+            hasError && "border-error ring-2 ring-error/20",
+            success &&
+              "border-success focus-visible:border-success focus-visible:ring-success/25",
+            "flex w-full items-center justify-between gap-2 text-left",
+          )}
+        >
+          <span
+            className={cn(
+              "min-w-0 flex-1 truncate",
+              selectedLabels.length === 0 && "text-muted-foreground",
+            )}
+          >
+            {displayText}
+          </span>
+          <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        className="w-(--radix-popover-trigger-width) gap-0 rounded-[5px] p-1 shadow-md"
+      >
+        <div className="max-h-60 overflow-y-auto">
+          {options.map((option) => {
+            const checked = value.includes(option.value);
+            return (
+              <label
+                key={option.value}
+                className="flex cursor-pointer items-center gap-2 rounded-[4px] px-2 py-2 text-sm hover:bg-accent"
+              >
+                <Checkbox
+                  checked={checked}
+                  onCheckedChange={(next) =>
+                    toggleOption(option.value, next === true)
+                  }
+                />
+                <span className="text-foreground">{option.label}</span>
+              </label>
+            );
+          })}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 function FormInput(props: FormInputProps) {
   const {
@@ -92,42 +200,65 @@ function FormInput(props: FormInputProps) {
   };
 
   if (props.mode === "select") {
+    const selectProps = props as
+      | SingleSelectModeProps
+      | MultipleSelectModeProps;
+    const isMultiple = selectProps.selection === "multiple";
+
     return (
       <div className={cn(formFieldRootClass, className)}>
         <Label htmlFor={inputId} className={formFieldLabelClass}>
           {label}
         </Label>
-        <Select
-          value={props.value}
-          defaultValue={props.defaultValue}
-          onValueChange={props.onValueChange}
-          disabled={props.disabled}
-          name={name}
-        >
-          <SelectTrigger
-            id={inputId}
-            aria-invalid={hasError}
-            aria-describedby={
-              hasError ? errorId : description ? descriptionId : undefined
+        {isMultiple ? (
+          <FormMultiSelect
+            inputId={inputId}
+            placeholder={placeholder}
+            options={selectProps.options}
+            value={(selectProps as MultipleSelectModeProps).value ?? []}
+            onValueChange={
+              (selectProps as MultipleSelectModeProps).onValueChange
             }
-            className={cn(
-              formFieldControlClass,
-              success &&
-                "border-success focus-visible:border-success focus-visible:ring-success/25",
-              "flex w-full items-center justify-between gap-2 whitespace-nowrap md:text-base",
-              "data-placeholder:text-muted-foreground",
-            )}
+            disabled={selectProps.disabled}
+            hasError={hasError}
+            success={success}
+            errorId={errorId}
+            descriptionId={descriptionId}
+            description={description}
+          />
+        ) : (
+          <Select
+            value={(selectProps as SingleSelectModeProps).value}
+            defaultValue={(selectProps as SingleSelectModeProps).defaultValue}
+            onValueChange={(selectProps as SingleSelectModeProps).onValueChange}
+            disabled={selectProps.disabled}
+            name={name}
           >
-            <SelectValue placeholder={placeholder ?? "Select an option"} />
-          </SelectTrigger>
-          <SelectContent>
-            {props.options.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+            <SelectTrigger
+              id={inputId}
+              aria-invalid={hasError}
+              aria-describedby={
+                hasError ? errorId : description ? descriptionId : undefined
+              }
+              className={cn(
+                formFieldControlClass,
+                success &&
+                  "border-success focus-visible:border-success focus-visible:ring-success/25",
+                "flex w-full items-center justify-between gap-2 whitespace-nowrap md:text-base",
+                "data-placeholder:text-muted-foreground",
+              )}
+            >
+              <SelectValue placeholder={placeholder ?? "Select an option"} />
+            </SelectTrigger>
+            <SelectContent>
+              {props.options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
         {description && !displayError ? (
           <p id={descriptionId} className={formFieldHintClass}>
             {description}
@@ -190,11 +321,10 @@ function FormInput(props: FormInputProps) {
             formFieldControlClass,
             "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
             icon ? "pl-10" : "",
-            props.type === "password"
-              ? hasError || success
-                ? "pr-20"
-                : "pr-10"
-              : "",
+            props.type === "password" ? (hasError ? "pr-20" : "pr-10") : "",
+            success &&
+              !hasError &&
+              "border-success focus-visible:border-success focus-visible:ring-success/25",
             inputProps.className,
           )}
           onBlur={(event) => {
@@ -210,8 +340,6 @@ function FormInput(props: FormInputProps) {
                 className="size-4 text-error-foreground"
                 aria-hidden="true"
               />
-            ) : success ? (
-              <Check className="size-4 text-success" aria-hidden="true" />
             ) : null}
             <button
               type="button"

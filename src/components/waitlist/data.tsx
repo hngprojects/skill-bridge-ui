@@ -62,11 +62,36 @@ const footerLinks = [
 ];
 
 const socials = [
-  { src: "/waitlist-icons/tiktok.svg", alt: "TikTok", href: "#" },
-  { src: "/waitlist-icons/x-fka.svg", alt: "X", href: "#" },
-  { src: "/waitlist-icons/instagram.svg", alt: "Instagram", href: "#" },
-  { src: "/waitlist-icons/linkedin.svg", alt: "LinkedIn", href: "#" },
-  { src: "/waitlist-icons/youtube.svg", alt: "YouTube", href: "#" },
+  {
+    src: "/waitlist-icons/tiktok.svg",
+    alt: "TikTok",
+    href: "https://tiktok.com/@credlanehq",
+  },
+  {
+    src: "/waitlist-icons/x-fka.svg",
+    alt: "X",
+    href: "https://x.com/credlanehq",
+  },
+  {
+    src: "/waitlist-icons/instagram.svg",
+    alt: "Instagram",
+    href: "https://instagram.com/credlanehq",
+  },
+  {
+    src: "/waitlist-icons/facebook-icon.svg",
+    alt: "Facebook",
+    href: "https://facebook.com/credlanehq",
+  },
+  {
+    src: "/waitlist-icons/linkedin.svg",
+    alt: "LinkedIn",
+    href: "https://linkedin.com/company/credlanehq",
+  },
+  {
+    src: "/waitlist-icons/youtube.svg",
+    alt: "YouTube",
+    href: "https://youtube.com/@credlanehq",
+  },
 ];
 
 const roles = [

@@ -1,9 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
-import { signInWithCredentials } from "@/lib/auth-client";
+import { getMe } from "@/actions/auth";
+import {
+  postAuthRedirectForUser,
+  signInWithVerifiedUser,
+} from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -11,7 +16,6 @@ import { FormInput } from "@/components/custom/form-input";
 import { Button } from "@/components/ui/button";
 import { useResendVerification, useVerifyEmail } from "@/hooks/api/use-auth";
 import { authFailureMessage } from "@/lib/api";
-import { cn } from "@/lib/utils";
 import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import {
   emailVerificationCodeSchema,
@@ -48,15 +52,14 @@ function TalentVerifyEmailForm() {
   const router = useRouter();
   const talentSignup = useSignupFlowStore((s) => s.talentSignup);
   const clearTalentSignup = useSignupFlowStore((s) => s.clearTalentSignup);
-  const [rootError, setRootError] = useState<string | null>(null);
-  const [resendHint, setResendHint] = useState<string | null>(null);
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
   const [codeValue, setCodeValue] = useState("");
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const autoResendTriggeredRef = useRef(false);
 
-  const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
   const { mutateAsync: resendVerification, isPending: resending } =
     useResendVerification();
+  const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
 
   const {
     register,
@@ -77,49 +80,63 @@ function TalentVerifyEmailForm() {
   }, []);
 
   const onSubmit = async (values: EmailVerificationCodeValues) => {
-    setRootError(null);
-    setResendHint(null);
     const email = talentSignup?.email;
     if (!email) return;
 
     try {
-      const data = await verifyEmail({
+      const verified = await verifyEmail({
         email,
         otp: values.code,
       });
+      let user = verified.user;
+      try {
+        user = await getMe();
+      } catch {
+        user = verified.user;
+      }
 
-      const signResult = await signInWithCredentials(data);
+      const signResult = await signInWithVerifiedUser(user);
 
       if (signResult?.error) {
-        setRootError(
+        appToast.error(
           "Your email was verified but we couldn't start your session. Try signing in.",
         );
         return;
       }
 
       clearTalentSignup();
-      router.push("/dashboard");
+      router.push(postAuthRedirectForUser(user));
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
-  const onResend = async () => {
-    setRootError(null);
-    setResendHint(null);
+  const onResend = useCallback(async () => {
     const email = talentSignup?.email;
     if (!email) return;
 
     try {
       await resendVerification({ email });
-      setResendHint("If that email is registered, a new code was sent.");
+      appToast.success("If that email is registered, a new code was sent.");
       setSecondsLeft(RESEND_SECONDS);
       startInterval(intervalRef, setSecondsLeft);
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
-  };
+  }, [talentSignup?.email, resendVerification]);
+
+  useEffect(() => {
+    if (
+      new URLSearchParams(window.location.search).get("autoResend") !== "1" ||
+      !talentSignup?.email ||
+      autoResendTriggeredRef.current
+    ) {
+      return;
+    }
+    autoResendTriggeredRef.current = true;
+    void onResend();
+  }, [talentSignup?.email, onResend]);
 
   const isCodeComplete = codeValue.length === 6;
 
@@ -143,17 +160,6 @@ function TalentVerifyEmailForm() {
       noValidate
       className="flex w-full min-w-0 flex-col gap-4 font-sans"
     >
-      {rootError ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {rootError}
-        </p>
-      ) : null}
-      {resendHint ? (
-        <p className="rounded-lg border border-muted bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
-          {resendHint}
-        </p>
-      ) : null}
-
       <FormInput
         {...register("code")}
         label="Verification code"
@@ -195,12 +201,7 @@ function TalentVerifyEmailForm() {
       <Button
         type="submit"
         disabled={isSubmitting || verifying || !isCodeComplete}
-        className={cn(
-          "h-12 min-h-12 w-full rounded-lg text-sm font-semibold transition-colors",
-          isCodeComplete
-            ? "bg-primary-900 text-primary-foreground hover:bg-primary-900/90"
-            : "bg-muted text-muted-foreground cursor-not-allowed",
-        )}
+        className="h-12 min-h-12 w-full rounded-lg text-sm font-semibold"
       >
         {isSubmitting || verifying ? "Verifying..." : "Verify Email"}
       </Button>

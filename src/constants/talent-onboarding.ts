@@ -1,3 +1,20 @@
+import { cn } from "@/lib/utils";
+
+export const ONBOARDING_NAV_BTN_SHAPE = "h-11 min-w-48 rounded-lg px-4";
+
+export const ONBOARDING_NEXT_BTN_CLASSNAME = cn(
+  ONBOARDING_NAV_BTN_SHAPE,
+  "w-full sm:min-w-32 sm:w-auto md:w-60 lg:min-w-60 lg:max-w-60",
+);
+
+export const ONBOARDING_BACK_BTN_CLASSNAME = cn(
+  ONBOARDING_NAV_BTN_SHAPE,
+  "w-full sm:min-w-32 sm:w-auto",
+  "border-0 bg-[#CBD5E1] text-[#94A3B8] shadow-none",
+  "hover:bg-[#BCC9D9] hover:text-[#94A3B8]",
+  "focus-visible:ring-[#94A3B8]/30",
+);
+
 export const ONBOARDING_STEPS = [
   { id: "set-goal", title: "Set a Goal" },
   { id: "select-track", title: "Select your Track" },
@@ -15,6 +32,18 @@ export const GOAL_OPTIONS = [
 ] as const;
 
 export type GoalOptionId = (typeof GOAL_OPTIONS)[number]["id"];
+
+/** API `goal` values for POST/PATCH `/talent/onboarding/goal`. */
+export const GOAL_TO_API: Record<GoalOptionId, string> = {
+  "first-role": "land_first_role",
+  "technical-skills": "build_technical_skills",
+  "validate-ability": "validate_current_ability",
+  employability: "become_more_employable",
+};
+
+export function goalIdToApiGoal(id: GoalOptionId): string {
+  return GOAL_TO_API[id];
+}
 
 export const TRACK_OPTIONS = [
   {
@@ -57,3 +86,12 @@ export const TRACK_OPTIONS = [
 ] as const;
 
 export type TrackOptionId = (typeof TRACK_OPTIONS)[number]["id"];
+
+/** API track values (snake_case): POST `{ track }` per selection; PATCH `{ roleTracks: [...] }`. */
+export function trackIdToApiRoleTrack(id: TrackOptionId): string {
+  return id.replace(/-/g, "_");
+}
+
+export function trackIdsToApiRoleTracks(ids: TrackOptionId[]): string[] {
+  return ids.map(trackIdToApiRoleTrack);
+}

@@ -9,10 +9,10 @@ const ProjectsCard = ({
 }: CardCopy & { className?: string }) => {
   return (
     <CardShell className={className} bg="bg-[#C9D2FB]">
-      <h3 className="text-lg font-bold leading-[23px] tracking-[0.016em] text-[#242425]">
+      <h3 className="text-lg font-bold leading-5.75 tracking-[0.016em] text-[#242425]">
         {title}
       </h3>
-      <p className="mt-2 text-sm font-normal leading-[18px] tracking-[0.016em] text-[#242425]">
+      <p className="mt-2 text-sm font-normal leading-4.5 tracking-[0.016em] text-[#242425]">
         {body}
       </p>
       <CardImage

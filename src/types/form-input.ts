@@ -28,13 +28,26 @@ export type InputModeProps = BaseProps & {
     "type" | "id" | "name" | "required"
   >;
 
-export type SelectModeProps = BaseProps & {
+export type SingleSelectModeProps = BaseProps & {
   mode: "select";
+  selection?: "single";
   options: SelectOption[];
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   disabled?: boolean;
 };
+
+export type MultipleSelectModeProps = BaseProps & {
+  mode: "select";
+  selection: "multiple";
+  options: SelectOption[];
+  value?: string[];
+  defaultValue?: string[];
+  onValueChange?: (value: string[]) => void;
+  disabled?: boolean;
+};
+
+export type SelectModeProps = SingleSelectModeProps | MultipleSelectModeProps;
 
 export type FormInputProps = InputModeProps | SelectModeProps;

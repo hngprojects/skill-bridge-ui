@@ -1,9 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
-import { signInWithCredentials } from "@/lib/auth-client";
+import { getMe } from "@/actions/auth";
+import {
+  postAuthRedirectForUser,
+  signInWithVerifiedUser,
+} from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -22,12 +27,10 @@ function EmployerVerifyEmailForm() {
   const employerLead = useSignupFlowStore((s) => s.employerLead);
   const clearEmployerLead = useSignupFlowStore((s) => s.clearEmployerLead);
   const [codeValue, setCodeValue] = useState("");
-  const [rootError, setRootError] = useState<string | null>(null);
-  const [resendHint, setResendHint] = useState<string | null>(null);
-
-  const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
+  const autoResendTriggeredRef = useRef(false);
   const { mutateAsync: resendVerification, isPending: resending } =
     useResendVerification();
+  const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
 
   const {
     register,
@@ -40,47 +43,61 @@ function EmployerVerifyEmailForm() {
   });
 
   const onSubmit = async (values: EmailVerificationCodeValues) => {
-    setRootError(null);
-    setResendHint(null);
     const email = employerLead?.email;
     if (!email) return;
 
     try {
-      const data = await verifyEmail({
+      const verified = await verifyEmail({
         email,
         otp: values.code,
       });
+      let user = verified.user;
+      try {
+        user = await getMe();
+      } catch {
+        user = verified.user;
+      }
 
-      const signResult = await signInWithCredentials(data);
+      const signResult = await signInWithVerifiedUser(user);
 
       if (signResult?.error) {
-        setRootError(
+        appToast.error(
           "Your email was verified but we couldn't start your session. Try signing in.",
         );
         return;
       }
 
       clearEmployerLead();
-      router.push("/dashboard");
+      router.push(postAuthRedirectForUser(user));
       router.refresh();
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
   };
 
-  const onResend = async () => {
-    setRootError(null);
-    setResendHint(null);
+  const onResend = useCallback(async () => {
     const email = employerLead?.email;
     if (!email) return;
 
     try {
       await resendVerification({ email });
-      setResendHint("If that email is registered, a new code was sent.");
+      appToast.success("If that email is registered, a new code was sent.");
     } catch (e) {
-      setRootError(authFailureMessage(e));
+      appToast.error(authFailureMessage(e));
     }
-  };
+  }, [employerLead?.email, resendVerification]);
+
+  useEffect(() => {
+    if (
+      new URLSearchParams(window.location.search).get("autoResend") !== "1" ||
+      !employerLead?.email ||
+      autoResendTriggeredRef.current
+    ) {
+      return;
+    }
+    autoResendTriggeredRef.current = true;
+    void onResend();
+  }, [employerLead?.email, onResend]);
 
   if (!employerLead?.email) {
     return (
@@ -102,17 +119,6 @@ function EmployerVerifyEmailForm() {
       noValidate
       className="flex flex-col gap-4 font-sans"
     >
-      {rootError ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {rootError}
-        </p>
-      ) : null}
-      {resendHint ? (
-        <p className="rounded-lg border border-muted bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
-          {resendHint}
-        </p>
-      ) : null}
-
       <FormInput
         {...register("code")}
         label="Verification code"
@@ -133,7 +139,7 @@ function EmployerVerifyEmailForm() {
       <Button
         type="submit"
         disabled={isSubmitting || verifying || codeValue.length !== 6}
-        className="mt-1 h-12 w-full rounded-lg bg-primary-900 label-sm text-primary-foreground hover:bg-primary-900/90 disabled:opacity-60"
+        className="mt-1 h-12 w-full rounded-lg label-sm"
       >
         {isSubmitting || verifying ? "Verifying..." : "Verify Email"}
       </Button>
