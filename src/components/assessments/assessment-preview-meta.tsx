@@ -24,16 +24,19 @@ function AssessmentPreviewMeta({ assessment }: AssessmentPreviewMetaProps) {
   ];
 
   return (
-    <dl className="mt-4 flex flex-col gap-3">
+    <dl className="mt-4 flex flex-col gap-3 2xl:mt-6 2xl:gap-4">
       {assessmentFacts.map((fact) => {
         const Icon = fact.icon;
 
         return (
           <div
             key={fact.label}
-            className="flex items-center gap-3 font-sans text-xs text-muted-foreground"
+            className="flex items-center gap-3 font-sans text-xs text-muted-foreground 2xl:gap-4 2xl:text-base"
           >
-            <Icon className="size-4 text-muted-foreground" aria-hidden />
+            <Icon
+              className="size-4 text-muted-foreground 2xl:size-5"
+              aria-hidden
+            />
             <dt className="sr-only">{fact.label}</dt>
             <dd className={fact.strong ? "font-semibold text-foreground" : ""}>
               {fact.label}

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import AssessmentContainer from "@/components/assessments/assessment-container";
 import { Dot } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
 
 const SkillAssessementSummary = () => {
   return (
@@ -54,8 +55,11 @@ const SkillAssessementSummary = () => {
           >
             Retake (valid in 24h)
           </Button>
-          <Button className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer">
-            Accept & continue
+          <Button
+            asChild
+            className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
+          >
+            <Link href="/t/dashboard">Accept &amp; continue</Link>
           </Button>
         </div>
       </div>

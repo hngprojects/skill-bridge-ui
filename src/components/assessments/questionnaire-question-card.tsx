@@ -60,7 +60,6 @@ export function QuestionnaireQuestionCard({
           <Button
             type="button"
             onClick={onNext}
-            disabled={isLast}
             className="min-w-24 rounded-lg disabled:bg-muted-foreground/25 disabled:text-foreground disabled:opacity-100"
           >
             {isLast ? "Submit" : "Next"}
