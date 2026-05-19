@@ -5,57 +5,26 @@ import { AlertCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-interface CircularProgressProps {
+interface HexagonScoreProps {
   value: number;
-  size?: number;
-  strokeWidth?: number;
   color?: string;
 }
 
-function CircularProgress({
-  value,
-  size = 112,
-  strokeWidth = 10,
-  color = "#F59E0C",
-}: CircularProgressProps) {
-  const center = 50;
-  const radius = center - strokeWidth / 2 - 1;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (value / 100) * circumference;
-
+function HexagonScore({ value, color = "#F59E0B" }: HexagonScoreProps) {
   return (
     <div
       className="relative shrink-0 flex items-center justify-center"
-      style={{ width: size, height: size }}
+      style={{ width: 108, height: 96 }}
     >
-      <svg
-        className="absolute inset-0 -rotate-90"
-        viewBox="0 0 100 100"
-        aria-hidden="true"
-      >
-        {/* Track */}
-        <circle
-          cx={center}
-          cy={center}
-          r={radius}
-          fill="none"
-          stroke="#E5E7EB"
-          strokeWidth={strokeWidth}
-        />
-        {/* Progress */}
-        <circle
-          cx={center}
-          cy={center}
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 0.6s ease" }}
-        />
-      </svg>
-      <span className="relative text-2xl font-bold text-foreground">
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundColor: color,
+          clipPath:
+            "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+        }}
+      />
+      <span className="relative text-[22px] font-bold text-white leading-none tracking-tight">
         {value}%
       </span>
     </div>
@@ -98,7 +67,7 @@ export function DashboardStatusCard({
                 {description}
               </p>
             </div>
-            <CircularProgress value={score} />
+            <HexagonScore value={score} />
           </div>
           <div
             className={cn(
