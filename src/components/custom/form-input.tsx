@@ -41,7 +41,7 @@ const formFieldLabelClass =
 const formFieldControlClass =
   "h-9 w-full min-w-0 rounded-[5px] border border-border bg-background px-3 py-2 text-base font-normal leading-5 tracking-[0.017em] md:text-base md:leading-5 " +
   "text-foreground shadow-none outline-none transition-[color,box-shadow,border-color] " +
-  "font-sans placeholder:text-muted-foreground " +
+  "font-sans placeholder:text-sm placeholder:text-muted-foreground " +
   "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/25 " +
   "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 " +
   "aria-invalid:border-error aria-invalid:ring-2 aria-invalid:ring-error/20";
