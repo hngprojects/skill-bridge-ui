@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { LockKeyhole } from "lucide-react";
 
 type Props = {
   duration: string;
@@ -9,6 +11,7 @@ type Props = {
 };
 
 const NextUpCard = ({ assessement, title, duration, route }: Props) => {
+  const isUnlockAssessmentDisabled = true;
   return (
     <section className="mt-7 md:mt-12.5">
       <h3 className="font-semibold">
@@ -29,8 +32,19 @@ const NextUpCard = ({ assessement, title, duration, route }: Props) => {
                 : "./assets/icons/tv-play-icon.svg"
           }
         />
-        <div className="flex flex-col">
-          <h4 className="font-semibold text-lg">{title}</h4>
+        <div className="flex flex-1 flex-col">
+          <div className="flex flex-row justify-between items-center">
+            <h4 className="font-semibold text-lg">{title}</h4>
+            {assessement === "advanced" && (
+              <Button
+                disabled={isUnlockAssessmentDisabled}
+                className="disabled:bg-[#EBEBEB] text-xs disabled:hover:bg-[#EBEBEB]/70 cursor-pointer rounded-lg border border-[#DBDBDB] disabled:text-black"
+              >
+                Unlock Assessment
+                <LockKeyhole />
+              </Button>
+            )}
+          </div>
           <p className="text-light text-lg mt-1 mb-4">
             To get verified score and become discoverable to top employers.
           </p>

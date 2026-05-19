@@ -2,7 +2,7 @@ import Image from "next/image";
 import NextUpCard from "./next-up-card";
 import { Button } from "../ui/button";
 import AssessmentContainer from "./assessment-container";
-import { Dot, TriangleAlert } from "lucide-react";
+import { Dot } from "lucide-react";
 import { Progress } from "../ui/progress";
 
 const SkillAssessementSummary = () => {
@@ -35,8 +35,13 @@ const SkillAssessementSummary = () => {
           </p>
           <Progress value={57} className="h-1 *:bg-[#4FB609]" />
         </div>
-        <div className="border mt-6 border-[#FF7854] bg-[#FFF1EE] flex flex-row gap-x-4 items-center py-2.5 px-3 rounded-lg">
-          <TriangleAlert size={24} color="#FF7854" />
+        <div className="border mt-6 w-fit border-[#FF7854] bg-[#FFF1EE] flex flex-row gap-x-4 items-center py-2.5 px-3 rounded-lg">
+          <Image
+            src={"./assets/icons/alert-icon.svg"}
+            height={24}
+            width={24}
+            alt="Alert icon"
+          />
           <p className="text-[#757575] text-[14px]">
             This doesn&apos;t define your potential -- it helps us tailor your
             assessment accurately.
@@ -45,17 +50,17 @@ const SkillAssessementSummary = () => {
         <div className="flex flex-col gap-y-4 sm:flex-row items-center self-center mt-15.5 gap-x-2">
           <Button
             disabled={true}
-            className="bg-[#322B2B] text-white rounded-lg h-10 min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
+            className="bg-[#322B2B] text-white disabled:text-white rounded-lg h-10 min-w-fit md:w-52.25 hover:bg-[#322B2B]/70 transition-all disabled:bg-[#0F1724]/50 duration-300 cursor-pointer"
           >
             Retake (valid in 24h)
           </Button>
-          <Button className="bg-[#322B2B] text-white rounded-lg h-10 min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer">
+          <Button className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer">
             Accept & continue
           </Button>
         </div>
       </div>
       <NextUpCard
-        assessement="advanced"
+        assessement="skill"
         duration="30-45 minutes"
         title="Advanced assessment"
         route="#"
