@@ -26,7 +26,7 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
       <div className="flex flex-col lg:flex-row">
         <div
           className={cn(
-            "flex min-h-[170px] w-full flex-col justify-between px-4 py-4 lg:w-[217px] lg:px-5",
+            "flex min-h-42.5 w-full flex-col justify-between px-4 py-4 lg:w-54.25 lg:px-5",
             step.panelClassName,
           )}
         >
@@ -62,7 +62,7 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
                 </h2>
               </div>
 
-              <p className="max-w-[560px] text-sm leading-6 tracking-[0.016em] text-[#151515]/80 sm:text-base sm:tracking-[0.017em]">
+              <p className="max-w-140 text-sm leading-6 tracking-[0.016em] text-[#151515]/80 sm:text-base sm:tracking-[0.017em]">
                 {step.description}
               </p>
             </div>
@@ -101,7 +101,7 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
               <Button
                 size="lg"
                 disabled
-                className="h-10 w-full rounded-lg bg-[#CCCCCC] text-base font-semibold tracking-[0.016em] text-[#151515] hover:bg-[#CCCCCC] disabled:bg-[#CCCCCC] disabled:text-[#151515] sm:w-[170px]"
+                className="h-10 w-full rounded-lg bg-[#CCCCCC] text-base font-semibold tracking-[0.016em] text-[#151515] hover:bg-[#CCCCCC] disabled:bg-[#CCCCCC] disabled:text-[#151515] sm:w-42.5"
               >
                 {step.ctaLabel}
                 <CompletedIcon className="size-4.5 text-[#34A853]" />
@@ -110,7 +110,7 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
               <Button
                 size="lg"
                 disabled={isLocked}
-                className="h-10 w-full rounded-lg bg-[#757575] text-base font-semibold tracking-[0.016em] text-white hover:bg-[#757575] disabled:bg-[#757575] disabled:text-white sm:w-[170px]"
+                className="h-10 w-full rounded-lg bg-[#757575] text-base font-semibold tracking-[0.016em] text-white hover:bg-[#757575] disabled:bg-[#757575] disabled:text-white sm:w-42.5"
               >
                 {step.ctaLabel}
               </Button>
