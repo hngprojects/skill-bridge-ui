@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 import { QuestionnaireQuestionCard } from "@/components/assessments/questionnaire-question-card";
 import { QuestionnaireSidebar } from "@/components/assessments/questionnaire-sidebar";
 import { QuestionnaireToolbar } from "@/components/assessments/questionnaire-toolbar";
+import { isAssessmentSlug } from "@/constants/assessment-previews";
 import { QUESTIONNAIRE_DEMO_QUESTIONS } from "@/constants/questionnaire-demo-questions";
 
 export function QuestionnairePageClient() {
+  const router = useRouter();
+  const { name } = useParams<{ name: string }>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [otherAnswers, setOtherAnswers] = useState<Record<string, string>>({});
@@ -24,7 +28,11 @@ export function QuestionnairePageClient() {
   };
 
   const handleNext = () => {
-    if (isLast) return;
+    if (isLast) {
+      if (!isAssessmentSlug(name)) return;
+      router.push(`/t/assessments/${name}/summary`);
+      return;
+    }
     setCurrentIndex((i) => i + 1);
   };
 

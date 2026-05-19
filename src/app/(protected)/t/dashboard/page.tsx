@@ -1,7 +1,5 @@
-import React from "react";
+import { Overview } from "@/components/assessments/overview";
 
-const TalentDashboard = () => {
-  return <div>TalentDashboard</div>;
-};
-
-export default TalentDashboard;
+export default function TalentDashboard() {
+  return <Overview />;
+}
