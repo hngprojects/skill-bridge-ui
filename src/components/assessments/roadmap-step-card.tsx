@@ -32,13 +32,24 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
       <div className="flex flex-col lg:flex-row">
         <div
           className={cn(
-            "flex min-h-[170px] w-full flex-col justify-between px-4 py-4 lg:w-[217px] lg:px-5",
+            "flex min-h-42.5 w-full flex-col justify-between px-4 py-4 lg:w-54.25 lg:px-5",
             step.panelClassName,
           )}
         >
-          <p className="text-base leading-6 font-semibold tracking-[0.017em]">
-            {step.panelTitle}
-          </p>
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-base leading-6 font-semibold tracking-[0.017em]">
+              {step.panelTitle}
+            </p>
+            {isLocked ? (
+              <Badge
+                variant="outline"
+                className="shrink-0 rounded-lg border-transparent bg-white px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:hidden"
+              >
+                Locked
+                <LockKeyhole className="size-3.5" />
+              </Badge>
+            ) : null}
+          </div>
           {step.panelIconSrc ? (
             <Image
               src={step.panelIconSrc}
@@ -68,7 +79,7 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
                 </h3>
               </div>
 
-              <p className="max-w-[560px] text-sm leading-6 tracking-[0.016em] text-[#151515]/80 sm:text-base sm:tracking-[0.017em]">
+              <p className="max-w-140 text-sm leading-6 tracking-[0.016em] text-[#151515]/80 sm:text-base sm:tracking-[0.017em]">
                 {step.description}
               </p>
             </div>
@@ -87,13 +98,11 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            {isLocked ? <div className="sm:hidden">{lockBadge}</div> : null}
-
             {isLocked ? (
               <Button
                 size="lg"
                 disabled
-                className="h-10 w-full rounded-lg bg-[#757575] text-base font-semibold tracking-[0.016em] text-white hover:bg-[#757575] disabled:bg-[#757575] disabled:text-white sm:w-[170px]"
+                className="h-10 w-full rounded-lg bg-[#757575] text-base font-semibold tracking-[0.016em] text-white hover:bg-[#757575] disabled:bg-[#757575] disabled:text-white sm:w-42.5"
               >
                 {step.ctaLabel}
               </Button>
@@ -102,7 +111,7 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
                 asChild
                 size="lg"
                 className={cn(
-                  "h-10 w-full rounded-lg text-base font-semibold tracking-[0.016em] sm:w-[170px]",
+                  "h-10 w-full rounded-lg text-base font-semibold tracking-[0.016em] sm:w-42.5",
                   isCompleted
                     ? "bg-[#0F766E] text-white hover:bg-[#0F766E]"
                     : "bg-[#322B2B] text-white hover:bg-[#322B2B]/95",

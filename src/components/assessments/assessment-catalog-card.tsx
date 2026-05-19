@@ -30,9 +30,20 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
             step.panelClassName,
           )}
         >
-          <p className="text-base leading-6 font-semibold tracking-[0.017em]">
-            {step.panelTitle}
-          </p>
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-base leading-6 font-semibold tracking-[0.017em]">
+              {step.panelTitle}
+            </p>
+            {isLocked ? (
+              <Badge
+                variant="outline"
+                className="shrink-0 rounded-lg border-transparent bg-white px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:hidden"
+              >
+                Locked
+                <LockKeyhole className="size-3.5" />
+              </Badge>
+            ) : null}
+          </div>
           {step.panelIconSrc ? (
             <Image
               src={step.panelIconSrc}
@@ -87,16 +98,6 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            {isLocked ? (
-              <Badge
-                variant="outline"
-                className="w-full justify-center rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:hidden"
-              >
-                {step.lockLabel ?? "Unlock Assessment"}
-                <LockKeyhole className="size-3.5" />
-              </Badge>
-            ) : null}
-
             {isCompleted ? (
               <Button
                 size="lg"
