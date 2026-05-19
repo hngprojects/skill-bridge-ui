@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { LockKeyhole, MoreHorizontal } from "lucide-react";
 
@@ -38,10 +39,21 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
           <p className="text-base leading-6 font-semibold tracking-[0.017em]">
             {step.panelTitle}
           </p>
-          <PanelIcon
-            className={cn("size-16 shrink-0", step.panelIconClassName)}
-            strokeWidth={1.8}
-          />
+          {step.panelIconSrc ? (
+            <Image
+              src={step.panelIconSrc}
+              alt=""
+              width={56}
+              height={56}
+              aria-hidden
+              className="size-14 shrink-0"
+            />
+          ) : (
+            <PanelIcon
+              className={cn("size-16 shrink-0", step.panelIconClassName)}
+              strokeWidth={1.8}
+            />
+          )}
         </div>
 
         <div className="flex flex-1 flex-col gap-5 px-4 py-4 sm:px-6">
