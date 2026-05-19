@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 
+import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 import { cn } from "@/lib/utils";
 
 type OverviewHeaderProps = {
@@ -7,11 +10,14 @@ type OverviewHeaderProps = {
 };
 
 export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
+  const { fullName, isLoading } = useSessionUserProfile();
+  const displayName = !isLoading && fullName ? fullName : "";
+
   return (
     <section className="flex flex-col gap-8 py-6 lg:flex-row lg:items-start lg:justify-between lg:gap-8 lg:py-10">
       <div className="space-y-2">
-        <h1 className="text-[22px] leading-[1.5] font-bold text-[#091417] sm:text-[28px] sm:leading-[1.25] sm:tracking-[-0.01em]">
-          Welcome, Alex!
+        <h1 className="text-[22px] leading-normal font-bold text-[#091417] sm:text-[28px] sm:leading-tight sm:tracking-[-0.01em]">
+          Welcome{displayName ? `, ${displayName}` : ""}!
         </h1>
         <p className="max-w-2xl text-sm leading-6 tracking-[0.016em] text-[#151515]/80">
           Here&apos;s how to get started with your assessment engine, It&apos;s
@@ -19,7 +25,7 @@ export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
         </p>
       </div>
 
-      <div className="w-full self-start lg:max-w-[220px] lg:text-right">
+      <div className="w-full self-start lg:max-w-55 lg:text-right">
         <Link
           href="/t/profile"
           className="block w-full text-sm leading-5 font-semibold text-[#05060F] underline underline-offset-2"

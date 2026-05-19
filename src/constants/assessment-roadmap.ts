@@ -91,7 +91,7 @@ export const ASSESSMENT_EXPECTATIONS: AssessmentExpectation[] = [
 export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
   {
     id: "personal-assessment",
-    slug: "personal-assessment",
+    slug: "personal",
     order: 1,
     title: "Personal assessment",
     description:
@@ -107,7 +107,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
   },
   {
     id: "skill-career-assessment",
-    slug: "skill-career-assessment",
+    slug: "skill",
     order: 2,
     title: "Skill/career assessment",
     description:
@@ -123,7 +123,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
   },
   {
     id: "advanced-assessment",
-    slug: "advanced-assessment",
+    slug: "advanced",
     order: 3,
     title: "Advanced assessment",
     description:
@@ -193,9 +193,9 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     panelIcon: LaptopMinimal,
     panelClassName: "bg-[#F9E796] text-[#401D09]",
     panelIconClassName: "text-[#49330A]",
-    state: "completed",
+    state: "available",
     category: "job-assessment",
-    ctaLabel: "Completed",
+    ctaLabel: "Start",
     cooldownLabel: "Retake in 24 hours",
   },
   {
@@ -208,9 +208,9 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     panelIcon: BriefcaseBusiness,
     panelClassName: "bg-[#CBB0EB] text-[#231F29]",
     panelIconClassName: "text-[#2D2742]",
-    state: "completed",
+    state: "locked",
     category: "job-assessment",
-    ctaLabel: "Completed",
+    ctaLabel: "Start",
     cooldownLabel: "Retake in 14 days",
   },
   {
