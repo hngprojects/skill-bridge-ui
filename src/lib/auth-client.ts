@@ -2,7 +2,7 @@
 
 import { signIn, type SignInResponse } from "next-auth/react";
 
-import { getMe } from "@/actions/auth";
+import { verifyGoogleCode } from "@/actions/auth";
 import { requestGoogleAuthCode } from "@/lib/google-auth";
 import type { AuthUser } from "@/types/api";
 import type {
@@ -25,12 +25,17 @@ function isOnboardingComplete(user: AuthUser): boolean | undefined {
   return user.onboardingComplete ?? user.onboarding_complete;
 }
 
+export function dashboardPathForRole(role: AuthUser["role"]): string {
+  if (role === "talent") return "/t/dashboard";
+  return "/dashboard";
+}
+
 export function postAuthRedirectForUser(user: AuthUser): string {
   if (isOnboardingComplete(user) === false) {
     if (user.role === "talent") return "/talent/onboarding";
     if (user.role === "employer") return "/employer/onboarding";
   }
-  return "/dashboard";
+  return dashboardPathForRole(user.role);
 }
 
 function isAuthResponsePayload(
@@ -109,21 +114,22 @@ export async function signInWithVerifiedUser(
 
 export async function signInWithGoogle(): Promise<GoogleSignInResult> {
   const code = await requestGoogleAuthCode();
-
-  const result = await signIn("credentials", {
-    googleCode: code,
+  const login = await verifyGoogleCode({
+    code,
     redirectUri: "postmessage",
     role: "talent",
-    redirect: false,
   });
+
+  const result = await signInWithVerifiedUser(login.user);
 
   if (result?.error) {
     return {
       result,
-      redirectTo: "/dashboard",
+      user: login.user,
+      redirectTo: "/t/dashboard",
     };
   }
 
-  const user = await getMe();
+  const user = login.user;
   return { result, user, redirectTo: postAuthRedirectForUser(user) };
 }
