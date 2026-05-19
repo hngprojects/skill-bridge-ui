@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import NextUpCard from "./next-up-card";
 import { Button } from "../ui/button";
 import AssessmentContainer from "@/components/assessments/assessment-container";
@@ -54,8 +55,11 @@ const SkillAssessementSummary = () => {
           >
             Retake (valid in 24h)
           </Button>
-          <Button className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer">
-            Accept & continue
+          <Button
+            asChild
+            className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
+          >
+            <Link href="/t/dashboard">Accept &amp; continue</Link>
           </Button>
         </div>
       </div>
