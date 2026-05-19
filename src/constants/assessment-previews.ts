@@ -23,8 +23,8 @@ const sharedExpectations = [
 ];
 
 export const ASSESSMENT_PREVIEWS = {
-  "personal-assessment": {
-    slug: "personal-assessment",
+  personal: {
+    slug: "personal",
     title: "Personal assessment",
     description:
       "Tell us about your specialization, tools, experience level, and work preferences.",
@@ -34,8 +34,8 @@ export const ASSESSMENT_PREVIEWS = {
     attempts: "1/3 (allowed within time limit)",
     retakeText: "Retake valid after 24 hours",
   },
-  "skill-assessment": {
-    slug: "skill-assessment",
+  skill: {
+    slug: "skill",
     title: "Skill assessment",
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
@@ -45,8 +45,8 @@ export const ASSESSMENT_PREVIEWS = {
     attempts: "1/3 (allowed within time limit)",
     retakeText: "Retake valid after 24 hours",
   },
-  "advanced-assessment": {
-    slug: "advanced-assessment",
+  advanced: {
+    slug: "advanced",
     title: "Advanced assessment",
     description:
       "This assessment is designed to evaluate your current skill level at your selected tracks.",
@@ -60,10 +60,12 @@ export const ASSESSMENT_PREVIEWS = {
 
 export const ASSESSMENT_EXPECTATIONS = sharedExpectations;
 
-export function getAssessmentPreview(slug: string): AssessmentPreview {
-  if (slug in ASSESSMENT_PREVIEWS) {
-    return ASSESSMENT_PREVIEWS[slug as keyof typeof ASSESSMENT_PREVIEWS];
-  }
+export type AssessmentSlug = keyof typeof ASSESSMENT_PREVIEWS;
 
-  return ASSESSMENT_PREVIEWS["personal-assessment"];
+export function isAssessmentSlug(slug: string): slug is AssessmentSlug {
+  return slug in ASSESSMENT_PREVIEWS;
+}
+
+export function getAssessmentPreview(slug: AssessmentSlug): AssessmentPreview {
+  return ASSESSMENT_PREVIEWS[slug];
 }
