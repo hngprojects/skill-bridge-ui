@@ -13,6 +13,7 @@ export const onboardingFormSchema = z.object({
   password: z
     .string()
     .min(8, "Password must be at least 8 characters.")
+    .max(64, "Password must be at most 64 characters.")
     .regex(/[A-Z]/, "Password must include at least one uppercase letter.")
     .regex(/[a-z]/, "Password must include at least one lowercase letter.")
     .regex(/[0-9]/, "Password must include at least one number."),
@@ -34,6 +35,7 @@ export const employerOnboardingFormSchema = z.object({
   password: z
     .string()
     .min(14, "Password must be at least 14 characters")
+    .max(64, "Password must be at most 64 characters")
     .regex(/[a-z]/, "Must include a lowercase character")
     .regex(/[A-Z]/, "Must include an uppercase character")
     .regex(/[0-9]/, "Must include a number"),
@@ -87,6 +89,7 @@ export const signupFormSchema = z
     password: z
       .string()
       .min(8, "Password must be at least 8 characters.")
+      .max(64, "Password must be at most 64 characters.")
       .regex(/[A-Z]/, "Password must include at least one uppercase letter.")
       .regex(/[a-z]/, "Password must include at least one lowercase letter.")
       .regex(/[0-9]/, "Password must include at least one number."),
@@ -120,6 +123,7 @@ export const employerSignupFinalSchema = z
     password: z
       .string()
       .min(8, "Password must be at least 8 characters.")
+      .max(64, "Password must be at most 64 characters.")
       .regex(/[A-Z]/, "Password must include at least one uppercase letter.")
       .regex(/[a-z]/, "Password must include at least one lowercase letter.")
       .regex(/[0-9]/, "Password must include at least one number."),
@@ -150,7 +154,10 @@ export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 export const signInFormSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
-  password: z.string().min(1, "Password is required."),
+  password: z
+    .string()
+    .min(1, "Password is required.")
+    .max(64, "Password must be at most 64 characters."),
   rememberMe: z.boolean().optional(),
 });
 
