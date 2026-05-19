@@ -2,11 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { LockKeyhole } from "lucide-react";
+import { AssessmentSlug } from "@/constants/assessment-previews";
 
 type Props = {
   duration: string;
   title: string;
-  assessement: "advanced" | "personal" | "skill";
+  assessement: AssessmentSlug;
   route: string;
 };
 
