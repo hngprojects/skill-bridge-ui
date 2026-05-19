@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { QuestionnaireQuestionCard } from "@/components/assessments/questionnaire-question-card";
 import { QuestionnaireSidebar } from "@/components/assessments/questionnaire-sidebar";
 import { QuestionnaireToolbar } from "@/components/assessments/questionnaire-toolbar";
+import { isAssessmentSlug } from "@/constants/assessment-previews";
 import { QUESTIONNAIRE_DEMO_QUESTIONS } from "@/constants/questionnaire-demo-questions";
 
 export function QuestionnairePageClient() {
@@ -28,6 +29,7 @@ export function QuestionnairePageClient() {
 
   const handleNext = () => {
     if (isLast) {
+      if (!isAssessmentSlug(name)) return;
       router.push(`/t/assessments/${name}/summary`);
       return;
     }
