@@ -9,7 +9,7 @@ const SkillAssessementSummary = () => {
   return (
     <AssessmentContainer>
       <Image
-        src={"./assets/icons/computer-setup-icon.svg"}
+        src={"/assets/icons/computer-setup-icon.svg"}
         height={56}
         width={56}
         alt="Computer desktop icon"
@@ -37,7 +37,7 @@ const SkillAssessementSummary = () => {
         </div>
         <div className="border mt-6 w-fit border-[#FF7854] bg-[#FFF1EE] flex flex-row gap-x-4 items-center py-2.5 px-3 rounded-lg">
           <Image
-            src={"./assets/icons/alert-icon.svg"}
+            src={"/assets/icons/alert-icon.svg"}
             height={24}
             width={24}
             alt="Alert icon"

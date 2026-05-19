@@ -26,10 +26,10 @@ const NextUpCard = ({ assessement, title, duration, route }: Props) => {
           width={56}
           src={
             assessement === "personal"
-              ? "./assets/icons/computer-setup-icon.svg"
+              ? "/assets/icons/computer-setup-icon.svg"
               : assessement === "skill"
-                ? "./assets/icons/portfolio-icon.svg"
-                : "./assets/icons/tv-play-icon.svg"
+                ? "/assets/icons/portfolio-icon.svg"
+                : "/assets/icons/tv-play-icon.svg"
           }
         />
         <div className="flex flex-1 flex-col">

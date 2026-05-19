@@ -10,7 +10,7 @@ const PersonalAssessmentSummary = () => {
     <AssessmentContainer>
       <Image
         alt="Assessement icon"
-        src={"./assets/icons/assessement-icon.svg"}
+        src={"/assets/icons/assessement-icon.svg"}
         height={56}
         width={56}
       />
@@ -30,7 +30,7 @@ const PersonalAssessmentSummary = () => {
           height={120}
           width={100}
           alt="Achievement illustration"
-          src={"./assets/icons/achievement-icon.svg"}
+          src={"/assets/icons/achievement-icon.svg"}
         />
         <p className="md:mt-4 md:mb-10 mt-2 mb-5 text-base font-semibold max-md:text-center md:text-lg">
           Great work! You&apos;ve unlocked your next assessment.
