@@ -1,7 +1,5 @@
-import React from "react";
+import { AssessmentCatalogPage } from "@/components/assessments/assessment-catalog-page";
 
-const MainAssessmentPage = () => {
-  return <div>MainAssessmentPage</div>;
-};
-
-export default MainAssessmentPage;
+export default function MainAssessmentPage() {
+  return <AssessmentCatalogPage initialActiveTab="job-assessment" />;
+}

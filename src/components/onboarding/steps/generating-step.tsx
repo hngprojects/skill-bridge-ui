@@ -3,68 +3,50 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { OrbitAnimation } from "../generating-steps/orbit-animation";
-import { usePersonaliseTalentDashboard } from "@/hooks/api";
-import { authFailureMessage } from "@/lib/api";
-import { appToast } from "@/lib/toast";
 
-const REDIRECT_DELAY = 2000;
+const LOADING_MESSAGES = [
+  "Curating your experience...",
+  "Tailoring your roadmap...",
+  "Pulling together your dashboard...",
+  "Almost there...",
+];
+
+const TOTAL_DURATION = 6000;
+const MESSAGE_DURATION = TOTAL_DURATION / LOADING_MESSAGES.length;
 
 function GenerateRoadmapStep() {
   const router = useRouter();
-  const [isGenerating, setIsGenerating] = React.useState(false);
-  const [dots, setDots] = React.useState("");
-  const { mutateAsync: personalise } = usePersonaliseTalentDashboard();
-
-  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isMountedRef = React.useRef(true);
+  const [messageIndex, setMessageIndex] = React.useState(0);
 
   React.useEffect(() => {
+    let mounted = true;
+
+    const interval = setInterval(() => {
+      setMessageIndex((i) => Math.min(i + 1, LOADING_MESSAGES.length - 1));
+    }, MESSAGE_DURATION);
+
+    const timeout = setTimeout(() => {
+      if (!mounted) return;
+      router.push("/t/dashboard");
+    }, TOTAL_DURATION);
+
     return () => {
-      isMountedRef.current = false;
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      mounted = false;
+      clearInterval(interval);
+      clearTimeout(timeout);
     };
-  }, []);
-
-  const handleGenerate = async () => {
-    if (isGenerating) return;
-    setIsGenerating(true);
-
-    intervalRef.current = setInterval(() => {
-      setDots((d) => (d.length >= 3 ? "" : d + "."));
-    }, 500);
-
-    try {
-      await personalise();
-
-      timeoutRef.current = setTimeout(() => {
-        if (!isMountedRef.current) return;
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        router.push("/t/dashboard");
-      }, REDIRECT_DELAY);
-    } catch (error) {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (!isMountedRef.current) return; // guard
-      setIsGenerating(false);
-      setDots("");
-      appToast.error(authFailureMessage(error));
-    }
-  };
+  }, [router]);
 
   return (
     <div className="relative flex w-full flex-col items-center gap-8 overflow-hidden">
       <OrbitAnimation />
-
-      <button
-        onClick={handleGenerate}
-        disabled={isGenerating}
-        className="flex w-full max-w-md items-center justify-center gap-2.5 rounded-lg bg-primary px-4 py-2.5 transition-opacity disabled:opacity-80"
+      <p
+        key={messageIndex}
+        className="animate-in fade-in text-xl font-bold tracking-wide text-foreground duration-500"
+        aria-live="polite"
       >
-        <span className="text-xl font-bold tracking-wide text-primary-foreground">
-          {isGenerating ? `Generating${dots}` : "Generate"}
-        </span>
-      </button>
+        {LOADING_MESSAGES[messageIndex]}
+      </p>
     </div>
   );
 }
