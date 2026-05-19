@@ -24,6 +24,11 @@ export default function DashboardNavbar() {
           "mx-auto flex h-16 w-full max-w-[1440px] items-center px-4 sm:px-6 lg:h-[72px]",
         )}
       >
+        <DashboardNavbarMobileMenu
+          pathname={pathname}
+          open={mobileOpen}
+          onOpenChange={setMobileOpen}
+        />
         <Link
           href="/t/dashboard"
           className="inline-flex shrink-0 items-center gap-2"
@@ -37,7 +42,7 @@ export default function DashboardNavbar() {
             className="size-9 object-contain"
             priority
           />
-          <span className="font-sans text-xl font-bold text-primary-900 sm:text-2xl">
+          <span className="font-sans text-xl font-bold text-primary-900 sm:text-2xl hidden md:block">
             SkillBridge
           </span>
         </Link>
@@ -55,11 +60,6 @@ export default function DashboardNavbar() {
         <div className="ml-auto flex flex-1 items-center justify-end gap-3 lg:flex-none lg:gap-4">
           <DashboardNavbarSearch />
           <DashboardNavbarUserMenu />
-          <DashboardNavbarMobileMenu
-            pathname={pathname}
-            open={mobileOpen}
-            onOpenChange={setMobileOpen}
-          />
         </div>
       </div>
     </header>
