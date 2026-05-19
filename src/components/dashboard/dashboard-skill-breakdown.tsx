@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 interface ChartBar {
   value: number; // 0–100, controls bar height
   active?: boolean; // amber highlight
-  activeLabel?: string; // floating label shown above active bar
+  activeLabel?: string; // hexagon badge shown above active bar
 }
 
 interface ChartZone {
@@ -24,23 +24,82 @@ const CHART_ZONES: ChartZone[] = [
   {
     id: "emerging",
     label: "Emerging",
-    bars: [{ value: 55 }, { value: 90, active: true, activeLabel: "67%" }],
+    bars: [
+      { value: 12 },
+      { value: 39 },
+      { value: 67, active: true, activeLabel: "67%" },
+    ],
   },
   {
     id: "intermediate",
     label: "Intermediate",
-    bars: [{ value: 72 }, { value: 82 }, { value: 60 }],
+    bars: [{ value: 60 }, { value: 82 }, { value: 40 }],
   },
   {
     id: "job-ready",
     label: "Job Ready",
-    bars: [{ value: 50 }, { value: 38 }],
+    bars: [{ value: 48 }, { value: 12 }, { value: 6 }],
   },
 ];
 
-const CHART_HEIGHT = 160; // px — visual bar area height
+const CHART_HEIGHT = 130; // px — visual bar area height
+const BAR_GAP = 6; // px — gap between bars inside a zone
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+function HexBadge({ label }: { label: string }) {
+  return (
+    <div
+      className="relative flex items-center justify-center"
+      style={{ width: 36, height: 40 }}
+    >
+      <svg width="0" height="0" className="absolute">
+        <defs>
+          <clipPath id="hexRounded" clipPathUnits="objectBoundingBox">
+            <path
+              d="
+              M 0.456,0.015
+              C 0.484,0.0   0.516,0.0   0.544,0.015
+              L 0.956,0.224
+              C 0.984,0.239  1.0,0.268   1.0,0.299
+              V 0.701
+              C 1.0,0.732   0.984,0.761  0.956,0.776
+              L 0.544,0.985
+              C 0.516,1.0   0.484,1.0   0.456,0.985
+              L 0.044,0.776
+              C 0.016,0.761  0.0,0.732   0.0,0.701
+              V 0.299
+              C 0.0,0.268   0.016,0.239  0.044,0.224
+              L 0.456,0.015 Z
+            "
+            />
+          </clipPath>
+        </defs>
+      </svg>
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundColor: "#ffffffff",
+          WebkitClipPath: "url(#hexRounded)",
+          clipPath: "url(#hexRounded)",
+          transform: "scale(1.08)",
+        }}
+      />
+      {/* Fill layer */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundColor: "#F59E0B",
+          WebkitClipPath: "url(#hexRounded)",
+          clipPath: "url(#hexRounded)",
+        }}
+      />
+      <span className="relative text-[11px] font-bold text-white leading-none tracking-tight">
+        {label}
+      </span>
+    </div>
+  );
+}
+
+// ─── Single bar column ────────────────────────────────────────────────────────
 
 function BarColumn({ bar }: { bar: ChartBar }) {
   const pct = Math.max(2, Math.min(100, bar.value));
@@ -48,21 +107,21 @@ function BarColumn({ bar }: { bar: ChartBar }) {
 
   return (
     <div
-      className="relative flex flex-1 flex-col items-end justify-end"
+      className="relative flex flex-1 flex-col items-center justify-end"
       style={{ height: CHART_HEIGHT }}
     >
-      {/* Floating label above active bar */}
+      {/* Hexagon badge above active bar */}
       {bar.active && bar.activeLabel && (
-        <span
-          className={cn(
-            "absolute left-1/2 -translate-x-1/2",
-            "rounded border border-border bg-white px-2 py-0.5",
-            "text-[11px] font-semibold text-foreground shadow-sm whitespace-nowrap",
-          )}
-          style={{ bottom: barPx + 6 }}
+        <div
+          className="absolute"
+          style={{
+            bottom: barPx - 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
         >
-          {bar.activeLabel}
-        </span>
+          <HexBadge label={bar.activeLabel} />
+        </div>
       )}
 
       {/* Bar */}
@@ -79,19 +138,22 @@ function BarColumn({ bar }: { bar: ChartBar }) {
 
 function ZoneGroup({ zone }: { zone: ChartZone }) {
   return (
-    <div className="flex flex-1 flex-col gap-0">
-      {/* Bars */}
-      <div className="flex items-end gap-1.5 px-1">
+    <div className="flex flex-1 flex-col">
+      {/* Bars row */}
+      <div
+        className="flex items-end"
+        style={{ gap: BAR_GAP, height: CHART_HEIGHT }}
+      >
         {zone.bars.map((bar, i) => (
           <BarColumn key={i} bar={bar} />
         ))}
       </div>
 
-      {/* Zone label */}
-      <div className="mt-2 flex items-center justify-center">
+      {/* Full-width zone label pill */}
+      <div className="mt-2">
         <span
           className={cn(
-            "rounded-full px-3 py-0.5 text-[11px] font-medium",
+            "flex w-full items-center justify-center rounded-sm py-1 text-[11px] font-medium",
             zone.id === "emerging"
               ? "bg-amber-100 text-amber-700"
               : "bg-gray-100 text-muted-foreground",
@@ -104,8 +166,6 @@ function ZoneGroup({ zone }: { zone: ChartZone }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
 export function DashboardSkillBreakdown() {
   const today = new Date().toLocaleDateString("en-US", {
     month: "long",
@@ -116,7 +176,7 @@ export function DashboardSkillBreakdown() {
   return (
     <section
       aria-labelledby="skill-breakdown-heading"
-      className="flex flex-col rounded-2xl border border-border bg-white p-6"
+      className="flex flex-col rounded-2xl border border-border bg-[#FAFAFA] p-6"
     >
       {/* Header */}
       <div className="mb-1 flex items-center justify-between">
@@ -137,8 +197,8 @@ export function DashboardSkillBreakdown() {
       {/* Date */}
       <p className="mb-6 text-[13px] text-muted-foreground">{today}</p>
 
-      {/* Bar chart */}
-      <div className="flex flex-1 items-stretch gap-3 pt-8">
+      {/* Bar chart — extra top padding so hex badge has room */}
+      <div className="flex items-end gap-4 pt-10">
         {CHART_ZONES.map((zone) => (
           <ZoneGroup key={zone.id} zone={zone} />
         ))}

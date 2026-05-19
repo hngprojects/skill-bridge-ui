@@ -51,11 +51,11 @@ const RECOMMENDED_ITEMS: RecommendedItem[] = [
 
 function RecommendedItemRow({ item }: { item: RecommendedItem }) {
   return (
-    <div className="flex items-start gap-4 py-4 first:pt-0 last:pb-0">
+    <div className="flex items-start gap-4 rounded-xl border border-border bg-white p-4">
       {/* Thumbnail */}
       <div
         className={cn(
-          "flex size-[68px] shrink-0 items-center justify-center rounded-2xl",
+          "flex size-[80px] shrink-0 items-center justify-center rounded-xl",
           item.thumbnailBg,
         )}
       >
@@ -67,7 +67,7 @@ function RecommendedItemRow({ item }: { item: RecommendedItem }) {
         <p className="text-[14px] font-semibold leading-snug text-foreground">
           {item.title}
         </p>
-        <p className="mt-0.5 line-clamp-1 text-[12px] text-muted-foreground">
+        <p className="mt-1 line-clamp-1 text-[12px] text-muted-foreground">
           {item.description}
         </p>
 
@@ -75,7 +75,7 @@ function RecommendedItemRow({ item }: { item: RecommendedItem }) {
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <Link
             href={item.actionHref}
-            className="text-[12px] font-semibold text-amber-500 hover:underline underline-offset-2 transition-opacity hover:opacity-80"
+            className="text-[12px] font-semibold text-[#34A853] hover:underline underline-offset-2 transition-opacity hover:opacity-80"
           >
             {item.actionLabel}
           </Link>
@@ -103,7 +103,7 @@ export function DashboardRecommended() {
   return (
     <section
       aria-labelledby="recommended-heading"
-      className="rounded-2xl border border-border bg-white p-6"
+      className="rounded-2xl border border-border bg-[#FAFAFA] p-6"
     >
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
@@ -122,7 +122,7 @@ export function DashboardRecommended() {
       </div>
 
       {/* Items */}
-      <div className="flex flex-col divide-y divide-border">
+      <div className="flex flex-col gap-3">
         {RECOMMENDED_ITEMS.map((item) => (
           <RecommendedItemRow key={item.id} item={item} />
         ))}

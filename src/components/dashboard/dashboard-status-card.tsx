@@ -10,21 +10,54 @@ interface HexagonScoreProps {
   color?: string;
 }
 
-function HexagonScore({ value, color = "#F59E0B" }: HexagonScoreProps) {
+function HexagonScore({ value, color = "#F59E0C" }: HexagonScoreProps) {
   return (
     <div
       className="relative shrink-0 flex items-center justify-center"
-      style={{ width: 108, height: 96 }}
+      style={{ width: 106, height: 110 }}
     >
+      <svg width="0" height="0" className="absolute">
+        <defs>
+          <clipPath id="hexRounded" clipPathUnits="objectBoundingBox">
+            <path
+              d="
+              M 0.456,0.015
+              C 0.484,0.0   0.516,0.0   0.544,0.015
+              L 0.956,0.224
+              C 0.984,0.239  1.0,0.268   1.0,0.299
+              V 0.701
+              C 1.0,0.732   0.984,0.761  0.956,0.776
+              L 0.544,0.985
+              C 0.516,1.0   0.484,1.0   0.456,0.985
+              L 0.044,0.776
+              C 0.016,0.761  0.0,0.732   0.0,0.701
+              V 0.299
+              C 0.0,0.268   0.016,0.239  0.044,0.224
+              L 0.456,0.015 Z
+            "
+            />
+          </clipPath>
+        </defs>
+      </svg>
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundColor: "#ffffffff",
+          WebkitClipPath: "url(#hexRounded)",
+          clipPath: "url(#hexRounded)",
+          transform: "scale(1.08)",
+        }}
+      />
+      {/* Fill layer */}
       <div
         className="absolute inset-0"
         style={{
           backgroundColor: color,
-          clipPath:
-            "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+          WebkitClipPath: "url(#hexRounded)",
+          clipPath: "url(#hexRounded)",
         }}
       />
-      <span className="relative text-[22px] font-bold text-white leading-none tracking-tight">
+      <span className="relative text-[30px] font-bold text-white leading-none tracking-tight">
         {value}%
       </span>
     </div>

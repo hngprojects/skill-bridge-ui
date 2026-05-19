@@ -11,8 +11,6 @@ import {
 
 import { cn } from "@/lib/utils";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 type AssessmentStatus = "completed" | "pending";
 
 interface RoadmapItem {
@@ -23,8 +21,6 @@ interface RoadmapItem {
   iconBg: string;
   icon: React.ReactNode;
 }
-
-// ─── Data ─────────────────────────────────────────────────────────────────────
 
 const ROADMAP_ITEMS: RoadmapItem[] = [
   {
@@ -55,8 +51,6 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
   },
 ];
 
-// ─── Status badge ─────────────────────────────────────────────────────────────
-
 function StatusIcon({ status }: { status: AssessmentStatus }) {
   if (status === "completed") {
     return (
@@ -73,13 +67,11 @@ function StatusIcon({ status }: { status: AssessmentStatus }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
 export function DashboardJobRoadmap() {
   return (
     <section
       aria-labelledby="roadmap-heading"
-      className="flex flex-col rounded-2xl border border-border bg-white p-6"
+      className="flex flex-col rounded-2xl border border-border bg-[#FAFAFA] p-6"
     >
       {/* Header */}
       <div className="mb-5 flex items-center justify-between">
@@ -98,16 +90,16 @@ export function DashboardJobRoadmap() {
       </div>
 
       {/* Items */}
-      <div className="flex flex-col divide-y divide-border">
+      <div className="flex flex-col gap-2">
         {ROADMAP_ITEMS.map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-4 py-4 first:pt-0 last:pb-0"
+            className="flex items-center gap-4 rounded-xl border border-border bg-white p-4"
           >
             {/* Icon tile */}
             <div
               className={cn(
-                "flex size-10 shrink-0 items-center justify-center rounded-xl",
+                "flex size-12 shrink-0 items-center justify-center rounded-xl",
                 item.iconBg,
               )}
             >
@@ -116,10 +108,10 @@ export function DashboardJobRoadmap() {
 
             {/* Text */}
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-semibold leading-snug text-foreground">
+              <p className="text-[14px] font-semibold leading-snug text-foreground">
                 {item.title}
               </p>
-              <p className="mt-0.5 line-clamp-1 text-[12px] text-muted-foreground">
+              <p className="mt-1 line-clamp-1 text-[12px] text-muted-foreground">
                 {item.description}
               </p>
             </div>
