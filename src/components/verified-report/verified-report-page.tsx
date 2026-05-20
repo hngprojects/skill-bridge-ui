@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dot, Download } from "lucide-react";
 import SkillsDisplay from "@/components/verified-report/skills-display";
 import { userReport } from "@/constants/verified-report";
-import HexagonPercentageItem from "./hexagon-percentage-item";
+import HexagonPercentageItem from "@/components/verified-report/hexagon-percentage-item";
 
 const VerifiedReportPage = () => {
   return (

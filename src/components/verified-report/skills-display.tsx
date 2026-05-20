@@ -16,7 +16,7 @@ const SkillsDisplay = ({ skills }: SkillDisplayProps) => {
       <ul
         className={cn(
           "flex flex-row gap-x-6 overflow-x-auto",
-          "[scrollbar-width:thin] [scrollbar-color:#DBDBDB_transparent]",
+          "scrollbar-thin [scrollbar-color:#DBDBDB_transparent]",
           "[&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent",
           "[&::-webkit-scrollbar-thumb]:bg-[#DBDBDB] [&::-webkit-scrollbar-thumb]:rounded-full",
         )}
