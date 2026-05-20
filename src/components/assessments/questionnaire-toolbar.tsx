@@ -24,9 +24,11 @@ export function QuestionnaireToolbar({
   showTimer = true,
 }: QuestionnaireToolbarProps) {
   const { name } = useParams<{ name: string }>();
+  const showTimer = name !== "personal";
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
 
   useEffect(() => {
+    if (!showTimer) return;
     if (!showTimer) return;
     const id = window.setInterval(() => {
       setSecondsLeft((current) => (current <= 0 ? 0 : current - 1));
@@ -56,7 +58,7 @@ export function QuestionnaireToolbar({
       <Button
         variant="ghost"
         asChild
-        className="h-auto gap-2 px-2 font-sans text-base font-medium text-foreground hover:bg-transparent hover:text-foreground/80"
+        className="ml-auto h-auto gap-2 px-2 font-sans text-base font-medium text-foreground hover:bg-transparent hover:text-foreground/80"
       >
         <Link href={`/t/assessments/${name}`}>
           Save and Exit
