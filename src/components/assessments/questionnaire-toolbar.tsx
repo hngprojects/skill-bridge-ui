@@ -16,19 +16,16 @@ function formatCountdown(totalSeconds: number): string {
 
 type QuestionnaireToolbarProps = {
   initialSeconds?: number;
-  showTimer?: boolean;
 };
 
 export function QuestionnaireToolbar({
   initialSeconds = ASSESSMENT_DEFAULT_DURATION_SECONDS,
-  showTimer = true,
 }: QuestionnaireToolbarProps) {
   const { name } = useParams<{ name: string }>();
   const showTimer = name !== "personal";
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
 
   useEffect(() => {
-    if (!showTimer) return;
     if (!showTimer) return;
     const id = window.setInterval(() => {
       setSecondsLeft((current) => (current <= 0 ? 0 : current - 1));

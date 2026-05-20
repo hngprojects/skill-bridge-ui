@@ -145,7 +145,6 @@ function AdvancedAssessmentFlow() {
       questions={questions}
       isLoading={isStarting || (!!sessionId && sessionStatus === "pending")}
       isSubmitting={isSubmitting}
-      showTimer
       initialSeconds={activeSession?.remainingSeconds}
       onSubmit={() =>
         submitAssessment({ sessionId: sessionId ?? "", answers: [] }).then(

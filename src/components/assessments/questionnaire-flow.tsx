@@ -3,6 +3,9 @@
 import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 
+import { FileEmpty01Icon, Loading03Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+
 import { QuestionnaireQuestionCard } from "@/components/assessments/questionnaire-question-card";
 import {
   QuestionnaireSidebar,
@@ -18,7 +21,6 @@ export type QuestionnaireFlowProps = {
   questions: Question[];
   isLoading: boolean;
   isSubmitting: boolean;
-  showTimer?: boolean;
   initialSeconds?: number;
   prefillAnswers?: Record<string, string | string[]>;
   onSubmit: (answers: Record<string, string | string[]>) => Promise<void>;
@@ -28,7 +30,6 @@ export function QuestionnaireFlow({
   questions,
   isLoading,
   isSubmitting,
-  showTimer = false,
   initialSeconds,
   prefillAnswers,
   onSubmit,
@@ -101,9 +102,16 @@ export function QuestionnaireFlow({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-64 items-center justify-center">
+      <div className="flex min-h-96 flex-col items-center justify-center gap-4">
+        <HugeiconsIcon
+          icon={Loading03Icon}
+          size={40}
+          strokeWidth={1.5}
+          className="animate-spin text-muted-foreground/50"
+          aria-hidden
+        />
         <p className="font-sans text-sm text-muted-foreground">
-          Loading assessment...
+          Preparing your assessment…
         </p>
       </div>
     );
@@ -111,20 +119,29 @@ export function QuestionnaireFlow({
 
   if (!question) {
     return (
-      <div className="flex min-h-64 items-center justify-center">
-        <p className="font-sans text-sm text-muted-foreground">
-          No questions available.
-        </p>
+      <div className="flex min-h-96 flex-col items-center justify-center gap-4">
+        <HugeiconsIcon
+          icon={FileEmpty01Icon}
+          size={40}
+          strokeWidth={1.5}
+          className="text-muted-foreground/40"
+          aria-hidden
+        />
+        <div className="flex flex-col items-center gap-1 text-center">
+          <p className="font-sans text-sm font-medium text-foreground">
+            No questions available
+          </p>
+          <p className="font-sans text-xs text-muted-foreground">
+            Please try refreshing the page.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div>
-      <QuestionnaireToolbar
-        showTimer={showTimer}
-        initialSeconds={initialSeconds}
-      />
+      <QuestionnaireToolbar initialSeconds={initialSeconds} />
       <div className="mx-auto flex max-w-300 flex-col gap-6 pb-10 lg:flex-row lg:items-start lg:gap-10">
         <QuestionnaireSidebar
           sections={sections}
