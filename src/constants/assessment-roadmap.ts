@@ -55,6 +55,7 @@ export type AssessmentCatalogTab = {
 
 export type AssessmentCatalogStep = {
   id: string;
+  slug?: string;
   order: number;
   title: string;
   description: string;
@@ -182,6 +183,7 @@ export const ASSESSMENT_CATALOG_TABS: AssessmentCatalogTab[] = [
 export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
   {
     id: "personal-assessment",
+    slug: "personal",
     order: 1,
     title: "Personal assessment",
     description:
@@ -197,6 +199,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
   },
   {
     id: "skill-career-assessment",
+    slug: "skill",
     order: 2,
     title: "Skill/career assessment",
     description:
@@ -213,6 +216,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
   },
   {
     id: "advanced-assessment",
+    slug: "advanced",
     order: 3,
     title: "Advanced assessment",
     description:

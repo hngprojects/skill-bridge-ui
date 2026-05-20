@@ -23,3 +23,8 @@ export const assessmentKeys = {
     [...assessmentKeys.all, "personal", "session"] as const,
   session: (id: string) => [...assessmentKeys.all, "session", id] as const,
 };
+
+export const dashboardKeys = {
+  all: ["dashboard"] as const,
+  home: () => [...dashboardKeys.all, "home"] as const,
+};
