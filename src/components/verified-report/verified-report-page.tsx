@@ -38,7 +38,7 @@ const VerifiedReportPage = () => {
                 <p className="text-lg font-light flex flex-row gap-x-2 items-center flex-wrap">
                   {userReport.role}
                   <Dot size={30} className="hidden lg:block" />
-                  <p>Goal: {userReport.goal}</p>
+                  <span>Goal: {userReport.goal}</span>
                 </p>
               </div>
             </div>
