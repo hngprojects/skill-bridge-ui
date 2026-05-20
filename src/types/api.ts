@@ -23,6 +23,7 @@ export type AuthUser = {
   last_name?: string;
   fullname?: string;
   role: UserRole;
+  track?: string | null;
   country?: string;
   emailVerified?: boolean;
   is_verified?: boolean;
