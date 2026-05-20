@@ -145,8 +145,8 @@ function SignInForm() {
         {...register("password")}
       />
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
+      <div className="flex w-full items-center justify-between gap-2 text-sm">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           <Controller
             name="rememberMe"
             control={control}
@@ -155,19 +155,22 @@ function SignInForm() {
                 id="sign-in-remember-me"
                 checked={field.value ?? false}
                 onCheckedChange={(checked) => field.onChange(checked === true)}
+                className="border-[#0D2025]/50 data-[state=checked]:border-[#0D2025]/70 data-[state=checked]:bg-[#0D2025]-600"
               />
             )}
           />
+
           <Label
             htmlFor="sign-in-remember-me"
-            className="cursor-pointer text-sm font-normal text-[#535862]"
+            className="cursor-pointer text-sm font-medium text-[#535862]"
           >
             Remember me
           </Label>
         </div>
+
         <Link
           href="/forgot-password"
-          className="text-sm font-medium text-[#535862] underline-offset-4 hover:text-[#0D2025] hover:underline sm:text-right"
+          className="whitespace-nowrap text-sm font-medium text-[#0D2025] underline-offset-4 hover:underline"
         >
           Forgot password?
         </Link>
