@@ -16,14 +16,16 @@ function AssessmentPreviewHeader({ assessment }: AssessmentPreviewHeaderProps) {
           alt=""
           width={40}
           height={40}
-          className="size-10 lg:size-[56px]"
+          className="size-10 lg:size-14"
           aria-hidden
         />
 
-        <div className="inline-flex items-center gap-1 rounded-md border border-[#F79009] bg-[#FFFAEB] px-1.5 text-[10px] font-medium text-[#181D27] lg:px-3 lg:py-1 lg:text-sm">
-          <AlertTriangle className="size-3 lg:size-4" aria-hidden />
-          <span>{assessment.retakeText}</span>
-        </div>
+        {assessment.retakeText ? (
+          <div className="inline-flex items-center gap-1 rounded-md border border-[#F79009] bg-[#FFFAEB] px-1.5 text-[10px] font-medium text-[#181D27] lg:px-3 lg:py-1 lg:text-sm">
+            <AlertTriangle className="size-3 lg:size-4" aria-hidden />
+            <span>{assessment.retakeText}</span>
+          </div>
+        ) : null}
       </div>
 
       <div className="mt-4 lg:mt-8">
