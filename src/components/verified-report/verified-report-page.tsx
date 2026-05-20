@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dot, Download } from "lucide-react";
 import SkillsDisplay from "@/components/verified-report/skills-display";
 import { userReport } from "@/constants/verified-report";
+import HexagonPercentageItem from "./hexagon-percentage-item";
 
 const VerifiedReportPage = () => {
   return (
@@ -48,12 +49,7 @@ const VerifiedReportPage = () => {
             <InfoDisplay title="AI Report" info={userReport.aiReport} />
           </div>
           <div className="max-md:self-center">
-            <Image
-              src={"/assets/job-ready.svg"}
-              height={221}
-              width={250}
-              alt="Job ready image"
-            />
+            <HexagonPercentageItem value={85} />
           </div>
         </div>
 
