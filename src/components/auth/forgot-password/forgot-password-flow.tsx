@@ -3,7 +3,7 @@
 import { ForgotPasswordEmailForm } from "./forgot-password-email-form";
 import { ForgotPasswordNewPasswordForm } from "./forgot-password-new-password-form";
 import { ForgotPasswordOtpForm } from "./forgot-password-otp-form";
-import { ForgotPasswordResetNotice } from "./forgot-password-reset-notice";
+// import { ForgotPasswordResetNotice } from "./forgot-password-reset-notice";
 import { ForgotPasswordSuccessState } from "./forgot-password-success-state";
 import { useForgotPasswordFlow } from "@/hooks/use-forgot-password-flow";
 
@@ -78,12 +78,13 @@ function ForgotPasswordFlow({ initialEmail = "" }: ForgotPasswordFlowProps) {
           onContinue={() => void flow.validatePasswords()}
           isSubmitting={flow.isResettingPassword}
         />
-      ) : (
+      ) : /*
         <ForgotPasswordResetNotice
           email={flow.resetEmail}
           onContinue={flow.showOtpStep}
         />
-      )}
+        */
+      null}
     </div>
   );
 }
