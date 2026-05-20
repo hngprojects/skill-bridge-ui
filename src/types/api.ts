@@ -23,6 +23,7 @@ export type AuthUser = {
   last_name?: string;
   fullname?: string;
   role: UserRole;
+  track?: string | null;
   country?: string;
   emailVerified?: boolean;
   is_verified?: boolean;
@@ -256,6 +257,28 @@ export type TalentOnboardingPersonaliseResponseData = {
   status: string;
 };
 
+// ─── Dashboard ────────────────────────────────────────────────────────────────
+
+export type DashboardJourneyStatus = "available" | "completed" | "locked";
+
+export type DashboardJourneyKey =
+  | "onboarding"
+  | "personal"
+  | "skill"
+  | "advanced";
+
+export type DashboardJourneyOverviewItem = {
+  key: DashboardJourneyKey | string;
+  title: string;
+  status: DashboardJourneyStatus;
+};
+
+export type DashboardHomeResponseData = {
+  firstName: string;
+  profileCompletionPercentage: number;
+  journeyOverview: DashboardJourneyOverviewItem[];
+};
+
 // ─── Personal Assessment ──────────────────────────────────────────────────────
 
 export type PersonalAssessmentSession = {
@@ -284,19 +307,21 @@ export type PersonalAssessmentSubmitResponseData = {
 
 export type PersonalAssessmentSessionResponseData = {
   status: string;
-  session: PersonalAssessmentSession;
+  session: PersonalAssessmentSession | null;
   answers?: Record<string, string | string[]> | null;
 };
 
 // ─── Skill Assessment ─────────────────────────────────────────────────────────
 
+export type SkillAssessmentSession = {
+  sessionId: string;
+  questions: import("./questionnaire").Question[];
+  [key: string]: unknown;
+};
+
 export type SkillAssessmentStartResponseData = {
   status: string;
-  session: {
-    sessionId: string;
-    questions: unknown[];
-    [key: string]: unknown;
-  };
+  session: SkillAssessmentSession;
 };
 
 export type SkillAssessmentAnswer = {

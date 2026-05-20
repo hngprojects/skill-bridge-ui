@@ -141,7 +141,10 @@ export function QuestionnaireFlow({
 
   return (
     <div>
-      <QuestionnaireToolbar initialSeconds={initialSeconds} />
+      <QuestionnaireToolbar
+        key={initialSeconds ?? "default"}
+        initialSeconds={initialSeconds}
+      />
       <div className="mx-auto flex max-w-300 flex-col gap-6 pb-10 lg:flex-row lg:items-start lg:gap-10">
         <QuestionnaireSidebar
           sections={sections}
