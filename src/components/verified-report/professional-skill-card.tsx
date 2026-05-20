@@ -11,7 +11,7 @@ const ProfessionalSkillCard = ({ title, value }: Props) => {
       <div className="flex flex-row gap-x-2.5">
         <p className="font-semibold text-lg">{title} </p>
         <Image
-          src={"assets/icons/information-circle.svg"}
+          src={"/assets/icons/info-icon.svg"}
           height={16}
           width={16}
           alt="info icon"
