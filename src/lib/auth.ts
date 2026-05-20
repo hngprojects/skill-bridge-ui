@@ -15,7 +15,7 @@ import type {
 
 const passwordLoginSchema = z.object({
   email: z.email(),
-  password: z.string().min(1),
+  password: z.string().min(1).max(64),
 });
 
 const optionalCredential = z.preprocess(

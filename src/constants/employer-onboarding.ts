@@ -27,8 +27,9 @@ export const EMPLOYER_REGION_OPTIONS = COUNTRY_LIST.map((value) => ({
 export const EMPLOYER_HIRING_COUNT_VALUES = [
   "1_5",
   "6_10",
-  "11_20",
-  "20_plus",
+  "11_25",
+  "26_50",
+  "51_plus",
 ] as const;
 
 export type EmployerHiringCountRange =
@@ -37,8 +38,9 @@ export type EmployerHiringCountRange =
 const HIRING_COUNT_LABELS: Record<EmployerHiringCountRange, string> = {
   "1_5": "1-5",
   "6_10": "6-10",
-  "11_20": "11-20",
-  "20_plus": "20+",
+  "11_25": "11-25",
+  "26_50": "26-50",
+  "51_plus": "51+",
 };
 
 export const EMPLOYER_HIRING_COUNT_OPTIONS = EMPLOYER_HIRING_COUNT_VALUES.map(
