@@ -1,4 +1,19 @@
-const userReport = {
+type UserReport = {
+  name: string;
+  role: string;
+  goal: string;
+  about: string[];
+  skills: string[];
+  aiReport: string;
+  detailedSkills: DetailedSkills[];
+};
+
+type DetailedSkills = {
+  title: string;
+  skillInfo: { label: string; value: number }[];
+};
+
+const userReport: UserReport = {
   name: "Alex Smith",
   role: "Frontend Developer",
   goal: "Land my first role",

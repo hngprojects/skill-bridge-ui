@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SkillTitleCard from "@/components/verified-report/skill-title-card";
 import ProfessionalSkillCard from "@/components/verified-report/professional-skill-card";
+import { cn } from "@/lib/utils";
 
 type SkillDisplayProps = {
   skills: { title: string; skillInfo: { label: string; value: number }[] }[];
@@ -12,10 +13,17 @@ const SkillsDisplay = ({ skills }: SkillDisplayProps) => {
   const activeItem = skills[activeTab];
   return (
     <div className="flex flex-col gap-y-6">
-      <ul className="flex flex-row gap-x-6">
+      <ul
+        className={cn(
+          "flex flex-row gap-x-6 overflow-x-auto",
+          "[scrollbar-width:thin] [scrollbar-color:#DBDBDB_transparent]",
+          "[&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent",
+          "[&::-webkit-scrollbar-thumb]:bg-[#DBDBDB] [&::-webkit-scrollbar-thumb]:rounded-full",
+        )}
+      >
         {skills.map((skill, i) => (
           <SkillTitleCard
-            key={skill.title}
+            key={skill.title + i}
             title={skill.title}
             isActive={i === activeTab}
             onClick={() => setActiveTab(i)}
@@ -23,9 +31,9 @@ const SkillsDisplay = ({ skills }: SkillDisplayProps) => {
         ))}
       </ul>
       <ul className="flex flex-col gap-y-6">
-        {activeItem.skillInfo.map((item) => (
+        {activeItem.skillInfo.map((item, i) => (
           <ProfessionalSkillCard
-            key={item.label}
+            key={item.label + i}
             value={item.value}
             title={item.label}
           />

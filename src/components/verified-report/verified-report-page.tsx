@@ -1,7 +1,7 @@
 import Image from "next/image";
 import InfoDisplay from "@/components/verified-report/info-display";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Dot, Download } from "lucide-react";
 import SkillsDisplay from "@/components/verified-report/skills-display";
 import { userReport } from "@/constants/verified-report";
 
@@ -24,9 +24,9 @@ const VerifiedReportPage = () => {
       </section>
 
       <section className="flex flex-col gap-y-5">
-        <div className="flex flex-row justify-between gap-x-10 rounded-xl border border-[#DBDBDB] p-3 md:p-6 bg-[#FAFAFA]">
-          <div className="flex flex-col gap-y-6">
-            <div className="flex flex-row gap-x-6 items-center">
+        <div className="flex flex-col gap-y-5 md:flex-row md:justify-between gap-x-10 rounded-xl border border-[#DBDBDB] p-3 md:p-6 bg-[#FAFAFA]">
+          <div className="flex flex-1 flex-col gap-y-6 min-w-0">
+            <div className="flex flex-col gap-y-2 sm:flex-row gap-x-6 sm:items-center">
               <Image
                 src={"/assets/placeholder-avatar.svg"}
                 height={124}
@@ -35,8 +35,10 @@ const VerifiedReportPage = () => {
               />
               <div className="flex flex-col gap-y-1">
                 <p className="font-bold text-2xl">{userReport.name}</p>
-                <p className="text-lg font-light">
-                  {userReport.role}. Goal: {userReport.goal}
+                <p className="text-lg font-light flex flex-row gap-x-2 items-center flex-wrap">
+                  {userReport.role}
+                  <Dot size={30} className="hidden lg:block" />
+                  <p>Goal: {userReport.goal}</p>
                 </p>
               </div>
             </div>
@@ -45,7 +47,7 @@ const VerifiedReportPage = () => {
             <InfoDisplay title="Skills" info={userReport.skills} />
             <InfoDisplay title="AI Report" info={userReport.aiReport} />
           </div>
-          <div>
+          <div className="max-md:self-center">
             <Image
               src={"/assets/job-ready.svg"}
               height={221}
