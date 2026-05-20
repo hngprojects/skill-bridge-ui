@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  BarChart2,
-  LayoutGrid,
-  Briefcase,
-  CheckCircle2,
-  Clock,
-} from "lucide-react";
+import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
@@ -30,7 +24,15 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
       "Tell us about your specialization, tools, experience level,...",
     status: "completed",
     iconBg: "bg-orange-100",
-    icon: <BarChart2 className="size-5 text-orange-500" aria-hidden="true" />,
+    icon: (
+      <Image
+        src="/assets/assessments/personal-assessment-icon.svg"
+        alt="Personal assessment"
+        width={40}
+        height={40}
+        className="size/10"
+      />
+    ),
   },
   {
     id: "skills-career",
@@ -39,7 +41,15 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
       "This assessment is designed to evaluate your current skill...",
     status: "completed",
     iconBg: "bg-yellow-100",
-    icon: <LayoutGrid className="size-5 text-yellow-600" aria-hidden="true" />,
+    icon: (
+      <Image
+        src="/assets/assessments/skill-assessment-icon.svg"
+        alt="Skills/Career assessment"
+        width={40}
+        height={40}
+        className="size/10"
+      />
+    ),
   },
   {
     id: "advance",
@@ -47,22 +57,41 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
     description: "To get verified score and become discoverable to top e...",
     status: "pending",
     iconBg: "bg-purple-100",
-    icon: <Briefcase className="size-5 text-purple-500" aria-hidden="true" />,
+    icon: (
+      <Image
+        src="/assets/assessments/advanced-assessment-icon.svg"
+        alt="Advance assessment"
+        width={40}
+        height={40}
+        className="size/10"
+      />
+    ),
   },
 ];
 
 function StatusIcon({ status }: { status: AssessmentStatus }) {
   if (status === "completed") {
     return (
-      <CheckCircle2
-        className="size-5 shrink-0 text-emerald-500"
+      <Image
+        src="/assets/checkmark.svg"
+        alt="checkmark"
+        width={20}
+        height={20}
+        className="size-5 shrink-0"
         aria-label="Completed"
       />
     );
   }
   return (
-    <span className="flex size-5 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-white">
-      <Clock className="size-3 text-muted-foreground" aria-label="Pending" />
+    <span className="flex size-5 shrink-0 items-center justify-center rounded-ful">
+      <Image
+        src="/assets/clock.svg"
+        alt="clock"
+        width={20}
+        height={20}
+        className="size-5 shrink-0"
+        aria-label="Completed"
+      />
     </span>
   );
 }
@@ -100,7 +129,6 @@ export function DashboardJobRoadmap() {
             <div
               className={cn(
                 "flex size-12 shrink-0 items-center justify-center rounded-xl",
-                item.iconBg,
               )}
             >
               {item.icon}

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Monitor, FlaskConical, MoreHorizontal } from "lucide-react";
+import Image from "next/image";
+import { MoreHorizontal } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -29,8 +30,16 @@ const RECOMMENDED_ITEMS: RecommendedItem[] = [
     actionLabel: "Continue to next",
     actionHref: "/t/assessments",
     estimatedTime: "30–45 minutes",
-    thumbnailBg: "bg-green-400",
-    thumbnail: <Monitor className="size-8 text-white" aria-hidden="true" />,
+    thumbnailBg: "bg-[#7EFF3C]",
+    thumbnail: (
+      <Image
+        src="/assets/recommend/ai-mock-interview.svg"
+        alt="AI mock Interview"
+        width={32}
+        height={32}
+        className="size-14 text-white"
+      />
+    ),
   },
   {
     id: "practical-assessment",
@@ -42,7 +51,13 @@ const RECOMMENDED_ITEMS: RecommendedItem[] = [
     estimatedTime: "30–45 minutes",
     thumbnailBg: "bg-slate-800",
     thumbnail: (
-      <FlaskConical className="size-8 text-white" aria-hidden="true" />
+      <Image
+        src="/assets/recommend/practical-assessment.svg"
+        alt="Practical-assessment"
+        width={32}
+        height={32}
+        className="size-14 text-white"
+      />
     ),
   },
 ];
