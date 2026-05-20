@@ -255,3 +255,35 @@ export type TalentOnboardingPersonaliseResponseData = {
   message: string;
   status: string;
 };
+
+// ─── Personal Assessment ──────────────────────────────────────────────────────
+
+export type PersonalAssessmentSession = {
+  sessionId: string;
+  generatedAt: string;
+  source: string;
+  track: string;
+  claimedLevel: string | null;
+  questionCount: number;
+  questions: import("./questionnaire").Question[];
+};
+
+export type PersonalAssessmentStartResponseData = {
+  status: string;
+  session: PersonalAssessmentSession;
+};
+
+export type PersonalAssessmentSubmitInput = {
+  answers: Record<string, string | string[]>;
+};
+
+export type PersonalAssessmentSubmitResponseData = {
+  message?: string;
+  completedAt?: string;
+};
+
+export type PersonalAssessmentSessionResponseData = {
+  status: string;
+  session: PersonalAssessmentSession;
+  answers?: Record<string, string | string[]> | null;
+};
