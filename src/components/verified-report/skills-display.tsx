@@ -8,9 +8,13 @@ import { cn } from "@/lib/utils";
 type SkillDisplayProps = {
   skills: { title: string; skillInfo: { label: string; value: number }[] }[];
 };
+
 const SkillsDisplay = ({ skills }: SkillDisplayProps) => {
   const [activeTab, setActiveTab] = useState(0);
-  const activeItem = skills[activeTab];
+  const activeItem = skills?.[activeTab];
+
+  if (!skills?.length) return null;
+
   return (
     <div className="flex flex-col gap-y-6">
       <ul
@@ -31,7 +35,7 @@ const SkillsDisplay = ({ skills }: SkillDisplayProps) => {
         ))}
       </ul>
       <ul className="flex flex-col gap-y-6">
-        {activeItem.skillInfo.map((item, i) => (
+        {activeItem?.skillInfo?.map((item, i) => (
           <ProfessionalSkillCard
             key={item.label + i}
             value={item.value}
