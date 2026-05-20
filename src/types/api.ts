@@ -287,3 +287,89 @@ export type PersonalAssessmentSessionResponseData = {
   session: PersonalAssessmentSession;
   answers?: Record<string, string | string[]> | null;
 };
+
+// ─── Skill Assessment ─────────────────────────────────────────────────────────
+
+export type SkillAssessmentStartResponseData = {
+  status: string;
+  session: {
+    sessionId: string;
+    questions: unknown[];
+    [key: string]: unknown;
+  };
+};
+
+export type SkillAssessmentAnswer = {
+  questionId: string;
+  value: string | string[];
+};
+
+export type SkillAssessmentSubmitInput = {
+  sessionId: string;
+  answers: SkillAssessmentAnswer[];
+};
+
+export type SkillAssessmentSubmitResponseData = {
+  score: number;
+  passed: boolean;
+  validatedLevel?: string;
+  guidanceReport?: string;
+  retryAvailableAt?: string;
+};
+
+// ─── Advanced Assessment ──────────────────────────────────────────────────────
+
+export type AdvancedAssessmentQuestionType = "mcq" | "short_text" | "long_text";
+
+export type AdvancedAssessmentQuestion = {
+  id: string;
+  type: AdvancedAssessmentQuestionType;
+  prompt: string;
+  options?: string[];
+};
+
+export type AdvancedAssessmentSession = {
+  sessionId: string;
+  remainingSeconds: number;
+  questions: AdvancedAssessmentQuestion[];
+};
+
+export type AdvancedAssessmentStartResponseData = {
+  status: string;
+  session: AdvancedAssessmentSession;
+};
+
+export type AssessmentSessionResponseData = {
+  status: string;
+  session: AdvancedAssessmentSession;
+};
+
+export type AdvancedAssessmentAnswer = {
+  questionId: string;
+  value: string | string[];
+};
+
+export type AdvancedAssessmentSubmitInput = {
+  sessionId: string;
+  answers: AdvancedAssessmentAnswer[];
+};
+
+export type AssessmentTier = "job_ready" | "emerging" | "not_ready";
+
+export type AdvancedAssessmentSubmitResponseData = {
+  tier: AssessmentTier;
+  score: number;
+  guidanceReport?: string;
+  retryAvailableAt?: string;
+};
+
+export type AssessmentFlagEventType = "tab_switch" | "copy_paste";
+
+export type AssessmentFlagInput = {
+  eventType: AssessmentFlagEventType;
+};
+
+export type AssessmentFlagResponseData = {
+  message?: string;
+  sessionVoided?: boolean;
+};
