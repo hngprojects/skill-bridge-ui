@@ -1,4 +1,5 @@
 import Image from "next/image";
+import VerifiedReportProgressIndicator from "./verified-report-progress-indicator";
 
 type Props = {
   title: string;
@@ -16,10 +17,8 @@ const ProfessionalSkillCard = ({ title, value }: Props) => {
           alt="info icon"
         />
       </div>
-      <div className="mt-6">
-        <p>Progress bar {value}</p>
-      </div>
-      <div className="gap-x-4 mt-6 flex flex-row py-2 px-4 rounded-lg bg-[#ECFDF5]">
+      <VerifiedReportProgressIndicator value={value} />
+      <div className="gap-x-4 flex flex-row py-2 px-4 rounded-lg bg-[#ECFDF5]">
         <Image
           src={"/assets/icons/sparkle-icon.svg"}
           height={24}
