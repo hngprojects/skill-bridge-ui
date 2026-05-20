@@ -1,13 +1,3 @@
-type SkillEntry = {
-  label: string;
-  value: number;
-};
-
-type SkillCategory = {
-  title: string;
-  skillInfo: SkillEntry[];
-};
-
 type UserReport = {
   name: string;
   role: string;
@@ -15,7 +5,12 @@ type UserReport = {
   about: string[];
   skills: string[];
   aiReport: string;
-  detailedSkills: SkillCategory[];
+  detailedSkills: DetailedSkills[];
+};
+
+type DetailedSkills = {
+  title: string;
+  skillInfo: { label: string; value: number }[];
 };
 
 const userReport: UserReport = {
@@ -30,7 +25,7 @@ const userReport: UserReport = {
     "React Native",
   ],
   aiReport:
-    "His assessment behaviour reflects a structured, detailed-oriented approach to complex problem decomposition",
+    "His assessment behaviour reflects a structured, detail-oriented approach to complex problem decomposition",
   detailedSkills: [
     {
       title: "Professional Skills",
@@ -43,37 +38,36 @@ const userReport: UserReport = {
     {
       title: "Soft Skills",
       skillInfo: [
-        { label: "Skill Proficiency", value: 70 },
-        { label: "Workplace Readiness", value: 82 },
-        { label: "Practical Application", value: 82 },
+        { label: "Communication", value: 78 },
+        { label: "Teamwork", value: 85 },
+        { label: "Adaptability", value: 72 },
       ],
     },
     {
       title: "Working Style",
       skillInfo: [
-        { label: "Skill Proficiency", value: 70 },
-        { label: "Workplace Readiness", value: 82 },
-        { label: "Practical Application", value: 82 },
+        { label: "Independence", value: 88 },
+        { label: "Collaboration", value: 74 },
+        { label: "Time Management", value: 69 },
       ],
     },
     {
       title: "Strengths",
       skillInfo: [
-        { label: "Skill Proficiency", value: 70 },
-        { label: "Workplace Readiness", value: 82 },
-        { label: "Practical Application", value: 82 },
+        { label: "Problem Solving", value: 90 },
+        { label: "Analytical Thinking", value: 84 },
+        { label: "Attention to Detail", value: 76 },
       ],
     },
     {
       title: "Weaknesses",
       skillInfo: [
-        { label: "Skill Proficiency", value: 70 },
-        { label: "Workplace Readiness", value: 82 },
-        { label: "Practical Application", value: 82 },
+        { label: "Public Speaking", value: 45 },
+        { label: "Delegation", value: 52 },
+        { label: "Time Estimation", value: 58 },
       ],
     },
   ],
 };
 
-export type { UserReport, SkillCategory, SkillEntry };
 export { userReport };
