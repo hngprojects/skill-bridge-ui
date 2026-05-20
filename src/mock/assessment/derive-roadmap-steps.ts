@@ -51,7 +51,9 @@ export function deriveDemoRoadmapSteps(): AssessmentRoadmapStep[] {
           ? "Completed"
           : status === "locked"
             ? step.ctaLabel
-            : "Start",
+            : status === "in_progress"
+              ? "Continue"
+              : "Start",
     };
   });
 }

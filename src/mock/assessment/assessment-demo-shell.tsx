@@ -18,9 +18,12 @@ type AssessmentDemoShellProps = {
 };
 
 export function AssessmentDemoShell({ children }: AssessmentDemoShellProps) {
-  if (ASSESSMENT_DEMO_ENABLED) {
-    setAssessmentDemoEnabled(true);
-  }
+  useLayoutEffect(() => {
+    if (ASSESSMENT_DEMO_ENABLED) {
+      setAssessmentDemoEnabled(true);
+    }
+    return () => setAssessmentDemoEnabled(false);
+  }, []);
 
   useLayoutEffect(() => {
     return () => setAssessmentDemoEnabled(false);
