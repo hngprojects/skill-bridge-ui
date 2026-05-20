@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   ASSESSMENT_CATALOG_STEPS,
   ASSESSMENT_CATALOG_TABS,
   type AssessmentCatalogCategory,
 } from "@/constants/assessment-roadmap";
+import { useDashboardHome } from "@/hooks/api/use-dashboard";
 import { isAssessmentDemoMode, useDemoCatalogSteps } from "@/mock/assessment";
 
 import { AssessmentCatalogCard } from "./assessment-catalog-card";
 import { AssessmentCatalogTabs } from "./assessment-catalog-tabs";
+import { applyDashboardHomeToCatalogSteps } from "./dashboard-home-state";
 
 type AssessmentCatalogPageProps = {
   initialActiveTab: AssessmentCatalogCategory;
@@ -21,9 +23,14 @@ export function AssessmentCatalogPage({
 }: AssessmentCatalogPageProps) {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
   const demoSteps = useDemoCatalogSteps();
-  const catalogSteps = isAssessmentDemoMode()
-    ? demoSteps
-    : ASSESSMENT_CATALOG_STEPS;
+  const { data: dashboardHome } = useDashboardHome();
+  const catalogSteps = useMemo(() => {
+    if (isAssessmentDemoMode()) return demoSteps;
+    return applyDashboardHomeToCatalogSteps(
+      ASSESSMENT_CATALOG_STEPS,
+      dashboardHome,
+    );
+  }, [demoSteps, dashboardHome]);
   const visibleSteps =
     activeTab === "all"
       ? catalogSteps
