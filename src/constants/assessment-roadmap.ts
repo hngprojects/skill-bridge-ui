@@ -7,6 +7,13 @@ import {
   MonitorCog,
   TestTubeDiagonal,
 } from "lucide-react";
+import type { IconSvgElement } from "@hugeicons/react";
+import {
+  LaptopIcon,
+  Note01Icon,
+  PaintBoardIcon,
+  UserIcon,
+} from "@hugeicons/core-free-icons";
 
 export type AssessmentRoadmapTab = "in-progress" | "completed";
 export type AssessmentRoadmapStepStatus = "available" | "locked" | "completed";
@@ -20,8 +27,7 @@ export type AssessmentCatalogCategory =
 export type AssessmentExpectation = {
   id: string;
   title: string;
-  icon?: LucideIcon;
-  iconSrc?: string;
+  icon: IconSvgElement;
 };
 
 export type AssessmentRoadmapStep = {
@@ -34,6 +40,7 @@ export type AssessmentRoadmapStep = {
   estimatedTime: string;
   panelTitle: string;
   panelIcon: LucideIcon;
+  panelIconSrc?: string;
   panelClassName: string;
   panelIconClassName: string;
   state: AssessmentRoadmapStepStatus;
@@ -53,6 +60,7 @@ export type AssessmentCatalogStep = {
   description: string;
   panelTitle: string;
   panelIcon: LucideIcon;
+  panelIconSrc?: string;
   panelClassName: string;
   panelIconClassName: string;
   state: AssessmentRoadmapStepStatus;
@@ -69,22 +77,22 @@ export const ASSESSMENT_EXPECTATIONS: AssessmentExpectation[] = [
   {
     id: "personal",
     title: "Personal Assessment to find your level",
-    iconSrc: "/assets/assessments/personal-assessment-icon.svg",
+    icon: UserIcon,
   },
   {
     id: "career",
     title: "Skill/Career assessment to determine your level",
-    iconSrc: "/assets/assessments/skill-assessment-icon.svg",
+    icon: PaintBoardIcon,
   },
   {
     id: "advanced",
     title: "Advanced Assessment to evaluate your core knowledge",
-    iconSrc: "/assets/assessments/advanced-assessment-icon.svg",
+    icon: LaptopIcon,
   },
   {
     id: "score",
     title: "Get your score and be job-ready",
-    iconSrc: "/file.svg",
+    icon: Note01Icon,
   },
 ];
 
@@ -100,6 +108,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     estimatedTime: "30-45 minutes",
     panelTitle: "Find your level!",
     panelIcon: MonitorCog,
+    panelIconSrc: "/assets/icons/assessement-icon.svg",
     panelClassName: "bg-[#FE9667] text-[#1B0904]",
     panelIconClassName: "text-[#2D150D]",
     state: "available",
@@ -116,6 +125,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     estimatedTime: "30-45 minutes",
     panelTitle: "Choose a stack",
     panelIcon: LaptopMinimal,
+    panelIconSrc: "/assets/icons/computer-setup-icon.svg",
     panelClassName: "bg-[#F9E796] text-[#401D09]",
     panelIconClassName: "text-[#49330A]",
     state: "locked",
@@ -132,6 +142,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     estimatedTime: "30-45 minutes",
     panelTitle: "Get Job Ready!",
     panelIcon: BriefcaseBusiness,
+    panelIconSrc: "/assets/icons/portfolio-icon.svg",
     panelClassName: "bg-[#CBB0EB] text-[#231F29]",
     panelIconClassName: "text-[#2D2742]",
     state: "locked",
@@ -177,6 +188,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
       "Tell us about your specialization, tools, experience level, and work preferences.",
     panelTitle: "Find your level!",
     panelIcon: MonitorCog,
+    panelIconSrc: "/assets/icons/assessement-icon.svg",
     panelClassName: "bg-[#FE9667] text-[#1B0904]",
     panelIconClassName: "text-[#2D150D]",
     state: "completed",
@@ -191,6 +203,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
       "This assessment is designed to evaluate your current skill level in your selected track.",
     panelTitle: "Choose a stack",
     panelIcon: LaptopMinimal,
+    panelIconSrc: "/assets/icons/computer-setup-icon.svg",
     panelClassName: "bg-[#F9E796] text-[#401D09]",
     panelIconClassName: "text-[#49330A]",
     state: "available",
@@ -206,6 +219,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
       "To get verified score and become discoverable to top employers.",
     panelTitle: "Get Job Ready!",
     panelIcon: BriefcaseBusiness,
+    panelIconSrc: "/assets/icons/portfolio-icon.svg",
     panelClassName: "bg-[#CBB0EB] text-[#231F29]",
     panelIconClassName: "text-[#2D2742]",
     state: "locked",
