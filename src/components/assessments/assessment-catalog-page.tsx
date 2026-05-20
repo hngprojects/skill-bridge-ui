@@ -8,6 +8,7 @@ import {
   type AssessmentCatalogCategory,
 } from "@/constants/assessment-roadmap";
 import { useDashboardHome } from "@/hooks/api/use-dashboard";
+import { isAssessmentDemoMode, useDemoCatalogSteps } from "@/mock/assessment";
 
 import { AssessmentCatalogCard } from "./assessment-catalog-card";
 import { AssessmentCatalogTabs } from "./assessment-catalog-tabs";
@@ -21,12 +22,15 @@ export function AssessmentCatalogPage({
   initialActiveTab,
 }: AssessmentCatalogPageProps) {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
+  const demoSteps = useDemoCatalogSteps();
   const { data: dashboardHome } = useDashboardHome();
-  const catalogSteps = useMemo(
-    () =>
-      applyDashboardHomeToCatalogSteps(ASSESSMENT_CATALOG_STEPS, dashboardHome),
-    [dashboardHome],
-  );
+  const catalogSteps = useMemo(() => {
+    if (isAssessmentDemoMode()) return demoSteps;
+    return applyDashboardHomeToCatalogSteps(
+      ASSESSMENT_CATALOG_STEPS,
+      dashboardHome,
+    );
+  }, [demoSteps, dashboardHome]);
   const visibleSteps =
     activeTab === "all"
       ? catalogSteps
