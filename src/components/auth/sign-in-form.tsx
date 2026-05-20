@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { appToast } from "@/lib/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
@@ -21,6 +21,7 @@ import {
   signInWithGoogle,
   signInWithVerifiedUser,
 } from "@/lib/auth-client";
+import { prepareGoogleAuth } from "@/lib/google-auth";
 import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import { signInFormSchema, type SignInFormValues } from "@/types/form-schema";
 
@@ -36,6 +37,7 @@ function SignInForm() {
   const setTalentSignup = useSignupFlowStore((s) => s.setTalentSignup);
   const setEmployerLead = useSignupFlowStore((s) => s.setEmployerLead);
   const [isGooglePending, setIsGooglePending] = useState(false);
+  const [isGoogleReady, setIsGoogleReady] = useState(false);
 
   const {
     register,
@@ -50,6 +52,22 @@ function SignInForm() {
       rememberMe: false,
     },
   });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    prepareGoogleAuth()
+      .then(() => {
+        if (isMounted) setIsGoogleReady(true);
+      })
+      .catch(() => {
+        if (isMounted) setIsGoogleReady(true);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const onSubmit = async (data: SignInFormValues) => {
     try {
@@ -192,8 +210,9 @@ function SignInForm() {
       </div>
 
       <GoogleButton
-        disabled={isGooglePending || isSubmitting}
+        disabled={!isGoogleReady || isGooglePending || isSubmitting}
         label={isGooglePending ? "Connecting..." : "Continue with Google"}
+        loading={!isGoogleReady}
         onClick={() => void onGoogleSignIn()}
       />
 
