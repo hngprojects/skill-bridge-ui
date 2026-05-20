@@ -40,6 +40,7 @@ const GOOGLE_SCRIPT_SRC = "https://accounts.google.com/gsi/client";
 
 let googleScriptPromise: Promise<void> | undefined;
 let googleCodeClient: GoogleCodeClient | undefined;
+let googleCodeClientError: Error | undefined;
 let googleCodeClientPromise: Promise<GoogleCodeClient> | undefined;
 let pendingCodeRequest:
   | {
@@ -96,6 +97,11 @@ function googleAuthErrorMessage(error: unknown): string {
   }
 
   return "Google sign-in failed. Please try again.";
+}
+
+function googleAuthError(error: unknown): Error {
+  if (error instanceof Error) return error;
+  return new Error(googleAuthErrorMessage(error));
 }
 
 function loadGoogleScript() {
@@ -157,6 +163,7 @@ export async function prepareGoogleAuth(): Promise<GoogleCodeClient> {
 
   if (googleCodeClient) return googleCodeClient;
 
+  googleCodeClientError = undefined;
   googleCodeClientPromise ??= loadGoogleScript()
     .then(() => {
       const client = googleOAuth2().initCodeClient({
@@ -194,8 +201,9 @@ export async function prepareGoogleAuth(): Promise<GoogleCodeClient> {
       return client;
     })
     .catch((error) => {
+      googleCodeClientError = googleAuthError(error);
       googleCodeClientPromise = undefined;
-      throw error;
+      throw googleCodeClientError;
     });
 
   return googleCodeClientPromise;
@@ -210,6 +218,10 @@ export function requestGoogleAuthCode(): Promise<string> {
 
   const client = googleCodeClient;
   if (!client) {
+    if (googleCodeClientError) {
+      return Promise.reject(googleCodeClientError);
+    }
+
     void prepareGoogleAuth().catch(() => undefined);
     return Promise.reject(
       new Error("Google sign-in is still loading. Please try again."),
@@ -223,7 +235,7 @@ export function requestGoogleAuthCode(): Promise<string> {
       client.requestCode();
     } catch (error) {
       pendingCodeRequest = undefined;
-      reject(new Error(googleAuthErrorMessage(error)));
+      reject(googleAuthError(error));
     }
   });
 }
