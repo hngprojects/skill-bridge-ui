@@ -155,7 +155,7 @@ function SignInForm() {
                 id="sign-in-remember-me"
                 checked={field.value ?? false}
                 onCheckedChange={(checked) => field.onChange(checked === true)}
-                className="border-[#0D2025]/50 data-[state=checked]:border-[#0D2025]/70 data-[state=checked]:bg-[#0D2025]-600"
+                className="border-[#0D2025]/50 data-[state=checked]:border-[#0D2025]/70 data-[state=checked]:bg-[#0D2025]"
               />
             )}
           />
