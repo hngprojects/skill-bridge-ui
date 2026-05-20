@@ -101,7 +101,10 @@ export function DashboardSkillBreakdown() {
       </div>
 
       {/* Date */}
-      <p className="mb-6 text-[13px] text-muted-foreground">{today}</p>
+      <p className="mb-6 text-[13px] text-muted-foreground">
+        {" "}
+        Last attempt • {today}
+      </p>
 
       {/* Bar chart — extra top padding so hex badge has room */}
       <div className="flex items-end gap-4 pt-18">

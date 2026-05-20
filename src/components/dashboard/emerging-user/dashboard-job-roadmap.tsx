@@ -54,7 +54,7 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
   },
   {
     id: "advance",
-    title: "Advance assessment",
+    title: "Advanced assessment",
     description: "To get verified score and become discoverable to top e...",
     status: "pending",
     iconBg: "bg-purple-100",
@@ -125,7 +125,7 @@ export function DashboardJobRoadmap() {
         {ROADMAP_ITEMS.map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-4 rounded-xl border border-border bg-white p-4"
+            className="flex items-center gap-4 rounded-xl border border-border bg-white p-4 transition-transform hover:-translate-y-1 hover:shadow-sm"
           >
             {/* Icon tile */}
             <div

@@ -93,7 +93,7 @@ export function JobReadySkillBreakdown() {
         </h2>
         <Link
           href="#"
-          className="flex items-center label shrink-0 text-foreground underline underline-offset-2 group"
+          className="flex items-center label shrink-0 text-foreground underline underline-offset-2 hover:opacity-70 transition-opacity group"
         >
           Learn more
           <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />

@@ -16,7 +16,7 @@ export function JobReadyVerifiedProfile() {
         </h2>
         <Link
           href="#"
-          className="flex items-center text-foreground text-[15px] font-medium group label shrink-0"
+          className="flex items-center text-foreground text-[15px] font-medium hover:opacity-70 transition-opacity group label shrink-0"
         >
           <span className="underline underline-offset-4 decoration-gray-900">
             See full profile
