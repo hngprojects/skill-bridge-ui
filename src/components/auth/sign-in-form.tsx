@@ -19,7 +19,7 @@ import { ApiError, authFailureMessage } from "@/lib/api";
 import {
   postAuthRedirectForUser,
   signInWithGoogle,
-  signInWithPassword,
+  signInWithVerifiedUser,
 } from "@/lib/auth-client";
 import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import { signInFormSchema, type SignInFormValues } from "@/types/form-schema";
@@ -58,10 +58,7 @@ function SignInForm() {
         password: data.password,
       });
 
-      const result = await signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
+      const result = await signInWithVerifiedUser(login.user);
 
       if (result?.error) {
         appToast.error(

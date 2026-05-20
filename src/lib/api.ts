@@ -58,7 +58,7 @@ type RetriableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
 };
 
-let refreshRequest: Promise<unknown> | null = null;
+let refreshRequest: Promise<void> | null = null;
 
 function isAuthRefreshRequest(config: InternalAxiosRequestConfig | undefined) {
   return config?.url?.includes("/auth/refresh") ?? false;
@@ -69,15 +69,44 @@ function normalizeToken(token: string | undefined): string | undefined {
   return token;
 }
 
+async function getServerCookieHeader(): Promise<string | undefined> {
+  if (typeof window !== "undefined") return undefined;
+
+  try {
+    const { headers } = await import("next/headers");
+    return (await headers()).get("cookie") ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 async function getAuthToken(): Promise<string | undefined> {
   if (typeof window === "undefined") {
     const { auth } = await import("@/lib/auth");
     const session = await auth();
     return normalizeToken(session?.accessToken);
   }
-  const { getSession } = await import("next-auth/react");
-  const session = await getSession();
-  return normalizeToken(session?.accessToken);
+  return undefined;
+}
+
+async function refreshAuthCookies(): Promise<void> {
+  const refresh = async () => {
+    const cookie = await getServerCookieHeader();
+    await publicApi.post(
+      "/auth/refresh",
+      undefined,
+      cookie ? { headers: { Cookie: cookie } } : undefined,
+    );
+  };
+
+  if (typeof window === "undefined") {
+    return refresh();
+  }
+
+  refreshRequest ??= refresh().finally(() => {
+    refreshRequest = null;
+  });
+  return refreshRequest;
 }
 
 const baseConfig = {
@@ -94,6 +123,10 @@ export const publicApi = attachErrorInterceptor(axios.create(baseConfig));
 export const authApi = axios.create(baseConfig);
 
 authApi.interceptors.request.use(async (config) => {
+  if (config.headers.get("Authorization")) {
+    return config;
+  }
+
   const token = await getAuthToken();
   if (token) {
     config.headers.set("Authorization", `Bearer ${token}`);
@@ -122,10 +155,8 @@ authApi.interceptors.response.use(
     originalRequest._retry = true;
 
     try {
-      refreshRequest ??= publicApi.post("/auth/refresh").finally(() => {
-        refreshRequest = null;
-      });
-      await refreshRequest;
+      await refreshAuthCookies();
+      originalRequest.headers.delete("Authorization");
       return authApi(originalRequest);
     } catch (refreshError) {
       if (typeof window !== "undefined") {
