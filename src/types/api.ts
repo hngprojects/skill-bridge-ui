@@ -23,6 +23,7 @@ export type AuthUser = {
   last_name?: string;
   fullname?: string;
   role: UserRole;
+  track?: string | null;
   country?: string;
   emailVerified?: boolean;
   is_verified?: boolean;
@@ -254,6 +255,28 @@ export type TalentOnboardingProfileResponseData = {
 export type TalentOnboardingPersonaliseResponseData = {
   message: string;
   status: string;
+};
+
+// ─── Dashboard ────────────────────────────────────────────────────────────────
+
+export type DashboardJourneyStatus = "available" | "completed" | "locked";
+
+export type DashboardJourneyKey =
+  | "onboarding"
+  | "personal"
+  | "skill"
+  | "advanced";
+
+export type DashboardJourneyOverviewItem = {
+  key: DashboardJourneyKey | string;
+  title: string;
+  status: DashboardJourneyStatus;
+};
+
+export type DashboardHomeResponseData = {
+  firstName: string;
+  profileCompletionPercentage: number;
+  journeyOverview: DashboardJourneyOverviewItem[];
 };
 
 // ─── Personal Assessment ──────────────────────────────────────────────────────
