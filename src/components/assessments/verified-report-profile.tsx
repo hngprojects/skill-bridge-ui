@@ -6,24 +6,24 @@ interface VerifiedReportProfileProps {
   report: UserReport;
 }
 
-const InfoRow = ({
-  title,
-  items,
-  isText,
-}: {
+interface InfoRowProps {
   title: string;
-  items?: string[];
+  content: string | string[];
   isText?: boolean;
-}) => (
+}
+
+const InfoRow = ({ title, content, isText }: InfoRowProps) => (
   <div className="flex flex-col gap-y-2">
     <p className="label text-foreground">{title}</p>
     {isText ? (
       <div className="border border-border rounded-xl px-4 py-3">
-        <p className="body text-foreground">{items?.[0]}</p>
+        <p className="body text-foreground">
+          {typeof content === "string" ? content : content[0]}
+        </p>
       </div>
     ) : (
       <div className="flex flex-row flex-wrap gap-2">
-        {items?.map((item) => (
+        {(Array.isArray(content) ? content : [content]).map((item) => (
           <span
             key={item}
             className="px-4 py-2 border border-border rounded-xl body text-foreground bg-card"
@@ -58,9 +58,10 @@ const VerifiedReportProfile = ({ report }: VerifiedReportProfileProps) => {
             </p>
           </div>
         </div>
-        <InfoRow title="About" items={report.about} />
-        <InfoRow title="Skills" items={report.skills} />
-        <InfoRow title="AI Report" items={[report.aiReport]} isText />
+        <InfoRow title="About" content={report.about} />
+        <InfoRow title="Skills" content={report.skills} />
+        {/* Cleaner implementation: No longer wrapping the string in a temporary array */}
+        <InfoRow title="AI Report" content={report.aiReport} isText />
       </div>
       <div className="max-md:self-center">
         <Image

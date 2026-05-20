@@ -16,10 +16,12 @@ const VerifiedReportPage = () => {
             Here&apos;s how to know how employers see your profile!
           </p>
         </div>
-        <Button variant="ghost" className="underline gap-x-2">
+
+        <Button variant="ghost" className="underline gap-x-2" disabled>
           Download CV
           <Download size={16} />
         </Button>
+        {/* TODO: Implement client-side PDF download or connect to backend stream */}
       </section>
 
       <section className="flex flex-col gap-y-5">

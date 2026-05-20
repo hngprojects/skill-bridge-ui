@@ -30,7 +30,7 @@ const userReport: UserReport = {
     "React Native",
   ],
   aiReport:
-    "Her assessment behaviour reflects a structured, detailed-oriented approach to complex problem decomposition",
+    "His assessment behaviour reflects a structured, detailed-oriented approach to complex problem decomposition",
   detailedSkills: [
     {
       title: "Professional Skills",
