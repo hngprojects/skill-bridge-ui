@@ -1,10 +1,11 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { cn, formatOptionLabel } from "@/lib/utils";
 import type { Question } from "@/types/questionnaire";
 
 const MULTI_PICK_PILL_THRESHOLD = 8;
+const TEXT_ANSWER_MAX_LENGTH = 2000;
 
 export function isOtherReveal(question: Question, value: string): boolean {
   return question.conditional?.trigger_option === value;
@@ -14,10 +15,17 @@ export function hasOtherReveal(
   question: Question,
   value: string | string[] | undefined,
 ): boolean {
-  if (!question.conditional) return false;
-  if (typeof value === "string") return isOtherReveal(question, value);
-  if (Array.isArray(value))
-    return value.some((v) => isOtherReveal(question, v));
+  // Legacy pattern: conditional.trigger_option (demo questions)
+  if (question.conditional) {
+    if (typeof value === "string") return isOtherReveal(question, value);
+    if (Array.isArray(value))
+      return value.some((v) => isOtherReveal(question, v));
+  }
+  // API pattern: otherTextKey present and "other" selected
+  if (question.otherTextKey) {
+    if (typeof value === "string") return value === "other";
+    if (Array.isArray(value)) return value.includes("other");
+  }
   return false;
 }
 
@@ -32,18 +40,30 @@ export function QuestionnaireQuestionFieldBody({
   value,
   onChange,
 }: QuestionnaireQuestionFieldBodyProps) {
-  switch (question.input_type) {
-    case "text":
+  switch (question.inputType) {
+    case "text_required": {
+      const text = typeof value === "string" ? value : "";
       return (
-        <Textarea
-          value={typeof value === "string" ? value : ""}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="Type your response here"
-          rows={5}
-        />
+        <div className="relative">
+          <Textarea
+            value={text}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="Type your response here"
+            rows={5}
+            maxLength={TEXT_ANSWER_MAX_LENGTH}
+            className="pb-8"
+          />
+          <span
+            className="pointer-events-none absolute bottom-3 right-3 font-sans text-xs text-muted-foreground"
+            aria-hidden
+          >
+            {text.length}/{TEXT_ANSWER_MAX_LENGTH}
+          </span>
+        </div>
       );
+    }
 
-    case "single_pick": {
+    case "single": {
       const options = question.options ?? [];
       const selected = typeof value === "string" ? value : "";
       return (
@@ -60,14 +80,14 @@ export function QuestionnaireQuestionFieldBody({
                 key={option}
                 htmlFor={id}
                 className={cn(
-                  "flex cursor-pointer items-center gap-3 rounded-lg border bg-muted/40 px-4 py-3 font-sans text-sm transition-colors",
+                  "flex cursor-pointer capitalize items-center gap-3 rounded-lg border bg-muted/40 px-4 py-3 font-sans text-sm transition-colors",
                   isSelected
                     ? "border-foreground/30 bg-muted/70"
                     : "border-transparent hover:bg-muted/60",
                 )}
               >
                 <RadioGroupItem id={id} value={option} />
-                <span>{option}</span>
+                <span>{formatOptionLabel(option)}</span>
                 {isOtherReveal(question, option) && isSelected && (
                   <span className="sr-only"> — additional input required</span>
                 )}
@@ -78,7 +98,7 @@ export function QuestionnaireQuestionFieldBody({
       );
     }
 
-    case "multi_pick": {
+    case "multi": {
       const options = question.options ?? [];
       const selected = Array.isArray(value) ? value : [];
       const toggle = (option: string, checked: boolean) => {
@@ -102,7 +122,7 @@ export function QuestionnaireQuestionFieldBody({
                 key={option}
                 htmlFor={id}
                 className={cn(
-                  "flex cursor-pointer items-center gap-2.5 border bg-muted/40 font-sans text-sm transition-colors",
+                  "flex cursor-pointer capitalize items-center gap-2.5 border bg-muted/40 font-sans text-sm transition-colors",
                   asPills ? "rounded-full px-4 py-2" : "rounded-lg px-4 py-3",
                   isSelected
                     ? "border-foreground/30 bg-muted/70"
@@ -114,7 +134,7 @@ export function QuestionnaireQuestionFieldBody({
                   checked={isSelected}
                   onCheckedChange={(c) => toggle(option, c === true)}
                 />
-                <span>{option}</span>
+                <span>{formatOptionLabel(option)}</span>
               </label>
             );
           })}
