@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { LockKeyhole, MoreHorizontal } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 
 type AssessmentCatalogCardProps = {
-  step: AssessmentCatalogStep;
+  step: AssessmentCatalogStep & { href?: string };
 };
 
 export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
@@ -20,6 +21,12 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
   const CompletedIcon = COMPLETED_ASSESSMENT_ICON;
   const isCompleted = step.state === "completed";
   const isLocked = step.state === "locked";
+  const startHref =
+    step.href ??
+    (step.state === "available" && step.slug != null
+      ? `/t/assessments/${step.slug}`
+      : null);
+  const canStart = !isLocked && !isCompleted && startHref != null;
 
   return (
     <article className="animate-in fade-in slide-in-from-bottom-1 overflow-hidden rounded-2xl border border-[#DBDBDB] bg-white duration-300 transition-all hover:-translate-y-0.5 hover:shadow-sm">
@@ -106,6 +113,14 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
               >
                 {step.ctaLabel}
                 <CompletedIcon className="size-4.5 text-[#34A853]" />
+              </Button>
+            ) : canStart ? (
+              <Button
+                asChild
+                size="lg"
+                className="h-10 w-full rounded-lg bg-primary text-base font-semibold tracking-[0.016em] text-white hover:bg-primary/95 sm:w-42.5"
+              >
+                <Link href={startHref}>{step.ctaLabel}</Link>
               </Button>
             ) : (
               <Button
