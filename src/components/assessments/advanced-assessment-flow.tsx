@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
 import {
@@ -17,6 +17,7 @@ import { appToast } from "@/lib/toast";
 
 export function AdvancedAssessmentFlow() {
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const startRequestedRef = useRef(false);
 
   const { mutateAsync: startSession, isPending: isStarting } =
     useStartAdvancedAssessment();
@@ -28,9 +29,15 @@ export function AdvancedAssessmentFlow() {
     useSubmitAdvancedAssessment();
 
   useEffect(() => {
+    if (startRequestedRef.current) return;
+    startRequestedRef.current = true;
+
     startSession()
       .then((data) => setSessionId(data.session.sessionId))
-      .catch((e) => appToast.error(authFailureMessage(e)));
+      .catch((e) => {
+        startRequestedRef.current = false;
+        appToast.error(authFailureMessage(e));
+      });
   }, [startSession]);
 
   const activeSession = sessionData?.session;
