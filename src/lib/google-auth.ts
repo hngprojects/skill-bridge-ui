@@ -39,6 +39,15 @@ declare global {
 const GOOGLE_SCRIPT_SRC = "https://accounts.google.com/gsi/client";
 
 let googleScriptPromise: Promise<void> | undefined;
+let googleCodeClient: GoogleCodeClient | undefined;
+let googleCodeClientError: Error | undefined;
+let googleCodeClientPromise: Promise<GoogleCodeClient> | undefined;
+let pendingCodeRequest:
+  | {
+      resolve: (code: string) => void;
+      reject: (error: Error) => void;
+    }
+  | undefined;
 
 function handleGoogleScriptLoadError(
   script: HTMLScriptElement,
@@ -90,6 +99,11 @@ function googleAuthErrorMessage(error: unknown): string {
   return "Google sign-in failed. Please try again.";
 }
 
+function googleAuthError(error: unknown): Error {
+  if (error instanceof Error) return error;
+  return new Error(googleAuthErrorMessage(error));
+}
+
 function loadGoogleScript() {
   if (typeof window === "undefined") {
     return Promise.reject(new Error("Google auth must run in the browser."));
@@ -126,44 +140,102 @@ function loadGoogleScript() {
   return googleScriptPromise;
 }
 
-export async function requestGoogleAuthCode(): Promise<string> {
-  await loadGoogleScript();
-
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-  if (!clientId) {
+function clientId() {
+  const id = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+  if (!id) {
     throw new Error("NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured.");
   }
+  return id;
+}
 
+function googleOAuth2() {
   const oauth2 = window.google?.accounts?.oauth2;
   if (!oauth2) {
     throw new Error("Google auth is not available.");
   }
+  return oauth2;
+}
 
-  return new Promise((resolve, reject) => {
-    const client = oauth2.initCodeClient({
-      client_id: clientId,
-      scope: "openid profile email",
-      ux_mode: "popup",
-      redirect_uri: "postmessage",
-      callback: (response) => {
-        if (response.code) {
-          resolve(response.code);
-          return;
-        }
+export async function prepareGoogleAuth(): Promise<GoogleCodeClient> {
+  if (typeof window === "undefined") {
+    throw new Error("Google auth must run in the browser.");
+  }
 
-        reject(
-          new Error(
-            response.error_description ??
-              response.error ??
-              "Google sign-in was cancelled.",
-          ),
-        );
-      },
-      error_callback: (error) => {
-        reject(new Error(googleAuthErrorMessage(error)));
-      },
+  if (googleCodeClient) return googleCodeClient;
+
+  googleCodeClientError = undefined;
+  googleCodeClientPromise ??= loadGoogleScript()
+    .then(() => {
+      const client = googleOAuth2().initCodeClient({
+        client_id: clientId(),
+        scope: "openid profile email",
+        ux_mode: "popup",
+        redirect_uri: "postmessage",
+        callback: (response) => {
+          const request = pendingCodeRequest;
+          pendingCodeRequest = undefined;
+
+          if (!request) return;
+
+          if (response.code) {
+            request.resolve(response.code);
+            return;
+          }
+
+          request.reject(
+            new Error(
+              response.error_description ??
+                response.error ??
+                "Google sign-in was cancelled.",
+            ),
+          );
+        },
+        error_callback: (error) => {
+          const request = pendingCodeRequest;
+          pendingCodeRequest = undefined;
+          request?.reject(new Error(googleAuthErrorMessage(error)));
+        },
+      });
+
+      googleCodeClient = client;
+      return client;
+    })
+    .catch((error) => {
+      googleCodeClientError = googleAuthError(error);
+      googleCodeClientPromise = undefined;
+      throw googleCodeClientError;
     });
 
-    client.requestCode();
+  return googleCodeClientPromise;
+}
+
+export function requestGoogleAuthCode(): Promise<string> {
+  if (pendingCodeRequest) {
+    return Promise.reject(
+      new Error("Google sign-in is already in progress. Please wait."),
+    );
+  }
+
+  const client = googleCodeClient;
+  if (!client) {
+    if (googleCodeClientError) {
+      return Promise.reject(googleCodeClientError);
+    }
+
+    void prepareGoogleAuth().catch(() => undefined);
+    return Promise.reject(
+      new Error("Google sign-in is still loading. Please try again."),
+    );
+  }
+
+  return new Promise((resolve, reject) => {
+    pendingCodeRequest = { resolve, reject };
+
+    try {
+      client.requestCode();
+    } catch (error) {
+      pendingCodeRequest = undefined;
+      reject(googleAuthError(error));
+    }
   });
 }
