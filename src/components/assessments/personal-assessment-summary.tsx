@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import NextUpCard from "./next-up-card";
 import AssessmentContainer from "./assessment-container";
@@ -9,7 +10,7 @@ const PersonalAssessmentSummary = () => {
   return (
     <AssessmentContainer>
       <Image
-        alt="Assessement icon"
+        alt="Assessment icon"
         src={"/assets/icons/assessement-icon.svg"}
         height={56}
         width={56}
@@ -35,8 +36,11 @@ const PersonalAssessmentSummary = () => {
         <p className="md:mt-4 md:mb-10 mt-2 mb-5 text-base font-semibold max-md:text-center md:text-lg">
           Great work! You&apos;ve unlocked your next assessment.
         </p>
-        <Button className="bg-[#322B2B] text-white rounded-lg h-10 w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer">
-          Continue
+        <Button
+          asChild
+          className="bg-[#322B2B] text-white rounded-lg h-10 w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
+        >
+          <Link href="/t/dashboard">Continue</Link>
         </Button>
       </div>
       <NextUpCard
