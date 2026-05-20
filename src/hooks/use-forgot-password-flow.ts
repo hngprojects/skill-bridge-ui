@@ -151,13 +151,15 @@ function useForgotPasswordFlow(initialEmail = "") {
     const nextPasswordError =
       password.length < 8
         ? "Password must be at least 8 characters"
-        : !UPPERCASE_REGEX.test(password)
-          ? "Password must include at least one uppercase letter"
-          : !LOWERCASE_REGEX.test(password)
-            ? "Password must include at least one lowercase letter"
-            : !NUMBER_REGEX.test(password)
-              ? "Password must include at least one number"
-              : "";
+        : password.length > 64
+          ? "Password must be at most 64 characters"
+          : !UPPERCASE_REGEX.test(password)
+            ? "Password must include at least one uppercase letter"
+            : !LOWERCASE_REGEX.test(password)
+              ? "Password must include at least one lowercase letter"
+              : !NUMBER_REGEX.test(password)
+                ? "Password must include at least one number"
+                : "";
     const nextConfirmPasswordError =
       confirmPassword !== password ? "Passwords do not match" : "";
 
