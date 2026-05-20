@@ -1,4 +1,3 @@
-import { Button } from "../ui/button";
 import AssessmentContainer from "./assessment-container";
 import Image from "next/image";
 import NextUpCard from "./next-up-card";
@@ -36,9 +35,6 @@ const AdvancedAssessmentSummary = () => {
         <p className="md:mt-4 md:mb-10 mt-2 mb-5 text-base font-semibold max-md:text-center md:text-lg">
           Your results will be ready in 5 minutes. Check your mailbox.
         </p>
-        <Button className="bg-[#322B2B] text-white rounded-lg h-10 w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer">
-          Open Mailbox
-        </Button>
       </div>
       <NextUpCard
         assessement="advanced"
