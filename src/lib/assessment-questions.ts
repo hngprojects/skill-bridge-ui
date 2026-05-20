@@ -47,6 +47,22 @@ export function mapAdvancedQuestions(
   return questions.map(mapAdvancedToPersonalQuestion);
 }
 
+/** Map resume API answers (keyed by question.key) to form state (keyed by question.id). */
+export function buildPersonalPrefillAnswers(
+  questions: Question[],
+  answers: Record<string, string | string[]> | null | undefined,
+): Record<string, string | string[]> {
+  if (!answers || typeof answers !== "object" || Array.isArray(answers)) {
+    return {};
+  }
+  const result: Record<string, string | string[]> = {};
+  for (const q of questions) {
+    const value = answers[q.key];
+    if (value !== undefined) result[q.id] = value;
+  }
+  return result;
+}
+
 /** Build skill/advanced submit payload from QuestionnaireFlow answers (keyed by question.key). */
 export function toSubmitAnswers(
   questions: Question[],
