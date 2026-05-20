@@ -16,7 +16,7 @@ const LOWERCASE_REGEX = /[a-z]/;
 const NUMBER_REGEX = /[0-9]/;
 const OTP_REGEX = /^\d{6}$/;
 
-type ForgotPasswordStep = "email" | "intro" | "code" | "password" | "success";
+type ForgotPasswordStep = "email" | "code" | "password" | "success";
 
 function useForgotPasswordFlow(initialEmail = "") {
   const [step, setStep] = useState<ForgotPasswordStep>("email");
@@ -94,7 +94,8 @@ function useForgotPasswordFlow(initialEmail = "") {
     try {
       await requestPasswordReset({ email: trimmedEmail });
       appToast.success("Password reset email sent.");
-      setStep("intro");
+      startOtpCountdown();
+      setStep("code");
     } catch (error) {
       const message = authFailureMessage(error);
       appToast.error(message);
