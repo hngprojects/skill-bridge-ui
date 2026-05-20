@@ -307,19 +307,21 @@ export type PersonalAssessmentSubmitResponseData = {
 
 export type PersonalAssessmentSessionResponseData = {
   status: string;
-  session: PersonalAssessmentSession;
+  session: PersonalAssessmentSession | null;
   answers?: Record<string, string | string[]> | null;
 };
 
 // ─── Skill Assessment ─────────────────────────────────────────────────────────
 
+export type SkillAssessmentSession = {
+  sessionId: string;
+  questions: import("./questionnaire").Question[];
+  [key: string]: unknown;
+};
+
 export type SkillAssessmentStartResponseData = {
   status: string;
-  session: {
-    sessionId: string;
-    questions: unknown[];
-    [key: string]: unknown;
-  };
+  session: SkillAssessmentSession;
 };
 
 export type SkillAssessmentAnswer = {
