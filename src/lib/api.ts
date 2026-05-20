@@ -22,6 +22,10 @@ export function authFailureMessage(error: unknown): string {
   return "Something went wrong. Please try again.";
 }
 
+export function isServiceUnavailableError(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 503;
+}
+
 function toApiError(error: unknown): ApiError {
   if (error instanceof ApiError) return error;
   if (axios.isAxiosError(error)) {
