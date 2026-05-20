@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { MoreHorizontal } from "lucide-react";
+import { ArrowRight, MoreHorizontal } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -70,7 +70,7 @@ function RecommendedItemRow({ item }: { item: RecommendedItem }) {
       {/* Thumbnail */}
       <div
         className={cn(
-          "flex size-[72px] shrink-0 items-center justify-center rounded-xl",
+          "flex size-18 shrink-0 items-center justify-center rounded-xl",
           item.thumbnailBg,
         )}
       >
@@ -90,7 +90,7 @@ function RecommendedItemRow({ item }: { item: RecommendedItem }) {
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <Link
             href={item.actionHref}
-            className="text-[12px] font-semibold text-[#34A853] hover:underline underline-offset-2 transition-opacity hover:opacity-80"
+            className="text-[12px] font-semibold text-[#34A853] underline underline-offset-2 transition-opacity hover:opacity-80"
           >
             {item.actionLabel}
           </Link>
@@ -130,9 +130,10 @@ export function DashboardRecommended() {
         </h2>
         <Link
           href="/t/assessments"
-          className="label shrink-0 text-foreground underline underline-offset-2 hover:opacity-70 transition-opacity"
+          className="flex items-center label shrink-0 text-foreground underline underline-offset-2 hover:opacity-70 transition-opacity group"
         >
-          See all →
+          See all
+          <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
 

@@ -81,7 +81,7 @@ export function JobReadySkillBreakdown() {
   return (
     <section
       aria-labelledby="skill-breakdown-heading"
-      className="flex flex-col rounded-2xl border border-border bg-[#FAFAFA] p-8"
+      className="flex flex-col rounded-2xl border border-border bg-[#FAFAFA] p-6"
     >
       {/* Header */}
       <div className="mb-1 flex items-center justify-between">

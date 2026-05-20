@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 import { BarColumn, type ChartBar } from "./dashboard-skill-bar-column";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -22,7 +23,7 @@ const CHART_ZONES: ChartZone[] = [
     bars: [
       { value: 12 },
       { value: 39 },
-      { value: 67, active: true, activeLabel: "67%" },
+      { value: 47, active: true, activeLabel: "47%" },
     ],
   },
   {
@@ -57,7 +58,7 @@ function ZoneGroup({ zone }: { zone: ChartZone }) {
       <div className="mt-2">
         <span
           className={cn(
-            "flex w-full items-center justify-center rounded-sm py-1 text-[11px] font-medium",
+            "flex w-full items-center justify-center rounded text-[11px] font-medium",
             zone.id === "emerging"
               ? "bg-amber-100 text-amber-700"
               : "bg-gray-100 text-muted-foreground",
@@ -92,9 +93,10 @@ export function DashboardSkillBreakdown() {
         </h2>
         <Link
           href="/t/assessments"
-          className="label shrink-0 text-foreground underline underline-offset-2 hover:opacity-70 transition-opacity"
+          className="flex items-center label shrink-0 text-foreground underline underline-offset-2 hover:opacity-70 transition-opacity group"
         >
-          Learn more →
+          Learn more
+          <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlertCircle } from "lucide-react";
+import { ArrowRight, AlertCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -94,7 +94,7 @@ export function JobReadyStatusCard({
               <p
                 className={cn(
                   "body text-muted-foreground leading-relaxed",
-                  "max-w-[520px]",
+                  "max-w-130",
                 )}
               >
                 {description}
@@ -126,11 +126,12 @@ export function JobReadyStatusCard({
             <Link
               href="/t/assessments"
               className={cn(
-                "label shrink-0 text-foreground underline underline-offset-2",
-                "hover:opacity-70 transition-opacity",
+                "flex items-center label shrink-0 text-foreground underline underline-offset-2",
+                "hover:opacity-70 transition-opacity group",
               )}
             >
-              See job offers →
+              See job offers
+              <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>

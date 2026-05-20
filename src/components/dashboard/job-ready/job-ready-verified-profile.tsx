@@ -1,13 +1,14 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight, User } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export function JobReadyVerifiedProfile() {
   return (
-    <section className="p-6 md:p-8 flex flex-col gap-0 w-full border border-border rounded-2xl bg-[#FAFAFA] text-gray-900">
+    <section className="p-6 flex flex-col gap-0 w-full border border-border rounded-2xl bg-[#FAFAFA] text-gray-900">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-[18px] font-bold tracking-tight">
@@ -28,13 +29,19 @@ export function JobReadyVerifiedProfile() {
       <div className="mb-6">
         <Avatar className="h-24 w-24">
           <AvatarFallback className="bg-[#E5E5E5]">
-            <User className="h-12 w-12 text-[#6B7280]" strokeWidth={1.5} />
+            <Image
+              src="/assets/user.svg"
+              alt="user-icon"
+              width={32}
+              height={32}
+              className="size-14 text-white"
+            />
           </AvatarFallback>
         </Avatar>
       </div>
 
       {/* Profile Info */}
-      <div className="flex flex-col mb-3">
+      <div className="flex flex-col mb-2">
         <div className="flex items-center gap-3 mb-1">
           <h3 className="text-[32px] font-bold tracking-tight text-gray-900 leading-none">
             Alex Smith
@@ -43,7 +50,7 @@ export function JobReadyVerifiedProfile() {
             Verified Talent
           </Badge>
         </div>
-        <p className="text-[20px] text-gray-800 mb-3 font-normal">
+        <p className="text-[20px] text-gray-800 mb-2 font-normal">
           Frontend Developer
         </p>
         <p className="text-[#A38A40] text-[15px] font-normal tracking-tight">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 
 type AssessmentStatus = "completed" | "pending";
 
@@ -112,9 +113,10 @@ export function DashboardJobRoadmap() {
         </h2>
         <Link
           href="/t/assessments"
-          className="label shrink-0 text-foreground underline underline-offset-2 hover:opacity-70 transition-opacity"
+          className="flex items-center label shrink-0 text-foreground underline underline-offset-2 hover:opacity-70 transition-opacity group"
         >
-          Continue →
+          Continue
+          <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
 
