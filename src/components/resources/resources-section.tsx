@@ -1,9 +1,9 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import {
+import type {
   ResourceSection,
   ResourceArticle,
   ResourceVideo,
-} from "@/constants/resources";
+} from "@/types/resources";
 import ResourceArticleCard from "./resource-article-card";
 import ResourceVideoCard from "./resource-video-card";
 
