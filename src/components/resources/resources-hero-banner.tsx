@@ -30,6 +30,8 @@ const ResourcesHeroBanner = () => {
         alt="Hero illustration"
         width={302}
         height={160}
+        loading="eager"
+        style={{ width: "auto" }}
         className="absolute right-10 top-1/2 -translate-y-1/2"
       />
     </div>
