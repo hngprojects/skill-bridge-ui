@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ResourceArticle } from "@/constants/resources";
+import type { ResourceArticle } from "@/types/resources";
 
 const ResourceArticleCard = ({
   title,
