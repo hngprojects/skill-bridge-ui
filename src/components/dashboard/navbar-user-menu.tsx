@@ -1,6 +1,7 @@
 "use client";
 
 import { Bell, ChevronDown, CircleUserRound, Settings } from "lucide-react";
+import Link from "next/link";
 import { signOut } from "next-auth/react";
 
 import { getInitials } from "@/components/dashboard/nav-utils";
@@ -68,8 +69,11 @@ export function DashboardNavbarUserMenu({
           Settings
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-2 bg-[#E4E7EC]" />
-        <DropdownMenuItem className="h-8 rounded-md px-2 text-xs text-[#667085]">
-          Skillbridge Help Center
+        <DropdownMenuItem
+          asChild
+          className="h-8 rounded-md px-2 text-xs text-[#667085]"
+        >
+          <Link href="/contact">Skillbridge Help Center</Link>
         </DropdownMenuItem>
         <DropdownMenuItem
           className="h-8 rounded-md px-2 text-xs text-[#667085]"
