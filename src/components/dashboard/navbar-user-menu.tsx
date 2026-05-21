@@ -51,7 +51,7 @@ export function DashboardNavbarUserMenu({
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="w-[214px] rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"
+        className="w-full rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"
       >
         {isVerified ? (
           <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
