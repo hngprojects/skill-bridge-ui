@@ -73,7 +73,7 @@ export function DashboardNavbarUserMenu({
           asChild
           className="h-8 rounded-md px-2 text-xs text-[#667085]"
         >
-          <Link href="/contact">Skillbridge Help Center</Link>
+          <Link href="/contact">Help Center</Link>
         </DropdownMenuItem>
         <DropdownMenuItem
           className="h-8 rounded-md px-2 text-xs text-[#667085]"
