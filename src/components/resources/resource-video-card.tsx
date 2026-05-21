@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ResourceVideo } from "@/constants/resources";
+import type { ResourceVideo } from "@/types/resources";
 
 const ResourceVideoCard = ({ title, duration, thumbnail }: ResourceVideo) => {
   return (
