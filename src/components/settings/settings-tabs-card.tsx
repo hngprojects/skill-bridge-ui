@@ -33,26 +33,13 @@ export function SettingsTabsCard() {
           ))}
         </TabsPrimitive.List>
 
-        <TabsPrimitive.Content
-          value="resume"
-          className="mt-6 min-h-80 outline-none"
-        />
-        <TabsPrimitive.Content
-          value="location"
-          className="mt-6 min-h-80 outline-none"
-        />
-        <TabsPrimitive.Content
-          value="availability"
-          className="mt-6 min-h-80 outline-none"
-        />
-        <TabsPrimitive.Content
-          value="communication"
-          className="mt-6 min-h-80 outline-none"
-        />
-        <TabsPrimitive.Content
-          value="account"
-          className="mt-6 min-h-80 outline-none"
-        />
+        {TAB_ITEMS.map((tab) => (
+          <TabsPrimitive.Content
+            key={tab.value}
+            value={tab.value}
+            className="mt-6 min-h-80 outline-none"
+          />
+        ))}
       </TabsPrimitive.Root>
     </div>
   );
