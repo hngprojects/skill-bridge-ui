@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { Bell, ChevronDown, CircleUserRound, Settings } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 import { getInitials } from "@/components/dashboard/nav-utils";
@@ -15,7 +15,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 
-export function DashboardNavbarUserMenu() {
+type DashboardNavbarUserMenuProps = {
+  isVerified?: boolean;
+};
+
+export function DashboardNavbarUserMenu({
+  isVerified = false,
+}: DashboardNavbarUserMenuProps) {
   const { fullName, email } = useSessionUserProfile();
   const initials = getInitials(fullName, email);
 
@@ -42,21 +48,34 @@ export function DashboardNavbarUserMenu() {
           <span className="sr-only">Account menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        {fullName ? (
-          <div className="px-3 py-2">
-            <p className="text-sm font-medium text-foreground">{fullName}</p>
-            {email ? (
-              <p className="truncate text-xs text-muted-foreground">{email}</p>
-            ) : null}
-          </div>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={8}
+        className="w-[214px] rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"
+      >
+        {isVerified ? (
+          <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
+            <CircleUserRound className="size-4 text-black" aria-hidden />
+            Verified profile
+          </DropdownMenuItem>
         ) : null}
-        <DropdownMenuSeparator />
+        <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
+          <Bell className="size-5 text-[#00000]" aria-hidden />
+          Notifications
+        </DropdownMenuItem>
+        <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
+          <Settings className="size-5 text-[#00000]" aria-hidden />
+          Settings
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="my-2 bg-[#E4E7EC]" />
+        <DropdownMenuItem className="h-8 rounded-md px-2 text-xs text-[#667085]">
+          Skillbridge Help Center
+        </DropdownMenuItem>
         <DropdownMenuItem
-          variant="destructive"
+          className="h-8 rounded-md px-2 text-xs text-[#667085]"
           onClick={() => signOut({ callbackUrl: "/login" })}
         >
-          Log out
+          Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
