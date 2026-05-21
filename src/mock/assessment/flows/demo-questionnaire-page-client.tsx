@@ -12,6 +12,7 @@ import type { AssessmentSlug } from "@/constants/assessment-previews";
 import {
   buildPersonalPrefillAnswers,
   mapAdvancedQuestions,
+  toSkillSubmitAnswers,
   toSubmitAnswers,
 } from "@/lib/assessment-questions";
 import { appToast } from "@/lib/toast";
@@ -173,8 +174,8 @@ function DemoSkillAssessmentFlow() {
         setIsSubmitting(true);
         try {
           await mockSubmitSkillAssessment({
-            sessionId: phase.sessionId ?? "",
-            answers: toSubmitAnswers(questions, answersByKey),
+            attempt_id: phase.sessionId ?? "",
+            answers: toSkillSubmitAnswers(questions, answersByKey),
           });
         } finally {
           setIsSubmitting(false);

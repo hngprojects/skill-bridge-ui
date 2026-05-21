@@ -12,6 +12,10 @@ import {
   type QuestionnaireSidebarSection,
 } from "@/components/assessments/questionnaire-sidebar";
 import { QuestionnaireToolbar } from "@/components/assessments/questionnaire-toolbar";
+import {
+  ASSESSMENT_FALLBACK_SECTION_TITLES,
+  isAssessmentSlug,
+} from "@/constants/assessment-previews";
 import { authFailureMessage } from "@/lib/api";
 import { buildAnswers, isAnswerValid } from "@/lib/questionnaire";
 import { appToast } from "@/lib/toast";
@@ -56,10 +60,18 @@ export function QuestionnaireFlow({
         seen.set(q.sourceSection, q.sourceSectionTitle);
       }
     }
-    return Array.from(seen.entries())
+    const built = Array.from(seen.entries())
       .sort(([a], [b]) => a - b)
       .map(([, title], index) => ({ number: index + 1, title }));
-  }, [questions]);
+
+    if (built.length === 0) {
+      const fallback = isAssessmentSlug(name)
+        ? ASSESSMENT_FALLBACK_SECTION_TITLES[name]
+        : "Assessment";
+      return [{ number: 1, title: fallback }];
+    }
+    return built;
+  }, [questions, name]);
 
   const question = questions[currentIndex];
   const isLast = currentIndex === questions.length - 1;

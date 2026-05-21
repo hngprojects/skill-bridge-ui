@@ -18,6 +18,7 @@ import { RoadmapSection } from "./roadmap-section";
 export function Overview() {
   const demoSteps = useDemoRoadmapSteps();
   const { data: dashboardHome } = useDashboardHome();
+
   const roadmapSteps = useMemo(() => {
     if (isAssessmentDemoMode()) return demoSteps;
     return applyDashboardHomeToRoadmapSteps(
@@ -25,6 +26,7 @@ export function Overview() {
       dashboardHome,
     );
   }, [demoSteps, dashboardHome]);
+
   const profileCompletion = isAssessmentDemoMode()
     ? ASSESSMENT_PROFILE_COMPLETION
     : (dashboardHome?.profileCompletionPercentage ??

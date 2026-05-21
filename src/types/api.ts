@@ -313,33 +313,90 @@ export type PersonalAssessmentSessionResponseData = {
 
 // ─── Skill Assessment ─────────────────────────────────────────────────────────
 
-export type SkillAssessmentSession = {
-  sessionId: string;
-  questions: import("./questionnaire").Question[];
-  [key: string]: unknown;
+export type SkillAssessmentQuestionType =
+  | "single_pick"
+  | "multi_pick"
+  | "required_text";
+
+/** Raw question shape returned by the skill assessment API. */
+export type SkillAssessmentApiQuestion = {
+  question_id: string;
+  question_number: number;
+  question_type: SkillAssessmentQuestionType;
+  question_text: string;
+  options: string[] | null;
 };
 
 export type SkillAssessmentStartResponseData = {
   status: string;
-  session: SkillAssessmentSession;
+  session_id: string;
+  verified_level: string;
+  questions: SkillAssessmentApiQuestion[];
 };
 
-export type SkillAssessmentAnswer = {
-  questionId: string;
-  value: string | string[];
+export type SkillAssessmentSubmitAnswer = {
+  question_id: string;
+  /** string for single_pick / required_text, string[] for multi_pick. */
+  answer: string | string[];
+  time_spent_seconds: number;
 };
 
 export type SkillAssessmentSubmitInput = {
-  sessionId: string;
-  answers: SkillAssessmentAnswer[];
+  /** The submit endpoint still keys on attempt_id (start/session use session_id). */
+  attempt_id: string;
+  answers: SkillAssessmentSubmitAnswer[];
+};
+
+export type SkillLevel = "entry" | "junior" | "mid" | "senior" | "expert";
+
+export type GuidanceRating = {
+  label: string;
+  rating: number;
+  description: string;
+};
+
+export type GuidanceResource = {
+  title: string;
+  url: string;
+  description: string;
+  duration: string;
+  type: string;
+};
+
+/** Structured guidance returned on a failed skill assessment (spec §4.4). */
+export type GuidanceReport = {
+  report_type: "emerging" | "job_ready";
+  ai_summary: string;
+  growth_insight: string;
+  summary: string;
+  strength_ratings: GuidanceRating[];
+  weak_area_ratings: GuidanceRating[];
+  recommended_resources: GuidanceResource[];
+  resource_page_url: "/resources";
+  /** Only present when report_type === "emerging". */
+  retake_advice?: string;
 };
 
 export type SkillAssessmentSubmitResponseData = {
+  status: "success";
+  message: string;
+  session_id: string;
+  /** Raw score. */
   score: number;
+  /** Max possible score. */
+  total: number;
+  /** 0–100. */
+  percentage: number;
+  validated_level: SkillLevel;
+  claimed_level: SkillLevel;
+  /** true if validated_level < claimed_level. */
+  downgraded: boolean;
+  /** true if percentage >= 75. */
   passed: boolean;
-  validatedLevel?: string;
-  guidanceReport?: string;
-  retryAvailableAt?: string;
+  /** Only present on failure. */
+  guidance_report?: GuidanceReport;
+  /** Only present when downgraded === true. */
+  personalised_message?: string;
 };
 
 // ─── Advanced Assessment ──────────────────────────────────────────────────────

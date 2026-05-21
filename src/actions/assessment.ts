@@ -55,7 +55,21 @@ export async function submitSkillAssessment(
 ): Promise<SkillAssessmentSubmitResponseData> {
   const res = await authApi.post<
     ApiEnvelope<SkillAssessmentSubmitResponseData>
-  >("/talent/assessment/skill/submit", body);
+  >("/talent/assessment/skill/submit", body, {
+    // AI grading runs on submit and can take several minutes — override the
+    // default 3-min timeout.
+    timeout: 360_000,
+  });
+  return unwrapData(res);
+}
+
+/** Resume an existing skill session — same response shape as start. */
+export async function getSkillAssessmentSession(
+  sessionId: string,
+): Promise<SkillAssessmentStartResponseData> {
+  const res = await authApi.get<ApiEnvelope<SkillAssessmentStartResponseData>>(
+    `/talent/assessment/skill/session/${sessionId}`,
+  );
   return unwrapData(res);
 }
 
