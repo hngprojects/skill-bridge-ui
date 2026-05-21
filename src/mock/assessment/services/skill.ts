@@ -15,10 +15,9 @@ export async function mockStartSkillAssessment(): Promise<SkillAssessmentStartRe
 
   return {
     status: "success",
-    session: {
-      sessionId: phase.sessionId!,
-      questions: phase.questions,
-    },
+    session_id: phase.sessionId ?? "",
+    verified_level: "mid",
+    questions: [],
   };
 }
 
@@ -27,16 +26,22 @@ export async function mockSubmitSkillAssessment(
 ): Promise<SkillAssessmentSubmitResponseData> {
   await mockDelay();
   const answersByKey = Object.fromEntries(
-    body.answers.map((a) => [a.questionId, a.value]),
+    body.answers.map((a) => [a.question_id, a.answer]),
   );
   const store = useAssessmentDemoStore.getState();
   store.saveAnswers("skill", answersByKey);
   store.completePhase("skill");
 
   return {
+    status: "success",
+    message: "Demo skill assessment complete.",
+    session_id: body.attempt_id,
     score: 78,
+    total: 100,
+    percentage: 78,
+    validated_level: "mid",
+    claimed_level: "mid",
+    downgraded: false,
     passed: true,
-    validatedLevel: "Mid",
-    guidanceReport: "Demo skill assessment complete.",
   };
 }

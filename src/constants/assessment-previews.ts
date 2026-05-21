@@ -60,6 +60,16 @@ export const ASSESSMENT_EXPECTATIONS = sharedExpectations;
 
 export type AssessmentSlug = keyof typeof ASSESSMENT_PREVIEWS;
 
+/** Fallback questionnaire section label when a question carries no section title. */
+export const ASSESSMENT_FALLBACK_SECTION_TITLES: Record<
+  AssessmentSlug,
+  string
+> = {
+  personal: "Personal Assessment",
+  skill: "Skill Assessment",
+  advanced: "Advanced Assessment",
+};
+
 export function isAssessmentSlug(slug: string): slug is AssessmentSlug {
   return slug in ASSESSMENT_PREVIEWS;
 }
