@@ -1,5 +1,5 @@
 /** Set by AssessmentDemoShell on mount — no env var required. */
-let assessmentDemoEnabled = false;
+let assessmentDemoEnabled = true;
 
 export function setAssessmentDemoEnabled(enabled: boolean): void {
   assessmentDemoEnabled = enabled;

@@ -4,21 +4,18 @@ type UseAntiCheatOptions = {
   enabled?: boolean;
   limit?: number;
   onLimitReached?: () => void;
+  onViolation?: (count: number) => void;
 };
 
-// A single user action (alt-tab, minimize, cursor leaving the viewport) fires
-// several DOM events in a burst. Throttle so the burst counts as one violation.
 const COALESCE_MS = 100;
 
 function isScreenshotShortcut(e: KeyboardEvent): boolean {
   if (e.key === "PrintScreen") return true;
 
   const key = e.key.toLowerCase();
-  // macOS: Cmd+Shift+3/4/5/6
   if (e.metaKey && e.shiftKey && ["3", "4", "5", "6"].includes(e.key)) {
     return true;
   }
-  // Windows: Win+Shift+S (Snipping Tool), Win+G (Game Bar)
   if (e.metaKey && e.shiftKey && key === "s") return true;
   if (e.metaKey && !e.shiftKey && !e.ctrlKey && !e.altKey && key === "g") {
     return true;
@@ -30,14 +27,25 @@ const useAntiCheat = ({
   enabled = true,
   limit = 3,
   onLimitReached,
+  onViolation,
 }: UseAntiCheatOptions = {}) => {
   const [count, setCount] = useState(0);
   const limitFiredRef = useRef(false);
   const onLimitReachedRef = useRef(onLimitReached);
+  const onViolationRef = useRef(onViolation);
 
   useEffect(() => {
     onLimitReachedRef.current = onLimitReached;
   }, [onLimitReached]);
+
+  useEffect(() => {
+    onViolationRef.current = onViolation;
+  }, [onViolation]);
+
+  useEffect(() => {
+    if (count === 0) return;
+    onViolationRef.current?.(count);
+  }, [count]);
 
   useEffect(() => {
     if (count >= limit && !limitFiredRef.current) {
@@ -62,7 +70,6 @@ const useAntiCheat = ({
       if (document.hidden) propose();
     };
     const onWindowBlur = () => propose();
-    const onMouseLeave = () => propose();
     const onKeyDown = (e: KeyboardEvent) => {
       if (!isScreenshotShortcut(e)) return;
       e.preventDefault();
@@ -70,13 +77,11 @@ const useAntiCheat = ({
     };
 
     document.addEventListener("visibilitychange", onVisibilityChange);
-    document.documentElement.addEventListener("mouseleave", onMouseLeave);
     window.addEventListener("blur", onWindowBlur);
     window.addEventListener("keydown", onKeyDown, true);
 
     return () => {
       document.removeEventListener("visibilitychange", onVisibilityChange);
-      document.documentElement.removeEventListener("mouseleave", onMouseLeave);
       window.removeEventListener("blur", onWindowBlur);
       window.removeEventListener("keydown", onKeyDown, true);
       if (timer != null) window.clearTimeout(timer);
