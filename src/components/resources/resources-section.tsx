@@ -1,0 +1,45 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ResourceSection,
+  ResourceArticle,
+  ResourceVideo,
+} from "@/constants/resources";
+import ResourceArticleCard from "./resource-article-card";
+import ResourceVideoCard from "./resource-video-card";
+
+const ResourcesSection = ({ title, type, items }: ResourceSection) => {
+  return (
+    <div className="flex flex-col gap-y-6">
+      <div className="flex flex-row justify-between items-center">
+        <h2 className="section-h4 font-semibold text-foreground">{title}</h2>
+        <div className="flex flex-row gap-x-2">
+          <button className="flex items-center justify-center w-10 h-10 bg-muted rounded-lg hover:bg-border transition-colors">
+            <ChevronLeft
+              size={24}
+              className="text-foreground"
+              strokeWidth={1.5}
+            />
+          </button>
+          <button className="flex items-center justify-center w-10 h-10 bg-muted rounded-lg hover:bg-border transition-colors">
+            <ChevronRight
+              size={24}
+              className="text-foreground"
+              strokeWidth={1.5}
+            />
+          </button>
+        </div>
+      </div>
+      <div className="flex flex-col gap-4 sm:flex-row">
+        {type === "article"
+          ? (items as ResourceArticle[]).map((item) => (
+              <ResourceArticleCard key={item.id} {...item} />
+            ))
+          : (items as ResourceVideo[]).map((item) => (
+              <ResourceVideoCard key={item.id} {...item} />
+            ))}
+      </div>
+    </div>
+  );
+};
+
+export default ResourcesSection;
