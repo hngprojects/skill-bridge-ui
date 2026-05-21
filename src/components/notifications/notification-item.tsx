@@ -11,7 +11,7 @@ const NotificationItem = ({ notification }: { notification: Notification }) => {
         alt="Notification bell icon"
       />
       <div className="flex flex-col gap-y-3 md:gap-y-6">
-        <p className="text-base md:text-lg font-normal">
+        <p className="text-sm md:text-lg font-normal">
           <span className="font-bold">{notification.boldText}</span>{" "}
           {notification.normalText}
         </p>

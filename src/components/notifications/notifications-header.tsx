@@ -1,5 +1,5 @@
-import { MoveRight } from "lucide-react";
-import { Button } from "../ui/button";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const NotificationsHeader = () => {
   return (
@@ -11,7 +11,7 @@ const NotificationsHeader = () => {
         </p>
       </div>
       <Button className="underline font-semibold text-sm" variant={"ghost"}>
-        Go to settings <MoveRight size={16} />{" "}
+        Go to settings <ArrowRight size={16} />{" "}
       </Button>
     </div>
   );
