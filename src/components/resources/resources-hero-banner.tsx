@@ -28,8 +28,8 @@ const ResourcesHeroBanner = () => {
       <Image
         src="/assets/resources/resources-hero-illustration.svg"
         alt="Hero illustration"
-        width={200}
-        height={200}
+        width={302}
+        height={160}
         className="absolute right-10 top-1/2 -translate-y-1/2"
       />
     </div>
