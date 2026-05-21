@@ -4,7 +4,13 @@ import { ResourceVideo } from "@/constants/resources";
 const ResourceVideoCard = ({ title, duration, thumbnail }: ResourceVideo) => {
   return (
     <div className="relative flex flex-1 rounded-2xl border border-border overflow-hidden min-h-57.75 min-w-0">
-      <Image src={thumbnail} fill alt={title} className="object-cover" />
+      <Image
+        src={thumbnail}
+        fill
+        alt={title}
+        className="object-cover"
+        sizes="(max-width: 768px) 100vw, 33vw"
+      />
       <div className="absolute inset-0 bg-foreground/50 rounded-2xl" />
       <div className="absolute bottom-4 left-4 flex flex-col gap-y-2">
         <Image
