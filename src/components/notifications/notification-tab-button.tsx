@@ -15,6 +15,10 @@ const NotificationTabButton = ({
   const isActive = tab === activeTab;
   return (
     <Button
+      type="button"
+      role="tab"
+      aria-selected={isActive}
+      tabIndex={isActive ? 0 : -1}
       className={cn(
         "rounded-lg transition-all duration-300",
         isActive

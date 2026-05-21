@@ -12,6 +12,7 @@ import NotificationTabButton from "./notification-tab-button";
 
 const NotificationView = () => {
   const [activeTab, setActiveTab] = useState<NotificationTab>("All");
+  const activeNotification = NOTIFICATIONS_DUMMY_DATA[activeTab];
   return (
     <div className="border bg-[#FAFAFA] border-[#BDBDBD]  rounded-xl flex flex-col gap-y-5 md:gap-y-10 p-3 md:p-6 md:rounded-2xl">
       <div className="flex flex-row gap-x-3">
@@ -25,7 +26,7 @@ const NotificationView = () => {
         ))}
       </div>
       <ul className="flex flex-col gap-y-4 mb-6">
-        {NOTIFICATIONS_DUMMY_DATA.map((notification, i) => (
+        {activeNotification.map((notification, i) => (
           <NotificationItem
             notification={notification}
             key={i + notification.boldText}
