@@ -12,11 +12,19 @@ type ResourceVideo = {
   thumbnail: string;
 };
 
-type ResourceSection = {
+type ResourceArticleSection = {
   title: string;
-  type: "article" | "video";
-  items: ResourceArticle[] | ResourceVideo[];
+  type: "article";
+  items: ResourceArticle[];
 };
+
+type ResourceVideoSection = {
+  title: string;
+  type: "video";
+  items: ResourceVideo[];
+};
+
+type ResourceSection = ResourceArticleSection | ResourceVideoSection;
 
 const resourceSections: ResourceSection[] = [
   {
