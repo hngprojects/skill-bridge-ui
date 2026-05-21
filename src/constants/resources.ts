@@ -2,6 +2,7 @@ import type { ResourceSection } from "@/types/resources";
 
 const resourceSections: ResourceSection[] = [
   {
+    id: "new-to-skillbridge",
     title: "New to Skillbridge",
     type: "article",
     items: [
@@ -29,6 +30,7 @@ const resourceSections: ResourceSection[] = [
     ],
   },
   {
+    id: "recommended-videos",
     title: "Recommended videos",
     type: "video",
     items: [
@@ -53,6 +55,7 @@ const resourceSections: ResourceSection[] = [
     ],
   },
   {
+    id: "top-10-resources",
     title: "Top 10 resources for you",
     type: "article",
     items: [

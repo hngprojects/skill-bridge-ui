@@ -1,17 +1,15 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type {
-  ResourceSection,
-  ResourceArticle,
-  ResourceVideo,
-} from "@/types/resources";
+import type { ResourceSection } from "@/types/resources";
 import ResourceArticleCard from "./resource-article-card";
 import ResourceVideoCard from "./resource-video-card";
 
-const ResourcesSection = ({ title, type, items }: ResourceSection) => {
+const ResourcesSection = (section: ResourceSection) => {
   return (
     <div className="flex flex-col gap-y-6">
       <div className="flex flex-row justify-between items-center">
-        <h2 className="section-h4 font-semibold text-foreground">{title}</h2>
+        <h2 className="section-h4 font-semibold text-foreground">
+          {section.title}
+        </h2>
         <div className="flex flex-row gap-x-2">
           <button
             aria-label="Previous"
@@ -38,11 +36,11 @@ const ResourcesSection = ({ title, type, items }: ResourceSection) => {
         </div>
       </div>
       <div className="flex flex-col gap-4 sm:flex-row">
-        {type === "article"
-          ? (items as ResourceArticle[]).map((item) => (
+        {section.type === "article"
+          ? section.items.map((item) => (
               <ResourceArticleCard key={item.id} {...item} />
             ))
-          : (items as ResourceVideo[]).map((item) => (
+          : section.items.map((item) => (
               <ResourceVideoCard key={item.id} {...item} />
             ))}
       </div>

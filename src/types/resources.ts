@@ -13,12 +13,14 @@ type ResourceVideo = {
 };
 
 type ResourceArticleSection = {
+  id: string;
   title: string;
   type: "article";
   items: ResourceArticle[];
 };
 
 type ResourceVideoSection = {
+  id: string;
   title: string;
   type: "video";
   items: ResourceVideo[];

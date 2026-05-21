@@ -7,7 +7,7 @@ const ResourcesPage = () => {
     <div className="flex flex-col gap-y-8 my-8">
       <ResourcesHeroBanner />
       {resourceSections.map((section) => (
-        <ResourcesSection key={section.title} {...section} />
+        <ResourcesSection key={section.id} {...section} />
       ))}
     </div>
   );
