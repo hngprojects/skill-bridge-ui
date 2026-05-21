@@ -13,14 +13,22 @@ const ResourcesSection = ({ title, type, items }: ResourceSection) => {
       <div className="flex flex-row justify-between items-center">
         <h2 className="section-h4 font-semibold text-foreground">{title}</h2>
         <div className="flex flex-row gap-x-2">
-          <button className="flex items-center justify-center w-10 h-10 bg-muted rounded-lg hover:bg-border transition-colors">
+          <button
+            aria-label="Previous"
+            disabled
+            className="flex items-center justify-center w-10 h-10 bg-muted rounded-lg hover:bg-border transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             <ChevronLeft
               size={24}
               className="text-foreground"
               strokeWidth={1.5}
             />
           </button>
-          <button className="flex items-center justify-center w-10 h-10 bg-muted rounded-lg hover:bg-border transition-colors">
+          <button
+            aria-label="Next"
+            disabled
+            className="flex items-center justify-center w-10 h-10 bg-muted rounded-lg hover:bg-border transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             <ChevronRight
               size={24}
               className="text-foreground"
