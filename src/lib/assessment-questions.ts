@@ -1,6 +1,7 @@
 import type {
-  AdvancedAssessmentAnswer,
-  AdvancedAssessmentQuestion,
+  AdvancedAssessmentApiQuestion,
+  AdvancedAssessmentQuestionType,
+  AdvancedAssessmentSubmitAnswer,
   SkillAssessmentApiQuestion,
   SkillAssessmentQuestionType,
   SkillAssessmentSubmitAnswer,
@@ -46,38 +47,40 @@ export function mapSkillQuestions(
   }));
 }
 
-function mapAdvancedTypeToInputType(
-  type: AdvancedAssessmentQuestion["type"],
-): InputTypeParams {
+function mapAdvancedTypeToInputType(type: AdvancedAssessmentQuestionType): {
+  inputType: InputTypeParams;
+  required: boolean;
+} {
   switch (type) {
-    case "mcq":
-      return "single";
-    case "short_text":
-    case "long_text":
-      return "text_required";
+    case "single_pick":
+      return { inputType: "single", required: true };
+    case "multi_pick":
+      return { inputType: "multi", required: true };
+    case "required_text":
+      return { inputType: "text_required", required: true };
+    case "optional_text":
+      return { inputType: "text_required", required: false };
     default:
-      return "text_required";
+      return { inputType: "text_required", required: true };
   }
 }
 
-/** Map advanced API questions into personal inputType values for the UI. */
-export function mapAdvancedToPersonalQuestion(
-  q: AdvancedAssessmentQuestion,
-): Question {
-  return {
-    id: q.id,
-    key: q.id,
-    inputType: mapAdvancedTypeToInputType(q.type),
-    prompt: q.prompt,
-    required: true,
-    options: q.options,
-  };
-}
-
+/** Map raw advanced API questions into the internal Question shape for the UI. */
 export function mapAdvancedQuestions(
-  questions: AdvancedAssessmentQuestion[],
+  questions: AdvancedAssessmentApiQuestion[],
 ): Question[] {
-  return questions.map(mapAdvancedToPersonalQuestion);
+  return questions.map((q) => {
+    const { inputType, required } = mapAdvancedTypeToInputType(q.question_type);
+    return {
+      id: q.question_id,
+      key: q.question_id,
+      sourceQuestionNumber: q.question_number,
+      inputType,
+      prompt: q.question_text,
+      required,
+      options: q.options ?? undefined,
+    };
+  });
 }
 
 /** Map resume API answers (keyed by question.key) to form state (keyed by question.id). */
@@ -96,12 +99,12 @@ export function buildPersonalPrefillAnswers(
   return result;
 }
 
-/** Build advanced submit payload from QuestionnaireFlow answers (keyed by question.key). */
-export function toSubmitAnswers(
+/** Build the advanced submit payload from QuestionnaireFlow answers (keyed by question.key). */
+export function toAdvancedSubmitAnswers(
   questions: Question[],
   answersByKey: Record<string, string | string[]>,
-): AdvancedAssessmentAnswer[] {
-  const result: AdvancedAssessmentAnswer[] = [];
+): AdvancedAssessmentSubmitAnswer[] {
+  const result: AdvancedAssessmentSubmitAnswer[] = [];
   for (const q of questions) {
     const value = answersByKey[q.key];
     if (
@@ -111,7 +114,11 @@ export function toSubmitAnswers(
     ) {
       continue;
     }
-    result.push({ questionId: q.id, value });
+    result.push({
+      question_id: q.id,
+      answer: value,
+      time_spent_seconds: 0,
+    });
   }
   return result;
 }

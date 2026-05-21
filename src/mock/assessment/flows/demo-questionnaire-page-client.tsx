@@ -11,16 +11,14 @@ import { Button } from "@/components/ui/button";
 import type { AssessmentSlug } from "@/constants/assessment-previews";
 import {
   buildPersonalPrefillAnswers,
-  mapAdvancedQuestions,
+  toAdvancedSubmitAnswers,
   toSkillSubmitAnswers,
-  toSubmitAnswers,
 } from "@/lib/assessment-questions";
 import { appToast } from "@/lib/toast";
 
 import { useAssessmentDemoStore } from "../demo-store";
 import type { DemoAssessmentPhase } from "../question-slices";
 import {
-  mockGetAssessmentSession,
   mockStartAdvancedAssessment,
   mockSubmitAdvancedAssessment,
 } from "../services/advanced";
@@ -186,56 +184,49 @@ function DemoSkillAssessmentFlow() {
 }
 
 function DemoAdvancedAssessmentFlow() {
-  const [ready, setReady] = useState(false);
+  const [startFailed, setStartFailed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [sessionData, setSessionData] = useState<Awaited<
-    ReturnType<typeof mockGetAssessmentSession>
-  > | null>(null);
   const phase = useAssessmentDemoStore((s) => s.phases.advanced);
+  const hasQuestions = phase.questions.length > 0;
 
   useEffect(() => {
+    if (hasQuestions) return;
+
     let cancelled = false;
 
-    void (async () => {
-      try {
-        let sessionId = phase.sessionId;
-        if (!sessionId) {
-          const start = await mockStartAdvancedAssessment();
-          sessionId = start.session.sessionId;
-        }
-        const data = await mockGetAssessmentSession(sessionId);
-        if (cancelled) return;
-        setSessionData(data);
-        setReady(true);
-      } catch (e) {
-        if (!cancelled) {
-          appToast.error(e instanceof Error ? e.message : "Failed to start");
-        }
-      }
-    })();
+    void mockStartAdvancedAssessment().catch(() => {
+      if (!cancelled) setStartFailed(true);
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [phase.sessionId]);
+  }, [hasQuestions]);
 
-  const questions = useMemo(
-    () => mapAdvancedQuestions(sessionData?.session.questions ?? []),
-    [sessionData],
-  );
+  const questions = useMemo(() => phase.questions, [phase.questions]);
+
+  if (startFailed) {
+    return (
+      <AssessmentStartBlocked
+        title="Couldn't start assessment"
+        message="Something went wrong while starting your demo assessment."
+        backHref="/t/assessments/advanced"
+      />
+    );
+  }
 
   return (
     <QuestionnaireFlow
       questions={questions}
-      isLoading={!ready}
+      isLoading={!hasQuestions}
       isSubmitting={isSubmitting}
-      initialSeconds={sessionData?.session.remainingSeconds}
+      initialSeconds={phase.remainingSeconds}
       onSubmit={async (answersByKey) => {
         setIsSubmitting(true);
         try {
           await mockSubmitAdvancedAssessment({
-            sessionId: sessionData?.session.sessionId ?? "",
-            answers: toSubmitAnswers(questions, answersByKey),
+            session_id: phase.sessionId ?? "",
+            answers: toAdvancedSubmitAnswers(questions, answersByKey),
           });
         } finally {
           setIsSubmitting(false);

@@ -96,7 +96,11 @@ export async function submitAdvancedAssessment(
 ): Promise<AdvancedAssessmentSubmitResponseData> {
   const res = await authApi.post<
     ApiEnvelope<AdvancedAssessmentSubmitResponseData>
-  >("/talent/assessment/advanced/submit", body);
+  >("/talent/assessment/advanced/submit", body, {
+    // Advanced AI grading is heavier than skill — override the default
+    // 3-min timeout with a generous ceiling.
+    timeout: 600_000,
+  });
   return unwrapData(res);
 }
 

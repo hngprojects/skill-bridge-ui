@@ -401,48 +401,94 @@ export type SkillAssessmentSubmitResponseData = {
 
 // ─── Advanced Assessment ──────────────────────────────────────────────────────
 
-export type AdvancedAssessmentQuestionType = "mcq" | "short_text" | "long_text";
+/** Question grouping / rendering block. */
+export type AdvancedAssessmentQuestionBlock =
+  | "mcq"
+  | "short_text"
+  | "long_text";
 
-export type AdvancedAssessmentQuestion = {
-  id: string;
-  type: AdvancedAssessmentQuestionType;
-  prompt: string;
-  options?: string[];
+export type AdvancedAssessmentQuestionType =
+  | "single_pick"
+  | "multi_pick"
+  | "required_text"
+  | "optional_text";
+
+export type AdvancedAssessmentSlotType =
+  | "work_task"
+  | "situational"
+  | "reflection";
+
+export type AdvancedAssessmentQuestionMetadata = {
+  difficulty: "easy" | "medium" | "hard";
+  estimated_time_seconds: number;
+  tags: string[];
+  competency?: string | null;
+  lt3_reflection?: boolean;
 };
 
-export type AdvancedAssessmentSession = {
-  sessionId: string;
-  remainingSeconds: number;
-  questions: AdvancedAssessmentQuestion[];
+/** Raw question shape returned by the advanced assessment API. */
+export type AdvancedAssessmentApiQuestion = {
+  question_id: string;
+  question_number: number;
+  block: AdvancedAssessmentQuestionBlock;
+  question_type: AdvancedAssessmentQuestionType;
+  question_text: string;
+  options: string[] | null;
+  slot_type: AdvancedAssessmentSlotType | null;
+  metadata: AdvancedAssessmentQuestionMetadata | null;
+  /** Always stripped server-side. */
+  correct_answer: null;
 };
 
 export type AdvancedAssessmentStartResponseData = {
   status: string;
-  session: AdvancedAssessmentSession;
+  message: string;
+  session_id: string;
+  started_at: string;
+  expires_at: string;
+  completed_at: string | null;
+  is_expired: boolean;
+  /** Server-computed — use for the countdown timer. */
+  remaining_seconds: number;
+  verified_level: string;
+  question_count: number;
+  questions: AdvancedAssessmentApiQuestion[];
 };
 
-export type AssessmentSessionResponseData = {
-  status: string;
-  session: AdvancedAssessmentSession;
-};
+/** Resume returns the same shape as the advanced start response. */
+export type AssessmentSessionResponseData = AdvancedAssessmentStartResponseData;
 
-export type AdvancedAssessmentAnswer = {
-  questionId: string;
-  value: string | string[];
+export type AdvancedAssessmentSubmitAnswer = {
+  question_id: string;
+  answer: string | string[];
+  time_spent_seconds?: number;
 };
 
 export type AdvancedAssessmentSubmitInput = {
-  sessionId: string;
-  answers: AdvancedAssessmentAnswer[];
+  session_id: string;
+  answers: AdvancedAssessmentSubmitAnswer[];
 };
 
 export type AssessmentTier = "job_ready" | "emerging" | "not_ready";
 
+export type AssessmentIntegrityConfidence = "high" | "medium" | "low";
+
 export type AdvancedAssessmentSubmitResponseData = {
-  tier: AssessmentTier;
+  status: string;
+  message: string;
+  session_id: string;
+  /** Raw score. */
   score: number;
-  guidanceReport?: string;
-  retryAvailableAt?: string;
+  /** Max possible score. */
+  max_score: number;
+  /** 0–100. */
+  percentage: number;
+  tier: AssessmentTier;
+  integrity_confidence: AssessmentIntegrityConfidence;
+  /** Structured guidance — present on a non-passing result. */
+  guidance_report?: GuidanceReport;
+  /** Present only when the session had expired and was auto-submitted. */
+  auto_submitted?: true;
 };
 
 export type AssessmentFlagEventType = "tab_switch" | "copy_paste";

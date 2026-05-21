@@ -1,41 +1,32 @@
 import type {
-  AdvancedAssessmentQuestion,
-  AdvancedAssessmentSession,
   AdvancedAssessmentStartResponseData,
   AdvancedAssessmentSubmitInput,
   AdvancedAssessmentSubmitResponseData,
   AssessmentSessionResponseData,
 } from "@/types/api";
-import type { Question } from "@/types/questionnaire";
 
 import { useAssessmentDemoStore } from "../demo-store";
 import { mockDelay } from "../utils";
 
-function toAdvancedApiQuestions(
-  questions: Question[],
-): AdvancedAssessmentQuestion[] {
-  return questions.map((q) => ({
-    id: q.id,
-    type:
-      q.inputType === "single"
-        ? "mcq"
-        : q.minLength && q.minLength >= 80
-          ? "long_text"
-          : "short_text",
-    prompt: q.prompt,
-    options: q.options ? [...q.options] : undefined,
-  }));
-}
-
-function buildAdvancedSession(
+function buildStartResponse(
   sessionId: string,
-  questions: Question[],
   remainingSeconds: number,
-): AdvancedAssessmentSession {
+  questionCount: number,
+): AdvancedAssessmentStartResponseData {
+  const now = new Date();
   return {
-    sessionId,
-    remainingSeconds,
-    questions: toAdvancedApiQuestions(questions),
+    status: "success",
+    message: "Advanced assessment session created",
+    session_id: sessionId,
+    started_at: now.toISOString(),
+    expires_at: new Date(now.getTime() + remainingSeconds * 1000).toISOString(),
+    completed_at: null,
+    is_expired: false,
+    remaining_seconds: remainingSeconds,
+    verified_level: "mid",
+    question_count: questionCount,
+    // Demo questions are read straight from the demo store by the flow.
+    questions: [],
   };
 }
 
@@ -45,14 +36,11 @@ export async function mockStartAdvancedAssessment(): Promise<AdvancedAssessmentS
   store.startPhase("advanced");
   const phase = useAssessmentDemoStore.getState().phases.advanced;
 
-  return {
-    status: "success",
-    session: buildAdvancedSession(
-      phase.sessionId!,
-      phase.questions,
-      phase.remainingSeconds,
-    ),
-  };
+  return buildStartResponse(
+    phase.sessionId ?? "",
+    phase.remainingSeconds,
+    phase.questions.length,
+  );
 }
 
 export async function mockGetAssessmentSession(
@@ -65,14 +53,11 @@ export async function mockGetAssessmentSession(
     throw new Error("Demo session not found");
   }
 
-  return {
-    status: "success",
-    session: buildAdvancedSession(
-      phase.sessionId,
-      phase.questions,
-      phase.remainingSeconds,
-    ),
-  };
+  return buildStartResponse(
+    phase.sessionId,
+    phase.remainingSeconds,
+    phase.questions.length,
+  );
 }
 
 export async function mockSubmitAdvancedAssessment(
@@ -80,15 +65,20 @@ export async function mockSubmitAdvancedAssessment(
 ): Promise<AdvancedAssessmentSubmitResponseData> {
   await mockDelay();
   const answersByKey = Object.fromEntries(
-    body.answers.map((a) => [a.questionId, a.value]),
+    body.answers.map((a) => [a.question_id, a.answer]),
   );
   const store = useAssessmentDemoStore.getState();
   store.saveAnswers("advanced", answersByKey);
   store.completePhase("advanced");
 
   return {
+    status: "success",
+    message: "Demo advanced assessment complete.",
+    session_id: body.session_id,
+    score: 130,
+    max_score: 186,
+    percentage: 70,
     tier: "emerging",
-    score: 72,
-    guidanceReport: "Demo advanced assessment complete.",
+    integrity_confidence: "high",
   };
 }
