@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 
 type UseAntiCheatOptions = {
   enabled?: boolean;
-  limit?: number;
-  onLimitReached?: () => void;
   onViolation?: (count: number) => void;
 };
 
@@ -25,18 +23,10 @@ function isScreenshotShortcut(e: KeyboardEvent): boolean {
 
 const useAntiCheat = ({
   enabled = true,
-  limit = 3,
-  onLimitReached,
   onViolation,
 }: UseAntiCheatOptions = {}) => {
   const [count, setCount] = useState(0);
-  const limitFiredRef = useRef(false);
-  const onLimitReachedRef = useRef(onLimitReached);
   const onViolationRef = useRef(onViolation);
-
-  useEffect(() => {
-    onLimitReachedRef.current = onLimitReached;
-  }, [onLimitReached]);
 
   useEffect(() => {
     onViolationRef.current = onViolation;
@@ -46,13 +36,6 @@ const useAntiCheat = ({
     if (count === 0) return;
     onViolationRef.current?.(count);
   }, [count]);
-
-  useEffect(() => {
-    if (count >= limit && !limitFiredRef.current) {
-      limitFiredRef.current = true;
-      onLimitReachedRef.current?.();
-    }
-  }, [count, limit]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -88,10 +71,7 @@ const useAntiCheat = ({
     };
   }, [enabled]);
 
-  const reset = () => {
-    limitFiredRef.current = false;
-    setCount(0);
-  };
+  const reset = () => setCount(0);
 
   return { count, reset };
 };

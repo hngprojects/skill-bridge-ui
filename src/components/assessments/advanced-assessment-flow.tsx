@@ -9,6 +9,7 @@ import {
   useStartAdvancedAssessment,
   useSubmitAdvancedAssessment,
 } from "@/hooks/api";
+import { useFlagAssessmentEvent } from "@/hooks/api/use-assessment";
 import {
   mapAdvancedQuestions,
   toAdvancedSubmitAnswers,
@@ -36,6 +37,7 @@ export function AdvancedAssessmentFlow() {
     useStartAdvancedAssessment();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitAdvancedAssessment();
+  const flagViolation = useFlagAssessmentEvent(sessionId);
 
   useEffect(() => {
     if (startRequestedRef.current) return;
@@ -89,8 +91,15 @@ export function AdvancedAssessmentFlow() {
       answers: toAdvancedSubmitAnswers(questions, answersByKey),
     }).then(() => {});
 
+  const recordViolation = () => {
+    flagViolation.mutate({ event_type: "tab_switch" });
+  };
+
   return (
-    <ViolationDetector onLimitReached={() => void submit({})}>
+    <ViolationDetector
+      enabled={startState === "ready"}
+      onViolation={recordViolation}
+    >
       <QuestionnaireFlow
         questions={questions}
         isLoading={startState === "loading" || isStarting}

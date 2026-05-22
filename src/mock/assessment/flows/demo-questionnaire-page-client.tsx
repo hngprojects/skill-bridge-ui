@@ -178,7 +178,7 @@ function DemoSkillAssessmentFlow() {
 
   return (
     <ViolationDetector
-      onLimitReached={() => void submit({})}
+      enabled={hasQuestions}
       onViolation={() => {
         window.alert("Violation api triggered");
         // if (phase.sessionId) flagViolation.mutate({ eventType: "tab_switch" });
@@ -240,7 +240,7 @@ function DemoAdvancedAssessmentFlow() {
 
   return (
     <ViolationDetector
-      onLimitReached={() => void submit({})}
+      enabled={hasQuestions}
       onViolation={() => {
         window.alert("Violation api triggered advanced");
         // if (phase.sessionId) flagViolation.mutate({ eventType: "tab_switch" });

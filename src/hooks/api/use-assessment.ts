@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   flagAssessmentEvent,
@@ -20,7 +20,7 @@ import type {
   SkillAssessmentSubmitInput,
 } from "@/types/api";
 
-import { assessmentKeys } from "./keys";
+import { assessmentKeys, dashboardKeys } from "./keys";
 
 export function useStartPersonalAssessment() {
   return useMutation({
@@ -37,9 +37,13 @@ export function usePersonalAssessmentSession(options?: { enabled?: boolean }) {
 }
 
 export function useSubmitPersonalAssessment() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: PersonalAssessmentSubmitInput) =>
       submitPersonalAssessment(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
+    },
   });
 }
 
@@ -52,9 +56,13 @@ export function useStartSkillAssessment() {
 }
 
 export function useSubmitSkillAssessment() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: SkillAssessmentSubmitInput) =>
       submitSkillAssessment(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
+    },
   });
 }
 
@@ -79,15 +87,23 @@ export function useAssessmentSession(
 }
 
 export function useSubmitAdvancedAssessment() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: AdvancedAssessmentSubmitInput) =>
       submitAdvancedAssessment(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
+    },
   });
 }
 
 export function useFlagAssessmentEvent(sessionId: string) {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: AssessmentFlagInput) =>
       flagAssessmentEvent(sessionId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
+    },
   });
 }

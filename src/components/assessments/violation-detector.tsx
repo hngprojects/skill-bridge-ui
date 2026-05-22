@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import AssessmentAutoSubmittedModal from "@/components/assessments/assessment-auto-submitted-modal";
 import ViolationDetectedModal from "@/components/assessments/violation-detected-modal";
@@ -8,32 +7,20 @@ import useAntiCheat from "@/hooks/useAntiCheat";
 
 type AntiCheatProps = {
   children: ReactNode;
-  enabled?: boolean;
+  enabled: boolean;
+  onViolation: (count: number) => void;
   limit?: number;
-  onLimitReached?: () => void;
-  onViolation?: (count: number) => void;
-  onDispute?: () => void;
-  onReturnToDashboard?: () => void;
 };
 
 const ViolationDetector = ({
   children,
-  enabled = true,
-  limit = 3,
-  onLimitReached,
+  enabled,
   onViolation,
-  onDispute,
-  onReturnToDashboard,
+  limit = 3,
 }: AntiCheatProps) => {
-  const router = useRouter();
   const [dismissedAt, setDismissedAt] = useState(0);
 
-  const { count } = useAntiCheat({
-    enabled,
-    limit,
-    onLimitReached,
-    onViolation,
-  });
+  const { count } = useAntiCheat({ enabled, onViolation });
 
   useEffect(() => {
     if (!enabled) return;
@@ -49,9 +36,6 @@ const ViolationDetector = ({
   const autoSubmittedOpen = count >= limit;
   const dismissWarning = () => setDismissedAt(count);
 
-  const handleReturnToDashboard =
-    onReturnToDashboard ?? (() => router.push("/t/dashboard"));
-
   return (
     <>
       {children}
@@ -64,8 +48,6 @@ const ViolationDetector = ({
       <AssessmentAutoSubmittedModal
         isOpen={autoSubmittedOpen}
         violationLimit={limit}
-        onDispute={onDispute}
-        onReturnToDashboard={handleReturnToDashboard}
       />
     </>
   );

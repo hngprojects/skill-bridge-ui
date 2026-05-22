@@ -7,6 +7,7 @@ import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
 import ViolationDetector from "@/components/assessments/violation-detector";
 import { getSkillAssessmentSession } from "@/actions/assessment";
 import { useStartSkillAssessment, useSubmitSkillAssessment } from "@/hooks/api";
+import { useFlagAssessmentEvent } from "@/hooks/api/use-assessment";
 import {
   mapSkillQuestions,
   toSkillSubmitAnswers,
@@ -46,6 +47,7 @@ export function SkillAssessmentFlow() {
     useStartSkillAssessment();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitSkillAssessment();
+  const flagViolation = useFlagAssessmentEvent(sessionId);
 
   useEffect(() => {
     if (startRequestedRef.current) return;
@@ -115,8 +117,15 @@ export function SkillAssessmentFlow() {
       answers: toSkillSubmitAnswers(questions, answersByKey),
     }).then(() => {});
 
+  const recordViolation = () => {
+    flagViolation.mutate({ event_type: "tab_switch" });
+  };
+
   return (
-    <ViolationDetector onLimitReached={() => window.alert("Limit reached")}>
+    <ViolationDetector
+      enabled={startState === "ready"}
+      onViolation={recordViolation}
+    >
       <QuestionnaireFlow
         questions={questions}
         isLoading={startState === "loading" || isStarting}
