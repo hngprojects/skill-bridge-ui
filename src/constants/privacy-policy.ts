@@ -96,26 +96,27 @@ export const privacySections = [
     id: "third-party-links",
     title: "8. Third party links",
     description:
-      "Our platform may contain links to third-party websites. SkillBridge is not responsible for their privacy policies.",
+      "Our platform may contain links to third-party websites. SkillBridge is not responsible for their privacy policy. Please review their privacy policy before sharing any information on those sites.",
   },
 
   {
     id: "children-privacy",
     title: "9. Children Privacy",
     description:
-      "SkillBridge is not intended for children under the age of 18.",
+      "SkillBridge is not intended for children under the age of 18. We do not knowingly collect data from children. If we discover a child has provided data, we will delete it immediately",
   },
 
   {
     id: "international-transfer",
     title: "10. International Data Transfer",
     description:
-      "SkillBridge connects African talent with global employers; your data may be transferred internationally.",
+      "SkillBridge connects African talent with global employers; your data may be transferred internationally. \nWe ensure appropriate safeguards are in place for all international data transferred",
   },
 
   {
     id: "changes",
     title: "11. Changes to this policy",
-    description: "Changes to this policy will be updated from time to time.",
+    description:
+      "Changes to this policy will be updated from time to time. We ewill notify you of any changes by posting a new policy on this page.",
   },
 ];

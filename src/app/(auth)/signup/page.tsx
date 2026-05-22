@@ -17,7 +17,7 @@ function SignupContent() {
   const isEmployer = userParam === "employer";
 
   const talentSubtitle =
-    "Start proving your skills and get discovered by employers hiring verified talent.";
+    "Prove your skills and get discovered by employers hiring verified talent.";
 
   const toggleHref = "/signup?user=employer";
 
@@ -55,12 +55,12 @@ function SignupContent() {
             {/* HEADER */}
             <div className="mb-6 flex flex-col gap-3 lg:mb-10">
               <h1 className="flex flex-col text-[24px] leading-[110%] font-bold tracking-[-0.03em] text-foreground lg:text-[32px]">
-                <span>Welcome to Skillbridge</span>
+                <span>Create your employer account</span>
               </h1>
 
               <p className="max-w-130 text-[18px] leading-[160%] font-medium text-foreground lg:text-[22px]">
-                Sign up to discover a pipeline of Africa&apos;s finest tech
-                talents
+                Every candidate on SkillBridge is assessed, scored and verified
+                before becoming visible to employers.
               </p>
             </div>
 
