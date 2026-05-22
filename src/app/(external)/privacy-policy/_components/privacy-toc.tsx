@@ -51,7 +51,7 @@ export function PrivacyToc({ items }: PrivacyTocProps) {
               ${tocLinkClass(index === 0)}
             `}
           >
-            {index + 1}. {item.label}
+            {item.label}
           </a>
         ))}
       </aside>
