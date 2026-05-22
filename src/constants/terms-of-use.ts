@@ -67,7 +67,7 @@ const termsOfUseData: TermsOfUse[] = [
   {
     title: "Intellectual property",
     paragraph:
-      "We retain your personal data only as long as necessary to provide our services",
+      "All content, assessments, and materials on SkillBridge are the property of SkillBridge or its licensors and are protected by applicable intellectual property laws.",
     list: [
       "You may not reproduce or distribute any part of the platform without written permission",
       "Assessment questions and task briefs are confidential and may not be shared",
@@ -115,16 +115,17 @@ const termsOfUseData: TermsOfUse[] = [
 ];
 
 const termsOfUseNav = [
-  "Info we collected",
-  "How we use info",
-  "How we share info",
-  "Data security",
-  "Your Rights",
-  "Cookies and Tracking",
-  "Data Retention",
-  "Third party links",
-  "Children privacy",
-  "Int. Transfers",
+  "Acceptance of terms",
+  "Who can use SkillBridge",
+  "Candidate obligations",
+  "Assessment integrity",
+  "Verified profiles and scores",
+  "Employer obligations",
+  "Intellectual property",
+  "Limitation of liability",
+  "Termination",
+  "Governing law",
+  "Changes to these terms",
 ];
 
 export { termsOfUseData, termsOfUseNav };
