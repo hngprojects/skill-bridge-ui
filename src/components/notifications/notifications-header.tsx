@@ -1,5 +1,6 @@
-import { MoveRight } from "lucide-react";
-import { Button } from "../ui/button";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const NotificationsHeader = () => {
   return (
@@ -7,12 +8,14 @@ const NotificationsHeader = () => {
       <div className="flex flex-col gap-y-2">
         <h2 className="font-bold text-2xl">Notifications</h2>
         <p className="font-light text-sm md:text-base">
-          View and edit your account with personal information
+          View all activities here
         </p>
       </div>
-      <Button className="underline font-semibold text-sm" variant={"ghost"}>
-        Go to settings <MoveRight size={16} />{" "}
-      </Button>
+      <Link href={"/t/settings"}>
+        <Button className="underline font-semibold text-sm" variant={"ghost"}>
+          Go to settings <ArrowRight size={16} />{" "}
+        </Button>
+      </Link>
     </div>
   );
 };

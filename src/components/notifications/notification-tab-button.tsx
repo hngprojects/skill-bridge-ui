@@ -1,6 +1,7 @@
 import { NotificationTab } from "@/constants/notifications";
-import { Button } from "@base-ui/react/button";
+import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction } from "react";
+import { Button } from "@/components/ui/button";
 
 const NotificationTabButton = ({
   activeTab,
@@ -14,7 +15,16 @@ const NotificationTabButton = ({
   const isActive = tab === activeTab;
   return (
     <Button
-      className={`rounded-lg transition-all duration-300 ${isActive ? "bg-[#EBEBEB] font-medium hover:bg-[#EBEBEB]/70  text-black" : "border border-[#DBDBDB] font-normal text-[#757575] hover:bg-[#EBEBEB] bg-transparent"}`}
+      type="button"
+      role="tab"
+      aria-selected={isActive}
+      tabIndex={isActive ? 0 : -1}
+      className={cn(
+        "rounded-lg transition-all duration-300",
+        isActive
+          ? "bg-[#EBEBEB] font-medium text-black hover:bg-[#EBEBEB]/70"
+          : "border border-[#DBDBDB] bg-transparent font-normal text-[#757575] hover:bg-[#EBEBEB]",
+      )}
       key={tab}
       onClick={() => setTab(tab)}
     >
