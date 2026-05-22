@@ -69,14 +69,15 @@ function GenerateRoadmapStep() {
 
   return (
     <div className="relative flex w-full flex-col items-center gap-8 overflow-hidden">
-      <OrbitAnimation />
-      <p
+      <h3
         key={messageIndex}
-        className="animate-in fade-in text-xl font-bold tracking-wide text-foreground duration-500"
+        id="onboarding-step-heading"
+        className="animate-in fade-in text-center font-heading text-2xl font-semibold tracking-tight text-foreground duration-500 sm:text-3xl"
         aria-live="polite"
       >
         {LOADING_MESSAGES[messageIndex]}
-      </p>
+      </h3>
+      <OrbitAnimation />
     </div>
   );
 }
