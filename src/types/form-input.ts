@@ -12,6 +12,8 @@ type BaseProps = {
   name?: string;
   label: string;
   required?: boolean;
+  /** Render a visible red asterisk after the label. Opt-in per field. */
+  requiredMark?: boolean;
   placeholder?: string;
   description?: string;
   error?: string;

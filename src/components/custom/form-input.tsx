@@ -134,7 +134,7 @@ function FormMultiSelect({
             return (
               <label
                 key={option.value}
-                className="flex cursor-pointer items-center gap-2 rounded-[4px] px-2 py-2 text-sm hover:bg-accent"
+                className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-accent"
               >
                 <Checkbox
                   checked={checked}
@@ -158,6 +158,7 @@ function FormInput(props: FormInputProps) {
     name,
     label,
     required,
+    requiredMark,
     placeholder,
     description,
     error,
@@ -209,6 +210,14 @@ function FormInput(props: FormInputProps) {
       <div className={cn(formFieldRootClass, className)}>
         <Label htmlFor={inputId} className={formFieldLabelClass}>
           {label}
+          {requiredMark ? (
+            <>
+              <span aria-hidden className="text-error">
+                *
+              </span>
+              <span className="sr-only"> (required)</span>
+            </>
+          ) : null}
         </Label>
         {isMultiple ? (
           <FormMultiSelect
@@ -276,6 +285,7 @@ function FormInput(props: FormInputProps) {
   const inputProps = (({
     mode: _mode,
     label: _label,
+    requiredMark: _requiredMark,
     validateEmail: _validateEmail,
     icon: _icon,
     description: _description,
@@ -285,6 +295,7 @@ function FormInput(props: FormInputProps) {
   }: InputModeProps) => {
     void _mode;
     void _label;
+    void _requiredMark;
     void _validateEmail;
     void _icon;
     void _description;
@@ -297,6 +308,14 @@ function FormInput(props: FormInputProps) {
     <div className={cn(formFieldRootClass, className)}>
       <Label htmlFor={inputId} className={formFieldLabelClass}>
         {label}
+        {requiredMark ? (
+          <>
+            <span aria-hidden className="text-error">
+              *
+            </span>
+            <span className="sr-only"> (required)</span>
+          </>
+        ) : null}
       </Label>
 
       <div className="relative flex w-full flex-row items-center">

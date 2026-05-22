@@ -9,7 +9,7 @@ import { addToWaitlistSchema } from "@/types/waitlist";
 import { roles, sources } from "./data";
 import { addToWaitlist } from "@/actions/waitlist.actions";
 import WaitlistFormCTA from "./waitlist-form-cta";
-import WaitlistErrorDisplay from "./waitlist-error-display";
+import { appToast } from "@/lib/toast";
 import Link from "next/link";
 
 type Props = {
@@ -19,12 +19,10 @@ type Props = {
 
 const WaitlistForm = ({ onCancel, onSubmit }: Props) => {
   const [joiningAs, setJoiningAs] = useState<"talent" | "employer">("talent");
-  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(null);
 
     const formData = new FormData(e.currentTarget);
     const parsed = addToWaitlistSchema.safeParse({
@@ -36,14 +34,16 @@ const WaitlistForm = ({ onCancel, onSubmit }: Props) => {
     });
 
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? "Please fill all fields");
+      appToast.error(
+        parsed.error.issues[0]?.message ?? "Please fill all fields",
+      );
       return;
     }
 
     startTransition(async () => {
       const result = await addToWaitlist(parsed.data);
       if (!result.ok) {
-        setError(result.error);
+        appToast.error(result.error);
         return;
       }
       onSubmit();
@@ -123,7 +123,6 @@ const WaitlistForm = ({ onCancel, onSubmit }: Props) => {
           ))}
         </SelectInput>
       </Field>
-      <WaitlistErrorDisplay error={error} />
       <p className="text-xs font-normal leading-3.75 tracking-[0.017em] text-[#64748B] sm:text-base sm:font-semibold sm:leading-5 sm:text-center">
         By joining, you agree to Skillbridge data{" "}
         <Link href={"terms-of-use"} className="font-semibold underline">
