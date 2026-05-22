@@ -11,7 +11,7 @@ const SECURITY_HEADERS: Record<string, string> = {
 };
 
 const ROLE_PROTECTED_ROUTES: { path: string; role: UserRole }[] = [
-  { path: "/t/", role: "talent" },
+  { path: "/t", role: "talent" },
   { path: "/talent", role: "talent" },
   { path: "/employer/onboarding", role: "employer" },
 ];
