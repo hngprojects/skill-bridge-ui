@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
 import ViolationDetector from "@/components/assessments/violation-detector";
@@ -43,11 +42,10 @@ export function SkillAssessmentFlow() {
   const [startState, setStartState] = useState<SkillStartState>("loading");
   const startRequestedRef = useRef(false);
 
-  const { mutateAsync: startSession, isPending: isStarting } =
-    useStartSkillAssessment();
+  const { mutateAsync: startSession } = useStartSkillAssessment();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitSkillAssessment();
-  const flagViolation = useFlagAssessmentEvent(sessionId);
+  const flagViolation = useFlagAssessmentEvent("skill", sessionId);
 
   useEffect(() => {
     if (startRequestedRef.current) return;
@@ -117,8 +115,9 @@ export function SkillAssessmentFlow() {
       answers: toSkillSubmitAnswers(questions, answersByKey),
     }).then(() => {});
 
-  const recordViolation = () => {
-    flagViolation.mutate({ event_type: "tab_switch" });
+  const recordViolation = (count: number) => {
+    // if (count === 3) window.alert("limit count reached");
+    if (count === 3) flagViolation.mutate({ event_type: "tab_switch" });
   };
 
   return (
@@ -128,7 +127,7 @@ export function SkillAssessmentFlow() {
     >
       <QuestionnaireFlow
         questions={questions}
-        isLoading={startState === "loading" || isStarting}
+        isLoading={startState === "loading"}
         isSubmitting={isSubmitting}
         onSubmit={submit}
       />

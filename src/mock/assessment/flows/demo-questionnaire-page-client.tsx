@@ -181,7 +181,6 @@ function DemoSkillAssessmentFlow() {
       enabled={hasQuestions}
       onViolation={() => {
         window.alert("Violation api triggered");
-        // if (phase.sessionId) flagViolation.mutate({ eventType: "tab_switch" });
       }}
     >
       <QuestionnaireFlow
@@ -243,7 +242,6 @@ function DemoAdvancedAssessmentFlow() {
       enabled={hasQuestions}
       onViolation={() => {
         window.alert("Violation api triggered advanced");
-        // if (phase.sessionId) flagViolation.mutate({ eventType: "tab_switch" });
       }}
     >
       <QuestionnaireFlow

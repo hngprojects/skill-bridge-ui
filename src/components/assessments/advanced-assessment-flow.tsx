@@ -33,11 +33,10 @@ export function AdvancedAssessmentFlow() {
   const [startState, setStartState] = useState<AdvancedStartState>("loading");
   const startRequestedRef = useRef(false);
 
-  const { mutateAsync: startSession, isPending: isStarting } =
-    useStartAdvancedAssessment();
+  const { mutateAsync: startSession } = useStartAdvancedAssessment();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitAdvancedAssessment();
-  const flagViolation = useFlagAssessmentEvent(sessionId);
+  const flagViolation = useFlagAssessmentEvent("advanced", sessionId);
 
   useEffect(() => {
     if (startRequestedRef.current) return;
@@ -91,8 +90,8 @@ export function AdvancedAssessmentFlow() {
       answers: toAdvancedSubmitAnswers(questions, answersByKey),
     }).then(() => {});
 
-  const recordViolation = () => {
-    flagViolation.mutate({ event_type: "tab_switch" });
+  const recordViolation = (count: number) => {
+    if (count === 3) flagViolation.mutate({ event_type: "tab_switch" });
   };
 
   return (
@@ -102,7 +101,7 @@ export function AdvancedAssessmentFlow() {
     >
       <QuestionnaireFlow
         questions={questions}
-        isLoading={startState === "loading" || isStarting}
+        isLoading={startState === "loading"}
         isSubmitting={isSubmitting}
         initialSeconds={remainingSeconds}
         onSubmit={submit}

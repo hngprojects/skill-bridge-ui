@@ -97,11 +97,14 @@ export function useSubmitAdvancedAssessment() {
   });
 }
 
-export function useFlagAssessmentEvent(sessionId: string) {
+export function useFlagAssessmentEvent(
+  type: "advanced" | "skill",
+  sessionId: string,
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: AssessmentFlagInput) =>
-      flagAssessmentEvent(sessionId, body),
+      flagAssessmentEvent(type, sessionId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
     },
