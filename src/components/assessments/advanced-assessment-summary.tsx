@@ -18,13 +18,20 @@ const AdvancedAssessmentSummary = () => {
   const result = useAssessmentSummaryStore((state) =>
     user?.id ? state.resultsByUser[user.id]?.advanced : null,
   );
+  const isUserContextReady = Boolean(user?.id);
   const tier = formatTier(result?.tier);
   const scoreSummary =
     result?.score !== undefined && result?.max_score !== undefined
       ? `Your score is ${result.score}/${result.max_score} (${result.percentage}%).`
       : "Your results are currently being reviewed.";
 
-  return (
+  return !isUserContextReady ? (
+    <AssessmentContainer>
+      <p className="text-base text-muted-foreground">
+        Loading your assessment summary...
+      </p>
+    </AssessmentContainer>
+  ) : (
     <AssessmentContainer>
       <Image
         alt="Assessment icon"

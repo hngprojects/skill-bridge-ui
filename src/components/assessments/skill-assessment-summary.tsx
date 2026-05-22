@@ -25,6 +25,7 @@ const SkillAssessementSummary = () => {
   const result = useAssessmentSummaryStore((state) =>
     user?.id ? state.resultsByUser[user.id]?.skill : null,
   );
+  const isUserContextReady = Boolean(user?.id);
   const validatedLevel = formatLevel(result?.validated_level, "Junior");
   const claimedLevel = formatLevel(result?.claimed_level, "Mid-Level");
   const progressValue = result?.percentage ?? 57;
@@ -34,7 +35,13 @@ const SkillAssessementSummary = () => {
     result?.guidance_report?.summary ??
     "This does not define your potential. It helps us tailor your assessment accurately.";
 
-  return (
+  return !isUserContextReady ? (
+    <AssessmentContainer>
+      <p className="text-base text-muted-foreground">
+        Loading your assessment summary...
+      </p>
+    </AssessmentContainer>
+  ) : (
     <AssessmentContainer>
       <Image
         src={"/assets/icons/computer-setup-icon.svg"}

@@ -46,6 +46,9 @@ export function QuestionnaireFlow({
   const setSummaryResult = useAssessmentSummaryStore(
     (state) => state.setResult,
   );
+  const clearSummaryResult = useAssessmentSummaryStore(
+    (state) => state.clearResult,
+  );
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<
@@ -114,8 +117,12 @@ export function QuestionnaireFlow({
       const result = await onSubmit(
         buildAnswers(questions, answers, otherAnswers),
       );
-      if (isAssessmentSlug(name) && user?.id && result != null) {
-        setSummaryResult(user.id, name, result);
+      if (isAssessmentSlug(name) && user?.id) {
+        if (result != null) {
+          setSummaryResult(user.id, name, result);
+        } else {
+          clearSummaryResult(user.id, name);
+        }
       }
       router.push(`/t/assessments/${name}/summary`);
     } catch (e) {
