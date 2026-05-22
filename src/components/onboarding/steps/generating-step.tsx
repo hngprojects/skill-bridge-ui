@@ -42,7 +42,7 @@ function GenerateRoadmapStep() {
       <h3
         key={messageIndex}
         id="onboarding-step-heading"
-        className="animate-in fade-in font-heading text-2xl font-semibold tracking-tight text-foreground duration-500 sm:text-3xl"
+        className="animate-in fade-in text-center font-heading text-2xl font-semibold tracking-tight text-foreground duration-500 sm:text-3xl"
         aria-live="polite"
       >
         {LOADING_MESSAGES[messageIndex]}

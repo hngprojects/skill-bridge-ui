@@ -32,7 +32,7 @@ function OnboardingShell({
 
   if (isGenerateRoadmap) {
     return (
-      <div className="flex w-full min-h-[calc(100vh-72px)] flex-col items-center justify-center gap-8 bg-white px-4">
+      <div className="flex w-full min-h-[calc(100vh-72px)] flex-col items-center justify-center gap-8 bg-white px-4 pb-30">
         <style>{`footer { display: none !important; }`}</style>
         {children}
       </div>
