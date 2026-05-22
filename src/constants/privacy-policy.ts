@@ -117,6 +117,6 @@ export const privacySections = [
     id: "changes",
     title: "11. Changes to this policy",
     description:
-      "Changes to this policy will be updated from time to time. We ewill notify you of any changes by posting a new policy on this page.",
+      "Changes to this policy will be updated from time to time. We will notify you of any changes by posting a new policy on this page.",
   },
 ];

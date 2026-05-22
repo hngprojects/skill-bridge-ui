@@ -43,7 +43,7 @@ export default function PrivacyPage() {
             />
           ))}
           <p className="text-[#64748B]">
-            If you have any question about our privacy policy, contact us at{" "}
+            If you have any questions about our privacy policy, contact us at{" "}
             <a
               className="font-bold text-[#030409]"
               href="mailto:Privacy@Skillbridge.com"
