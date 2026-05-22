@@ -42,7 +42,7 @@ const TermsOfUsePage = () => {
 
         <main className="flex flex-row gap-x-10 md:p-11 mt-16 md:mt-31.75 mb-84 md:mb-50 max-w-7xl mx-auto w-full px-4">
           <aside className="hidden lg:block">
-            <ol className="flex list-disc flex-col gap-y-4">
+            <ol className="flex list-none flex-col gap-y-4">
               {termsOfUseNav.map((navitem, index) => (
                 <li key={index}>
                   <a

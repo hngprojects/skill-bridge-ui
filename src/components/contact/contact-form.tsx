@@ -115,6 +115,11 @@ export function ContactForm() {
               maxLength={1000}
               placeholder="How can we be of help?"
               aria-invalid={Boolean(errors.message)}
+              aria-describedby={
+                errors.message
+                  ? "contact-message-error"
+                  : "contact-message-hint"
+              }
               className={cn(
                 "min-h-32 rounded-[5px] border border-border bg-background font-sans text-base placeholder:text-muted-foreground",
                 "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/25",
@@ -124,11 +129,18 @@ export function ContactForm() {
             />
             <div className="flex items-center justify-between gap-2">
               {errors.message ? (
-                <p className={errorClass} role="alert">
+                <p
+                  id="contact-message-error"
+                  className={errorClass}
+                  role="alert"
+                >
                   {errors.message.message}
                 </p>
               ) : (
-                <p className="font-sans text-sm text-muted-foreground">
+                <p
+                  id="contact-message-hint"
+                  className="font-sans text-sm text-muted-foreground"
+                >
                   Minimum 10 characters
                 </p>
               )}

@@ -7,7 +7,7 @@ import {
 } from "@/constants/employer-onboarding";
 
 /** Letters (incl. accented) plus space, hyphen and apostrophe; must start with a letter. */
-const NAME_REGEX = /^[\p{L}\p{M}][\p{L}\p{M} '-]*$/u;
+const NAME_REGEX = /^\p{L}[\p{L}\p{M} '-]*$/u;
 
 /** Shared validator for human-name fields — rejects digits and symbols, min 2 chars. */
 function nameField(label: string) {
