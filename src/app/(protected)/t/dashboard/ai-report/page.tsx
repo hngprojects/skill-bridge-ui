@@ -5,7 +5,7 @@ import { AiReportSkillBreakdown } from "@/components/dashboard/emerging-user/ai-
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AI Report Page",
+  title:"AI Report",
 };
 
 const AiReport = () => {

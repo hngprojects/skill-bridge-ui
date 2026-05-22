@@ -1,87 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { BarColumn, type ChartBar } from "./emerging-user-skill-bar-column";
+import { BarColumn } from "./emerging-user-skill-bar-column";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+import { AI_SUMMARY, BAR_GAP, CHART_HEIGHT, CHART_ZONES, GROWTH_INSIGHT, STRENGTHS, WEAK_AREAS, } from "@/constants/ai-report-skill-breakdown";
 
-interface ChartZone {
-  id: string;
-  label: string;
-  bars: ChartBar[];
-}
-
-interface InsightCard {
-  title: string;
-  description: string;
-}
-
-interface SkillItem {
-  text: string;
-}
-
-// ─── Static data ──────────────────────────────────────────────────────────────
-
-const CHART_ZONES: ChartZone[] = [
-  {
-    id: "emerging",
-    label: "Emerging",
-    bars: [
-      { value: 12 },
-      { value: 39 },
-      { value: 47, active: true, activeLabel: "47%" },
-    ],
-  },
-  {
-    id: "intermediate",
-    label: "Intermediate",
-    bars: [{ value: 60 }, { value: 82 }, { value: 40 }],
-  },
-  {
-    id: "job-ready",
-    label: "Job Ready",
-    bars: [{ value: 48 }, { value: 12 }, { value: 6 }],
-  },
-];
-
-const AI_SUMMARY: InsightCard = {
-  title: "AI Summary",
-  description:
-    "You demonstrate strong visual thinking, interface structuring, and product intuition. Your growth opportunities currently lie in communication confidence, systems thinking, and decision-making under ambiguity.",
-};
-
-const GROWTH_INSIGHT: InsightCard = {
-  title: "Growth Insight",
-  description:
-    "Your recent assessments show steady improvement in design thinking, interface structure, and adaptability. Focusing more on communication confidence and systems thinking could significantly improve your overall professional readiness.",
-};
-
-const STRENGTHS: SkillItem[] = [
-  {
-    text: "Strong hierarchy, spacing, and interface.",
-  },
-  {
-    text: "Good user flows and usability patterns.",
-  },
-  {
-    text: "Quick to learn and apply new concepts.",
-  },
-];
-
-const WEAK_AREAS: SkillItem[] = [
-  {
-    text: "Improve presentation clarity for stakeholder.",
-  },
-  {
-    text: "Breaking down complex product challenges.",
-  },
-  {
-    text: "Develop strong understanding product ecosystems",
-  },
-];
-
-const CHART_HEIGHT = 130;
-const BAR_GAP = 6;
+import type { ChartZone, InsightCard, SkillItem, } from "@/types/ai-report-skill-breakdown";
 
 // ─── Components ───────────────────────────────────────────────────────────────
 
