@@ -37,13 +37,7 @@ function SelectTrackStep({ value = [], onValueChange }: SelectTrackStepProps) {
   const selected = new Set(value);
 
   function toggle(id: TrackOptionId) {
-    const next = new Set(selected);
-    if (next.has(id)) {
-      next.delete(id);
-    } else {
-      next.add(id);
-    }
-    onValueChange?.([...next]);
+    onValueChange?.(selected.has(id) ? [] : [id]);
   }
 
   return (

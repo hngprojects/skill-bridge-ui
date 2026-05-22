@@ -2,6 +2,11 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+
+import { usePersonaliseTalentDashboard } from "@/hooks/api";
+import { authFailureMessage } from "@/lib/api";
+import { appToast } from "@/lib/toast";
+
 import { OrbitAnimation } from "../generating-steps/orbit-animation";
 
 const LOADING_MESSAGES = [
@@ -17,25 +22,44 @@ const MESSAGE_DURATION = TOTAL_DURATION / LOADING_MESSAGES.length;
 function GenerateRoadmapStep() {
   const router = useRouter();
   const [messageIndex, setMessageIndex] = React.useState(0);
+  const personalisePromiseRef = React.useRef<Promise<unknown> | null>(null);
+  const { mutateAsync: personaliseDashboard } = usePersonaliseTalentDashboard();
 
   React.useEffect(() => {
-    let mounted = true;
-
     const interval = setInterval(() => {
       setMessageIndex((i) => Math.min(i + 1, LOADING_MESSAGES.length - 1));
     }, MESSAGE_DURATION);
 
-    const timeout = setTimeout(() => {
-      if (!mounted) return;
-      router.push("/t/dashboard");
-    }, TOTAL_DURATION);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    let mounted = true;
+
+    async function finishOnboarding() {
+      const minimumDelay = new Promise((resolve) =>
+        setTimeout(resolve, TOTAL_DURATION),
+      );
+      personalisePromiseRef.current ??= personaliseDashboard();
+
+      try {
+        await Promise.all([personalisePromiseRef.current, minimumDelay]);
+        if (mounted) router.replace("/t/dashboard");
+      } catch (error) {
+        await minimumDelay;
+        if (!mounted) return;
+        appToast.error(authFailureMessage(error));
+      }
+    }
+
+    void finishOnboarding();
 
     return () => {
       mounted = false;
-      clearInterval(interval);
-      clearTimeout(timeout);
     };
-  }, [router]);
+  }, [personaliseDashboard, router]);
 
   return (
     <div className="relative flex w-full flex-col items-center gap-8 overflow-hidden">
