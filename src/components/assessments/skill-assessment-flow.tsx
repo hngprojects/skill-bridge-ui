@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
+import ViolationDetector from "@/components/assessments/violation-detector";
 import { getSkillAssessmentSession } from "@/actions/assessment";
 import { useStartSkillAssessment, useSubmitSkillAssessment } from "@/hooks/api";
 import {
@@ -108,17 +109,20 @@ export function SkillAssessmentFlow() {
     );
   }
 
+  const submit = (answersByKey: Record<string, string | string[]>) =>
+    submitAssessment({
+      attempt_id: sessionId,
+      answers: toSkillSubmitAnswers(questions, answersByKey),
+    }).then(() => {});
+
   return (
-    <QuestionnaireFlow
-      questions={questions}
-      isLoading={startState === "loading" || isStarting}
-      isSubmitting={isSubmitting}
-      onSubmit={(answersByKey) =>
-        submitAssessment({
-          attempt_id: sessionId,
-          answers: toSkillSubmitAnswers(questions, answersByKey),
-        }).then(() => {})
-      }
-    />
+    <ViolationDetector onLimitReached={() => window.alert("Limit reached")}>
+      <QuestionnaireFlow
+        questions={questions}
+        isLoading={startState === "loading" || isStarting}
+        isSubmitting={isSubmitting}
+        onSubmit={submit}
+      />
+    </ViolationDetector>
   );
 }

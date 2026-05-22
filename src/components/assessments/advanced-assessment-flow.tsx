@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
+import ViolationDetector from "@/components/assessments/violation-detector";
 import {
   useStartAdvancedAssessment,
   useSubmitAdvancedAssessment,
@@ -82,18 +83,21 @@ export function AdvancedAssessmentFlow() {
     );
   }
 
+  const submit = (answersByKey: Record<string, string | string[]>) =>
+    submitAssessment({
+      session_id: sessionId,
+      answers: toAdvancedSubmitAnswers(questions, answersByKey),
+    }).then(() => {});
+
   return (
-    <QuestionnaireFlow
-      questions={questions}
-      isLoading={startState === "loading" || isStarting}
-      isSubmitting={isSubmitting}
-      initialSeconds={remainingSeconds}
-      onSubmit={(answersByKey) =>
-        submitAssessment({
-          session_id: sessionId,
-          answers: toAdvancedSubmitAnswers(questions, answersByKey),
-        }).then(() => {})
-      }
-    />
+    <ViolationDetector onLimitReached={() => void submit({})}>
+      <QuestionnaireFlow
+        questions={questions}
+        isLoading={startState === "loading" || isStarting}
+        isSubmitting={isSubmitting}
+        initialSeconds={remainingSeconds}
+        onSubmit={submit}
+      />
+    </ViolationDetector>
   );
 }
