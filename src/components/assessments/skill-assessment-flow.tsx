@@ -69,6 +69,10 @@ export function SkillAssessmentFlow() {
           try {
             applySession(await getSkillAssessmentSession(existingId));
           } catch (resumeError) {
+            if (isServiceUnavailableError(resumeError)) {
+              setStartState("unavailable");
+              return;
+            }
             setStartState("failed");
             appToast.error(authFailureMessage(resumeError));
           }
@@ -116,7 +120,6 @@ export function SkillAssessmentFlow() {
     }).then(() => {});
 
   const recordViolation = (count: number) => {
-    // if (count === 3) window.alert("limit count reached");
     if (count === 3) flagViolation.mutate({ event_type: "tab_switch" });
   };
 

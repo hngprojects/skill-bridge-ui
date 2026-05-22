@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { FormInput } from "@/components/custom/form-input";
@@ -28,11 +28,14 @@ export function ContactForm() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
   });
+
+  const messageLength = (useWatch({ control, name: "message" }) ?? "").length;
 
   const onSubmit = async (values: ContactFormValues) => {
     setRootError(null);
@@ -72,6 +75,7 @@ export function ContactForm() {
           <FormInput
             label="Full Name"
             required
+            requiredMark
             placeholder="John Doe"
             error={errors.fullName?.message}
             {...register("fullName")}
@@ -80,6 +84,7 @@ export function ContactForm() {
           <FormInput
             label="Email Address"
             required
+            requiredMark
             type="email"
             validateEmail
             placeholder="john@gmail.com"
@@ -90,6 +95,7 @@ export function ContactForm() {
           <FormInput
             label="Subject"
             required
+            requiredMark
             placeholder="Subject"
             error={errors.subject?.message}
             {...register("subject")}
@@ -98,12 +104,22 @@ export function ContactForm() {
           <div className="flex w-full flex-col items-stretch gap-1.5">
             <Label htmlFor="contact-message" className={labelClass}>
               Message
+              <span aria-hidden className="text-error">
+                *
+              </span>
+              <span className="sr-only"> (required)</span>
             </Label>
             <Textarea
               id="contact-message"
               rows={5}
+              maxLength={1000}
               placeholder="How can we be of help?"
               aria-invalid={Boolean(errors.message)}
+              aria-describedby={
+                errors.message
+                  ? "contact-message-error"
+                  : "contact-message-hint"
+              }
               className={cn(
                 "min-h-32 rounded-[5px] border border-border bg-background font-sans text-base placeholder:text-muted-foreground",
                 "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/25",
@@ -111,11 +127,27 @@ export function ContactForm() {
               )}
               {...register("message")}
             />
-            {errors.message ? (
-              <p className={errorClass} role="alert">
-                {errors.message.message}
-              </p>
-            ) : null}
+            <div className="flex items-center justify-between gap-2">
+              {errors.message ? (
+                <p
+                  id="contact-message-error"
+                  className={errorClass}
+                  role="alert"
+                >
+                  {errors.message.message}
+                </p>
+              ) : (
+                <p
+                  id="contact-message-hint"
+                  className="font-sans text-sm text-muted-foreground"
+                >
+                  Minimum 10 characters
+                </p>
+              )}
+              <span className="font-sans text-sm text-muted-foreground tabular-nums">
+                {messageLength}/1000
+              </span>
+            </div>
           </div>
 
           <Button

@@ -6,9 +6,22 @@ import {
   EMPLOYER_REGION_VALUES,
 } from "@/constants/employer-onboarding";
 
+/** Letters (incl. accented) plus space, hyphen and apostrophe; must start with a letter. */
+const NAME_REGEX = /^\p{L}[\p{L}\p{M} '-]*$/u;
+
+/** Shared validator for human-name fields — rejects digits and symbols, min 2 chars. */
+function nameField(label: string) {
+  return z
+    .string()
+    .trim()
+    .min(1, `${label} is required.`)
+    .min(2, `${label} must be at least 2 characters.`)
+    .regex(NAME_REGEX, `${label} can only contain letters.`);
+}
+
 export const onboardingFormSchema = z.object({
-  firstName: z.string().trim().min(1, "First name is required."),
-  lastName: z.string().trim().min(1, "Last name is required."),
+  firstName: nameField("First name"),
+  lastName: nameField("Last name"),
   email: z.string().email("Please enter a valid email address."),
   password: z
     .string()
@@ -27,7 +40,7 @@ export type OnboardingFormErrors = Partial<
 >;
 
 export const employerOnboardingFormSchema = z.object({
-  fullLegalName: z.string().min(1, "Full legal name is required"),
+  fullLegalName: nameField("Full legal name"),
   email: z
     .string()
     .min(1, "Company email is required")
@@ -83,8 +96,8 @@ export type EmployerOnboardingProfileValues = z.infer<
 /** UPDATED: Talent Signup Schema with Confirm Password */
 export const signupFormSchema = z
   .object({
-    firstName: z.string().trim().min(1, "First name is required."),
-    lastName: z.string().trim().min(1, "Last name is required."),
+    firstName: nameField("First name"),
+    lastName: nameField("Last name"),
     email: z.string().email("Please enter a valid email address."),
     password: z
       .string()
@@ -117,8 +130,8 @@ export type EmailVerificationCodeValues = z.infer<
 
 export const employerSignupFinalSchema = z
   .object({
-    firstName: z.string().trim().min(1, "First name is required."),
-    lastName: z.string().trim().min(1, "Last name is required."),
+    firstName: nameField("First name"),
+    lastName: nameField("Last name"),
     email: z.string().email("Please enter a valid work email address."),
     password: z
       .string()
@@ -144,10 +157,15 @@ export type EmployerSignup = Pick<
 >;
 
 export const contactFormSchema = z.object({
-  fullName: z.string().trim().min(1, "Full name is required."),
+  fullName: nameField("Full name"),
   email: z.string().email("Please enter a valid email address."),
   subject: z.string().trim().min(1, "Subject is required."),
-  message: z.string().trim().min(1, "Message is required."),
+  message: z
+    .string()
+    .trim()
+    .min(1, "Message is required.")
+    .min(10, "Message must be at least 10 characters.")
+    .max(1000, "Message must be at most 1000 characters."),
 });
 
 export type ContactFormValues = z.infer<typeof contactFormSchema>;

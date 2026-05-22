@@ -1,7 +1,19 @@
-import React from "react";
+import type { Metadata } from "next";
 
-const ResourcesPage = () => {
-  return <div>ResourcesPage</div>;
+import { ComingSoon } from "@/components/custom/coming-soon";
+
+export const metadata: Metadata = {
+  title: "Resources",
 };
 
-export default ResourcesPage;
+const Page = () => {
+  return (
+    <ComingSoon
+      title="Resources are coming soon"
+      description="We're curating learning paths, guides, and prep material to support your roadmap. Check back shortly."
+      backHref="/t/dashboard"
+    />
+  );
+};
+
+export default Page;
