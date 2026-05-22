@@ -42,9 +42,17 @@ export default function PrivacyPage() {
               items={section.items}
             />
           ))}
+          <p className="text-[#64748B]">
+            If you have any questions about our privacy policy, contact us at{" "}
+            <a
+              className="font-bold text-[#030409]"
+              href="mailto:Privacy@Skillbridge.com"
+            >
+              Privacy@Skillbridge.com
+            </a>
+          </p>
         </div>
       </section>
-
       <CookieBanner />
     </main>
   );
