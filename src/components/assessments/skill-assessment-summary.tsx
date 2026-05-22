@@ -11,8 +11,8 @@ import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
 import NextUpCard from "./next-up-card";
 import { Button } from "../ui/button";
 
-function formatLevel(level?: string) {
-  if (!level) return "your level";
+function formatLevel(level: string | undefined, fallback: string) {
+  if (!level) return fallback;
 
   return level
     .replace(/_/g, " ")
@@ -21,9 +21,10 @@ function formatLevel(level?: string) {
 
 const SkillAssessementSummary = () => {
   const result = useAssessmentSummaryStore((state) => state.results.skill);
-  const validatedLevel = formatLevel(result?.validated_level);
-  const claimedLevel = formatLevel(result?.claimed_level);
-  const progressValue = result?.percentage ?? 0;
+  const validatedLevel = formatLevel(result?.validated_level, "Junior");
+  const claimedLevel = formatLevel(result?.claimed_level, "Mid-Level");
+  const progressValue = result?.percentage ?? 57;
+  const isDowngraded = result?.downgraded ?? true;
   const feedback =
     result?.personalised_message ??
     result?.guidance_report?.summary ??
@@ -44,10 +45,17 @@ const SkillAssessementSummary = () => {
         <p className="text-base md:text-lg font-light max-w-208.75">
           Congratulations, you completed your assessment. Based on your
           evaluation, your validated level is{" "}
-          <span className="font-bold capitalize">{validatedLevel}</span> instead
-          of your claim of{" "}
-          <span className="font-bold capitalize">{claimedLevel}</span>. You can{" "}
-          <span className="font-bold">retake</span> after 24 hours.
+          <span className="font-bold capitalize">{validatedLevel}</span>
+          {isDowngraded ? (
+            <>
+              {" "}
+              instead of your claim of{" "}
+              <span className="font-bold capitalize">{claimedLevel}</span>. You
+              can <span className="font-bold">retake</span> after 24 hours.
+            </>
+          ) : (
+            ". You can continue to the next assessment."
+          )}
         </p>
       </section>
       <div className="flex flex-col">
@@ -59,22 +67,26 @@ const SkillAssessementSummary = () => {
           </p>
           <Progress value={progressValue} className="h-1 *:bg-[#4FB609]" />
         </div>
-        <div className="border mt-6 w-fit border-[#FF7854] bg-[#FFF1EE] flex flex-row gap-x-4 items-center py-2.5 px-3 rounded-lg">
-          <Image
-            src={"/assets/icons/alert-icon.svg"}
-            height={24}
-            width={24}
-            alt="Alert icon"
-          />
-          <p className="text-[#757575] text-[14px]">{feedback}</p>
-        </div>
+        {isDowngraded && (
+          <div className="border mt-6 w-fit border-[#FF7854] bg-[#FFF1EE] flex flex-row gap-x-4 items-center py-2.5 px-3 rounded-lg">
+            <Image
+              src={"/assets/icons/alert-icon.svg"}
+              height={24}
+              width={24}
+              alt="Alert icon"
+            />
+            <p className="text-[#757575] text-[14px]">{feedback}</p>
+          </div>
+        )}
         <div className="flex flex-col gap-y-4 sm:flex-row items-center self-center mt-15.5 gap-x-2">
-          <Button
-            disabled={true}
-            className="bg-[#322B2B] text-white disabled:text-white rounded-lg h-10 min-w-fit md:w-52.25 hover:bg-[#322B2B]/70 transition-all disabled:bg-[#0F1724]/50 duration-300 cursor-pointer"
-          >
-            Retake (valid in 24h)
-          </Button>
+          {isDowngraded && (
+            <Button
+              disabled={true}
+              className="bg-[#322B2B] text-white disabled:text-white rounded-lg h-10 min-w-fit md:w-52.25 hover:bg-[#322B2B]/70 transition-all disabled:bg-[#0F1724]/50 duration-300 cursor-pointer"
+            >
+              Retake (valid in 24h)
+            </Button>
+          )}
           <Button
             asChild
             className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
@@ -87,7 +99,7 @@ const SkillAssessementSummary = () => {
         assessement="skill"
         duration="30-45 minutes"
         title="Advanced assessment"
-        route="#"
+        route="/t/assessments/advanced"
       />
     </AssessmentContainer>
   );
