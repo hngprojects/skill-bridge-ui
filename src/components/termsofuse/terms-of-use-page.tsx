@@ -84,13 +84,12 @@ const TermsOfUsePage = () => {
               ))}
             </ul>
             <p className="font-normal text-base text-[#64748B]">
-              Question if you have any question about our privacy policy contact
-              us at{" "}
+              If you have any questions about these Terms of Use, contact us at{" "}
               <a
-                href="mailto:Privacy@Skillbridge.com"
+                href="mailto:legal@skillbridge.com"
                 className="font-bold text-[#2C5F70]"
               >
-                Privacy@Skillbridge.com
+                legal@skillbridge.com
               </a>
             </p>
           </section>
