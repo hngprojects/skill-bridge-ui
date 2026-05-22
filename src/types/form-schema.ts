@@ -160,7 +160,12 @@ export const contactFormSchema = z.object({
   fullName: nameField("Full name"),
   email: z.string().email("Please enter a valid email address."),
   subject: z.string().trim().min(1, "Subject is required."),
-  message: z.string().trim().min(1, "Message is required."),
+  message: z
+    .string()
+    .trim()
+    .min(1, "Message is required.")
+    .min(10, "Message must be at least 10 characters.")
+    .max(1000, "Message must be at most 1000 characters."),
 });
 
 export type ContactFormValues = z.infer<typeof contactFormSchema>;
