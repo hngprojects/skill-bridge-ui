@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const NotificationsHeader = () => {
   return (
@@ -10,9 +11,11 @@ const NotificationsHeader = () => {
           View all activities here
         </p>
       </div>
-      <Button className="underline font-semibold text-sm" variant={"ghost"}>
-        Go to settings <ArrowRight size={16} />{" "}
-      </Button>
+      <Link href={"/t/settings"}>
+        <Button className="underline font-semibold text-sm" variant={"ghost"}>
+          Go to settings <ArrowRight size={16} />{" "}
+        </Button>
+      </Link>
     </div>
   );
 };
