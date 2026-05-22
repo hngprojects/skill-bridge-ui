@@ -19,6 +19,7 @@ import {
 import { authFailureMessage } from "@/lib/api";
 import { buildAnswers, isAnswerValid } from "@/lib/questionnaire";
 import { appToast } from "@/lib/toast";
+import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
 import type { Question } from "@/types/questionnaire";
 
 export type QuestionnaireFlowProps = {
@@ -27,7 +28,7 @@ export type QuestionnaireFlowProps = {
   isSubmitting: boolean;
   initialSeconds?: number;
   prefillAnswers?: Record<string, string | string[]>;
-  onSubmit: (answers: Record<string, string | string[]>) => Promise<void>;
+  onSubmit: (answers: Record<string, string | string[]>) => Promise<unknown>;
 };
 
 export function QuestionnaireFlow({
@@ -40,6 +41,9 @@ export function QuestionnaireFlow({
 }: QuestionnaireFlowProps) {
   const router = useRouter();
   const { name } = useParams<{ name: string }>();
+  const setSummaryResult = useAssessmentSummaryStore(
+    (state) => state.setResult,
+  );
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<
@@ -105,7 +109,12 @@ export function QuestionnaireFlow({
       return;
     }
     try {
-      await onSubmit(buildAnswers(questions, answers, otherAnswers));
+      const result = await onSubmit(
+        buildAnswers(questions, answers, otherAnswers),
+      );
+      if (isAssessmentSlug(name) && result != null) {
+        setSummaryResult(name, result);
+      }
       router.push(`/t/assessments/${name}/summary`);
     } catch (e) {
       appToast.error(authFailureMessage(e));

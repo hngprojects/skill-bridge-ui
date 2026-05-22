@@ -87,7 +87,7 @@ export function PersonalAssessmentFlow() {
       }
       isSubmitting={isSubmitting}
       prefillAnswers={prefillAnswers}
-      onSubmit={(answers) => submitAssessment({ answers }).then(() => {})}
+      onSubmit={(answers) => submitAssessment({ answers })}
     />
   );
 }

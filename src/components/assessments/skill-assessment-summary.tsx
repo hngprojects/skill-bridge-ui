@@ -1,12 +1,34 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { Dot } from "lucide-react";
+
+import AssessmentContainer from "@/components/assessments/assessment-container";
+import { Progress } from "@/components/ui/progress";
+import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
+
 import NextUpCard from "./next-up-card";
 import { Button } from "../ui/button";
-import AssessmentContainer from "@/components/assessments/assessment-container";
-import { Dot } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+
+function formatLevel(level?: string) {
+  if (!level) return "your level";
+
+  return level
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
 
 const SkillAssessementSummary = () => {
+  const result = useAssessmentSummaryStore((state) => state.results.skill);
+  const validatedLevel = formatLevel(result?.validated_level);
+  const claimedLevel = formatLevel(result?.claimed_level);
+  const progressValue = result?.percentage ?? 0;
+  const feedback =
+    result?.personalised_message ??
+    result?.guidance_report?.summary ??
+    "This does not define your potential. It helps us tailor your assessment accurately.";
+
   return (
     <AssessmentContainer>
       <Image
@@ -20,10 +42,11 @@ const SkillAssessementSummary = () => {
           Skill assessment summary
         </h2>
         <p className="text-base md:text-lg font-light max-w-208.75">
-          Congratulations 🎉 you completed you r assessement. Based on your
+          Congratulations, you completed your assessment. Based on your
           evaluation, your validated level is{" "}
-          <span className="font-bold capitalize">Junior.</span> instead of your
-          claim of <span className="font-bold">Mid-Level.</span> You can{" "}
+          <span className="font-bold capitalize">{validatedLevel}</span> instead
+          of your claim of{" "}
+          <span className="font-bold capitalize">{claimedLevel}</span>. You can{" "}
           <span className="font-bold">retake</span> after 24 hours.
         </p>
       </section>
@@ -32,9 +55,9 @@ const SkillAssessementSummary = () => {
           <p className="text-[#4FB609] font-bold text-base md:text-2xl flex flex-row items-center">
             Validated
             <Dot size={40} />
-            Junior Level
+            {validatedLevel} Level
           </p>
-          <Progress value={57} className="h-1 *:bg-[#4FB609]" />
+          <Progress value={progressValue} className="h-1 *:bg-[#4FB609]" />
         </div>
         <div className="border mt-6 w-fit border-[#FF7854] bg-[#FFF1EE] flex flex-row gap-x-4 items-center py-2.5 px-3 rounded-lg">
           <Image
@@ -43,10 +66,7 @@ const SkillAssessementSummary = () => {
             width={24}
             alt="Alert icon"
           />
-          <p className="text-[#757575] text-[14px]">
-            This doesn&apos;t define your potential -- it helps us tailor your
-            assessment accurately.
-          </p>
+          <p className="text-[#757575] text-[14px]">{feedback}</p>
         </div>
         <div className="flex flex-col gap-y-4 sm:flex-row items-center self-center mt-15.5 gap-x-2">
           <Button
