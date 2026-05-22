@@ -208,9 +208,6 @@ function OnboardingPageClient() {
       );
       break;
     case "generate-roadmap":
-      title = "Personalizing your dashboard...";
-      description =
-        "We will build a personalized roadmap based on your goal and track.";
       content = <GenerateRoadmapStep />;
       break;
     default:
