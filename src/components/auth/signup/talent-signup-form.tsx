@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { appToast } from "@/lib/toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { authKeys } from "@/hooks/api/keys";
 import { authFailureMessage } from "@/lib/api";
 import { signInWithGoogle } from "@/lib/auth-client";
+import { prepareGoogleAuth } from "@/lib/google-auth";
 import { useSignupFlowStore } from "@/stores/signup-flow-store";
 import {
   signupFormSchema,
@@ -30,6 +31,7 @@ function TalentSignupForm() {
   const queryClient = useQueryClient();
   const setTalentSignup = useSignupFlowStore((s) => s.setTalentSignup);
   const [isGooglePending, setIsGooglePending] = useState(false);
+  const [isGoogleReady, setIsGoogleReady] = useState(false);
   const {
     register,
     handleSubmit,
@@ -59,6 +61,22 @@ function TalentSignupForm() {
 
   const passwordsMatch =
     passwordValue === confirmPasswordValue && confirmPasswordValue !== "";
+
+  useEffect(() => {
+    let isMounted = true;
+
+    prepareGoogleAuth()
+      .then(() => {
+        if (isMounted) setIsGoogleReady(true);
+      })
+      .catch(() => {
+        if (isMounted) setIsGoogleReady(true);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const onSubmit = async (data: SignupFormValues) => {
     try {
@@ -191,8 +209,9 @@ function TalentSignupForm() {
       </div>
 
       <GoogleButton
-        disabled={isGooglePending || isSubmitting}
-        label={isGooglePending ? "Connecting..." : "Continue with Google"}
+        disabled={!isGoogleReady || isGooglePending || isSubmitting}
+        label={isGooglePending ? "Connecting..." : "Sign Up with Google"}
+        loading={!isGoogleReady}
         onClick={() => void onGoogleSignIn()}
       />
 

@@ -11,7 +11,7 @@ import { setAssessmentDemoEnabled } from "./demo-runtime";
  * - Remove `<AssessmentDemoShell>` from `src/app/(protected)/t/layout.tsx`, or
  * - Set `ASSESSMENT_DEMO_ENABLED` to `false` below.
  */
-export const ASSESSMENT_DEMO_ENABLED = true;
+export const ASSESSMENT_DEMO_ENABLED = false;
 
 type AssessmentDemoShellProps = {
   children: ReactNode;
