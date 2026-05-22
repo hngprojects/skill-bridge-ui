@@ -1,4 +1,5 @@
 export * from "./keys";
+export * from "./use-avatar";
 export * from "./use-auth";
 export * from "./use-candidate";
 export * from "./use-employer";
