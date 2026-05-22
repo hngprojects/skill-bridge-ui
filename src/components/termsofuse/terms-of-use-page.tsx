@@ -42,15 +42,17 @@ const TermsOfUsePage = () => {
 
         <main className="flex flex-row gap-x-10 md:p-11 mt-16 md:mt-31.75 mb-84 md:mb-50 max-w-7xl mx-auto w-full px-4">
           <aside className="hidden lg:block">
-            <ol className="flex list-disc flex-col gap-y-4">
+            <ol className="flex list-none flex-col gap-y-4">
               {termsOfUseNav.map((navitem, index) => (
-                <li
-                  key={index}
-                  className="bg-[#F5F5F5] w-75 px-3 text-[#2C5F70] h-13.75 flex flex-row items-center rounded-2xl"
-                >
-                  <span className="rounded-full size-1 mr-2 bg-black"></span>
-                  {"   "}
-                  {index + 1}. {navitem}
+                <li key={index}>
+                  <a
+                    href={`#term-${index + 1}`}
+                    className="bg-[#F5F5F5] w-75 px-3 text-[#2C5F70] h-13.75 flex flex-row items-center rounded-2xl transition-colors hover:bg-[#EBEBEB]"
+                  >
+                    <span className="rounded-full size-1 mr-2 bg-black"></span>
+                    {"   "}
+                    {index + 1}. {navitem}
+                  </a>
                 </li>
               ))}
             </ol>

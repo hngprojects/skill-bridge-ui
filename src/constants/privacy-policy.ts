@@ -1,5 +1,5 @@
 export const tableOfContents = [
-  { id: "information-collected", label: "1. Info we collected" },
+  { id: "information-collected", label: "1. Info we collect" },
   { id: "how-we-use", label: "2. How we use info" },
   { id: "how-we-share", label: "3. How we share info" },
   { id: "data-security", label: "4. Data security" },
@@ -15,7 +15,7 @@ export const tableOfContents = [
 export const privacySections = [
   {
     id: "information-collected",
-    title: "1. Information we collected",
+    title: "1. Information we collect",
     description:
       "We collect information to provide better experiences to our users. The type of information we collect include:",
     items: [

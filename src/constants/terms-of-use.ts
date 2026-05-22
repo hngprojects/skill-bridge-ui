@@ -114,19 +114,8 @@ const termsOfUseData: TermsOfUse[] = [
   },
 ];
 
-const termsOfUseNav = [
-  "Acceptance of terms",
-  "Who can use SkillBridge",
-  "Candidate obligations",
-  "Assessment integrity",
-  "Verified profiles and scores",
-  "Employer obligations",
-  "Intellectual property",
-  "Limitation of liability",
-  "Termination",
-  "Governing law",
-  "Changes to these terms",
-];
+/** Derived from the section data so the nav can never drift from the headings. */
+const termsOfUseNav = termsOfUseData.map((section) => section.title);
 
 export { termsOfUseData, termsOfUseNav };
 export type { TermsOfUse };

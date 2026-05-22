@@ -30,7 +30,7 @@ export function DashboardWelcome({
 
       <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
         <Link
-          href="/talent/onboarding"
+          href="/t/settings"
           className={cn(
             "label text-foreground underline underline-offset-2",
             "hover:opacity-70 transition-opacity",

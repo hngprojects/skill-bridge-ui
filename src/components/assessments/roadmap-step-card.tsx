@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LockKeyhole, MoreHorizontal } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Tick01Icon } from "@hugeicons/core-free-icons";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -106,16 +108,27 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
               >
                 {step.ctaLabel}
               </Button>
+            ) : isCompleted ? (
+              <Button
+                size="lg"
+                disabled
+                className="h-10 w-full rounded-lg bg-[#CCCCCC] text-base font-semibold tracking-[0.016em] text-[#151515] hover:bg-[#CCCCCC] disabled:bg-[#CCCCCC] disabled:text-[#151515] sm:w-42.5"
+              >
+                Completed
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#34A853]">
+                  <HugeiconsIcon
+                    icon={Tick01Icon}
+                    size={12}
+                    strokeWidth={3}
+                    className="text-white"
+                  />
+                </span>
+              </Button>
             ) : (
               <Button
                 asChild
                 size="lg"
-                className={cn(
-                  "h-10 w-full rounded-lg text-base font-semibold tracking-[0.016em] sm:w-42.5",
-                  isCompleted
-                    ? "bg-[#0F766E] text-white hover:bg-[#0F766E]"
-                    : "bg-primary text-white hover:bg-primary/95",
-                )}
+                className="h-10 w-full rounded-lg bg-primary text-base font-semibold tracking-[0.016em] text-white hover:bg-primary/95 sm:w-42.5"
               >
                 <Link href={`/t/assessments/${step.slug}`}>
                   {step.ctaLabel}
