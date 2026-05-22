@@ -11,21 +11,25 @@ const NotificationView = () => {
   const [activeTab, setActiveTab] = useState<NotificationTab>("All");
   const [notifications, setNotifications] = useState<NotificationApiItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         setLoading(true);
+        setHasError(false);
         const res = await getNotifications();
         setNotifications(res.items);
       } catch {
+        setHasError(true);
         setNotifications([]);
       } finally {
         setLoading(false);
       }
     };
     fetchNotifications();
-  }, []);
+  }, [retryCount]);
 
   const filtered =
     activeTab === "Unread"
@@ -46,6 +50,18 @@ const NotificationView = () => {
       </div>
       {loading ? (
         <p className="body text-muted-foreground">Loading notifications...</p>
+      ) : hasError ? (
+        <div className="flex flex-col gap-y-2">
+          <p className="body text-destructive">
+            Couldn&apos;t load notifications. Please try again.
+          </p>
+          <button
+            onClick={() => setRetryCount((c) => c + 1)}
+            className="body text-muted-foreground underline w-fit"
+          >
+            Retry
+          </button>
+        </div>
       ) : filtered.length === 0 ? (
         <p className="body text-muted-foreground">No notifications yet.</p>
       ) : (
