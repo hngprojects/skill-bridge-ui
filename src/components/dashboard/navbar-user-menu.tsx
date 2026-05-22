@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ChevronDown, CircleUserRound, Settings } from "lucide-react";
+import { Bell, ChevronDown, UserRound, Settings } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 
@@ -56,7 +56,7 @@ export function DashboardNavbarUserMenu({
       >
         {isVerified ? (
           <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
-            <CircleUserRound className="size-4 text-black" aria-hidden />
+            <UserRound className="size-5 text-[#00000]" aria-hidden />
             Verified profile
           </DropdownMenuItem>
         ) : null}
