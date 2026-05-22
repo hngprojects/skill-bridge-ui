@@ -19,6 +19,7 @@ import {
 import { authFailureMessage } from "@/lib/api";
 import { buildAnswers, isAnswerValid } from "@/lib/questionnaire";
 import { appToast } from "@/lib/toast";
+import { useMe } from "@/hooks/api";
 import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
 import type { Question } from "@/types/questionnaire";
 
@@ -41,6 +42,7 @@ export function QuestionnaireFlow({
 }: QuestionnaireFlowProps) {
   const router = useRouter();
   const { name } = useParams<{ name: string }>();
+  const { data: user } = useMe({ enabled: true });
   const setSummaryResult = useAssessmentSummaryStore(
     (state) => state.setResult,
   );
@@ -112,8 +114,8 @@ export function QuestionnaireFlow({
       const result = await onSubmit(
         buildAnswers(questions, answers, otherAnswers),
       );
-      if (isAssessmentSlug(name) && result != null) {
-        setSummaryResult(name, result);
+      if (isAssessmentSlug(name) && user?.id && result != null) {
+        setSummaryResult(user.id, name, result);
       }
       router.push(`/t/assessments/${name}/summary`);
     } catch (e) {

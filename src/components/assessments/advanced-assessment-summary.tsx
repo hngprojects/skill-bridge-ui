@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 
+import { useMe } from "@/hooks/api";
 import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
 
 import AssessmentContainer from "./assessment-container";
@@ -13,7 +14,10 @@ function formatTier(tier?: string) {
 }
 
 const AdvancedAssessmentSummary = () => {
-  const result = useAssessmentSummaryStore((state) => state.results.advanced);
+  const { data: user } = useMe({ enabled: true });
+  const result = useAssessmentSummaryStore((state) =>
+    user?.id ? state.resultsByUser[user.id]?.advanced : null,
+  );
   const tier = formatTier(result?.tier);
   const scoreSummary =
     result?.score !== undefined && result?.max_score !== undefined

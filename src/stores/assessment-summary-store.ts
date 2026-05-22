@@ -15,12 +15,13 @@ type AssessmentSummaryResult = {
 };
 
 type AssessmentSummaryState = {
-  results: AssessmentSummaryResult;
+  resultsByUser: Record<string, AssessmentSummaryResult>;
   setResult: <T extends AssessmentSlug>(
+    userId: string,
     slug: T,
     result: AssessmentSummaryResult[T],
   ) => void;
-  clearResult: (slug: AssessmentSlug) => void;
+  clearResult: (userId: string, slug: AssessmentSlug) => void;
 };
 
 const INITIAL_RESULTS: AssessmentSummaryResult = {
@@ -32,26 +33,32 @@ const INITIAL_RESULTS: AssessmentSummaryResult = {
 export const useAssessmentSummaryStore = create<AssessmentSummaryState>()(
   persist(
     (set) => ({
-      results: INITIAL_RESULTS,
-      setResult: (slug, result) =>
+      resultsByUser: {},
+      setResult: (userId, slug, result) =>
         set((state) => ({
-          results: {
-            ...state.results,
-            [slug]: result,
+          resultsByUser: {
+            ...state.resultsByUser,
+            [userId]: {
+              ...(state.resultsByUser[userId] ?? INITIAL_RESULTS),
+              [slug]: result,
+            },
           },
         })),
-      clearResult: (slug) =>
+      clearResult: (userId, slug) =>
         set((state) => ({
-          results: {
-            ...state.results,
-            [slug]: null,
+          resultsByUser: {
+            ...state.resultsByUser,
+            [userId]: {
+              ...(state.resultsByUser[userId] ?? INITIAL_RESULTS),
+              [slug]: null,
+            },
           },
         })),
     }),
     {
       name: "skillbridge-assessment-summary",
       partialize: (state) => ({
-        results: state.results,
+        resultsByUser: state.resultsByUser,
       }),
     },
   ),

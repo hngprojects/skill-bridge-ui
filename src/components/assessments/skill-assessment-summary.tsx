@@ -6,6 +6,7 @@ import { Dot } from "lucide-react";
 
 import AssessmentContainer from "@/components/assessments/assessment-container";
 import { Progress } from "@/components/ui/progress";
+import { useMe } from "@/hooks/api";
 import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
 
 import NextUpCard from "./next-up-card";
@@ -20,7 +21,10 @@ function formatLevel(level: string | undefined, fallback: string) {
 }
 
 const SkillAssessementSummary = () => {
-  const result = useAssessmentSummaryStore((state) => state.results.skill);
+  const { data: user } = useMe({ enabled: true });
+  const result = useAssessmentSummaryStore((state) =>
+    user?.id ? state.resultsByUser[user.id]?.skill : null,
+  );
   const validatedLevel = formatLevel(result?.validated_level, "Junior");
   const claimedLevel = formatLevel(result?.claimed_level, "Mid-Level");
   const progressValue = result?.percentage ?? 57;
