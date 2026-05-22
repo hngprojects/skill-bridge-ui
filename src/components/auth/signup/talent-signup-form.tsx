@@ -210,7 +210,7 @@ function TalentSignupForm() {
 
       <GoogleButton
         disabled={!isGoogleReady || isGooglePending || isSubmitting}
-        label={isGooglePending ? "Connecting..." : "Continue with Google"}
+        label={isGooglePending ? "Connecting..." : "Sign Up with Google"}
         loading={!isGoogleReady}
         onClick={() => void onGoogleSignIn()}
       />
