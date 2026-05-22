@@ -36,7 +36,7 @@ export default function DashboardNavbar() {
         >
           <Image
             src={LOGO}
-            alt=""
+            alt="Credlane logo"
             width={36}
             height={36}
             className="size-9 object-contain"

@@ -29,7 +29,7 @@ export function ContactForm() {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
     reset,
   } = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -152,7 +152,7 @@ export function ContactForm() {
 
           <Button
             type="submit"
-            disabled={isSubmitting || isPending}
+            disabled={isSubmitting || isPending || !isValid}
             className="mt-2 h-12 w-full rounded-lg bg-primary-900 text-sm font-semibold text-white hover:bg-primary-900/90 disabled:opacity-60"
           >
             {isSubmitting || isPending ? "Sending…" : "Send Message"}
