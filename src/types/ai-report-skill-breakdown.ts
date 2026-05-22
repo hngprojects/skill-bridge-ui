@@ -1,4 +1,4 @@
-import type { ChartBar } from "@/components/emerging-user-skill-bar-column";
+import type { ChartBar } from "@/components/dashboard/emerging-user/emerging-user-skill-bar-column";
 
 export interface ChartZone {
   id: string;

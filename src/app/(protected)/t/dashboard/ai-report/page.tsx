@@ -14,7 +14,7 @@ const AiReport = () => {
       <div className="mx-auto flex w-full max-w-5xl flex-col space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="flex flex-col">
-          <h1 className="text-[28px] font-bold tracking-[-0.03em] text-foreground sm:text-[34px] lg:text-[40px]">
+          <h1 className="text-[22px] font-bold leading-tight tracking-tight text-foreground">
             AI Report
           </h1>
 
@@ -30,7 +30,7 @@ const AiReport = () => {
         {/* Recommended Resources */}
         <section className="flex flex-col">
           <div className="mb-5">
-            <h2 className="text-[22px] font-bold tracking-tight text-foreground sm:text-[24px] lg:text-[28px]">
+            <h2 className="text-[22px] font-bold tracking-tight text-foreground">
               Recommended Resources
             </h2>
           </div>
