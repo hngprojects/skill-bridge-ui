@@ -17,7 +17,7 @@ const contactMethods = [
     id: "email",
     icon: Mail,
     title: "Email Us",
-    lines: ["support@skillbridge.com"],
+    lines: ["support@CredLane.com"],
   },
 ];
 

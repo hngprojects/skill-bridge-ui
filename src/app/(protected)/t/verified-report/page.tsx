@@ -4,7 +4,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Verified reports",
   description: "Verified reports page for Skill bridge",
-  keywords: ["skill bridge", "verified reports skillbridge"],
+  keywords: ["skill bridge", "verified reports CredLane"],
 };
 
 const Page = () => {

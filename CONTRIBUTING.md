@@ -1,6 +1,6 @@
-# Contributing to [Skillbridge]
+# Contributing to [CredLane]
 
-Thank you for considering contributing to Skillbridge! We welcome all kinds of contributions, including bug reports, feature requests, and code improvements.
+Thank you for considering contributing to CredLane! We welcome all kinds of contributions, including bug reports, feature requests, and code improvements.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ Thank you for considering contributing to Skillbridge! We welcome all kinds of c
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/hngprojects/skillbridge-fe.git
+   git clone https://github.com/hngprojects/CredLane-fe.git
    ```
 2. Navigate to the project directory:
    ```sh
@@ -39,11 +39,11 @@ Thank you for considering contributing to Skillbridge! We welcome all kinds of c
 
 ### Reporting Bugs
 
-If you find a bug, please open an issue on [GitHub Issues](https://github.com/hngprojects/skillbridge-fe/issues) and include as much detail as possible. Provide steps to reproduce, expected and actual behavior, and any relevant logs.
+If you find a bug, please open an issue on [GitHub Issues](https://github.com/hngprojects/CredLane-fe/issues) and include as much detail as possible. Provide steps to reproduce, expected and actual behavior, and any relevant logs.
 
 ### Suggesting Features
 
-If you have an idea for a new feature, please open an issue on [GitHub Issues](https://github.com/hngprojects/skillbridge-fe/issues) and describe your proposal. Explain why the feature would be useful and how it should work.
+If you have an idea for a new feature, please open an issue on [GitHub Issues](https://github.com/hngprojects/CredLane-fe/issues) and describe your proposal. Explain why the feature would be useful and how it should work.
 
 #### Development Workflow
 

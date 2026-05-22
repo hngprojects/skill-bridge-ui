@@ -32,7 +32,7 @@ export function FAQSection() {
           transition={{ duration: 0.55, delay: 0.1, ease }}
           viewport={viewport}
         >
-          Everything you need to know about SkillBridge
+          Everything you need to know about CredLane
         </motion.p>
 
         <motion.div

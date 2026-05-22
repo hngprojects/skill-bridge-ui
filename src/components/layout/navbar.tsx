@@ -34,7 +34,7 @@ export function Navbar() {
         <Link href="/" className="relative h-9 w-32 shrink-0 md:h-10 md:w-40">
           <Image
             src={logoWithText}
-            alt="SkillBridge"
+            alt="CredLane"
             fill
             className="object-contain object-left"
             priority

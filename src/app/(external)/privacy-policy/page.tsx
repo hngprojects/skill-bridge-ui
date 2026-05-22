@@ -45,9 +45,9 @@ export default function PrivacyPage() {
             If you have any questions about our privacy policy, contact us at{" "}
             <a
               className="font-bold text-[#030409]"
-              href="mailto:Privacy@Skillbridge.com"
+              href="mailto:privacy@credlane.com"
             >
-              Privacy@Skillbridge.com
+              privacy@credlane.com
             </a>
           </p>
         </div>

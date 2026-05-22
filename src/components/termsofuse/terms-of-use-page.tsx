@@ -88,10 +88,10 @@ const TermsOfUsePage = () => {
             <p className="font-normal text-base text-[#64748B]">
               If you have any questions about these Terms of Use, contact us at{" "}
               <a
-                href="mailto:legal@skillbridge.com"
+                href="mailto:legal@credlane.com"
                 className="font-bold text-[#2C5F70]"
               >
-                legal@skillbridge.com
+                legal@credlane.com
               </a>
             </p>
           </section>

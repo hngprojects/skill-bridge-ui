@@ -31,7 +31,7 @@ export function AboutHeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1, ease }}
         >
-          SkillBridge helps early-career talents build in-demand skills, prove
+          CredLane helps early-career talents build in-demand skills, prove
           their capabilities through verified performance, and connect with
           opportunities.
         </motion.p>

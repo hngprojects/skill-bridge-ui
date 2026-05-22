@@ -2,8 +2,8 @@ import type { ResourceSection } from "@/types/resources";
 
 const resourceSections: ResourceSection[] = [
   {
-    id: "new-to-skillbridge",
-    title: "New to Skillbridge",
+    id: "new-to-CredLane",
+    title: "New to CredLane",
     type: "article",
     items: [
       {

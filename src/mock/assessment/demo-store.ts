@@ -117,6 +117,6 @@ export const useAssessmentDemoStore = create<AssessmentDemoState>()(
 
       resetDemo: () => set({ phases: { ...INITIAL_PHASES } }),
     }),
-    { name: "skillbridge-assessment-demo" },
+    { name: "CredLane-assessment-demo" },
   ),
 );

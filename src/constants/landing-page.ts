@@ -14,7 +14,7 @@ export const processSteps = [
     eyebrow: "Verification",
     title: "Get Verified",
     description:
-      "SkillBridge evaluates overall performance and assigns a standardized employability score employers can trust and compare easily.",
+      "CredLane evaluates overall performance and assigns a standardized employability score employers can trust and compare easily.",
     img: "/assets/step-verification.svg",
     accent: "bg-violet-200",
     reverse: true,
@@ -64,20 +64,20 @@ export const featureCards = [
 
 export const faqs = [
   {
-    q: "What is SkillBridge?",
-    a: "SkillBridge is a career growth platform that helps you learn the right skills, prove your work with verified data, and get discovered by employers.",
+    q: "What is CredLane?",
+    a: "CredLane is a career growth platform that helps you learn the right skills, prove your work with verified data, and get discovered by employers.",
   },
   {
-    q: "How does SkillBridge verify talent?",
-    a: "SkillBridge verifies talent through completed work, skill signals, and profile data that helps employers understand readiness.",
+    q: "How does CredLane verify talent?",
+    a: "CredLane verifies talent through completed work, skill signals, and profile data that helps employers understand readiness.",
   },
   {
-    q: "Is SkillBridge free for candidates?",
-    a: "Candidates can create a profile and start building proof of skill on SkillBridge.",
+    q: "Is CredLane free for candidates?",
+    a: "Candidates can create a profile and start building proof of skill on CredLane.",
   },
   {
-    q: "Who can use SkillBridge?",
-    a: "SkillBridge is for candidates building career proof and employers looking for credible, job-ready talent.",
+    q: "Who can use CredLane?",
+    a: "CredLane is for candidates building career proof and employers looking for credible, job-ready talent.",
   },
   {
     q: "What happens if I'm not job-ready yet?",

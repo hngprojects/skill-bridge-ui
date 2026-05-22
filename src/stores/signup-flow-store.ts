@@ -23,7 +23,7 @@ export const useSignupFlowStore = create<SignupFlowState>()(
       clearEmployerLead: () => set({ employerLead: null }),
     }),
     {
-      name: "skillbridge-signup-flow",
+      name: "CredLane-signup-flow",
       partialize: (state) => ({
         talentSignup: state.talentSignup,
         employerLead: state.employerLead,

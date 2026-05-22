@@ -210,7 +210,7 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1, ease }}
         >
-          SkillBridge verifies real ability and connects job-ready talents with
+          CredLane verifies real ability and connects job-ready talents with
           employers.
         </motion.p>
         <motion.div

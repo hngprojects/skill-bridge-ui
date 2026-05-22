@@ -5,9 +5,9 @@ import { AboutMissionSection } from "@/components/about-page/mission";
 import { AboutCTASection } from "@/components/about-page/cta";
 
 export const metadata = {
-  title: "About Us | SkillBridge",
+  title: "About Us | CredLane",
   description:
-    "SkillBridge helps early-career talents build in-demand skills, prove their capabilities through verified performance, and connect with opportunities.",
+    "CredLane helps early-career talents build in-demand skills, prove their capabilities through verified performance, and connect with opportunities.",
 };
 
 export default function AboutPage() {

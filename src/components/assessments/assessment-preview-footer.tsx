@@ -16,7 +16,7 @@ function AssessmentPreviewFooter({
           href="/terms-of-use"
           className="font-semibold text-foreground underline underline-offset-2"
         >
-          Skillbridge&apos;s assessment terms and guidelines
+          CredLane&apos;s assessment terms and guidelines
         </Link>
         . If you need any assistance, you can visit the{" "}
         <Link

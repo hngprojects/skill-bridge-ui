@@ -132,7 +132,7 @@ export function Footer({ className }: { className?: string }) {
             <Link href="/" className="relative block h-10 w-42 shrink-0">
               <Image
                 src={logoWithText}
-                alt="SkillBridge"
+                alt="CredLane"
                 fill
                 className="object-contain object-left"
                 sizes="168px"
@@ -168,7 +168,7 @@ export function Footer({ className }: { className?: string }) {
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-8 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            &copy; {new Date().getFullYear()} SkillBridge. All rights reserved.
+            &copy; {new Date().getFullYear()} CredLane. All rights reserved.
           </p>
           <p>Verified talent for early-career roles across Africa.</p>
         </div>

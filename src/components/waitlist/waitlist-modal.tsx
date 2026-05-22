@@ -41,15 +41,13 @@ const WaitlistModal = ({ open, onOpenChange }: Props) => {
           )}
         >
           <DialogPrimitive.Title className="sr-only">
-            {step === "form"
-              ? "Join the SkillBridge waitlist"
-              : "Congratulations"}
+            {step === "form" ? "Join the CredLane waitlist" : "Congratulations"}
           </DialogPrimitive.Title>
 
           <div className="flex items-center border-b border-black/5 px-6 py-5 sm:hidden">
             <Image
               src="/assets/logo/logo-with-text.svg"
-              alt="SkillBridge"
+              alt="CredLane"
               width={140}
               height={32}
               className="h-7 w-auto"

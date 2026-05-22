@@ -26,7 +26,7 @@ export const useTalentOnboardingStore = create<TalentOnboardingState>()(
       setProfileSaved: (saved) => set({ profileSaved: saved }),
     }),
     {
-      name: "skillbridge-talent-onboarding",
+      name: "CredLane-talent-onboarding",
       partialize: (state) => ({
         currentStepId: state.currentStepId,
         selectedGoalId: state.selectedGoalId,

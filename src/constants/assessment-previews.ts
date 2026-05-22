@@ -19,7 +19,7 @@ const sharedExpectations = [
   "We are looking for your authentic self. Answer honestly to get the most accurate profile.",
   "Your results directly influence the AI recommendations for courses and skill development.",
   "By understanding your work style, we can surface opportunities that align with your natural preferences.",
-  "Your baseline data is encrypted and only used to enhance your personal SkillBridge experience.",
+  "Your baseline data is encrypted and only used to enhance your personal CredLane experience.",
 ];
 
 export const ASSESSMENT_PREVIEWS = {

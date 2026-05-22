@@ -188,7 +188,7 @@ function OnboardingPageClient() {
       break;
     case "select-track":
       description =
-        "Choose the path that best matches how you want to use SkillBridge.";
+        "Choose the path that best matches how you want to use CredLane.";
       content = (
         <SelectTrackStep
           value={selectedTrackIds}

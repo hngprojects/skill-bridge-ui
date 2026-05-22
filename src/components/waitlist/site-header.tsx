@@ -15,7 +15,7 @@ const SiteHeader = ({ onJoinClick }: Props) => {
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/assets/logo/logo-with-text.svg"
-            alt="SkillBridge"
+            alt="CredLane"
             width={168}
             height={56}
             className="h-10 w-auto sm:h-14"
