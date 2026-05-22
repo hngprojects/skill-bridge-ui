@@ -21,7 +21,7 @@ type DashboardNavbarUserMenuProps = {
 };
 
 export function DashboardNavbarUserMenu({
-  isVerified = false,
+  isVerified = true,
 }: DashboardNavbarUserMenuProps) {
   const { fullName, email } = useSessionUserProfile();
   const initials = getInitials(fullName, email);
