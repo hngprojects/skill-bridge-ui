@@ -121,7 +121,7 @@ export function SkillAssessmentFlow() {
         submitAssessment({
           attempt_id: sessionId,
           answers: toSkillSubmitAnswers(questions, answersByKey),
-        }).then(() => {})
+        })
       }
     />
   );

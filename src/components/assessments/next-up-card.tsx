@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { LockKeyhole } from "lucide-react";
-import { AssessmentSlug } from "@/constants/assessment-previews";
+import type { AssessmentSlug } from "@/constants/assessment-previews";
 
 type Props = {
   duration: string;
@@ -49,7 +49,7 @@ const NextUpCard = ({ assessement, title, duration, route }: Props) => {
           <p className="text-light text-lg mt-1 mb-4">
             To get verified score and become discoverable to top employers.
           </p>
-          <p className="text-[#757575] text-base flex flex-col max-sm:gap-y-2 md:flex-row gap-x-4 ">
+          <div className="text-[#757575] text-base flex flex-col max-sm:gap-y-2 md:flex-row gap-x-4 ">
             <Link
               className="text-[#34A853] underline font-semibold"
               href={route}
@@ -57,7 +57,7 @@ const NextUpCard = ({ assessement, title, duration, route }: Props) => {
               Continue to next
             </Link>
             <p>Estimated time: {duration}</p>
-          </p>
+          </div>
         </div>
       </div>
     </section>

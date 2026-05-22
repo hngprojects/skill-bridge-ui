@@ -92,7 +92,7 @@ export function AdvancedAssessmentFlow() {
         submitAssessment({
           session_id: sessionId,
           answers: toAdvancedSubmitAnswers(questions, answersByKey),
-        }).then(() => {})
+        })
       }
     />
   );
