@@ -56,6 +56,7 @@ function GenerateRoadmapStep() {
         if (cancelled) return;
         setHasPersonalisationError(true);
         appToast.error(authFailureMessage(error));
+        router.replace("/t/dashboard");
       }
     }
 
