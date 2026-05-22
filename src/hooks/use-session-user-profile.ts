@@ -6,6 +6,7 @@ export function useSessionUserProfile() {
   const { data: session, status } = useSession();
 
   return {
+    userId: session?.user?.id ?? "",
     fullName: session?.user?.name?.trim() ?? "",
     email: session?.user?.email?.trim() ?? "",
     isLoading: status === "loading",

@@ -17,7 +17,6 @@ import {
   useSaveTalentOnboardingGoal,
   useSaveTalentOnboardingTrack,
   useUpdateTalentOnboardingGoal,
-  useUpdateTalentOnboardingTracks,
   useSaveTalentOnboardingProfile,
 } from "@/hooks/api";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
@@ -30,10 +29,14 @@ function stepIndex(id: OnboardingStepId): number {
 }
 
 function OnboardingPageClient() {
-  const { fullName: userName, isLoading: isSessionLoading } =
-    useSessionUserProfile();
+  const {
+    userId,
+    fullName: userName,
+    isLoading: isSessionLoading,
+  } = useSessionUserProfile();
 
   const {
+    ownerUserId,
     currentStepId,
     selectedGoalId,
     selectedTrackIds,
@@ -52,9 +55,15 @@ function OnboardingPageClient() {
     setProfileEducation,
     setProfileLinkedin,
     setProfileSaved,
+    resetForUser,
   } = useTalentOnboardingStore();
 
   const [profileStepReady, setProfileStepReady] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!userId || ownerUserId === userId) return;
+    resetForUser(userId);
+  }, [ownerUserId, resetForUser, userId]);
 
   const { mutateAsync: saveGoal, isPending: isSavingGoal } =
     useSaveTalentOnboardingGoal();
@@ -62,17 +71,11 @@ function OnboardingPageClient() {
     useUpdateTalentOnboardingGoal();
   const { mutateAsync: saveTrack, isPending: isSavingTrack } =
     useSaveTalentOnboardingTrack();
-  const { mutateAsync: updateTracks, isPending: isUpdatingTracks } =
-    useUpdateTalentOnboardingTracks();
   const { mutateAsync: saveProfile, isPending: isSavingProfile } =
     useSaveTalentOnboardingProfile();
 
   const isSaving =
-    isSavingGoal ||
-    isUpdatingGoal ||
-    isSavingTrack ||
-    isUpdatingTracks ||
-    isSavingProfile;
+    isSavingGoal || isUpdatingGoal || isSavingTrack || isSavingProfile;
 
   const canGoNext =
     currentStepId === "set-goal"
@@ -109,6 +112,10 @@ function OnboardingPageClient() {
     [setProfileRegion, setProfileEducation, setProfileLinkedin],
   );
 
+  if (userId && ownerUserId !== userId) {
+    return null;
+  }
+
   const goNext = async () => {
     if (isLast || !canGoNext || isSaving) return;
 
@@ -127,14 +134,8 @@ function OnboardingPageClient() {
 
       if (currentStepId === "select-track" && selectedTrackIds.length > 0) {
         const apiTracks = trackIdsToApiRoleTracks(selectedTrackIds);
-        if (tracksSaved) {
-          await updateTracks({ roleTracks: apiTracks });
-        } else {
-          for (const track of apiTracks) {
-            await saveTrack({ track });
-          }
-          setTracksSaved(true);
-        }
+        await saveTrack({ track: apiTracks[0] });
+        if (!tracksSaved) setTracksSaved(true);
         advanceStep();
         return;
       }
