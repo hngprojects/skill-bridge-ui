@@ -64,9 +64,14 @@ export function DashboardNavbarUserMenu({
           <Bell className="size-5 text-[#00000]" aria-hidden />
           Notifications
         </DropdownMenuItem>
-        <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
-          <Settings className="size-5 text-[#00000]" aria-hidden />
-          Settings
+        <DropdownMenuItem
+          asChild
+          className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]"
+        >
+          <Link href="/t/settings">
+            <Settings className="size-5 text-[#00000]" aria-hidden />
+            Settings
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-2 bg-[#E4E7EC]" />
         <DropdownMenuItem
