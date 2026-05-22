@@ -3,13 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LockKeyhole, MoreHorizontal } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Tick01Icon } from "@hugeicons/core-free-icons";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  COMPLETED_ASSESSMENT_ICON,
-  type AssessmentCatalogStep,
-} from "@/constants/assessment-roadmap";
+import type { AssessmentCatalogStep } from "@/constants/assessment-roadmap";
 import { cn } from "@/lib/utils";
 
 type AssessmentCatalogCardProps = {
@@ -18,7 +17,6 @@ type AssessmentCatalogCardProps = {
 
 export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
   const PanelIcon = step.panelIcon;
-  const CompletedIcon = COMPLETED_ASSESSMENT_ICON;
   const isCompleted = step.state === "completed";
   const isLocked = step.state === "locked";
   const startHref =
@@ -112,7 +110,14 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
                 className="h-10 w-full rounded-lg bg-[#CCCCCC] text-base font-semibold tracking-[0.016em] text-[#151515] hover:bg-[#CCCCCC] disabled:bg-[#CCCCCC] disabled:text-[#151515] sm:w-42.5"
               >
                 {step.ctaLabel}
-                <CompletedIcon className="size-4.5 text-[#34A853]" />
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#34A853]">
+                  <HugeiconsIcon
+                    icon={Tick01Icon}
+                    size={12}
+                    strokeWidth={3}
+                    className="text-white"
+                  />
+                </span>
               </Button>
             ) : canStart ? (
               <Button
