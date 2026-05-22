@@ -114,18 +114,8 @@ const termsOfUseData: TermsOfUse[] = [
   },
 ];
 
-const termsOfUseNav = [
-  "Info we collected",
-  "How we use info",
-  "How we share info",
-  "Data security",
-  "Your Rights",
-  "Cookies and Tracking",
-  "Data Retention",
-  "Third party links",
-  "Children privacy",
-  "Int. Transfers",
-];
+/** Derived from the section data so the nav can never drift from the headings. */
+const termsOfUseNav = termsOfUseData.map((section) => section.title);
 
 export { termsOfUseData, termsOfUseNav };
 export type { TermsOfUse };
