@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { Bell, ChevronDown, UserRound, Settings } from "lucide-react";
+import Link from "next/link";
 import { signOut } from "next-auth/react";
 
 import { getInitials } from "@/components/dashboard/nav-utils";
@@ -15,7 +16,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 
-export function DashboardNavbarUserMenu() {
+type DashboardNavbarUserMenuProps = {
+  isVerified?: boolean;
+};
+
+export function DashboardNavbarUserMenu({
+  isVerified = true,
+}: DashboardNavbarUserMenuProps) {
   const { fullName, email } = useSessionUserProfile();
   const initials = getInitials(fullName, email);
 
@@ -42,21 +49,42 @@ export function DashboardNavbarUserMenu() {
           <span className="sr-only">Account menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        {fullName ? (
-          <div className="px-3 py-2">
-            <p className="text-sm font-medium text-foreground">{fullName}</p>
-            {email ? (
-              <p className="truncate text-xs text-muted-foreground">{email}</p>
-            ) : null}
-          </div>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={8}
+        className="w-full rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"
+      >
+        {isVerified ? (
+          <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
+            <UserRound className="size-5 text-[#00000]" aria-hidden />
+            Verified profile
+          </DropdownMenuItem>
         ) : null}
-        <DropdownMenuSeparator />
+        <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
+          <Bell className="size-5 text-[#00000]" aria-hidden />
+          Notifications
+        </DropdownMenuItem>
         <DropdownMenuItem
-          variant="destructive"
+          asChild
+          className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]"
+        >
+          <Link href="/t/settings">
+            <Settings className="size-5 text-[#00000]" aria-hidden />
+            Settings
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="my-2 bg-[#E4E7EC]" />
+        <DropdownMenuItem
+          asChild
+          className="h-8 rounded-md px-2 text-xs text-[#667085]"
+        >
+          <Link href="/contact">Help Center</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="h-8 rounded-md px-2 text-xs text-[#667085]"
           onClick={() => signOut({ callbackUrl: "/login" })}
         >
-          Log out
+          Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
