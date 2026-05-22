@@ -68,6 +68,10 @@ export function SkillAssessmentFlow() {
           try {
             applySession(await getSkillAssessmentSession(existingId));
           } catch (resumeError) {
+            if (isServiceUnavailableError(resumeError)) {
+              setStartState("unavailable");
+              return;
+            }
             setStartState("failed");
             appToast.error(authFailureMessage(resumeError));
           }
