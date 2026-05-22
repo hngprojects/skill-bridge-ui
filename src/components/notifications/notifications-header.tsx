@@ -7,7 +7,7 @@ const NotificationsHeader = () => {
       <div className="flex flex-col gap-y-2">
         <h2 className="font-bold text-2xl">Notifications</h2>
         <p className="font-light text-sm md:text-base">
-          View and edit your account with personal information
+          View all activities here
         </p>
       </div>
       <Button className="underline font-semibold text-sm" variant={"ghost"}>
