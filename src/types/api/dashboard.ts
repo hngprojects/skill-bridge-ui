@@ -29,6 +29,10 @@ export type DashboardPerformanceSkill = {
   completedAt: string;
   /** May be empty `{}` until AI grading produces a report. */
   guidanceReport: Partial<GuidanceReport>;
+  /** Number of skill attempts the user has consumed. */
+  attemptsUsed?: number;
+  /** Number of attempts still available on the skill assessment. */
+  attemptsRemaining?: number;
 };
 
 export type DashboardAdvancedRetake = {
@@ -67,4 +71,9 @@ export type DashboardHomeResponseData = {
   performance?: DashboardPerformance;
   /** Top-level retake hint mirroring `performance.advanced.retake`. */
   advancedRetake?: DashboardAdvancedRetake;
+  /** Top-level mirror of `performance.skill.attemptsUsed` — present even
+   *  when `performance.skill` is null. */
+  skillAttemptsUsed?: number;
+  /** Total skill attempts allowed for this user (e.g. 3). */
+  skillMaxAttempts?: number;
 };

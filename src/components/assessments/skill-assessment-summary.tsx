@@ -6,6 +6,7 @@ import { Dot } from "lucide-react";
 
 import AssessmentContainer from "@/components/assessments/assessment-container";
 import { Progress } from "@/components/ui/progress";
+import { useDashboardHome } from "@/hooks/api/use-dashboard";
 import { useMe } from "@/hooks/api";
 import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
 
@@ -22,6 +23,7 @@ function formatLevel(level: string | undefined, fallback: string) {
 
 const SkillAssessementSummary = () => {
   const { data: user } = useMe({ enabled: true });
+  const { data: dashboardHome } = useDashboardHome();
   const result = useAssessmentSummaryStore((state) =>
     user?.id ? state.resultsByUser[user.id]?.skill : null,
   );
@@ -40,6 +42,17 @@ const SkillAssessementSummary = () => {
     result?.personalised_message ??
     result?.guidance_report?.summary ??
     "This does not define your potential. It helps us tailor your assessment accurately.";
+
+  // Attempt counts come from /dashboard/home, not the submit response — the
+  // skill submit doesn't carry the user's running attempt tally.
+  const skillPerf = dashboardHome?.performance?.skill;
+  const attemptsUsed =
+    skillPerf?.attemptsUsed ?? dashboardHome?.skillAttemptsUsed;
+  const attemptsRemaining = skillPerf?.attemptsRemaining;
+  const maxAttempts = dashboardHome?.skillMaxAttempts;
+  const hasAttemptsInfo = attemptsUsed != null && maxAttempts != null;
+  const noAttemptsLeft = attemptsRemaining === 0;
+  const showRetakeButton = isDowngraded && !noAttemptsLeft;
 
   return !isUserContextReady ? (
     <AssessmentContainer>
@@ -83,6 +96,20 @@ const SkillAssessementSummary = () => {
             {validatedLevel} Level
           </p>
           <Progress value={progressValue} className="h-1 *:bg-[#4FB609]" />
+          {hasAttemptsInfo ? (
+            <p className="mt-2 font-sans text-sm text-muted-foreground">
+              You have used{" "}
+              <span className="font-semibold text-foreground">
+                {attemptsUsed}
+              </span>{" "}
+              of{" "}
+              <span className="font-semibold text-foreground">
+                {maxAttempts}
+              </span>{" "}
+              skill attempts.
+              {noAttemptsLeft ? " No retakes remaining." : null}
+            </p>
+          ) : null}
         </div>
         {isDowngraded && (
           <div className="border mt-6 w-fit border-[#FF7854] bg-[#FFF1EE] flex flex-row gap-x-4 items-center py-2.5 px-3 rounded-lg">
@@ -96,7 +123,7 @@ const SkillAssessementSummary = () => {
           </div>
         )}
         <div className="flex flex-col gap-y-4 sm:flex-row items-center self-center mt-15.5 gap-x-2">
-          {isDowngraded && (
+          {showRetakeButton && (
             <Button
               disabled={true}
               className="bg-[#322B2B] text-white disabled:text-white rounded-lg h-10 min-w-fit md:w-52.25 hover:bg-[#322B2B]/70 transition-all disabled:bg-[#0F1724]/50 duration-300 cursor-pointer"
