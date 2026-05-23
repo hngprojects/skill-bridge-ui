@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { FormInput } from "@/components/custom/form-input";
+import { AuthNavigationLoading } from "@/components/auth/auth-navigation-loading";
 import { Button } from "@/components/ui/button";
 import { useResendVerification, useVerifyEmail } from "@/hooks/api/use-auth";
 import { authFailureMessage } from "@/lib/api";
@@ -54,6 +55,7 @@ function TalentVerifyEmailForm() {
   const clearTalentSignup = useSignupFlowStore((s) => s.clearTalentSignup);
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
   const [codeValue, setCodeValue] = useState("");
+  const [isAuthNavigating, setIsAuthNavigating] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoResendTriggeredRef = useRef(false);
 
@@ -105,9 +107,11 @@ function TalentVerifyEmailForm() {
       }
 
       clearTalentSignup();
+      setIsAuthNavigating(true);
       router.push(postAuthRedirectForUser(user));
       router.refresh();
     } catch (e) {
+      setIsAuthNavigating(false);
       appToast.error(authFailureMessage(e));
     }
   };
@@ -139,6 +143,10 @@ function TalentVerifyEmailForm() {
   }, [talentSignup?.email, onResend]);
 
   const isCodeComplete = codeValue.length === 6;
+
+  if (isAuthNavigating) {
+    return <AuthNavigationLoading />;
+  }
 
   if (!talentSignup?.email) {
     return (
@@ -200,7 +208,9 @@ function TalentVerifyEmailForm() {
 
       <Button
         type="submit"
-        disabled={isSubmitting || verifying || !isCodeComplete}
+        disabled={
+          isSubmitting || verifying || isAuthNavigating || !isCodeComplete
+        }
         className="h-12 min-h-12 w-full rounded-lg text-sm font-semibold"
       >
         {isSubmitting || verifying ? "Verifying..." : "Verify Email"}

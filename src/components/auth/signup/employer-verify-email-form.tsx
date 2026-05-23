@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { FormInput } from "@/components/custom/form-input";
+import { AuthNavigationLoading } from "@/components/auth/auth-navigation-loading";
 import { Button } from "@/components/ui/button";
 import { useResendVerification, useVerifyEmail } from "@/hooks/api/use-auth";
 import { authFailureMessage } from "@/lib/api";
@@ -27,6 +28,7 @@ function EmployerVerifyEmailForm() {
   const employerLead = useSignupFlowStore((s) => s.employerLead);
   const clearEmployerLead = useSignupFlowStore((s) => s.clearEmployerLead);
   const [codeValue, setCodeValue] = useState("");
+  const [isAuthNavigating, setIsAuthNavigating] = useState(false);
   const autoResendTriggeredRef = useRef(false);
   const { mutateAsync: resendVerification, isPending: resending } =
     useResendVerification();
@@ -68,9 +70,11 @@ function EmployerVerifyEmailForm() {
       }
 
       clearEmployerLead();
+      setIsAuthNavigating(true);
       router.push(postAuthRedirectForUser(user));
       router.refresh();
     } catch (e) {
+      setIsAuthNavigating(false);
       appToast.error(authFailureMessage(e));
     }
   };
@@ -98,6 +102,10 @@ function EmployerVerifyEmailForm() {
     autoResendTriggeredRef.current = true;
     void onResend();
   }, [employerLead?.email, onResend]);
+
+  if (isAuthNavigating) {
+    return <AuthNavigationLoading />;
+  }
 
   if (!employerLead?.email) {
     return (
@@ -138,7 +146,12 @@ function EmployerVerifyEmailForm() {
 
       <Button
         type="submit"
-        disabled={isSubmitting || verifying || codeValue.length !== 6}
+        disabled={
+          isSubmitting ||
+          verifying ||
+          isAuthNavigating ||
+          codeValue.length !== 6
+        }
         className="mt-1 h-12 w-full rounded-lg label-sm"
       >
         {isSubmitting || verifying ? "Verifying..." : "Verify Email"}
