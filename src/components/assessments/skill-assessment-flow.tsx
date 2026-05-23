@@ -5,7 +5,11 @@ import { AssessmentStartBlocked } from "@/components/assessments/assessment-star
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
 import ViolationDetector from "@/components/assessments/violation-detector";
 import { getSkillAssessmentSession } from "@/actions/assessment";
-import { useStartSkillAssessment, useSubmitSkillAssessment } from "@/hooks/api";
+import {
+  useMe,
+  useStartSkillAssessment,
+  useSubmitSkillAssessment,
+} from "@/hooks/api";
 import { useFlagAssessmentEvent } from "@/hooks/api/use-assessment";
 import {
   mapSkillQuestions,
@@ -17,7 +21,11 @@ import {
   isServiceUnavailableError,
 } from "@/lib/api";
 import { appToast } from "@/lib/toast";
-import type { SkillAssessmentApiQuestion } from "@/types/api";
+import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
+import type {
+  SkillAssessmentApiQuestion,
+  SkillAssessmentStartResponseData,
+} from "@/types/api";
 
 type SkillStartState = "loading" | "ready" | "unavailable" | "failed";
 
@@ -39,9 +47,14 @@ export function SkillAssessmentFlow() {
   const [apiQuestions, setApiQuestions] = useState<
     SkillAssessmentApiQuestion[]
   >([]);
+  const [claimedLevel, setClaimedLevel] = useState<string | null>(null);
   const [startState, setStartState] = useState<SkillStartState>("loading");
   const startRequestedRef = useRef(false);
 
+  const { data: user } = useMe({ enabled: true });
+  const setSkillClaimedLevel = useAssessmentSummaryStore(
+    (state) => state.setSkillClaimedLevel,
+  );
   const { mutateAsync: startSession } = useStartSkillAssessment();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitSkillAssessment();
@@ -51,12 +64,10 @@ export function SkillAssessmentFlow() {
     if (startRequestedRef.current) return;
     startRequestedRef.current = true;
 
-    const applySession = (data: {
-      session_id: string;
-      questions: SkillAssessmentApiQuestion[];
-    }) => {
+    const applySession = (data: SkillAssessmentStartResponseData) => {
       setSessionId(data.session_id);
       setApiQuestions(data.questions ?? []);
+      setClaimedLevel(data.verified_level);
       setStartState("ready");
     };
 
@@ -88,6 +99,11 @@ export function SkillAssessmentFlow() {
       });
   }, [startSession]);
 
+  useEffect(() => {
+    if (!user?.id || !claimedLevel) return;
+    setSkillClaimedLevel(user.id, claimedLevel);
+  }, [claimedLevel, setSkillClaimedLevel, user?.id]);
+
   const questions = useMemo(
     () => mapSkillQuestions(apiQuestions),
     [apiQuestions],
@@ -117,7 +133,7 @@ export function SkillAssessmentFlow() {
     submitAssessment({
       attempt_id: sessionId,
       answers: toSkillSubmitAnswers(questions, answersByKey),
-    }).then(() => {});
+    });
 
   const recordViolation = (count: number) => {
     if (count >= 3 && !flagViolation.isPending && !flagViolation.isSuccess)
