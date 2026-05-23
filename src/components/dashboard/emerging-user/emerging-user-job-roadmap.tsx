@@ -6,10 +6,17 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 
+import type {
+  DashboardJourneyKey,
+  DashboardJourneyOverviewItem,
+} from "@/types/api";
+
 type AssessmentStatus = "completed" | "pending";
 
 interface RoadmapItem {
   id: string;
+  /** Matching key in `journeyOverview`, when one exists. */
+  journeyKey?: DashboardJourneyKey;
   title: string;
   description: string;
   status: AssessmentStatus;
@@ -20,6 +27,7 @@ interface RoadmapItem {
 const ROADMAP_ITEMS: RoadmapItem[] = [
   {
     id: "personal",
+    journeyKey: "personal",
     title: "Personal  assessment",
     description:
       "Tell us about your specialization, tools, experience level,...",
@@ -37,6 +45,7 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
   },
   {
     id: "skills-career",
+    journeyKey: "skill",
     title: "Skills/Career assessment",
     description:
       "This assessment is designed to evaluate your current skill...",
@@ -54,6 +63,7 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
   },
   {
     id: "advance",
+    journeyKey: "advanced",
     title: "Advanced assessment",
     description: "To get verified score and become discoverable to top e...",
     status: "pending",
@@ -69,6 +79,17 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
     ),
   },
 ];
+
+/**
+ * Map a journey item's API status onto the roadmap card's display status.
+ * Anything not yet `"completed"` (i.e. `"available"` or `"locked"`) renders
+ * as the pending clock icon.
+ */
+function toAssessmentStatus(
+  status: DashboardJourneyOverviewItem["status"],
+): AssessmentStatus {
+  return status === "completed" ? "completed" : "pending";
+}
 
 function StatusIcon({ status }: { status: AssessmentStatus }) {
   if (status === "completed") {
@@ -97,7 +118,23 @@ function StatusIcon({ status }: { status: AssessmentStatus }) {
   );
 }
 
-export function DashboardJobRoadmap() {
+type DashboardJobRoadmapProps = {
+  /** When provided, overrides each item's hardcoded status by `journeyKey`. */
+  journeyOverview?: DashboardJourneyOverviewItem[];
+};
+
+export function DashboardJobRoadmap({
+  journeyOverview,
+}: DashboardJobRoadmapProps = {}) {
+  const statusByKey = new Map(
+    (journeyOverview ?? []).map((item) => [item.key, item.status]),
+  );
+  const items = ROADMAP_ITEMS.map((item) => {
+    if (!item.journeyKey) return item;
+    const status = statusByKey.get(item.journeyKey);
+    return status ? { ...item, status: toAssessmentStatus(status) } : item;
+  });
+
   return (
     <section
       aria-labelledby="roadmap-heading"
@@ -122,7 +159,7 @@ export function DashboardJobRoadmap() {
 
       {/* Items */}
       <div className="flex flex-col gap-2">
-        {ROADMAP_ITEMS.map((item) => (
+        {items.map((item) => (
           <div
             key={item.id}
             className="flex items-center gap-4 rounded-xl border border-border bg-white p-4 transition-transform hover:-translate-y-1 hover:shadow-sm"
