@@ -10,28 +10,20 @@ import {
   mapSkillQuestions,
   toSkillSubmitAnswers,
 } from "@/lib/assessment-questions";
+import { authFailureMessage, isServiceUnavailableError } from "@/lib/api";
 import {
-  ApiError,
-  authFailureMessage,
-  isServiceUnavailableError,
-} from "@/lib/api";
+  existingSessionIdFromError,
+  loadSkillSessionWithQuestions,
+} from "@/lib/skill-assessment-session";
 import { appToast } from "@/lib/toast";
-import type { SkillAssessmentApiQuestion } from "@/types/api";
+import type {
+  SkillAssessmentApiQuestion,
+  SkillAssessmentStartResponseData,
+} from "@/types/api";
 
 type SkillStartState = "loading" | "ready" | "unavailable" | "failed";
 
 const SKILL_PREVIEW_PATH = "/t/assessments/skill";
-
-/** A 409 from /skill/start carries the id of the already-active session. */
-function existingSessionIdFromError(error: unknown): string | undefined {
-  if (!(error instanceof ApiError) || error.status !== 409) return undefined;
-  const data = error.data;
-  if (data && typeof data === "object" && "existing_session_id" in data) {
-    const id = (data as { existing_session_id?: unknown }).existing_session_id;
-    return typeof id === "string" && id ? id : undefined;
-  }
-  return undefined;
-}
 
 export function SkillAssessmentFlow() {
   const [sessionId, setSessionId] = useState("");
@@ -41,8 +33,7 @@ export function SkillAssessmentFlow() {
   const [startState, setStartState] = useState<SkillStartState>("loading");
   const startRequestedRef = useRef(false);
 
-  const { mutateAsync: startSession, isPending: isStarting } =
-    useStartSkillAssessment();
+  const { mutateAsync: startSession } = useStartSkillAssessment();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitSkillAssessment();
 
@@ -50,41 +41,39 @@ export function SkillAssessmentFlow() {
     if (startRequestedRef.current) return;
     startRequestedRef.current = true;
 
-    const applySession = (data: {
-      session_id: string;
-      questions: SkillAssessmentApiQuestion[];
-    }) => {
-      setSessionId(data.session_id);
-      setApiQuestions(data.questions ?? []);
-      setStartState("ready");
-    };
+    void (async () => {
+      try {
+        let session: SkillAssessmentStartResponseData;
+        try {
+          session = await startSession();
+        } catch (e) {
+          const existingId = existingSessionIdFromError(e);
+          if (!existingId) throw e;
+          session = await getSkillAssessmentSession(existingId);
+        }
 
-    startSession()
-      .then(applySession)
-      .catch(async (e) => {
-        // An active session already exists (409) — resume it instead.
-        const existingId = existingSessionIdFromError(e);
-        if (existingId) {
-          try {
-            applySession(await getSkillAssessmentSession(existingId));
-          } catch (resumeError) {
-            if (isServiceUnavailableError(resumeError)) {
-              setStartState("unavailable");
-              return;
-            }
-            setStartState("failed");
-            appToast.error(authFailureMessage(resumeError));
-          }
+        session = await loadSkillSessionWithQuestions(session);
+
+        if ((session.questions?.length ?? 0) === 0) {
+          setStartState("failed");
+          appToast.error(
+            "Assessment questions are not ready yet. Please try again.",
+          );
           return;
         }
 
+        setSessionId(session.session_id);
+        setApiQuestions(session.questions ?? []);
+        setStartState("ready");
+      } catch (e) {
         if (isServiceUnavailableError(e)) {
           setStartState("unavailable");
-          return;
+        } else {
+          setStartState("failed");
+          appToast.error(authFailureMessage(e));
         }
-        setStartState("failed");
-        appToast.error(authFailureMessage(e));
-      });
+      }
+    })();
   }, [startSession]);
 
   const questions = useMemo(
@@ -115,7 +104,7 @@ export function SkillAssessmentFlow() {
   return (
     <QuestionnaireFlow
       questions={questions}
-      isLoading={startState === "loading" || isStarting}
+      isLoading={startState === "loading"}
       isSubmitting={isSubmitting}
       onSubmit={(answersByKey) =>
         submitAssessment({
