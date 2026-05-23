@@ -92,3 +92,9 @@ export type {
   SkillAssessmentSubmitResponseData,
   SkillLevel,
 } from "./assessment";
+
+export type {
+  NotificationApiItem,
+  NotificationsListResponseData,
+  UnreadCountResponseData,
+} from "./notifications";
