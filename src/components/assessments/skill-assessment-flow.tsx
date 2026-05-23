@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
+import ViolationDetector from "@/components/assessments/violation-detector";
 import { getSkillAssessmentSession } from "@/actions/assessment";
 import { useStartSkillAssessment, useSubmitSkillAssessment } from "@/hooks/api";
+import { useFlagAssessmentEvent } from "@/hooks/api/use-assessment";
 import {
   mapSkillQuestions,
   toSkillSubmitAnswers,
@@ -36,6 +37,7 @@ export function SkillAssessmentFlow() {
   const { mutateAsync: startSession } = useStartSkillAssessment();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitSkillAssessment();
+  const flagViolation = useFlagAssessmentEvent("skill", sessionId);
 
   useEffect(() => {
     if (startRequestedRef.current) return;
@@ -101,17 +103,29 @@ export function SkillAssessmentFlow() {
     );
   }
 
+  const submit = (answersByKey: Record<string, string | string[]>) =>
+    submitAssessment({
+      attempt_id: sessionId,
+      answers: toSkillSubmitAnswers(questions, answersByKey),
+    }).then(() => {});
+
+  const recordViolation = (count: number) => {
+    if (count >= 3 && !flagViolation.isPending && !flagViolation.isSuccess)
+      flagViolation.mutate({ event_type: "tab_switch" });
+  };
+
   return (
-    <QuestionnaireFlow
-      questions={questions}
-      isLoading={startState === "loading"}
-      isSubmitting={isSubmitting}
-      onSubmit={(answersByKey) =>
-        submitAssessment({
-          attempt_id: sessionId,
-          answers: toSkillSubmitAnswers(questions, answersByKey),
-        })
-      }
-    />
+    <ViolationDetector
+      enabled={startState === "ready"}
+      onViolation={recordViolation}
+      submissionConfirmed={flagViolation.isSuccess}
+    >
+      <QuestionnaireFlow
+        questions={questions}
+        isLoading={startState === "loading"}
+        isSubmitting={isSubmitting}
+        onSubmit={submit}
+      />
+    </ViolationDetector>
   );
 }
