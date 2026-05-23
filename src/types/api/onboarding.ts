@@ -78,6 +78,7 @@ export type TalentOnboardingProfileInput = {
   region: string;
   educationLevel: string;
   linkedinUrl?: string;
+  avatarUrl?: string;
 };
 
 export type TalentOnboardingProfileResponseData = {
@@ -90,4 +91,8 @@ export type TalentOnboardingProfileResponseData = {
 export type TalentOnboardingPersonaliseResponseData = {
   message: string;
   status: string;
+};
+
+export type UploadAvatarResponseData = {
+  avatarUrl: string;
 };
