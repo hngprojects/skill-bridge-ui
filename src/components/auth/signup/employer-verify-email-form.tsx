@@ -103,10 +103,6 @@ function EmployerVerifyEmailForm() {
     void onResend();
   }, [employerLead?.email, onResend]);
 
-  if (isAuthNavigating) {
-    return <AuthNavigationLoading />;
-  }
-
   if (!employerLead?.email) {
     return (
       <p className="body-2 text-muted-foreground">
@@ -122,53 +118,56 @@ function EmployerVerifyEmailForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-      className="flex flex-col gap-4 font-sans"
-    >
-      <FormInput
-        {...register("code")}
-        label="Verification code"
-        type="text"
-        placeholder="Enter 6-digit code"
-        inputMode="numeric"
-        autoComplete="one-time-code"
-        maxLength={6}
-        error={errors.code?.message}
-        value={codeValue}
-        onChange={(e) => {
-          const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 6);
-          setCodeValue(digitsOnly);
-          setValue("code", digitsOnly, { shouldValidate: false });
-        }}
-      />
-
-      <Button
-        type="submit"
-        disabled={
-          isSubmitting ||
-          verifying ||
-          isAuthNavigating ||
-          codeValue.length !== 6
-        }
-        className="mt-1 h-12 w-full rounded-lg label-sm"
+    <>
+      {isAuthNavigating && <AuthNavigationLoading />}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+        className="flex flex-col gap-4 font-sans"
       >
-        {isSubmitting || verifying ? "Verifying..." : "Verify Email"}
-      </Button>
+        <FormInput
+          {...register("code")}
+          label="Verification code"
+          type="text"
+          placeholder="Enter 6-digit code"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          maxLength={6}
+          error={errors.code?.message}
+          value={codeValue}
+          onChange={(e) => {
+            const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 6);
+            setCodeValue(digitsOnly);
+            setValue("code", digitsOnly, { shouldValidate: false });
+          }}
+        />
 
-      <p className="body-2 mt-6 text-muted-foreground">
-        Didn&apos;t receive a code?{" "}
-        <button
-          type="button"
-          disabled={resending}
-          className="font-semibold text-foreground underline underline-offset-4 hover:text-foreground disabled:opacity-50"
-          onClick={() => void onResend()}
+        <Button
+          type="submit"
+          disabled={
+            isSubmitting ||
+            verifying ||
+            isAuthNavigating ||
+            codeValue.length !== 6
+          }
+          className="mt-1 h-12 w-full rounded-lg label-sm"
         >
-          {resending ? "Sending..." : "Send code again"}
-        </button>
-      </p>
-    </form>
+          {isSubmitting || verifying ? "Verifying..." : "Verify Email"}
+        </Button>
+
+        <p className="body-2 mt-6 text-muted-foreground">
+          Didn&apos;t receive a code?{" "}
+          <button
+            type="button"
+            disabled={resending}
+            className="font-semibold text-foreground underline underline-offset-4 hover:text-foreground disabled:opacity-50"
+            onClick={() => void onResend()}
+          >
+            {resending ? "Sending..." : "Send code again"}
+          </button>
+        </p>
+      </form>
+    </>
   );
 }
 
