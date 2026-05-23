@@ -6,7 +6,7 @@ import { AssessmentStartBlocked } from "@/components/assessments/assessment-star
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
 import ViolationDetector from "@/components/assessments/violation-detector";
 import {
-  useStartAdvancedAssessment,
+  useResolveAdvancedAssessmentSession,
   useSubmitAdvancedAssessment,
 } from "@/hooks/api";
 import { useFlagAssessmentEvent } from "@/hooks/api/use-assessment";
@@ -33,7 +33,7 @@ export function AdvancedAssessmentFlow() {
   const [startState, setStartState] = useState<AdvancedStartState>("loading");
   const startRequestedRef = useRef(false);
 
-  const { mutateAsync: startSession } = useStartAdvancedAssessment();
+  const { mutateAsync: resolveSession } = useResolveAdvancedAssessmentSession();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitAdvancedAssessment();
   const flagViolation = useFlagAssessmentEvent("advanced", sessionId);
@@ -42,7 +42,7 @@ export function AdvancedAssessmentFlow() {
     if (startRequestedRef.current) return;
     startRequestedRef.current = true;
 
-    startSession()
+    resolveSession()
       .then((data) => {
         setSessionId(data.session_id);
         setApiQuestions(data.questions ?? []);
@@ -57,7 +57,7 @@ export function AdvancedAssessmentFlow() {
         setStartState("failed");
         appToast.error(authFailureMessage(e));
       });
-  }, [startSession]);
+  }, [resolveSession]);
 
   const questions = useMemo(
     () => mapAdvancedQuestions(apiQuestions),

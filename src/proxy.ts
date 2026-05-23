@@ -13,6 +13,7 @@ const SECURITY_HEADERS: Record<string, string> = {
 const ROLE_PROTECTED_ROUTES: { path: string; role: UserRole }[] = [
   { path: "/t", role: "talent" },
   { path: "/talent", role: "talent" },
+  { path: "/e", role: "employer" },
   { path: "/employer/onboarding", role: "employer" },
 ];
 
@@ -20,7 +21,9 @@ const ROLE_PROTECTED_ROUTES: { path: string; role: UserRole }[] = [
 const AUTH_ROUTES = ["/login", "/signup", "/forgot-password"];
 
 function dashboardPathForRole(role: UserRole | undefined): string {
-  return role === "talent" ? "/t/dashboard" : "/dashboard";
+  if (role === "talent") return "/t/dashboard";
+  if (role === "employer") return "/e/dashboard";
+  return "/";
 }
 
 function continueWithSecurityHeaders(request: Request): NextResponse {
@@ -69,7 +72,9 @@ export const proxy = auth((request) => {
     }
 
     if (user.role !== protectedRoute.role) {
-      return NextResponse.redirect(new URL("/forbidden", request.url));
+      return NextResponse.redirect(
+        new URL(dashboardPathForRole(user.role), request.url),
+      );
     }
   }
 
