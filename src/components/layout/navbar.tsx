@@ -33,7 +33,7 @@ export function Navbar() {
     session?.user?.role === "talent" ? "/t/dashboard" : "/dashboard";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-gray-100 bg-[#EFEFEF] backdrop-blur">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-4">
         {/* Logo */}
         <Link href="/" className="relative h-9 w-32 shrink-0 md:h-10 md:w-40">
