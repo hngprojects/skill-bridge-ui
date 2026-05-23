@@ -11,6 +11,7 @@ export type Question = {
   helperText?: string | null;
   required: boolean;
   minLength?: number;
+  maxLength?: number;
   options?: readonly string[];
   otherTextKey?: string;
   conditional?: { trigger_option: string; reveals: "free_text_input" };

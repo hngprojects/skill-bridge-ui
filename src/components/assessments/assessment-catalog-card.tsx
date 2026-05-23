@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { LockKeyhole, MoreHorizontal } from "lucide-react";
+import { LockKeyhole } from "lucide-react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Tick01Icon } from "@hugeicons/core-free-icons";
+import { SparklesIcon, Tick01Icon } from "@hugeicons/core-free-icons";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,14 +17,16 @@ type AssessmentCatalogCardProps = {
 
 export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
   const PanelIcon = step.panelIcon;
-  const isCompleted = step.state === "completed";
-  const isLocked = step.state === "locked";
+  const isComingSoon = step.comingSoon === true;
+  const isCompleted = !isComingSoon && step.state === "completed";
+  const isLocked = !isComingSoon && step.state === "locked";
   const startHref =
     step.href ??
     (step.state === "available" && step.slug != null
       ? `/t/assessments/${step.slug}`
       : null);
-  const canStart = !isLocked && !isCompleted && startHref != null;
+  const canStart =
+    !isComingSoon && !isLocked && !isCompleted && startHref != null;
 
   return (
     <article className="animate-in fade-in slide-in-from-bottom-1 overflow-hidden rounded-2xl border border-[#DBDBDB] bg-white duration-300 transition-all hover:-translate-y-0.5 hover:shadow-sm">
@@ -39,7 +41,15 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
             <p className="text-base leading-6 font-semibold tracking-[0.017em]">
               {step.panelTitle}
             </p>
-            {isLocked ? (
+            {isComingSoon ? (
+              <Badge
+                variant="outline"
+                className="shrink-0 rounded-lg border-transparent bg-white px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:hidden"
+              >
+                Coming Soon
+                <HugeiconsIcon icon={SparklesIcon} size={14} />
+              </Badge>
+            ) : isLocked ? (
               <Badge
                 variant="outline"
                 className="shrink-0 rounded-lg border-transparent bg-white px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:hidden"
@@ -83,7 +93,15 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
               </p>
             </div>
 
-            {isLocked ? (
+            {isComingSoon ? (
+              <Badge
+                variant="outline"
+                className="hidden rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:inline-flex"
+              >
+                Coming Soon
+                <HugeiconsIcon icon={SparklesIcon} size={14} />
+              </Badge>
+            ) : isLocked ? (
               <Badge
                 variant="outline"
                 className="hidden rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:inline-flex"
@@ -91,19 +109,19 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
                 {step.lockLabel ?? "Unlock Assessment"}
                 <LockKeyhole className="size-3.5" />
               </Badge>
-            ) : (
-              <button
-                type="button"
-                aria-label={`More actions for ${step.title}`}
-                className="rounded-md p-1 text-[#151515] transition-colors hover:bg-[#F5F5F5]"
-              >
-                <MoreHorizontal className="size-5" />
-              </button>
-            )}
+            ) : null}
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            {isCompleted ? (
+            {isComingSoon ? (
+              <Button
+                size="lg"
+                disabled
+                className="h-10 w-full rounded-lg bg-[#757575] text-base font-semibold tracking-[0.016em] text-white hover:bg-[#757575] disabled:bg-[#757575] disabled:text-white sm:w-42.5"
+              >
+                Coming Soon
+              </Button>
+            ) : isCompleted ? (
               <Button
                 size="lg"
                 disabled
