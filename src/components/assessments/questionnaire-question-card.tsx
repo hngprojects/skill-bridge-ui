@@ -37,7 +37,7 @@ export function QuestionnaireQuestionCard({
   const progressPercent = (questionNumber / totalQuestions) * 100;
 
   return (
-    <Card className="min-h-128 flex-1 gap-0 rounded-none border-0 bg-transparent py-0 ring-0 shadow-none lg:rounded-xl lg:border lg:bg-card lg:ring-1 lg:shadow-sm">
+    <Card className="min-h-96 flex-1 gap-0 rounded-none border-0 bg-transparent py-0 ring-0 shadow-none lg:min-h-128 lg:rounded-xl lg:border lg:bg-card lg:ring-1 lg:shadow-sm">
       <CardContent className="flex min-h-96 flex-1 flex-col px-0 py-6 lg:px-6 lg:py-8">
         <QuestionnaireQuestionField
           question={question}

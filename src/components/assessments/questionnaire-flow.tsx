@@ -8,6 +8,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 
 import { QuestionnaireMobileActions } from "@/components/assessments/questionnaire-mobile-actions";
 import { QuestionnaireMobileHeader } from "@/components/assessments/questionnaire-mobile-header";
+import { hasOtherReveal } from "@/components/assessments/questionnaire-question-field-body";
 import { QuestionnaireQuestionCard } from "@/components/assessments/questionnaire-question-card";
 import {
   QuestionnaireSidebar,
@@ -61,11 +62,13 @@ export function QuestionnaireFlow({
   const [otherAnswers, setOtherAnswers] = useState<Record<string, string>>({});
 
   // Single source of truth for the questionnaire timer — desktop toolbar and
-  // mobile header both read this value, so only one interval ticks.
+  // mobile header both read this value, so only one interval ticks. Disabled
+  // while loading so the user doesn't lose seconds before the first question
+  // even renders; the hook re-syncs once `initialSeconds` arrives.
   const showTimer = name !== "personal";
   const tickingSeconds = useCountdown(
     initialSeconds ?? ASSESSMENT_DEFAULT_DURATION_SECONDS,
-    showTimer,
+    showTimer && !isLoading,
   );
   const secondsLeft = showTimer ? tickingSeconds : undefined;
 
@@ -98,7 +101,16 @@ export function QuestionnaireFlow({
   const question = questions[currentIndex];
   const isLast = currentIndex === questions.length - 1;
   const currentValue = question ? answers[question.id] : undefined;
-  const canProceed = question ? isAnswerValid(question, currentValue) : false;
+  const currentOther = question ? (otherAnswers[question.id] ?? "") : "";
+  // When the question's "other" path is triggered, the revealed textarea
+  // must also have non-empty content before Next is enabled.
+  const otherSatisfied =
+    !question ||
+    !hasOtherReveal(question, currentValue) ||
+    currentOther.trim().length > 0;
+  const canProceed = question
+    ? isAnswerValid(question, currentValue) && otherSatisfied
+    : false;
 
   const activeSectionNumber = useMemo(() => {
     if (!question?.sourceSectionTitle) return 1;

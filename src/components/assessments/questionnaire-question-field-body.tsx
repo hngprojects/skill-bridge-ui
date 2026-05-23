@@ -44,10 +44,14 @@ export function QuestionnaireQuestionFieldBody({
   switch (question.inputType) {
     case "text_required": {
       const text = typeof value === "string" ? value : "";
+      const trimmedLength = text.trim().length;
       const maxLen = question.maxLength ?? TEXT_ANSWER_FALLBACK_MAX_LENGTH;
       const minLen = question.minLength;
+      // `isAnswerValid` checks the trimmed length, so display the same number
+      // here — otherwise a user typing whitespace sees a "satisfied" counter
+      // while Next stays disabled.
       const belowMin =
-        minLen != null && text.trim().length > 0 && text.trim().length < minLen;
+        minLen != null && trimmedLength > 0 && trimmedLength < minLen;
       return (
         <div className="relative">
           <Textarea
@@ -65,7 +69,7 @@ export function QuestionnaireQuestionFieldBody({
             )}
             aria-hidden
           >
-            {text.length}/{maxLen}
+            {trimmedLength}/{maxLen}
             {minLen != null ? ` (min ${minLen})` : ""}
           </span>
         </div>
