@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { LockKeyhole, MoreHorizontal } from "lucide-react";
+import { LockKeyhole } from "lucide-react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Tick01Icon } from "@hugeicons/core-free-icons";
+import { SparklesIcon, Tick01Icon } from "@hugeicons/core-free-icons";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,9 +17,18 @@ type RoadmapStepCardProps = {
 
 export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
   const PanelIcon = step.panelIcon;
-  const isLocked = step.state === "locked";
-  const isCompleted = step.state === "completed";
-  const lockBadge = (
+  const isComingSoon = step.comingSoon === true;
+  const isLocked = !isComingSoon && step.state === "locked";
+  const isCompleted = !isComingSoon && step.state === "completed";
+  const sideBadge = isComingSoon ? (
+    <Badge
+      variant="outline"
+      className="w-full justify-center rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:w-auto"
+    >
+      Coming Soon
+      <HugeiconsIcon icon={SparklesIcon} size={14} />
+    </Badge>
+  ) : (
     <Badge
       variant="outline"
       className="w-full justify-center rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:w-auto"
@@ -42,7 +51,15 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
             <p className="text-base leading-6 font-semibold tracking-[0.017em]">
               {step.panelTitle}
             </p>
-            {isLocked ? (
+            {isComingSoon ? (
+              <Badge
+                variant="outline"
+                className="shrink-0 rounded-lg border-transparent bg-white px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:hidden"
+              >
+                Coming Soon
+                <HugeiconsIcon icon={SparklesIcon} size={14} />
+              </Badge>
+            ) : isLocked ? (
               <Badge
                 variant="outline"
                 className="shrink-0 rounded-lg border-transparent bg-white px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:hidden"
@@ -86,21 +103,21 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
               </p>
             </div>
 
-            {isLocked ? (
-              <div className="hidden sm:block">{lockBadge}</div>
-            ) : (
-              <button
-                type="button"
-                aria-label={`More actions for ${step.title}`}
-                className="rounded-md p-1 text-[#151515] transition-colors hover:bg-[#F5F5F5]"
-              >
-                <MoreHorizontal className="size-5" />
-              </button>
-            )}
+            {isComingSoon || isLocked ? (
+              <div className="hidden sm:block">{sideBadge}</div>
+            ) : null}
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            {isLocked ? (
+            {isComingSoon ? (
+              <Button
+                size="lg"
+                disabled
+                className="h-10 w-full rounded-lg bg-[#757575] text-base font-semibold tracking-[0.016em] text-white hover:bg-[#757575] disabled:bg-[#757575] disabled:text-white sm:w-42.5"
+              >
+                Coming Soon
+              </Button>
+            ) : isLocked ? (
               <Button
                 size="lg"
                 disabled

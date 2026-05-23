@@ -56,7 +56,7 @@ function EmployerOnboardingForm() {
         hiringCountRange: data.hiringCountRange,
         companyWebsite,
       });
-      router.push("/dashboard");
+      router.push("/e/dashboard");
       router.refresh();
     } catch (error) {
       appToast.error(authFailureMessage(error));

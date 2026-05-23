@@ -1,4 +1,4 @@
-import { authApi } from "@/lib/api";
+import { ApiError, authApi } from "@/lib/api";
 import type {
   AdvancedAssessmentStartResponseData,
   AdvancedAssessmentSubmitInput,
@@ -91,6 +91,27 @@ export async function getAssessmentSession(
   return unwrapData(res);
 }
 
+/**
+ * Starts an advanced assessment, or transparently resumes the existing one
+ * when the API returns `409 CONFLICT` with `existing_session_id`. Either path
+ * resolves to the same `AdvancedAssessmentStartResponseData` shape so callers
+ * don't need to branch.
+ */
+export async function resolveAdvancedAssessmentSession(): Promise<AdvancedAssessmentStartResponseData> {
+  try {
+    return await startAdvancedAssessment();
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 409) {
+      const data = error.data as { existing_session_id?: unknown } | undefined;
+      const existingId = data?.existing_session_id;
+      if (typeof existingId === "string" && existingId.length > 0) {
+        return await getAssessmentSession(existingId);
+      }
+    }
+    throw error;
+  }
+}
+
 export async function submitAdvancedAssessment(
   body: AdvancedAssessmentSubmitInput,
 ): Promise<AdvancedAssessmentSubmitResponseData> {
@@ -105,11 +126,16 @@ export async function submitAdvancedAssessment(
 }
 
 export async function flagAssessmentEvent(
+  type: "advanced" | "skill",
   sessionId: string,
   body: AssessmentFlagInput,
 ): Promise<AssessmentFlagResponseData> {
+  const url =
+    type === "advanced"
+      ? `/talent/assessment/session/${sessionId}/flag`
+      : `/talent/assessment/skill/session/${sessionId}/flag`;
   const res = await authApi.post<ApiEnvelope<AssessmentFlagResponseData>>(
-    `/talent/assessment/session/${sessionId}/flag`,
+    url,
     body,
   );
   return unwrapData(res);

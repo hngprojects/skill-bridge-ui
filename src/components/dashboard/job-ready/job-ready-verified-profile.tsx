@@ -6,7 +6,31 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight } from "lucide-react";
 
-export function JobReadyVerifiedProfile() {
+type JobReadyVerifiedProfileProps = {
+  /** First name displayed on the profile card. */
+  firstName?: string;
+  /** ISO timestamp of the advanced-assessment completion. */
+  verifiedAt?: string;
+};
+
+function formatVerifiedDate(iso: string | undefined): string {
+  if (!iso) return "May 19, 2026";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "May 19, 2026";
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export function JobReadyVerifiedProfile({
+  firstName,
+  verifiedAt,
+}: JobReadyVerifiedProfileProps = {}) {
+  const displayName = firstName || "Alex Smith";
+  const verifiedOn = formatVerifiedDate(verifiedAt);
+
   return (
     <section className="p-6 flex flex-col gap-0 w-full border border-border rounded-2xl bg-[#FAFAFA] text-gray-900">
       {/* Header */}
@@ -44,7 +68,7 @@ export function JobReadyVerifiedProfile() {
       <div className="flex flex-col mb-2">
         <div className="flex items-center gap-3 mb-1">
           <h3 className="text-[32px] font-bold tracking-tight text-gray-900 leading-none">
-            Alex Smith
+            {displayName}
           </h3>
           <Badge className="bg-[#34A853] hover:bg-[#34A853]/90 text-white rounded-sm px-1.5 py-3.5 text-[12px] font-bold tracking-wider uppercase border-none shadow-none mt-1">
             Verified Talent
@@ -65,7 +89,7 @@ export function JobReadyVerifiedProfile() {
           orientation="vertical"
           className="h-4 bg-[#D1D5DB] hidden sm:block"
         />
-        <span className="font-normal">Profile verified on May 19, 2026</span>
+        <span className="font-normal">Profile verified on {verifiedOn}</span>
       </div>
     </section>
   );

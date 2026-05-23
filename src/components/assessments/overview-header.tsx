@@ -12,6 +12,7 @@ type OverviewHeaderProps = {
 export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
   const { fullName, isLoading } = useSessionUserProfile();
   const displayName = !isLoading && fullName ? fullName : "";
+  const isProfileComplete = profileCompletion >= 100;
 
   return (
     <section className="flex flex-col gap-8 py-6 lg:flex-row lg:items-start lg:justify-between lg:gap-8 lg:py-10">
@@ -30,19 +31,21 @@ export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
           href="/t/settings"
           className="block w-full text-sm leading-5 font-semibold text-[#05060F] underline underline-offset-2"
         >
-          Complete your profile
+          {isProfileComplete ? "View profile" : "Complete your profile"}
         </Link>
-        <div className="mt-3 flex items-center gap-3">
-          <div className="h-1 flex-1 rounded-full bg-[#D6FFBE]">
-            <div
-              className={cn("h-1 rounded-full bg-[#4C9924]")}
-              style={{ width: `${profileCompletion}%` }}
-            />
+        {!isProfileComplete ? (
+          <div className="mt-3 flex items-center gap-3">
+            <div className="h-1 flex-1 rounded-full bg-[#D6FFBE]">
+              <div
+                className={cn("h-1 rounded-full bg-[#4C9924]")}
+                style={{ width: `${profileCompletion}%` }}
+              />
+            </div>
+            <span className="text-xs leading-4 font-semibold text-[#757575]">
+              {profileCompletion}%
+            </span>
           </div>
-          <span className="text-xs leading-4 font-semibold text-[#757575]">
-            {profileCompletion}%
-          </span>
-        </div>
+        ) : null}
       </div>
     </section>
   );

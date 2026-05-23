@@ -40,6 +40,7 @@ export type {
   TalentOnboardingTrackCreateResponseData,
   TalentOnboardingTracksUpdateInput,
   TalentOnboardingTracksUpdateResponseData,
+  UploadAvatarResponseData,
 } from "./onboarding";
 export type {
   AdminCreateUserInput,
@@ -51,10 +52,14 @@ export type {
 } from "./users";
 export type { ContactUsInput, WaitlistInput } from "./inquiries";
 export type {
+  DashboardAdvancedRetake,
   DashboardHomeResponseData,
   DashboardJourneyKey,
   DashboardJourneyOverviewItem,
   DashboardJourneyStatus,
+  DashboardPerformance,
+  DashboardPerformanceAdvanced,
+  DashboardPerformanceSkill,
 } from "./dashboard";
 export type {
   AdvancedAssessmentApiQuestion,

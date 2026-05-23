@@ -5,7 +5,8 @@ import { cn, formatOptionLabel } from "@/lib/utils";
 import type { Question } from "@/types/questionnaire";
 
 const MULTI_PICK_PILL_THRESHOLD = 8;
-const TEXT_ANSWER_MAX_LENGTH = 2000;
+/** Used when the question doesn't declare its own `maxLength`. */
+const TEXT_ANSWER_FALLBACK_MAX_LENGTH = 2000;
 
 export function isOtherReveal(question: Question, value: string): boolean {
   return question.conditional?.trigger_option === value;
@@ -43,6 +44,14 @@ export function QuestionnaireQuestionFieldBody({
   switch (question.inputType) {
     case "text_required": {
       const text = typeof value === "string" ? value : "";
+      const trimmedLength = text.trim().length;
+      const maxLen = question.maxLength ?? TEXT_ANSWER_FALLBACK_MAX_LENGTH;
+      const minLen = question.minLength;
+      // `isAnswerValid` checks the trimmed length, so display the same number
+      // here — otherwise a user typing whitespace sees a "satisfied" counter
+      // while Next stays disabled.
+      const belowMin =
+        minLen != null && trimmedLength > 0 && trimmedLength < minLen;
       return (
         <div className="relative">
           <Textarea
@@ -50,14 +59,18 @@ export function QuestionnaireQuestionFieldBody({
             onChange={(e) => onChange(e.target.value)}
             placeholder="Type your response here"
             rows={5}
-            maxLength={TEXT_ANSWER_MAX_LENGTH}
+            maxLength={maxLen}
             className="pb-8"
           />
           <span
-            className="pointer-events-none absolute bottom-3 right-3 font-sans text-xs text-muted-foreground"
+            className={cn(
+              "pointer-events-none absolute right-3 bottom-3 font-sans text-xs tabular-nums",
+              belowMin ? "text-destructive" : "text-muted-foreground",
+            )}
             aria-hidden
           >
-            {text.length}/{TEXT_ANSWER_MAX_LENGTH}
+            {trimmedLength}/{maxLen}
+            {minLen != null ? ` (min ${minLen})` : ""}
           </span>
         </div>
       );
