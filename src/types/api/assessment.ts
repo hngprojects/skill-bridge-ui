@@ -215,7 +215,7 @@ export type AdvancedAssessmentSubmitResponseData = {
 export type AssessmentFlagEventType = "tab_switch" | "copy_paste";
 
 export type AssessmentFlagInput = {
-  eventType: AssessmentFlagEventType;
+  event_type: AssessmentFlagEventType;
 };
 
 export type AssessmentFlagResponseData = {
