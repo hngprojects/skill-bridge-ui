@@ -105,11 +105,16 @@ export async function submitAdvancedAssessment(
 }
 
 export async function flagAssessmentEvent(
+  type: "advanced" | "skill",
   sessionId: string,
   body: AssessmentFlagInput,
 ): Promise<AssessmentFlagResponseData> {
+  const url =
+    type === "advanced"
+      ? `/talent/assessment/session/${sessionId}/flag`
+      : `/talent/assessment/skill/session/${sessionId}/flag`;
   const res = await authApi.post<ApiEnvelope<AssessmentFlagResponseData>>(
-    `/talent/assessment/session/${sessionId}/flag`,
+    url,
     body,
   );
   return unwrapData(res);

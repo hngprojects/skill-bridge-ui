@@ -10,6 +10,7 @@ import type {
   TalentOnboardingProfileInput,
   TalentOnboardingProfileResponseData,
   TalentOnboardingPersonaliseResponseData,
+  UploadAvatarResponseData,
 } from "@/types/api";
 
 import { unwrapData } from "./utils";
@@ -64,5 +65,18 @@ export async function personaliseTalentDashboard(): Promise<TalentOnboardingPers
   const res = await authApi.post<
     ApiEnvelope<TalentOnboardingPersonaliseResponseData>
   >("/talent/onboarding/personalise");
+  return unwrapData(res);
+}
+
+export async function uploadAvatar(
+  file: File,
+): Promise<UploadAvatarResponseData> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await authApi.post<ApiEnvelope<UploadAvatarResponseData>>(
+    "/talent/onboarding/avatar",
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } },
+  );
   return unwrapData(res);
 }

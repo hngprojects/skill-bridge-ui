@@ -40,6 +40,7 @@ export type {
   TalentOnboardingTrackCreateResponseData,
   TalentOnboardingTracksUpdateInput,
   TalentOnboardingTracksUpdateResponseData,
+  UploadAvatarResponseData,
 } from "./onboarding";
 export type {
   AdminCreateUserInput,
@@ -88,3 +89,9 @@ export type {
   SkillAssessmentSubmitResponseData,
   SkillLevel,
 } from "./assessment";
+
+export type {
+  NotificationApiItem,
+  NotificationsListResponseData,
+  UnreadCountResponseData,
+} from "./notifications";

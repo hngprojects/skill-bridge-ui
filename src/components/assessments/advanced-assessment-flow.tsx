@@ -4,10 +4,12 @@ import { useState, useEffect, useMemo, useRef } from "react";
 
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
+import ViolationDetector from "@/components/assessments/violation-detector";
 import {
   useStartAdvancedAssessment,
   useSubmitAdvancedAssessment,
 } from "@/hooks/api";
+import { useFlagAssessmentEvent } from "@/hooks/api/use-assessment";
 import {
   mapAdvancedQuestions,
   toAdvancedSubmitAnswers,
@@ -31,10 +33,10 @@ export function AdvancedAssessmentFlow() {
   const [startState, setStartState] = useState<AdvancedStartState>("loading");
   const startRequestedRef = useRef(false);
 
-  const { mutateAsync: startSession, isPending: isStarting } =
-    useStartAdvancedAssessment();
+  const { mutateAsync: startSession } = useStartAdvancedAssessment();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitAdvancedAssessment();
+  const flagViolation = useFlagAssessmentEvent("advanced", sessionId);
 
   useEffect(() => {
     if (startRequestedRef.current) return;
@@ -82,18 +84,30 @@ export function AdvancedAssessmentFlow() {
     );
   }
 
+  const submit = (answersByKey: Record<string, string | string[]>) =>
+    submitAssessment({
+      session_id: sessionId,
+      answers: toAdvancedSubmitAnswers(questions, answersByKey),
+    }).then(() => {});
+
+  const recordViolation = (count: number) => {
+    if (count >= 3 && !flagViolation.isPending && !flagViolation.isSuccess)
+      flagViolation.mutate({ event_type: "tab_switch" });
+  };
+
   return (
-    <QuestionnaireFlow
-      questions={questions}
-      isLoading={startState === "loading" || isStarting}
-      isSubmitting={isSubmitting}
-      initialSeconds={remainingSeconds}
-      onSubmit={(answersByKey) =>
-        submitAssessment({
-          session_id: sessionId,
-          answers: toAdvancedSubmitAnswers(questions, answersByKey),
-        }).then(() => {})
-      }
-    />
+    <ViolationDetector
+      enabled={startState === "ready"}
+      onViolation={recordViolation}
+      submissionConfirmed={flagViolation.isSuccess}
+    >
+      <QuestionnaireFlow
+        questions={questions}
+        isLoading={startState === "loading"}
+        isSubmitting={isSubmitting}
+        initialSeconds={remainingSeconds}
+        onSubmit={submit}
+      />
+    </ViolationDetector>
   );
 }

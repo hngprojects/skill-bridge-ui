@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,10 @@ const navLinks = [
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { status, data: session } = useSession();
+  const isAuthed = status === "authenticated";
+  const dashboardHref =
+    session?.user?.role === "talent" ? "/t/dashboard" : "/dashboard";
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
@@ -78,12 +83,16 @@ export function Navbar() {
             Hire a Talent
           </Link>
 
-          <Button
-            asChild
-            className="hidden rounded-lg bg-[#1B2935] px-6 py-5 text-sm font-semibold text-white hover:bg-[#25394a] lg:inline-flex"
-          >
-            <Link href="/login">Log In</Link>
-          </Button>
+          {status === "loading" ? null : (
+            <Button
+              asChild
+              className="hidden rounded-lg bg-[#1B2935] px-6 py-5 text-sm font-semibold text-white hover:bg-[#25394a] lg:inline-flex"
+            >
+              <Link href={isAuthed ? dashboardHref : "/login"}>
+                {isAuthed ? "Dashboard" : "Log In"}
+              </Link>
+            </Button>
+          )}
 
           {/* Mobile Menu Trigger */}
           <div className="lg:hidden">
@@ -110,14 +119,19 @@ export function Navbar() {
                       {link.label}
                     </Link>
                   ))}
-                  <Button
-                    asChild
-                    className="mt-2 w-fit rounded-lg bg-[#1B2935] px-6 py-5 text-sm font-semibold text-white hover:bg-[#25394a]"
-                  >
-                    <Link href="/login" onClick={() => setMobileOpen(false)}>
-                      Log In
-                    </Link>
-                  </Button>
+                  {status === "loading" ? null : (
+                    <Button
+                      asChild
+                      className="mt-2 w-fit rounded-lg bg-[#1B2935] px-6 py-5 text-sm font-semibold text-white hover:bg-[#25394a]"
+                    >
+                      <Link
+                        href={isAuthed ? dashboardHref : "/login"}
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {isAuthed ? "Dashboard" : "Log In"}
+                      </Link>
+                    </Button>
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
