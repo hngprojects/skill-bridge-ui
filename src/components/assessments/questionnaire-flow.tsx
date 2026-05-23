@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useParams, useRouter } from "next/navigation";
 
@@ -88,14 +88,14 @@ export function QuestionnaireFlow({
   >({});
   const [otherAnswers, setOtherAnswers] = useState<Record<string, string>>({});
 
-  // Per-question elapsed time. The map of accumulated seconds lives in a ref
-  // so updates don't churn renders; the "current question started at"
-  // timestamp uses useState with a lazy initializer because Date.now() during
-  // render isn't pure (react-hooks/purity).
+  // Per-question elapsed time. Both the accumulated seconds map and the
+  // "current question started at" timestamp live in refs so updates don't
+  // churn renders and Date.now() never runs during render (which would trip
+  // react-hooks/purity). The start ref stays `null` while the questionnaire
+  // is loading and is captured by the effect below the first time it's
+  // ready — so the first question's bucket doesn't include loading time.
   const timeSpentRef = useRef<Record<string, number>>({});
-  const [questionStartTime, setQuestionStartTime] = useState<number>(() =>
-    Date.now(),
-  );
+  const questionStartRef = useRef<number | null>(null);
 
   // Single source of truth for the questionnaire timer — desktop toolbar and
   // mobile header both read this value, so only one interval ticks. Disabled
@@ -136,6 +136,17 @@ export function QuestionnaireFlow({
 
   const question = questions[currentIndex];
   const isLast = currentIndex === questions.length - 1;
+
+  // Capture the moment the questionnaire first becomes interactive (loading
+  // finished + a question is mounted) so the first question's elapsed time
+  // doesn't include the loading screen. Ref mutation + Date.now() inside an
+  // effect is compiler-clean (unlike the same combo during render).
+  useEffect(() => {
+    if (!isLoading && question && questionStartRef.current === null) {
+      questionStartRef.current = Date.now();
+    }
+  }, [isLoading, question]);
+
   const currentValue = question ? answers[question.id] : undefined;
   const currentOther = question ? (otherAnswers[question.id] ?? "") : "";
   // When the question's "other" path is triggered, the revealed textarea
@@ -168,15 +179,17 @@ export function QuestionnaireFlow({
 
   const accumulateTimeForCurrentQuestion = () => {
     if (!question) return;
+    // Effect hasn't captured a start yet (questionnaire still loading).
+    if (questionStartRef.current === null) return;
     const now = Date.now();
-    const elapsed = Math.floor((now - questionStartTime) / 1000);
+    const elapsed = Math.floor((now - questionStartRef.current) / 1000);
     if (elapsed > 0) {
       timeSpentRef.current = {
         ...timeSpentRef.current,
         [question.id]: (timeSpentRef.current[question.id] ?? 0) + elapsed,
       };
     }
-    setQuestionStartTime(now);
+    questionStartRef.current = now;
   };
 
   const buildTimeSpentByKey = (): Record<string, number> => {
@@ -217,7 +230,7 @@ export function QuestionnaireFlow({
           // Parent appended new question(s) to `questions`. Reset the
           // start clock so the LLM round-trip doesn't get charged to the
           // freshly-appended question's time bucket.
-          setQuestionStartTime(Date.now());
+          questionStartRef.current = Date.now();
           setCurrentIndex((i) => i + 1);
           return;
         }

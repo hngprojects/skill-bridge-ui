@@ -39,6 +39,26 @@ function tabForStatus(
   return status === "completed" ? "completed" : "in-progress";
 }
 
+/**
+ * Single source of truth for "has the user used up all their skill attempts?"
+ * Honors all three possible API shapes:
+ *   1. `performance.skill.attemptsRemaining` (preferred)
+ *   2. `performance.skill.attemptsUsed` vs `skillMaxAttempts`
+ *   3. top-level `skillAttemptsUsed` vs `skillMaxAttempts`
+ * Returns false when the data is partial enough that we can't decide — never
+ * lock the user out on insufficient evidence.
+ */
+export function isSkillExhausted(
+  dashboardHome: DashboardHomeResponseData | undefined,
+): boolean {
+  if (!dashboardHome) return false;
+  const skill = dashboardHome.performance?.skill;
+  if (skill?.attemptsRemaining != null) return skill.attemptsRemaining === 0;
+  const used = skill?.attemptsUsed ?? dashboardHome.skillAttemptsUsed;
+  const max = dashboardHome.skillMaxAttempts;
+  return used != null && max != null && used >= max;
+}
+
 export function applyDashboardHomeToRoadmapSteps(
   steps: AssessmentRoadmapStep[],
   dashboardHome: DashboardHomeResponseData | undefined,
@@ -52,8 +72,7 @@ export function applyDashboardHomeToRoadmapSteps(
   // When the user has used all skill attempts they're effectively done with
   // skill — surface it as "completed" on the roadmap even though the journey
   // status comes back as "locked".
-  const skillAttemptsExhausted =
-    dashboardHome.performance?.skill?.attemptsRemaining === 0;
+  const skillAttemptsExhausted = isSkillExhausted(dashboardHome);
 
   return steps.map((step) => {
     const status = getStepStatus(step.id, statusByJourneyKey);
@@ -86,8 +105,7 @@ export function applyDashboardHomeToCatalogSteps(
   // Mirror the roadmap: when all skill attempts are used the user is done
   // with skill, so the catalog should render it as completed too even
   // though the journey status comes back as "locked".
-  const skillAttemptsExhausted =
-    dashboardHome.performance?.skill?.attemptsRemaining === 0;
+  const skillAttemptsExhausted = isSkillExhausted(dashboardHome);
 
   return steps.map((step) => {
     const status = getStepStatus(step.id, statusByJourneyKey);

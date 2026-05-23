@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Dot } from "lucide-react";
 
 import AssessmentContainer from "@/components/assessments/assessment-container";
+import { isSkillExhausted } from "@/components/assessments/dashboard-home-state";
 import { Progress } from "@/components/ui/progress";
 import { useDashboardHome } from "@/hooks/api/use-dashboard";
 import { useMe } from "@/hooks/api";
@@ -44,14 +45,15 @@ const SkillAssessementSummary = () => {
     "This does not define your potential. It helps us tailor your assessment accurately.";
 
   // Attempt counts come from /dashboard/home, not the submit response — the
-  // skill submit doesn't carry the user's running attempt tally.
+  // skill submit doesn't carry the user's running attempt tally. Exhaustion
+  // goes through the shared helper so partial payloads (e.g. only the
+  // top-level skillAttemptsUsed/skillMaxAttempts mirrors) still hide retake.
   const skillPerf = dashboardHome?.performance?.skill;
   const attemptsUsed =
     skillPerf?.attemptsUsed ?? dashboardHome?.skillAttemptsUsed;
-  const attemptsRemaining = skillPerf?.attemptsRemaining;
   const maxAttempts = dashboardHome?.skillMaxAttempts;
   const hasAttemptsInfo = attemptsUsed != null && maxAttempts != null;
-  const noAttemptsLeft = attemptsRemaining === 0;
+  const noAttemptsLeft = isSkillExhausted(dashboardHome);
   const showRetakeButton = isDowngraded && !noAttemptsLeft;
 
   return !isUserContextReady ? (

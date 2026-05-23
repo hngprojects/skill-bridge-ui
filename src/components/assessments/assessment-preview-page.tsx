@@ -1,6 +1,7 @@
 "use client";
 
 import { AssessmentPreviewCard } from "@/components/assessments/assessment-preview-card";
+import { isSkillExhausted } from "@/components/assessments/dashboard-home-state";
 import {
   getAssessmentPreview,
   type AssessmentPreview,
@@ -49,8 +50,7 @@ function AssessmentPreviewPage({ assessmentName }: AssessmentPreviewPageProps) {
   // questionnaire — redirect the user to the next step in their journey
   // (advanced) instead. Other previews keep their default Start → /q route.
   const skillExhausted =
-    assessmentName === "skill" &&
-    dashboardHome?.performance?.skill?.attemptsRemaining === 0;
+    assessmentName === "skill" && isSkillExhausted(dashboardHome);
   const startHref = skillExhausted ? "/t/assessments/advanced" : undefined;
   const startLabel = skillExhausted ? "Continue to advanced" : undefined;
 
