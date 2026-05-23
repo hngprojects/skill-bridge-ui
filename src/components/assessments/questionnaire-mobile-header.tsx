@@ -44,7 +44,7 @@ export function QuestionnaireMobileHeader({
         )}
         <Link
           href={`/t/assessments/${name}`}
-          aria-label="Save and exit"
+          aria-label="Exit"
           className="text-foreground/80 transition-colors hover:text-foreground"
         >
           <LogOut className="size-5" aria-hidden />

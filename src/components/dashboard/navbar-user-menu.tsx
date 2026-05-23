@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ChevronDown, UserRound, Settings } from "lucide-react";
+import { Bell, ChevronDown, UserRound } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 
@@ -68,10 +68,10 @@ export function DashboardNavbarUserMenu({
           asChild
           className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]"
         >
-          <Link href="/t/settings">
+          {/* <Link href="/t/settings">
             <Settings className="size-5 text-[#00000]" aria-hidden />
             Settings
-          </Link>
+          </Link> */}
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-2 bg-[#E4E7EC]" />
         <DropdownMenuItem
