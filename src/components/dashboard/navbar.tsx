@@ -30,7 +30,7 @@ export default function DashboardNavbar() {
           onOpenChange={setMobileOpen}
         />
         <Link
-          href="/t/dashboard"
+          href="/"
           className="inline-flex shrink-0 items-center gap-2"
           aria-label="SkillBridge home"
         >
