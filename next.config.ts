@@ -19,7 +19,7 @@ function imagePatternFromUrl(value: string | undefined): {
       protocol: url.protocol === "https:" ? "https" : "http",
       hostname: url.hostname,
       port: url.port || undefined,
-      pathname: "/**",
+      pathname: "/uploads/**",
     };
   } catch {
     return null;
@@ -32,13 +32,13 @@ const imageHostPatterns = [
     protocol: "http" as const,
     hostname: "localhost",
     port: "8080",
-    pathname: "/**",
+    pathname: "/uploads/**",
   },
   {
     protocol: "http" as const,
     hostname: "127.0.0.1",
     port: "8080",
-    pathname: "/**",
+    pathname: "/uploads/**",
   },
 ].filter((pattern): pattern is NonNullable<typeof pattern> => pattern !== null);
 
