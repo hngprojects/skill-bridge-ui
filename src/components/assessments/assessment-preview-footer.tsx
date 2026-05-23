@@ -18,12 +18,12 @@ function AssessmentPreviewFooter({
         >
           Skillbridge&apos;s assessment terms and guidelines
         </Link>
-        . If you need any assistance, you can visit the{" "}
+        . If you need any assistance, you can{" "}
         <Link
           href="/contact"
           className="font-semibold text-foreground underline underline-offset-2"
         >
-          Help Center
+          contact us
         </Link>{" "}
         for support.
       </p>
