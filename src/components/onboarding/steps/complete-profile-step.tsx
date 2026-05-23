@@ -23,11 +23,13 @@ type CompleteProfileStepProps = {
     education: string;
     linkedin: string;
   }) => void;
+  onImageChange?: (file: File) => void;
 };
 
 const CompleteProfileStep = ({
   onReadyChange,
   onValueChange,
+  onImageChange,
 }: CompleteProfileStepProps) => {
   const { fullName, email } = useSessionUserProfile();
 
@@ -50,7 +52,10 @@ const CompleteProfileStep = ({
       onSubmit={(e) => e.preventDefault()}
     >
       <ProfileImageUploader
-        onChange={(file) => setValue("profileImage", file)}
+        onChange={(file) => {
+          setValue("profileImage", file);
+          onImageChange?.(file);
+        }}
       />
 
       <div className="flex flex-col w-full gap-7">

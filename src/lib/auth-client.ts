@@ -27,7 +27,8 @@ function isOnboardingComplete(user: AuthUser): boolean | undefined {
 
 export function dashboardPathForRole(role: AuthUser["role"]): string {
   if (role === "talent") return "/t/dashboard";
-  return "/dashboard";
+  if (role === "employer") return "/e/dashboard";
+  return "/";
 }
 
 export function postAuthRedirectForUser(user: AuthUser): string {

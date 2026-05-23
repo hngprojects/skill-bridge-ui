@@ -16,27 +16,30 @@ interface ChartZone {
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
-const CHART_ZONES: ChartZone[] = [
-  {
-    id: "emerging",
-    label: "Emerging",
-    bars: [
-      { value: 12 },
-      { value: 39 },
-      { value: 47, active: true, activeLabel: "47%" },
-    ],
-  },
-  {
-    id: "intermediate",
-    label: "Intermediate",
-    bars: [{ value: 60 }, { value: 82 }, { value: 40 }],
-  },
-  {
-    id: "job-ready",
-    label: "Job Ready",
-    bars: [{ value: 48 }, { value: 12 }, { value: 6 }],
-  },
-];
+function buildChartZones(activePercentage: number | undefined): ChartZone[] {
+  const activeLabel = activePercentage != null ? `${activePercentage}%` : "47%";
+  return [
+    {
+      id: "emerging",
+      label: "Emerging",
+      bars: [
+        { value: 12 },
+        { value: 39 },
+        { value: 47, active: true, activeLabel },
+      ],
+    },
+    {
+      id: "intermediate",
+      label: "Intermediate",
+      bars: [{ value: 60 }, { value: 82 }, { value: 40 }],
+    },
+    {
+      id: "job-ready",
+      label: "Job Ready",
+      bars: [{ value: 48 }, { value: 12 }, { value: 6 }],
+    },
+  ];
+}
 
 const CHART_HEIGHT = 130; // px — visual bar area height
 const BAR_GAP = 6; // px — gap between bars inside a zone
@@ -71,12 +74,20 @@ function ZoneGroup({ zone }: { zone: ChartZone }) {
   );
 }
 
-export function DashboardSkillBreakdown() {
+type DashboardSkillBreakdownProps = {
+  /** User's advanced-assessment percentage; drives the active bar's label. */
+  activePercentage?: number;
+};
+
+export function DashboardSkillBreakdown({
+  activePercentage,
+}: DashboardSkillBreakdownProps = {}) {
   const today = new Date().toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
+  const chartZones = buildChartZones(activePercentage);
 
   return (
     <section
@@ -108,7 +119,7 @@ export function DashboardSkillBreakdown() {
 
       {/* Bar chart — extra top padding so hex badge has room */}
       <div className="flex items-end gap-4 pt-18">
-        {CHART_ZONES.map((zone) => (
+        {chartZones.map((zone) => (
           <ZoneGroup key={zone.id} zone={zone} />
         ))}
       </div>

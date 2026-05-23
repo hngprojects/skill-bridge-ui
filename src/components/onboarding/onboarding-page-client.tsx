@@ -18,6 +18,7 @@ import {
   useSaveTalentOnboardingTrack,
   useUpdateTalentOnboardingGoal,
   useSaveTalentOnboardingProfile,
+  useUploadAvatar,
 } from "@/hooks/api";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 import { authFailureMessage } from "@/lib/api";
@@ -59,6 +60,7 @@ function OnboardingPageClient() {
   } = useTalentOnboardingStore();
 
   const [profileStepReady, setProfileStepReady] = React.useState(false);
+  const [profileImage, setProfileImage] = React.useState<File | null>(null);
 
   React.useEffect(() => {
     if (!userId || ownerUserId === userId) return;
@@ -73,9 +75,15 @@ function OnboardingPageClient() {
     useSaveTalentOnboardingTrack();
   const { mutateAsync: saveProfile, isPending: isSavingProfile } =
     useSaveTalentOnboardingProfile();
+  const { mutateAsync: uploadAvatar, isPending: isUploadingAvatar } =
+    useUploadAvatar();
 
   const isSaving =
-    isSavingGoal || isUpdatingGoal || isSavingTrack || isSavingProfile;
+    isSavingGoal ||
+    isUpdatingGoal ||
+    isSavingTrack ||
+    isSavingProfile ||
+    isUploadingAvatar;
 
   const canGoNext =
     currentStepId === "set-goal"
@@ -141,20 +149,16 @@ function OnboardingPageClient() {
       }
 
       if (currentStepId === "complete-profile" && profileStepReady) {
-        if (profileSaved) {
-          await saveProfile({
-            region: profileRegion,
-            educationLevel: profileEducation,
-            ...(profileLinkedin ? { linkedinUrl: profileLinkedin } : {}),
-          });
-        } else {
-          await saveProfile({
-            region: profileRegion,
-            educationLevel: profileEducation,
-            ...(profileLinkedin ? { linkedinUrl: profileLinkedin } : {}),
-          });
-          setProfileSaved(true);
-        }
+        const avatarResult = profileImage
+          ? await uploadAvatar(profileImage)
+          : null;
+        await saveProfile({
+          region: profileRegion,
+          educationLevel: profileEducation,
+          ...(profileLinkedin ? { linkedinUrl: profileLinkedin } : {}),
+          ...(avatarResult ? { avatarUrl: avatarResult.avatarUrl } : {}),
+        });
+        if (!profileSaved) setProfileSaved(true);
         advanceStep();
         return;
       }
@@ -205,13 +209,11 @@ function OnboardingPageClient() {
         <CompleteProfileStep
           onReadyChange={setProfileStepReady}
           onValueChange={onProfileValueChange}
+          onImageChange={setProfileImage}
         />
       );
       break;
     case "generate-roadmap":
-      title = "Personalizing your dashboard...";
-      description =
-        "We will build a personalized roadmap based on your goal and track.";
       content = <GenerateRoadmapStep />;
       break;
     default:
