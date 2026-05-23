@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+
 import { useParams, useRouter } from "next/navigation";
 
 import { FileEmpty01Icon, Loading03Icon } from "@hugeicons/core-free-icons";
@@ -34,7 +35,32 @@ export type QuestionnaireFlowProps = {
   isSubmitting: boolean;
   initialSeconds?: number;
   prefillAnswers?: Record<string, string | string[]>;
-  onSubmit: (answers: Record<string, string | string[]>) => Promise<unknown>;
+  /**
+   * Called on the final question's Next click. `timeSpentByKey` mirrors
+   * `answers` (keyed by `question.key`) and carries the seconds the user
+   * actively spent on each question — accumulated as they move through and
+   * sent to the backend so the AI grader can flag low-integrity rushes.
+   */
+  onSubmit: (
+    answers: Record<string, string | string[]>,
+    timeSpentByKey?: Record<string, number>,
+  ) => Promise<unknown>;
+  /**
+   * Optional hook for flows that need to do server work mid-questionnaire
+   * (e.g. the advanced assessment's LT-2 → LT-3 synthesis). When the user
+   * clicks Next on what the flow currently thinks is the last question, this
+   * is awaited first. If it returns `true`, the parent is expected to have
+   * appended new questions to the `questions` prop — the flow then advances
+   * to the next index instead of calling `onSubmit` / navigating away.
+   *
+   * Errors thrown here surface as the same toast `onSubmit` errors do, and
+   * the user stays on the current question to retry.
+   */
+  onLastQuestionAdvance?: (
+    question: Question,
+    answers: Record<string, string | string[]>,
+    timeSpentByKey: Record<string, number>,
+  ) => Promise<boolean>;
 };
 
 export function QuestionnaireFlow({
@@ -44,6 +70,7 @@ export function QuestionnaireFlow({
   initialSeconds,
   prefillAnswers,
   onSubmit,
+  onLastQuestionAdvance,
 }: QuestionnaireFlowProps) {
   const router = useRouter();
   const { name } = useParams<{ name: string }>();
@@ -60,6 +87,15 @@ export function QuestionnaireFlow({
     Record<string, string | string[]>
   >({});
   const [otherAnswers, setOtherAnswers] = useState<Record<string, string>>({});
+
+  // Per-question elapsed time. The map of accumulated seconds lives in a ref
+  // so updates don't churn renders; the "current question started at"
+  // timestamp uses useState with a lazy initializer because Date.now() during
+  // render isn't pure (react-hooks/purity).
+  const timeSpentRef = useRef<Record<string, number>>({});
+  const [questionStartTime, setQuestionStartTime] = useState<number>(() =>
+    Date.now(),
+  );
 
   // Single source of truth for the questionnaire timer — desktop toolbar and
   // mobile header both read this value, so only one interval ticks. Disabled
@@ -130,18 +166,63 @@ export function QuestionnaireFlow({
     setOtherAnswers((prev) => ({ ...prev, [question.id]: next }));
   };
 
-  const handleBack = () => setCurrentIndex((i) => Math.max(0, i - 1));
+  const accumulateTimeForCurrentQuestion = () => {
+    if (!question) return;
+    const now = Date.now();
+    const elapsed = Math.floor((now - questionStartTime) / 1000);
+    if (elapsed > 0) {
+      timeSpentRef.current = {
+        ...timeSpentRef.current,
+        [question.id]: (timeSpentRef.current[question.id] ?? 0) + elapsed,
+      };
+    }
+    setQuestionStartTime(now);
+  };
+
+  const buildTimeSpentByKey = (): Record<string, number> => {
+    const result: Record<string, number> = {};
+    for (const q of questions) {
+      const t = timeSpentRef.current[q.id];
+      if (t != null) result[q.key] = t;
+    }
+    return result;
+  };
+
+  const handleBack = () => {
+    accumulateTimeForCurrentQuestion();
+    setCurrentIndex((i) => Math.max(0, i - 1));
+  };
 
   const handleNext = async () => {
     if (!question || !canProceed || isSubmitting) return;
+
+    accumulateTimeForCurrentQuestion();
+
     if (!isLast) {
       setCurrentIndex((i) => i + 1);
       return;
     }
+
+    const builtAnswers = buildAnswers(questions, answers, otherAnswers);
+    const builtTimeByKey = buildTimeSpentByKey();
+
     try {
-      const result = await onSubmit(
-        buildAnswers(questions, answers, otherAnswers),
-      );
+      if (onLastQuestionAdvance) {
+        const intercepted = await onLastQuestionAdvance(
+          question,
+          builtAnswers,
+          builtTimeByKey,
+        );
+        if (intercepted) {
+          // Parent appended new question(s) to `questions`. Reset the
+          // start clock so the LLM round-trip doesn't get charged to the
+          // freshly-appended question's time bucket.
+          setQuestionStartTime(Date.now());
+          setCurrentIndex((i) => i + 1);
+          return;
+        }
+      }
+      const result = await onSubmit(builtAnswers, builtTimeByKey);
       if (isAssessmentSlug(name) && user?.id) {
         if (result != null) {
           setSummaryResult(user.id, name, result);

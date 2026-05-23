@@ -63,6 +63,8 @@ export type {
 } from "./dashboard";
 export type {
   AdvancedAssessmentApiQuestion,
+  AdvancedAssessmentLt2SubmitInput,
+  AdvancedAssessmentLt2SubmitResponseData,
   AdvancedAssessmentQuestionBlock,
   AdvancedAssessmentQuestionMetadata,
   AdvancedAssessmentQuestionType,
