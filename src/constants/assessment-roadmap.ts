@@ -218,7 +218,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     state: "available",
     category: "job-assessment",
     ctaLabel: "Start",
-    cooldownLabel: "Retake in 24 hours",
+    cooldownLabel: "3 Attempts",
   },
   {
     id: "advanced-assessment",

@@ -11,10 +11,12 @@ import {
   startPersonalAssessment,
   startSkillAssessment,
   submitAdvancedAssessment,
+  submitAdvancedAssessmentLt2,
   submitPersonalAssessment,
   submitSkillAssessment,
 } from "@/actions/assessment";
 import type {
+  AdvancedAssessmentLt2SubmitInput,
   AdvancedAssessmentSubmitInput,
   AssessmentFlagInput,
   PersonalAssessmentSubmitInput,
@@ -105,6 +107,17 @@ export function useSubmitAdvancedAssessment() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
     },
+  });
+}
+
+/**
+ * Submits the user's answer to the second (last) LT-2 / work_task long-text
+ * question. The server generates LT-3 and returns it for the client to render.
+ */
+export function useSubmitAdvancedAssessmentLt2(sessionId: string) {
+  return useMutation({
+    mutationFn: (body: AdvancedAssessmentLt2SubmitInput) =>
+      submitAdvancedAssessmentLt2(sessionId, body),
   });
 }
 
