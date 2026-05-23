@@ -30,7 +30,7 @@ export function SettingsAboutMe({
   const [bio, setBio] = useState("");
 
   return (
-    <div className="rounded-2xl border border-border bg-white p-6">
+    <div className="rounded-2xl border border-border bg-[#FAFAFA] p-6">
       <div className="flex items-start justify-between mb-6">
         <h2 className="text-lg font-semibold text-foreground">About me</h2>
         {isVerified && (
