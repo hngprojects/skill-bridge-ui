@@ -16,12 +16,14 @@ type AssessmentSummaryResult = {
 
 type AssessmentSummaryState = {
   resultsByUser: Record<string, AssessmentSummaryResult>;
+  skillClaimedLevelsByUser: Record<string, string | null>;
   setResult: <T extends AssessmentSlug>(
     userId: string,
     slug: T,
     result: AssessmentSummaryResult[T],
   ) => void;
   clearResult: (userId: string, slug: AssessmentSlug) => void;
+  setSkillClaimedLevel: (userId: string, level: string | null) => void;
 };
 
 const INITIAL_RESULTS: AssessmentSummaryResult = {
@@ -34,6 +36,7 @@ export const useAssessmentSummaryStore = create<AssessmentSummaryState>()(
   persist(
     (set) => ({
       resultsByUser: {},
+      skillClaimedLevelsByUser: {},
       setResult: (userId, slug, result) =>
         set((state) => ({
           resultsByUser: {
@@ -54,11 +57,19 @@ export const useAssessmentSummaryStore = create<AssessmentSummaryState>()(
             },
           },
         })),
+      setSkillClaimedLevel: (userId, level) =>
+        set((state) => ({
+          skillClaimedLevelsByUser: {
+            ...state.skillClaimedLevelsByUser,
+            [userId]: level,
+          },
+        })),
     }),
     {
       name: "skillbridge-assessment-summary",
       partialize: (state) => ({
         resultsByUser: state.resultsByUser,
+        skillClaimedLevelsByUser: state.skillClaimedLevelsByUser,
       }),
     },
   ),

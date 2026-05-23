@@ -30,8 +30,8 @@ export const ASSESSMENT_PREVIEWS = {
       "Tell us about your specialization, tools, experience level, and work preferences.",
     iconSrc: "/assets/assessments/personal-assessment-icon.svg",
     questionCount: "15 - 20 Questions",
-    duration: "---",
-    attempts: "---",
+    duration: "No duration",
+    attempts: "1 attempt",
   },
   skill: {
     slug: "skill",
@@ -39,9 +39,9 @@ export const ASSESSMENT_PREVIEWS = {
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     iconSrc: "/assets/assessments/skill-assessment-icon.svg",
-    questionCount: "---",
+    questionCount: "15-20 Questions",
     duration: "30 minutes",
-    attempts: "1/3 (allowed within time limit)",
+    attempts: "3 attempts (allowed within time limit)",
   },
   advanced: {
     slug: "advanced",
@@ -51,7 +51,7 @@ export const ASSESSMENT_PREVIEWS = {
     iconSrc: "/assets/assessments/advanced-assessment-icon.svg",
     questionCount: "30 Questions",
     duration: "20-30 minutes",
-    attempts: "1/1 (allowed within time limit)",
+    attempts: "1 attempt (allowed within time limit)",
     retakeText: "Retake valid after 14 days",
   },
 } satisfies Record<string, AssessmentPreview>;
