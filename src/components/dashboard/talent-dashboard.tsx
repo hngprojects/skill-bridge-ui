@@ -11,7 +11,11 @@ export function TalentDashboard() {
   const { data: dashboardHome } = useDashboardHome();
   const variant = pickDashboardVariant(dashboardHome);
 
-  if (variant === "job-ready") return <JobReadyDashboard />;
-  if (variant === "emerging-user") return <EmergingUserDashboard />;
+  if (variant === "job-ready" && dashboardHome) {
+    return <JobReadyDashboard dashboardHome={dashboardHome} />;
+  }
+  if (variant === "emerging-user" && dashboardHome) {
+    return <EmergingUserDashboard dashboardHome={dashboardHome} />;
+  }
   return <Overview />;
 }
