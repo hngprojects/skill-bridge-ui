@@ -18,7 +18,7 @@ export function EmployerNavbar() {
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center px-4 sm:px-6 lg:h-[72px]">
         <Link
-          href="/"
+          href="/e/dashboard"
           className="inline-flex shrink-0 items-center gap-2"
           aria-label="SkillBridge home"
         >
