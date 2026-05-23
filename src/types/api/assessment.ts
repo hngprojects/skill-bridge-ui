@@ -46,6 +46,10 @@ export type SkillAssessmentApiQuestion = {
   question_type: SkillAssessmentQuestionType;
   question_text: string;
   options: string[] | null;
+  /** Set for required_text blocks; null for choice questions. */
+  min_length?: number | null;
+  /** Set for required_text blocks; null for choice questions. */
+  max_length?: number | null;
 };
 
 export type SkillAssessmentStartResponseData = {

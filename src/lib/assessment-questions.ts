@@ -44,6 +44,8 @@ export function mapSkillQuestions(
     prompt: q.question_text,
     required: true,
     options: q.options ?? undefined,
+    minLength: q.min_length ?? undefined,
+    maxLength: q.max_length ?? undefined,
   }));
 }
 
