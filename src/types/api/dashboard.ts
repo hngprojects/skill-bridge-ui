@@ -1,3 +1,10 @@
+import type {
+  AssessmentIntegrityConfidence,
+  AssessmentTier,
+  GuidanceReport,
+  SkillLevel,
+} from "./assessment";
+
 export type DashboardJourneyStatus = "available" | "completed" | "locked";
 
 export type DashboardJourneyKey =
@@ -12,8 +19,52 @@ export type DashboardJourneyOverviewItem = {
   status: DashboardJourneyStatus;
 };
 
+export type DashboardPerformanceSkill = {
+  score: number;
+  maxScore: number;
+  percentage: number;
+  validatedLevel: SkillLevel;
+  passed: boolean;
+  /** ISO timestamp. */
+  completedAt: string;
+  /** May be empty `{}` until AI grading produces a report. */
+  guidanceReport: Partial<GuidanceReport>;
+};
+
+export type DashboardAdvancedRetake = {
+  /** ISO timestamp at which the user becomes eligible to retake. */
+  eligibilityDate: string;
+  ctaEnabled: boolean;
+  countdownSeconds: number;
+  daysRemaining: number;
+};
+
+export type DashboardPerformanceAdvanced = {
+  score: number;
+  maxScore: number;
+  percentage: number;
+  tier: AssessmentTier;
+  /** Display label for `tier`, e.g. "Job Ready". */
+  tierLabel: string;
+  integrityConfidence: AssessmentIntegrityConfidence;
+  /** ISO timestamp. */
+  completedAt: string;
+  /** May be empty `{}` until AI grading produces a report. */
+  guidanceReport: Partial<GuidanceReport>;
+  retake: DashboardAdvancedRetake;
+};
+
+export type DashboardPerformance = {
+  skill?: DashboardPerformanceSkill;
+  advanced?: DashboardPerformanceAdvanced;
+};
+
 export type DashboardHomeResponseData = {
   firstName: string;
   profileCompletionPercentage: number;
   journeyOverview: DashboardJourneyOverviewItem[];
+  /** Present once the user has at least started skill or advanced. */
+  performance?: DashboardPerformance;
+  /** Top-level retake hint mirroring `performance.advanced.retake`. */
+  advancedRetake?: DashboardAdvancedRetake;
 };
