@@ -40,6 +40,7 @@ export type {
   TalentOnboardingTrackCreateResponseData,
   TalentOnboardingTracksUpdateInput,
   TalentOnboardingTracksUpdateResponseData,
+  UploadAvatarResponseData,
 } from "./onboarding";
 export type {
   AdminCreateUserInput,
