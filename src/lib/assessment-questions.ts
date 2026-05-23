@@ -79,6 +79,8 @@ export function mapAdvancedQuestions(
       prompt: q.question_text,
       required,
       options: q.options ?? undefined,
+      minLength: q.min_length ?? undefined,
+      maxLength: q.max_length ?? undefined,
     };
   });
 }

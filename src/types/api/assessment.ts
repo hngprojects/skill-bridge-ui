@@ -159,6 +159,10 @@ export type AdvancedAssessmentApiQuestion = {
   metadata: AdvancedAssessmentQuestionMetadata | null;
   /** Always stripped server-side. */
   correct_answer: null;
+  /** Set for short_text / long_text blocks; null for mcq. */
+  min_length: number | null;
+  /** Set for short_text / long_text blocks; null for mcq. */
+  max_length: number | null;
 };
 
 export type AdvancedAssessmentStartResponseData = {
