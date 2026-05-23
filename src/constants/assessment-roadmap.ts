@@ -163,21 +163,21 @@ export const ASSESSMENT_CATALOG_TABS: AssessmentCatalogTab[] = [
       "job-assessment",
     ],
   },
-  {
-    id: "data-type-assessment",
-    label: "Data type assessment",
-    aliases: ["data-type-assessment"],
-  },
-  {
-    id: "system-design",
-    label: "System design",
-    aliases: ["system-design"],
-  },
-  {
-    id: "miscellaneous",
-    label: "Miscellaneous",
-    aliases: ["miscellaneous"],
-  },
+  // {
+  //   id: "data-type-assessment",
+  //   label: "Data type assessment",
+  //   aliases: ["data-type-assessment"],
+  // },
+  // {
+  //   id: "system-design",
+  //   label: "System design",
+  //   aliases: ["system-design"],
+  // },
+  // {
+  //   id: "miscellaneous",
+  //   label: "Miscellaneous",
+  //   aliases: ["miscellaneous"],
+  // },
 ];
 
 export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
