@@ -48,7 +48,7 @@ export function QuestionnaireToolbar({
         className="ml-auto h-auto gap-2 px-2 font-sans text-base font-medium text-foreground hover:bg-transparent hover:text-foreground/80"
       >
         <Link href={`/t/assessments/${name}`}>
-          Save and Exit
+          Exit
           <LogOut className="size-5" aria-hidden />
         </Link>
       </Button>
