@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { LockKeyhole, MoreHorizontal } from "lucide-react";
+import { LockKeyhole } from "lucide-react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { SparklesIcon, Tick01Icon } from "@hugeicons/core-free-icons";
 
@@ -109,15 +109,7 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
                 {step.lockLabel ?? "Unlock Assessment"}
                 <LockKeyhole className="size-3.5" />
               </Badge>
-            ) : (
-              <button
-                type="button"
-                aria-label={`More actions for ${step.title}`}
-                className="rounded-md p-1 text-[#151515] transition-colors hover:bg-[#F5F5F5]"
-              >
-                <MoreHorizontal className="size-5" />
-              </button>
-            )}
+            ) : null}
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
