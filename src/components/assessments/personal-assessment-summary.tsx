@@ -10,12 +10,40 @@ import { useMe } from "@/hooks/api";
 
 const TRACK_LABELS: Record<string, string> = {
   backend_developer: "Backend Development",
+  cloud_devops: "Cloud / DevOps",
+  cybersecurity: "Cybersecurity",
+  data_analyst: "Data Analysis",
   frontend_developer: "Frontend Development",
   fullstack_developer: "Fullstack Development",
+  mobile_developer: "Mobile Development",
   product_designer: "Product Design",
   product_manager: "Product Management",
   data_scientist: "Data Science",
 };
+
+const TRACK_SUFFIX_LABELS: Record<string, string> = {
+  analyst: "Analysis",
+  developer: "Development",
+  designer: "Design",
+  engineer: "Engineering",
+  manager: "Management",
+  scientist: "Science",
+};
+
+function toTitleCase(value: string) {
+  return value
+    .split("_")
+    .filter(Boolean)
+    .map((word) => {
+      if (word === "ios") return "iOS";
+      if (word === "ui") return "UI";
+      if (word === "ux") return "UX";
+      if (word === "devops") return "DevOps";
+
+      return word[0].toUpperCase() + word.slice(1);
+    })
+    .join(" ");
+}
 
 function formatTrackLabel(track?: string | null) {
   if (!track) return "your selected track";
@@ -23,11 +51,16 @@ function formatTrackLabel(track?: string | null) {
   const normalizedTrack = track.toLowerCase().replace(/[\s-]+/g, "_");
   if (TRACK_LABELS[normalizedTrack]) return TRACK_LABELS[normalizedTrack];
 
-  return normalizedTrack
-    .split("_")
-    .filter(Boolean)
-    .map((word) => word[0].toUpperCase() + word.slice(1))
-    .join(" ");
+  const trackParts = normalizedTrack.split("_").filter(Boolean);
+  const suffix = trackParts.at(-1);
+
+  if (suffix && TRACK_SUFFIX_LABELS[suffix]) {
+    return toTitleCase(
+      [...trackParts.slice(0, -1), TRACK_SUFFIX_LABELS[suffix]].join("_"),
+    );
+  }
+
+  return toTitleCase(normalizedTrack);
 }
 
 const PersonalAssessmentSummary = () => {
