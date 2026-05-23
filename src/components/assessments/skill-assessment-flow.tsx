@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import { getSkillAssessmentSession } from "@/actions/assessment";
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
 import ViolationDetector from "@/components/assessments/violation-detector";
-import { getSkillAssessmentSession } from "@/actions/assessment";
 import {
   useMe,
   useStartSkillAssessment,
@@ -15,11 +16,11 @@ import {
   mapSkillQuestions,
   toSkillSubmitAnswers,
 } from "@/lib/assessment-questions";
+import { authFailureMessage, isServiceUnavailableError } from "@/lib/api";
 import {
-  ApiError,
-  authFailureMessage,
-  isServiceUnavailableError,
-} from "@/lib/api";
+  existingSessionIdFromError,
+  loadSkillSessionWithQuestions,
+} from "@/lib/skill-assessment-session";
 import { appToast } from "@/lib/toast";
 import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
 import type {
@@ -30,17 +31,6 @@ import type {
 type SkillStartState = "loading" | "ready" | "unavailable" | "failed";
 
 const SKILL_PREVIEW_PATH = "/t/assessments/skill";
-
-/** A 409 from /skill/start carries the id of the already-active session. */
-function existingSessionIdFromError(error: unknown): string | undefined {
-  if (!(error instanceof ApiError) || error.status !== 409) return undefined;
-  const data = error.data;
-  if (data && typeof data === "object" && "existing_session_id" in data) {
-    const id = (data as { existing_session_id?: unknown }).existing_session_id;
-    return typeof id === "string" && id ? id : undefined;
-  }
-  return undefined;
-}
 
 export function SkillAssessmentFlow() {
   const [sessionId, setSessionId] = useState("");
@@ -63,22 +53,28 @@ export function SkillAssessmentFlow() {
   useEffect(() => {
     if (startRequestedRef.current) return;
     startRequestedRef.current = true;
+    let cancelled = false;
 
     const applySession = (data: SkillAssessmentStartResponseData) => {
+      if (cancelled) return;
       setSessionId(data.session_id);
       setApiQuestions(data.questions ?? []);
       setClaimedLevel(data.verified_level);
       setStartState("ready");
     };
 
-    startSession()
-      .then(applySession)
-      .catch(async (e) => {
-        // An active session already exists (409) — resume it instead.
+    (async () => {
+      try {
+        applySession(await loadSkillSessionWithQuestions(await startSession()));
+      } catch (e) {
         const existingId = existingSessionIdFromError(e);
         if (existingId) {
           try {
-            applySession(await getSkillAssessmentSession(existingId));
+            applySession(
+              await loadSkillSessionWithQuestions(
+                await getSkillAssessmentSession(existingId),
+              ),
+            );
           } catch (resumeError) {
             if (isServiceUnavailableError(resumeError)) {
               setStartState("unavailable");
@@ -92,11 +88,16 @@ export function SkillAssessmentFlow() {
 
         if (isServiceUnavailableError(e)) {
           setStartState("unavailable");
-          return;
+        } else {
+          setStartState("failed");
+          appToast.error(authFailureMessage(e));
         }
-        setStartState("failed");
-        appToast.error(authFailureMessage(e));
-      });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [startSession]);
 
   useEffect(() => {

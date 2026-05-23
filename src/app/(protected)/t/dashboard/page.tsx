@@ -1,5 +1,5 @@
-import { Overview } from "@/components/assessments/overview";
+import { TalentDashboard } from "@/components/dashboard/talent-dashboard";
 
-export default function TalentDashboard() {
-  return <Overview />;
+export default function TalentDashboardPage() {
+  return <TalentDashboard />;
 }
