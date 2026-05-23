@@ -25,9 +25,15 @@ const SkillAssessementSummary = () => {
   const result = useAssessmentSummaryStore((state) =>
     user?.id ? state.resultsByUser[user.id]?.skill : null,
   );
+  const storedClaimedLevel = useAssessmentSummaryStore((state) =>
+    user?.id ? state.skillClaimedLevelsByUser[user.id] : null,
+  );
   const isUserContextReady = Boolean(user?.id);
   const validatedLevel = formatLevel(result?.validated_level, "Junior");
-  const claimedLevel = formatLevel(result?.claimed_level, "Mid-Level");
+  const claimedLevel = formatLevel(
+    result?.claimed_level ?? storedClaimedLevel ?? undefined,
+    "your selected level",
+  );
   const progressValue = result?.percentage ?? 57;
   const isDowngraded = result?.downgraded ?? true;
   const feedback =
