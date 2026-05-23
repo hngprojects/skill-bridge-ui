@@ -8,9 +8,31 @@ import NextUpCard from "./next-up-card";
 import { Button } from "../ui/button";
 import { useMe } from "@/hooks/api";
 
+const TRACK_LABELS: Record<string, string> = {
+  backend_developer: "Backend Development",
+  frontend_developer: "Frontend Development",
+  fullstack_developer: "Fullstack Development",
+  product_designer: "Product Design",
+  product_manager: "Product Management",
+  data_scientist: "Data Science",
+};
+
+function formatTrackLabel(track?: string | null) {
+  if (!track) return "your selected track";
+
+  const normalizedTrack = track.toLowerCase().replace(/[\s-]+/g, "_");
+  if (TRACK_LABELS[normalizedTrack]) return TRACK_LABELS[normalizedTrack];
+
+  return normalizedTrack
+    .split("_")
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 const PersonalAssessmentSummary = () => {
   const { data: user } = useMe({ enabled: true });
-  const userTrack = user?.track ?? "your selected track";
+  const userTrack = formatTrackLabel(user?.track);
 
   return (
     <AssessmentContainer>
@@ -26,9 +48,9 @@ const PersonalAssessmentSummary = () => {
         </h2>
         <p className="text-base md:text-lg font-light max-w-196.75">
           Based on your background in{" "}
-          <span className="font-bold capitalize">{userTrack}</span>. We&apos;ve
-          processed your responses to personalize your learning path, job
-          matches, and upcoming skill assessments.
+          <span className="font-bold">{userTrack}</span>. We&apos;ve processed
+          your responses to personalize your learning path, job matches, and
+          upcoming skill assessments.
         </p>
       </section>
       <div className="flex flex-col items-center">

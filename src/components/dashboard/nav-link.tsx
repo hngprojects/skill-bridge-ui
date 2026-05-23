@@ -39,7 +39,7 @@ export function DashboardNavLink({
       {badge === "New" ? (
         <Badge
           variant="secondary"
-          className="h-5 gap-1 rounded-full border-0.5 border-gray-200 bg-white px-2 text-[11px] font-semibold text-foreground"
+          className="gap-1 rounded-full border border-gray-300 bg-white p-2 text-[11px] font-bold text-foreground"
         >
           New
           <Image
