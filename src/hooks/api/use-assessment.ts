@@ -6,6 +6,7 @@ import {
   flagAssessmentEvent,
   getAssessmentSession,
   getPersonalAssessmentSession,
+  resolveAdvancedAssessmentSession,
   startAdvancedAssessment,
   startPersonalAssessment,
   startSkillAssessment,
@@ -71,6 +72,16 @@ export function useSubmitSkillAssessment() {
 export function useStartAdvancedAssessment() {
   return useMutation({
     mutationFn: () => startAdvancedAssessment(),
+  });
+}
+
+/**
+ * Start a new advanced session, or transparently resume the existing one when
+ * the server returns 409. Same response shape either way.
+ */
+export function useResolveAdvancedAssessmentSession() {
+  return useMutation({
+    mutationFn: () => resolveAdvancedAssessmentSession(),
   });
 }
 
