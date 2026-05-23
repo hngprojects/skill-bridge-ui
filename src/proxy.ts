@@ -11,10 +11,20 @@ const SECURITY_HEADERS: Record<string, string> = {
 };
 
 const ROLE_PROTECTED_ROUTES: { path: string; role: UserRole }[] = [
-  { path: "/t/", role: "talent" },
+  { path: "/t", role: "talent" },
   { path: "/talent", role: "talent" },
+  { path: "/e", role: "employer" },
   { path: "/employer/onboarding", role: "employer" },
 ];
+
+/** Routes a signed-in user should never see — they're redirected to their dashboard. */
+const AUTH_ROUTES = ["/login", "/signup", "/forgot-password"];
+
+function dashboardPathForRole(role: UserRole | undefined): string {
+  if (role === "talent") return "/t/dashboard";
+  if (role === "employer") return "/e/dashboard";
+  return "/";
+}
 
 function continueWithSecurityHeaders(request: Request): NextResponse {
   const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
@@ -36,16 +46,25 @@ function continueWithSecurityHeaders(request: Request): NextResponse {
 
 export const proxy = auth((request) => {
   const { pathname } = request.nextUrl;
+  const user = request.auth?.user as
+    | { id?: string; role?: UserRole }
+    | undefined;
+
+  // Keep signed-in users out of the auth pages.
+  const isAuthRoute = AUTH_ROUTES.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+  if (user?.id && isAuthRoute) {
+    return NextResponse.redirect(
+      new URL(dashboardPathForRole(user.role), request.url),
+    );
+  }
 
   const protectedRoute = ROLE_PROTECTED_ROUTES.find(
     ({ path }) => pathname === path || pathname.startsWith(`${path}/`),
   );
 
   if (protectedRoute) {
-    const user = request.auth?.user as
-      | { id?: string; role?: UserRole }
-      | undefined;
-
     if (!user?.id) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
@@ -53,7 +72,9 @@ export const proxy = auth((request) => {
     }
 
     if (user.role !== protectedRoute.role) {
-      return NextResponse.redirect(new URL("/forbidden", request.url));
+      return NextResponse.redirect(
+        new URL(dashboardPathForRole(user.role), request.url),
+      );
     }
   }
 

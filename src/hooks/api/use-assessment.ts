@@ -1,11 +1,12 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   flagAssessmentEvent,
   getAssessmentSession,
   getPersonalAssessmentSession,
+  resolveAdvancedAssessmentSession,
   startAdvancedAssessment,
   startPersonalAssessment,
   startSkillAssessment,
@@ -20,7 +21,7 @@ import type {
   SkillAssessmentSubmitInput,
 } from "@/types/api";
 
-import { assessmentKeys } from "./keys";
+import { assessmentKeys, dashboardKeys } from "./keys";
 
 export function useStartPersonalAssessment() {
   return useMutation({
@@ -37,9 +38,13 @@ export function usePersonalAssessmentSession(options?: { enabled?: boolean }) {
 }
 
 export function useSubmitPersonalAssessment() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: PersonalAssessmentSubmitInput) =>
       submitPersonalAssessment(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
+    },
   });
 }
 
@@ -52,9 +57,13 @@ export function useStartSkillAssessment() {
 }
 
 export function useSubmitSkillAssessment() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: SkillAssessmentSubmitInput) =>
       submitSkillAssessment(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
+    },
   });
 }
 
@@ -63,6 +72,16 @@ export function useSubmitSkillAssessment() {
 export function useStartAdvancedAssessment() {
   return useMutation({
     mutationFn: () => startAdvancedAssessment(),
+  });
+}
+
+/**
+ * Start a new advanced session, or transparently resume the existing one when
+ * the server returns 409. Same response shape either way.
+ */
+export function useResolveAdvancedAssessmentSession() {
+  return useMutation({
+    mutationFn: () => resolveAdvancedAssessmentSession(),
   });
 }
 
@@ -79,15 +98,26 @@ export function useAssessmentSession(
 }
 
 export function useSubmitAdvancedAssessment() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: AdvancedAssessmentSubmitInput) =>
       submitAdvancedAssessment(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
+    },
   });
 }
 
-export function useFlagAssessmentEvent(sessionId: string) {
+export function useFlagAssessmentEvent(
+  type: "advanced" | "skill",
+  sessionId: string,
+) {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: AssessmentFlagInput) =>
-      flagAssessmentEvent(sessionId, body),
+      flagAssessmentEvent(type, sessionId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.home() });
+    },
   });
 }
