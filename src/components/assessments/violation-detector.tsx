@@ -9,6 +9,7 @@ type AntiCheatProps = {
   children: ReactNode;
   enabled: boolean;
   onViolation: (count: number) => void;
+  submissionConfirmed?: boolean;
   limit?: number;
 };
 
@@ -16,6 +17,7 @@ const ViolationDetector = ({
   children,
   enabled,
   onViolation,
+  submissionConfirmed = false,
   limit = 3,
 }: AntiCheatProps) => {
   const [dismissedAt, setDismissedAt] = useState(0);
@@ -33,7 +35,7 @@ const ViolationDetector = ({
   }, [enabled]);
 
   const warningOpen = count > dismissedAt && count < limit;
-  const autoSubmittedOpen = count >= limit;
+  const autoSubmittedOpen = count >= limit && submissionConfirmed;
   const dismissWarning = () => setDismissedAt(count);
 
   return (

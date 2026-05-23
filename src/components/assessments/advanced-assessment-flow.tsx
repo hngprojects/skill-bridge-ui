@@ -91,13 +91,15 @@ export function AdvancedAssessmentFlow() {
     }).then(() => {});
 
   const recordViolation = (count: number) => {
-    if (count === 3) flagViolation.mutate({ event_type: "tab_switch" });
+    if (count >= 3 && !flagViolation.isPending && !flagViolation.isSuccess)
+      flagViolation.mutate({ event_type: "tab_switch" });
   };
 
   return (
     <ViolationDetector
       enabled={startState === "ready"}
       onViolation={recordViolation}
+      submissionConfirmed={flagViolation.isSuccess}
     >
       <QuestionnaireFlow
         questions={questions}

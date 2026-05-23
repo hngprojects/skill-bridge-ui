@@ -15,9 +15,7 @@ function isScreenshotShortcut(e: KeyboardEvent): boolean {
     return true;
   }
   if (e.metaKey && e.shiftKey && key === "s") return true;
-  if (e.metaKey && !e.shiftKey && !e.ctrlKey && !e.altKey && key === "g") {
-    return true;
-  }
+
   return false;
 }
 
