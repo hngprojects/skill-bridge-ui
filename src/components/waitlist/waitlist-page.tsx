@@ -14,7 +14,7 @@ const WaitListPage = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f5f5f5]">
-      <SiteHeader onJoinClick={openModal} />
+      <SiteHeader />
       <main className="flex-1">
         <HeroSection onJoinClick={openModal} />
         <HowItWorks />
