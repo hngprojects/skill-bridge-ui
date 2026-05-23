@@ -106,7 +106,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     description:
       "Tell us about your specialization, tools, experience level, and work preferences.",
     ctaLabel: "Start",
-    estimatedTime: "30-45 minutes",
+    estimatedTime: "No duration",
     panelTitle: "Find your level!",
     panelIcon: MonitorCog,
     panelIconSrc: "/assets/icons/assessement-icon.svg",
@@ -123,7 +123,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     ctaLabel: "Start",
-    estimatedTime: "30-45 minutes",
+    estimatedTime: "30 minutes",
     panelTitle: "Choose a stack",
     panelIcon: LaptopMinimal,
     panelIconSrc: "/assets/icons/computer-setup-icon.svg",
@@ -140,7 +140,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     description:
       "To get verified score and become discoverable to top employers.",
     ctaLabel: "Start",
-    estimatedTime: "30-45 minutes",
+    estimatedTime: "35 minutes",
     panelTitle: "Get Job Ready!",
     panelIcon: BriefcaseBusiness,
     panelIconSrc: "/assets/icons/portfolio-icon.svg",
