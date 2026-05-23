@@ -101,7 +101,7 @@ export function SkillAssessmentFlow() {
   }, [startSession]);
 
   useEffect(() => {
-    if (!user?.id || !claimedLevel) return;
+    if (!user?.id) return;
     setSkillClaimedLevel(user.id, claimedLevel);
   }, [claimedLevel, setSkillClaimedLevel, user?.id]);
 
