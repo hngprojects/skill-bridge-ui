@@ -4,14 +4,15 @@ function AuthNavigationLoading() {
   return (
     <div
       role="status"
-      aria-label="Loading dashboard"
+      aria-label="Preparing your dashboard..."
       className="fixed inset-0 z-[100] flex min-h-dvh flex-col items-center justify-center bg-background/80 backdrop-blur-sm p-6"
     >
       <div className="flex flex-col items-center justify-center space-y-8 animate-in fade-in duration-500">
         <div className="relative flex h-28 w-28 items-center justify-center">
           {/* Smooth SVG Spinner in Accent Color */}
           <svg
-            className="absolute inset-0 h-full w-full animate-spin text-[#5a9cb6]"
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full animate-spin text-primary-500"
             viewBox="0 0 100 100"
             style={{ animationDuration: "1.5s" }}
           >
