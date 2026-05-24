@@ -3,8 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MoreHorizontal } from "lucide-react";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import type {
   DashboardJourneyKey,
@@ -15,19 +21,20 @@ type AssessmentStatus = "completed" | "pending";
 
 interface RoadmapItem {
   id: string;
-  /** Matching key in `journeyOverview`, when one exists. */
   journeyKey?: DashboardJourneyKey;
   title: string;
   description: string;
   status: AssessmentStatus;
   iconBg: string;
   icon: React.ReactNode;
+  summarySlug?: string;
 }
 
 const ROADMAP_ITEMS: RoadmapItem[] = [
   {
     id: "personal",
     journeyKey: "personal",
+    summarySlug: "personal",
     title: "Personal  assessment",
     description:
       "Tell us about your specialization, tools, experience level,...",
@@ -46,6 +53,7 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
   {
     id: "skills-career",
     journeyKey: "skill",
+    summarySlug: "skill",
     title: "Skills/Career assessment",
     description:
       "This assessment is designed to evaluate your current skill...",
@@ -64,6 +72,7 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
   {
     id: "advance",
     journeyKey: "advanced",
+    summarySlug: "advanced",
     title: "Advanced assessment",
     description: "To get verified score and become discoverable to top e...",
     status: "pending",
@@ -80,11 +89,6 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
   },
 ];
 
-/**
- * Map a journey item's API status onto the roadmap card's display status.
- * Anything not yet `"completed"` (i.e. `"available"` or `"locked"`) renders
- * as the pending clock icon.
- */
 function toAssessmentStatus(
   status: DashboardJourneyOverviewItem["status"],
 ): AssessmentStatus {
@@ -112,14 +116,13 @@ function StatusIcon({ status }: { status: AssessmentStatus }) {
         width={20}
         height={20}
         className="size-5 shrink-0"
-        aria-label="Completed"
+        aria-label="Pending"
       />
     </span>
   );
 }
 
 type DashboardJobRoadmapProps = {
-  /** When provided, overrides each item's hardcoded status by `journeyKey`. */
   journeyOverview?: DashboardJourneyOverviewItem[];
 };
 
@@ -140,7 +143,6 @@ export function DashboardJobRoadmap({
       aria-labelledby="roadmap-heading"
       className="flex flex-col rounded-2xl border border-border bg-[#FAFAFA] p-6"
     >
-      {/* Header */}
       <div className="mb-5 flex items-center justify-between">
         <h2
           id="roadmap-heading"
@@ -157,23 +159,16 @@ export function DashboardJobRoadmap({
         </Link>
       </div>
 
-      {/* Items */}
       <div className="flex flex-col gap-2">
         {items.map((item) => (
           <div
             key={item.id}
             className="flex items-center gap-4 rounded-xl border border-border bg-white p-4 transition-transform hover:-translate-y-1 hover:shadow-sm"
           >
-            {/* Icon tile */}
-            <div
-              className={cn(
-                "flex size-12 shrink-0 items-center justify-center rounded-xl",
-              )}
-            >
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl">
               {item.icon}
             </div>
 
-            {/* Text */}
             <div className="min-w-0 flex-1">
               <p className="text-[14px] font-semibold leading-snug text-foreground">
                 {item.title}
@@ -183,8 +178,29 @@ export function DashboardJobRoadmap({
               </p>
             </div>
 
-            {/* Status */}
             <StatusIcon status={item.status} />
+
+            {item.status === "completed" && item.summarySlug ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-muted transition-colors"
+                    aria-label="More options"
+                  >
+                    <MoreHorizontal className="size-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href={`/t/assessments/${item.summarySlug}/summary`}>
+                      View Summary
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <span className="size-7 shrink-0" />
+            )}
           </div>
         ))}
       </div>
