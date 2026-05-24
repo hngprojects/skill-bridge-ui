@@ -12,6 +12,7 @@ import { DashboardNavbarUserMenu } from "@/components/dashboard/navbar-user-menu
 import { cn } from "@/lib/utils";
 
 const LOGO = "/assets/logo/logo.svg";
+const LOGO_TEXT = "/assets/logo/logo-with-text.svg";
 
 export default function DashboardNavbar() {
   const pathname = usePathname();
@@ -42,9 +43,14 @@ export default function DashboardNavbar() {
             className="size-9 object-contain"
             priority
           />
-          <span className="font-sans text-xl font-bold text-primary-900 sm:text-2xl hidden md:block">
-            CredLane
-          </span>
+          <Image
+            src={LOGO_TEXT}
+            alt="Credlane logo"
+            width={120}
+            height={36}
+            className="object-contain"
+            priority
+          />
         </Link>
 
         <nav
