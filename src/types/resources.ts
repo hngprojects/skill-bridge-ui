@@ -1,15 +1,14 @@
 type ResourceArticle = {
-  id: number;
+  url: string;
   title: string;
   description: string;
-  readTime: string;
+  duration: string;
 };
 
 type ResourceVideo = {
-  id: number;
+  url: string;
   title: string;
   duration: string;
-  thumbnail: string;
 };
 
 type ResourceArticleSection = {

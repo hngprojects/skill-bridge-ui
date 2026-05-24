@@ -101,3 +101,5 @@ export type {
   NotificationsListResponseData,
   UnreadCountResponseData,
 } from "./notifications";
+
+export type { ResourceApiItem, ResourcesResponseData } from "./resources";
