@@ -53,7 +53,7 @@ const socialLinks: SocialItem[] = [
     href: "https://www.tiktok.com/@credlanehq",
     icon: <TikTokIcon />,
   },
-  { label: "X", href: "https://x.com", icon: <XIcon /> },
+  { label: "X", href: "https://x.com/CredLaneHQ", icon: <XIcon /> },
   {
     label: "Instagram",
     href: "https://www.instagram.com/credlanehq",

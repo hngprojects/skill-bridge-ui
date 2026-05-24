@@ -13,7 +13,7 @@ interface DashboardWelcomeProps {
 
 export function DashboardWelcome({
   firstName,
-  goal = "placeholder for your goal",
+  goal = "Become a global talent",
   profileCompletion = 70,
 }: DashboardWelcomeProps) {
   const { fullName } = useSessionUserProfile();

@@ -88,28 +88,23 @@ function AuthShell({
                 href="/terms-of-use"
                 className="body font-light hover:opacity-80"
               >
-                Talent Terms
+                Terms of use
               </Link>
-              <span className="size-0.75 rounded-full bg-primary-foreground/20" />
-              <Link
-                href="/privacy-policy"
-                className="body font-light hover:opacity-80"
-              >
-                Employer Terms
-              </Link>
-              <span className="size-0.75 rounded-full bg-primary-foreground/20" />
+              <span className="size-0.75" />
+
               <Link
                 href="/privacy-policy"
                 className="body font-light hover:opacity-80"
               >
                 Privacy Policy
               </Link>
-              <span className="size-0.75 rounded-full bg-primary-foreground/20" />
+              <span className="size-0.75" />
+
               <Link
-                href="/terms-of-use"
+                href="/contact"
                 className="body font-light hover:opacity-80"
               >
-                Cookies Settings
+                Contact us
               </Link>
             </div>
           </div>

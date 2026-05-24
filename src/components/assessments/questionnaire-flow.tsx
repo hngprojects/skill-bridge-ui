@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
 import { useParams, useRouter } from "next/navigation";
 
 import { FileEmpty01Icon, Loading03Icon } from "@hugeicons/core-free-icons";
@@ -34,7 +35,32 @@ export type QuestionnaireFlowProps = {
   isSubmitting: boolean;
   initialSeconds?: number;
   prefillAnswers?: Record<string, string | string[]>;
-  onSubmit: (answers: Record<string, string | string[]>) => Promise<unknown>;
+  /**
+   * Called on the final question's Next click. `timeSpentByKey` mirrors
+   * `answers` (keyed by `question.key`) and carries the seconds the user
+   * actively spent on each question — accumulated as they move through and
+   * sent to the backend so the AI grader can flag low-integrity rushes.
+   */
+  onSubmit: (
+    answers: Record<string, string | string[]>,
+    timeSpentByKey?: Record<string, number>,
+  ) => Promise<unknown>;
+  /**
+   * Optional hook for flows that need to do server work mid-questionnaire
+   * (e.g. the advanced assessment's LT-2 → LT-3 synthesis). When the user
+   * clicks Next on what the flow currently thinks is the last question, this
+   * is awaited first. If it returns `true`, the parent is expected to have
+   * appended new questions to the `questions` prop — the flow then advances
+   * to the next index instead of calling `onSubmit` / navigating away.
+   *
+   * Errors thrown here surface as the same toast `onSubmit` errors do, and
+   * the user stays on the current question to retry.
+   */
+  onLastQuestionAdvance?: (
+    question: Question,
+    answers: Record<string, string | string[]>,
+    timeSpentByKey: Record<string, number>,
+  ) => Promise<boolean>;
 };
 
 export function QuestionnaireFlow({
@@ -44,6 +70,7 @@ export function QuestionnaireFlow({
   initialSeconds,
   prefillAnswers,
   onSubmit,
+  onLastQuestionAdvance,
 }: QuestionnaireFlowProps) {
   const router = useRouter();
   const { name } = useParams<{ name: string }>();
@@ -60,6 +87,15 @@ export function QuestionnaireFlow({
     Record<string, string | string[]>
   >({});
   const [otherAnswers, setOtherAnswers] = useState<Record<string, string>>({});
+
+  // Per-question elapsed time. Both the accumulated seconds map and the
+  // "current question started at" timestamp live in refs so updates don't
+  // churn renders and Date.now() never runs during render (which would trip
+  // react-hooks/purity). The start ref stays `null` while the questionnaire
+  // is loading and is captured by the effect below the first time it's
+  // ready — so the first question's bucket doesn't include loading time.
+  const timeSpentRef = useRef<Record<string, number>>({});
+  const questionStartRef = useRef<number | null>(null);
 
   // Single source of truth for the questionnaire timer — desktop toolbar and
   // mobile header both read this value, so only one interval ticks. Disabled
@@ -100,6 +136,17 @@ export function QuestionnaireFlow({
 
   const question = questions[currentIndex];
   const isLast = currentIndex === questions.length - 1;
+
+  // Capture the moment the questionnaire first becomes interactive (loading
+  // finished + a question is mounted) so the first question's elapsed time
+  // doesn't include the loading screen. Ref mutation + Date.now() inside an
+  // effect is compiler-clean (unlike the same combo during render).
+  useEffect(() => {
+    if (!isLoading && question && questionStartRef.current === null) {
+      questionStartRef.current = Date.now();
+    }
+  }, [isLoading, question]);
+
   const currentValue = question ? answers[question.id] : undefined;
   const currentOther = question ? (otherAnswers[question.id] ?? "") : "";
   // When the question's "other" path is triggered, the revealed textarea
@@ -130,18 +177,65 @@ export function QuestionnaireFlow({
     setOtherAnswers((prev) => ({ ...prev, [question.id]: next }));
   };
 
-  const handleBack = () => setCurrentIndex((i) => Math.max(0, i - 1));
+  const accumulateTimeForCurrentQuestion = () => {
+    if (!question) return;
+    // Effect hasn't captured a start yet (questionnaire still loading).
+    if (questionStartRef.current === null) return;
+    const now = Date.now();
+    const elapsed = Math.floor((now - questionStartRef.current) / 1000);
+    if (elapsed > 0) {
+      timeSpentRef.current = {
+        ...timeSpentRef.current,
+        [question.id]: (timeSpentRef.current[question.id] ?? 0) + elapsed,
+      };
+    }
+    questionStartRef.current = now;
+  };
+
+  const buildTimeSpentByKey = (): Record<string, number> => {
+    const result: Record<string, number> = {};
+    for (const q of questions) {
+      const t = timeSpentRef.current[q.id];
+      if (t != null) result[q.key] = t;
+    }
+    return result;
+  };
+
+  const handleBack = () => {
+    accumulateTimeForCurrentQuestion();
+    setCurrentIndex((i) => Math.max(0, i - 1));
+  };
 
   const handleNext = async () => {
     if (!question || !canProceed || isSubmitting) return;
+
+    accumulateTimeForCurrentQuestion();
+
     if (!isLast) {
       setCurrentIndex((i) => i + 1);
       return;
     }
+
+    const builtAnswers = buildAnswers(questions, answers, otherAnswers);
+    const builtTimeByKey = buildTimeSpentByKey();
+
     try {
-      const result = await onSubmit(
-        buildAnswers(questions, answers, otherAnswers),
-      );
+      if (onLastQuestionAdvance) {
+        const intercepted = await onLastQuestionAdvance(
+          question,
+          builtAnswers,
+          builtTimeByKey,
+        );
+        if (intercepted) {
+          // Parent appended new question(s) to `questions`. Reset the
+          // start clock so the LLM round-trip doesn't get charged to the
+          // freshly-appended question's time bucket.
+          questionStartRef.current = Date.now();
+          setCurrentIndex((i) => i + 1);
+          return;
+        }
+      }
+      const result = await onSubmit(builtAnswers, builtTimeByKey);
       if (isAssessmentSlug(name) && user?.id) {
         if (result != null) {
           setSummaryResult(user.id, name, result);

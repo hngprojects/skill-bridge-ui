@@ -198,6 +198,25 @@ export type AdvancedAssessmentSubmitInput = {
   answers: AdvancedAssessmentSubmitAnswer[];
 };
 
+/** Body for POST /talent/assessment/session/:id/lt2-submit. */
+export type AdvancedAssessmentLt2SubmitInput = {
+  question_id: string;
+  answer: string;
+};
+
+/** Response when the server generates LT-3 after receiving the LT-2 answer. */
+export type AdvancedAssessmentLt2SubmitResponseData = {
+  status: string;
+  message: string;
+  session_id: string;
+  /** LT-3's own UUID. */
+  question_id: string;
+  question_number: number;
+  question_text: string;
+  /** Server-authoritative remaining seconds for the session. */
+  max_seconds_remaining: number;
+};
+
 export type AssessmentTier = "job_ready" | "emerging" | "not_ready";
 
 export type AssessmentIntegrityConfidence = "high" | "medium" | "low";

@@ -157,9 +157,15 @@ export type EmployerSignup = Pick<
 >;
 
 export const contactFormSchema = z.object({
-  fullName: nameField("Full name"),
-  email: z.string().email("Please enter a valid email address."),
-  subject: z.string().trim().min(1, "Subject is required."),
+  fullName: nameField("Full name").min(
+    5,
+    "Full name must be at least 5 characters.",
+  ),
+  email: z
+    .string()
+    .email("Please enter a valid email address.")
+    .min(5, "Email is required."),
+  subject: z.string().trim().min(5, "Subject is required."),
   message: z
     .string()
     .trim()
