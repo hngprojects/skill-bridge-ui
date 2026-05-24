@@ -38,10 +38,10 @@ const ResourcesSection = (section: ResourceSection) => {
       <div className="flex flex-col gap-4 sm:flex-row">
         {section.type === "article"
           ? section.items.map((item) => (
-              <ResourceArticleCard key={item.id} {...item} />
+              <ResourceArticleCard key={item.url} {...item} />
             ))
           : section.items.map((item) => (
-              <ResourceVideoCard key={item.id} {...item} />
+              <ResourceVideoCard key={item.url} {...item} />
             ))}
       </div>
     </div>
