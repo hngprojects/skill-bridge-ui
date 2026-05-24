@@ -28,3 +28,8 @@ export const dashboardKeys = {
   all: ["dashboard"] as const,
   home: () => [...dashboardKeys.all, "home"] as const,
 };
+
+export const resourcesKeys = {
+  all: ["resources"] as const,
+  talent: () => [...resourcesKeys.all, "talent"] as const,
+};
