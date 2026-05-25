@@ -1,3 +1,5 @@
+"use client";
+
 import { useTalentResources } from "@/hooks/api/use-resources";
 import type { ResourceSection } from "@/types/resources";
 import ResourcesSection from "@/components/resources/resources-section";
