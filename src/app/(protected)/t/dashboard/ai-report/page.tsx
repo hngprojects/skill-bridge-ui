@@ -1,5 +1,5 @@
 import { AiReportSkillBreakdown } from "@/components/dashboard/ai-report/ai-report-skill-breakdown";
-import { Resources } from "@/components/dashboard/ai-report/resources";
+import Resources from "@/components/dashboard/ai-report/resources";
 
 import type { Metadata } from "next";
 
