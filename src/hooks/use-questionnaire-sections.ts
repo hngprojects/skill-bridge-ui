@@ -16,7 +16,10 @@ export function useQuestionnaireSections(
   sections: QuestionnaireSidebarSection[];
   activeSectionNumber: number;
 } {
-  const sections = useMemo<QuestionnaireSidebarSection[]>(() => {
+  const { sections, sourceToNumber } = useMemo<{
+    sections: QuestionnaireSidebarSection[];
+    sourceToNumber: Map<number, number>;
+  }>(() => {
     const seen = new Map<number, string>();
     for (const q of questions) {
       if (
@@ -27,26 +30,39 @@ export function useQuestionnaireSections(
         seen.set(q.sourceSection, q.sourceSectionTitle);
       }
     }
-    const built = Array.from(seen.entries())
-      .sort(([a], [b]) => a - b)
-      .map(([, title], index) => ({ number: index + 1, title }));
+    const sorted = Array.from(seen.entries()).sort(([a], [b]) => a - b);
+    const built: QuestionnaireSidebarSection[] = sorted.map(
+      ([, title], index) => ({ number: index + 1, title }),
+    );
+    const map = new Map<number, number>(
+      sorted.map(([source], index) => [source, index + 1]),
+    );
 
     if (built.length === 0) {
       const fallback = isAssessmentSlug(name)
         ? ASSESSMENT_FALLBACK_SECTION_TITLES[name]
         : "Assessment";
-      return [{ number: 1, title: fallback }];
+      return {
+        sections: [{ number: 1, title: fallback }],
+        sourceToNumber: map,
+      };
     }
-    return built;
+    return { sections: built, sourceToNumber: map };
   }, [questions, name]);
 
   const activeSectionNumber = useMemo(() => {
-    if (!question?.sourceSectionTitle) return 1;
-    const idx = sections.findIndex(
-      (s) => s.title === question.sourceSectionTitle,
-    );
-    return idx === -1 ? 1 : idx + 1;
-  }, [question, sections]);
+    if (!question) return 1;
+    if (question.sourceSection !== undefined) {
+      return sourceToNumber.get(question.sourceSection) ?? 1;
+    }
+    if (question.sourceSectionTitle) {
+      const idx = sections.findIndex(
+        (s) => s.title === question.sourceSectionTitle,
+      );
+      return idx === -1 ? 1 : idx + 1;
+    }
+    return 1;
+  }, [question, sections, sourceToNumber]);
 
   return { sections, activeSectionNumber };
 }
