@@ -2,55 +2,31 @@
 
 import Image from "next/image";
 
-import { useMe } from "@/hooks/api";
-import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
-
 import AssessmentContainer from "./assessment-container";
 import NextUpCard from "./next-up-card";
 
-function formatTier(tier?: string) {
-  if (!tier) return "being reviewed";
-  return tier.replace(/_/g, " ");
-}
-
 const AdvancedAssessmentSummary = () => {
-  const { data: user } = useMe({ enabled: true });
-  const result = useAssessmentSummaryStore((state) =>
-    user?.id ? state.resultsByUser[user.id]?.advanced : null,
-  );
-  const isUserContextReady = Boolean(user?.id);
-  const tier = formatTier(result?.tier);
-  const scoreSummary =
-    result?.score !== undefined && result?.max_score !== undefined
-      ? `Your score is ${result.score}/${result.max_score} (${result.percentage}%).`
-      : "Your results are currently being reviewed.";
-
-  return !isUserContextReady ? (
-    <AssessmentContainer>
-      <p className="text-base text-muted-foreground">
-        Loading your assessment summary...
-      </p>
-    </AssessmentContainer>
-  ) : (
+  return (
     <AssessmentContainer>
       <Image
         alt="Assessment icon"
-        src={"/assets/icons/portfolio-icon.svg"}
+        src="/assets/icons/portfolio-icon.svg"
         height={56}
         width={56}
       />
-      <section className="flex flex-col gap-y-4 mt-4 mb-7 md:mb-12">
-        <h2 className="font-bold text-xl md:text-3xl leading-[150%]">
+      <section className="mt-4 mb-7 flex flex-col gap-y-4 md:mb-12">
+        <h2 className="text-xl leading-[150%] font-bold md:text-3xl">
           Advanced assessment summary
         </h2>
-        <div className="text-base md:text-lg font-light">
+        <div className="space-y-3 text-base font-light md:text-lg">
           <p>
-            Congratulations! You have completed the Advanced Skill Assessment.
+            Congratulations! <span aria-hidden>🎉</span> You&apos;ve completed
+            the Advanced Skill Assessment.
           </p>
-          <p className="mt-2">
-            {scoreSummary} Your current result tier is{" "}
-            <span className="font-bold capitalize">{tier}</span>. A detailed
-            performance report will be sent to your email shortly.
+          <p>
+            Your results are currently being reviewed and a detailed performance
+            report will be sent to your email shortly. The report will include
+            your validated skill level, strengths, and recommended growth areas.
           </p>
         </div>
       </section>
@@ -69,7 +45,7 @@ const AdvancedAssessmentSummary = () => {
         assessement="advanced"
         duration="30-45 minutes"
         title="AI mock interview"
-        route="/t/dashboard"
+        route="/t/resources"
       />
     </AssessmentContainer>
   );
