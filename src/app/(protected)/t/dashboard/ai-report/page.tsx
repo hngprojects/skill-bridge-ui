@@ -1,4 +1,4 @@
-import { resourceSections } from "@/constants/resources";
+import type { ResourceSection } from "@/constants/resources";
 import ResourcesSection from "@/components/resources/resources-section";
 import { AiReportSkillBreakdown } from "@/components/dashboard/ai-report/ai-report-skill-breakdown";
 
@@ -9,6 +9,20 @@ export const metadata: Metadata = {
 };
 
 const AiReport = () => {
+  const sections: ResourceSection[] = [
+    {
+      id: "recommended-courses",
+      title: "Recommended Courses",
+      type: "article",
+      items: data.resources.map((item) => ({
+        url: item.url,
+        title: item.title,
+        description: item.description,
+        duration: item.duration,
+      })),
+    },
+  ];
+  
   return (
     <main className="min-h-screen bg-[#FAFAFA]">
       <div className="mx-auto flex w-full max-w-5xl flex-col space-y-6 px-4 py-8 sm:px-6 lg:px-8">
@@ -36,7 +50,7 @@ const AiReport = () => {
           </div>
 
           <div className="flex flex-col gap-y-8">
-            {resourceSections.map((section) => (
+            {sections.map((section) => (
               <ResourcesSection key={section.id} {...section} />
             ))}
           </div>
