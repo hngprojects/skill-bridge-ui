@@ -33,3 +33,8 @@ export const resourcesKeys = {
   all: ["resources"] as const,
   talent: () => [...resourcesKeys.all, "talent"] as const,
 };
+
+export const verifiedProfileKeys = {
+  all: ["verified-profile"] as const,
+  talent: () => [...verifiedProfileKeys.all, "talent"] as const,
+};
