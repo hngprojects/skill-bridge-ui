@@ -1,4 +1,3 @@
-import { resourceSections } from "@/constants/resources";
 import ResourcesSection from "@/components/resources/resources-section";
 import { AiReportSkillBreakdown } from "@/components/dashboard/ai-report/ai-report-skill-breakdown";
 
