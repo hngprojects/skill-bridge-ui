@@ -40,6 +40,7 @@ export type {
   TalentOnboardingTrackCreateResponseData,
   TalentOnboardingTracksUpdateInput,
   TalentOnboardingTracksUpdateResponseData,
+  UploadAvatarResponseData,
 } from "./onboarding";
 export type {
   AdminCreateUserInput,
@@ -51,13 +52,19 @@ export type {
 } from "./users";
 export type { ContactUsInput, WaitlistInput } from "./inquiries";
 export type {
+  DashboardAdvancedRetake,
   DashboardHomeResponseData,
   DashboardJourneyKey,
   DashboardJourneyOverviewItem,
   DashboardJourneyStatus,
+  DashboardPerformance,
+  DashboardPerformanceAdvanced,
+  DashboardPerformanceSkill,
 } from "./dashboard";
 export type {
   AdvancedAssessmentApiQuestion,
+  AdvancedAssessmentLt2SubmitInput,
+  AdvancedAssessmentLt2SubmitResponseData,
   AdvancedAssessmentQuestionBlock,
   AdvancedAssessmentQuestionMetadata,
   AdvancedAssessmentQuestionType,
@@ -88,3 +95,11 @@ export type {
   SkillAssessmentSubmitResponseData,
   SkillLevel,
 } from "./assessment";
+
+export type {
+  NotificationApiItem,
+  NotificationsListResponseData,
+  UnreadCountResponseData,
+} from "./notifications";
+
+export type { ResourceApiItem, ResourcesResponseData } from "./resources";

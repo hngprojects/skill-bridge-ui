@@ -7,6 +7,7 @@ import { AlertCircle } from "lucide-react";
 
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
+import ViolationDetector from "@/components/assessments/violation-detector";
 import { Button } from "@/components/ui/button";
 import type { AssessmentSlug } from "@/constants/assessment-previews";
 import {
@@ -153,6 +154,18 @@ function DemoSkillAssessmentFlow() {
 
   const questions = useMemo(() => phase.questions, [phase.questions]);
 
+  const submit = async (answersByKey: Record<string, string | string[]>) => {
+    setIsSubmitting(true);
+    try {
+      await mockSubmitSkillAssessment({
+        attempt_id: phase.sessionId ?? "",
+        answers: toSkillSubmitAnswers(questions, answersByKey),
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (startFailed) {
     return (
       <AssessmentStartBlocked
@@ -164,22 +177,19 @@ function DemoSkillAssessmentFlow() {
   }
 
   return (
-    <QuestionnaireFlow
-      questions={questions}
-      isLoading={!hasQuestions}
-      isSubmitting={isSubmitting}
-      onSubmit={async (answersByKey) => {
-        setIsSubmitting(true);
-        try {
-          await mockSubmitSkillAssessment({
-            attempt_id: phase.sessionId ?? "",
-            answers: toSkillSubmitAnswers(questions, answersByKey),
-          });
-        } finally {
-          setIsSubmitting(false);
-        }
+    <ViolationDetector
+      enabled={hasQuestions}
+      onViolation={() => {
+        window.alert("Violation api triggered");
       }}
-    />
+    >
+      <QuestionnaireFlow
+        questions={questions}
+        isLoading={!hasQuestions}
+        isSubmitting={isSubmitting}
+        onSubmit={submit}
+      />
+    </ViolationDetector>
   );
 }
 
@@ -205,6 +215,18 @@ function DemoAdvancedAssessmentFlow() {
 
   const questions = useMemo(() => phase.questions, [phase.questions]);
 
+  const submit = async (answersByKey: Record<string, string | string[]>) => {
+    setIsSubmitting(true);
+    try {
+      await mockSubmitAdvancedAssessment({
+        session_id: phase.sessionId ?? "",
+        answers: toAdvancedSubmitAnswers(questions, answersByKey),
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (startFailed) {
     return (
       <AssessmentStartBlocked
@@ -216,23 +238,20 @@ function DemoAdvancedAssessmentFlow() {
   }
 
   return (
-    <QuestionnaireFlow
-      questions={questions}
-      isLoading={!hasQuestions}
-      isSubmitting={isSubmitting}
-      initialSeconds={phase.remainingSeconds}
-      onSubmit={async (answersByKey) => {
-        setIsSubmitting(true);
-        try {
-          await mockSubmitAdvancedAssessment({
-            session_id: phase.sessionId ?? "",
-            answers: toAdvancedSubmitAnswers(questions, answersByKey),
-          });
-        } finally {
-          setIsSubmitting(false);
-        }
+    <ViolationDetector
+      enabled={hasQuestions}
+      onViolation={() => {
+        window.alert("Violation api triggered advanced");
       }}
-    />
+    >
+      <QuestionnaireFlow
+        questions={questions}
+        isLoading={!hasQuestions}
+        isSubmitting={isSubmitting}
+        initialSeconds={phase.remainingSeconds}
+        onSubmit={submit}
+      />
+    </ViolationDetector>
   );
 }
 

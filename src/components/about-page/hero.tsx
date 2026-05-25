@@ -11,8 +11,7 @@ export function AboutHeroSection() {
   return (
     <section
       id="about"
-      className="relative overflow-hidden min-h-[calc(100svh-73px)] md:min-h-0"
-      style={{ backgroundColor: "#EFEFEF" }}
+      className="relative overflow-hidden min-h-[calc(100svh-73px)] md:min-h-0 bg-[#EFEFEF]"
     >
       <FloatingIcons />
 

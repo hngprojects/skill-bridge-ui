@@ -16,27 +16,30 @@ interface ChartZone {
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
-const CHART_ZONES: ChartZone[] = [
-  {
-    id: "emerging",
-    label: "Emerging",
-    bars: [{ value: 12 }, { value: 39 }, { value: 67 }],
-  },
-  {
-    id: "intermediate",
-    label: "Intermediate",
-    bars: [{ value: 60 }, { value: 82 }, { value: 40 }],
-  },
-  {
-    id: "job-ready",
-    label: "Job Ready",
-    bars: [
-      { value: 48 },
-      { value: 28, active: true, activeLabel: "85%" },
-      { value: 16 },
-    ],
-  },
-];
+function buildChartZones(activePercentage: number | undefined): ChartZone[] {
+  const activeLabel = activePercentage != null ? `${activePercentage}%` : "85%";
+  return [
+    {
+      id: "emerging",
+      label: "Emerging",
+      bars: [{ value: 12 }, { value: 39 }, { value: 67 }],
+    },
+    {
+      id: "intermediate",
+      label: "Intermediate",
+      bars: [{ value: 60 }, { value: 82 }, { value: 40 }],
+    },
+    {
+      id: "job-ready",
+      label: "Job Ready",
+      bars: [
+        { value: 48 },
+        { value: 28, active: true, activeLabel },
+        { value: 16 },
+      ],
+    },
+  ];
+}
 
 const CHART_HEIGHT = 130; // px — visual bar area height
 const BAR_GAP = 6; // px — gap between bars inside a zone
@@ -71,12 +74,30 @@ function ZoneGroup({ zone }: { zone: ChartZone }) {
   );
 }
 
-export function JobReadySkillBreakdown() {
-  const today = new Date().toLocaleDateString("en-US", {
+type JobReadySkillBreakdownProps = {
+  /** User's advanced-assessment percentage; drives the active bar's label. */
+  activePercentage?: number;
+
+  completedAt?: string;
+};
+
+function formatAttemptDate(iso: string | undefined): string | undefined {
+  if (!iso) return undefined;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
+}
+
+export function JobReadySkillBreakdown({
+  activePercentage,
+  completedAt,
+}: JobReadySkillBreakdownProps = {}) {
+  const lastAttempt = formatAttemptDate(completedAt);
+  const chartZones = buildChartZones(activePercentage);
 
   return (
     <section
@@ -101,13 +122,15 @@ export function JobReadySkillBreakdown() {
       </div>
 
       {/* Date */}
-      <p className="mb-6 text-[13px] text-muted-foreground">
-        Last attempt • {today}
-      </p>
+      {lastAttempt ? (
+        <p className="mb-6 text-[13px] text-muted-foreground">
+          Last attempt • {lastAttempt}
+        </p>
+      ) : null}
 
       {/* Bar chart — extra top padding so hex badge has room */}
       <div className="flex items-end gap-4 pt-18">
-        {CHART_ZONES.map((zone) => (
+        {chartZones.map((zone) => (
           <ZoneGroup key={zone.id} zone={zone} />
         ))}
       </div>

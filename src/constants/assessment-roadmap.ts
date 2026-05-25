@@ -45,6 +45,9 @@ export type AssessmentRoadmapStep = {
   panelIconClassName: string;
   state: AssessmentRoadmapStepStatus;
   tab: AssessmentRoadmapTab;
+  /** When true, the card renders a "Coming Soon" badge + disabled button
+   *  regardless of `state`. */
+  comingSoon?: boolean;
 };
 
 export type AssessmentCatalogTab = {
@@ -70,6 +73,9 @@ export type AssessmentCatalogStep = {
   cooldownLabel?: string;
   estimatedTime?: string;
   lockLabel?: string;
+  /** When true, the card renders a "Coming Soon" badge + disabled button
+   *  regardless of `state`. */
+  comingSoon?: boolean;
 };
 
 export const ASSESSMENT_PROFILE_COMPLETION = 70;
@@ -106,7 +112,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     description:
       "Tell us about your specialization, tools, experience level, and work preferences.",
     ctaLabel: "Start",
-    estimatedTime: "30-45 minutes",
+    estimatedTime: "No duration",
     panelTitle: "Find your level!",
     panelIcon: MonitorCog,
     panelIconSrc: "/assets/icons/assessement-icon.svg",
@@ -123,7 +129,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     ctaLabel: "Start",
-    estimatedTime: "30-45 minutes",
+    estimatedTime: "30 minutes",
     panelTitle: "Choose a stack",
     panelIcon: LaptopMinimal,
     panelIconSrc: "/assets/icons/computer-setup-icon.svg",
@@ -140,7 +146,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     description:
       "To get verified score and become discoverable to top employers.",
     ctaLabel: "Start",
-    estimatedTime: "30-45 minutes",
+    estimatedTime: "90 minutes",
     panelTitle: "Get Job Ready!",
     panelIcon: BriefcaseBusiness,
     panelIconSrc: "/assets/icons/portfolio-icon.svg",
@@ -163,21 +169,21 @@ export const ASSESSMENT_CATALOG_TABS: AssessmentCatalogTab[] = [
       "job-assessment",
     ],
   },
-  {
-    id: "data-type-assessment",
-    label: "Data type assessment",
-    aliases: ["data-type-assessment"],
-  },
-  {
-    id: "system-design",
-    label: "System design",
-    aliases: ["system-design"],
-  },
-  {
-    id: "miscellaneous",
-    label: "Miscellaneous",
-    aliases: ["miscellaneous"],
-  },
+  // {
+  //   id: "data-type-assessment",
+  //   label: "Data type assessment",
+  //   aliases: ["data-type-assessment"],
+  // },
+  // {
+  //   id: "system-design",
+  //   label: "System design",
+  //   aliases: ["system-design"],
+  // },
+  // {
+  //   id: "miscellaneous",
+  //   label: "Miscellaneous",
+  //   aliases: ["miscellaneous"],
+  // },
 ];
 
 export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
@@ -212,7 +218,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     state: "available",
     category: "job-assessment",
     ctaLabel: "Start",
-    cooldownLabel: "Retake in 24 hours",
+    cooldownLabel: "3 Attempts",
   },
   {
     id: "advanced-assessment",
@@ -246,6 +252,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     ctaLabel: "Start",
     estimatedTime: "30-45 minutes",
     lockLabel: "Unlock Assessment",
+    comingSoon: true,
   },
   {
     id: "practical-assessment",
@@ -262,6 +269,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     ctaLabel: "Start",
     estimatedTime: "30-45 minutes",
     lockLabel: "Unlock Assessment",
+    comingSoon: true,
   },
 ];
 

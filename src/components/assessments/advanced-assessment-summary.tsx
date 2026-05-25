@@ -1,12 +1,40 @@
-import AssessmentContainer from "./assessment-container";
+"use client";
+
 import Image from "next/image";
+
+import { useMe } from "@/hooks/api";
+import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
+
+import AssessmentContainer from "./assessment-container";
 import NextUpCard from "./next-up-card";
 
+function formatTier(tier?: string) {
+  if (!tier) return "being reviewed";
+  return tier.replace(/_/g, " ");
+}
+
 const AdvancedAssessmentSummary = () => {
-  return (
+  const { data: user } = useMe({ enabled: true });
+  const result = useAssessmentSummaryStore((state) =>
+    user?.id ? state.resultsByUser[user.id]?.advanced : null,
+  );
+  const isUserContextReady = Boolean(user?.id);
+  const tier = formatTier(result?.tier);
+  const scoreSummary =
+    result?.score !== undefined && result?.max_score !== undefined
+      ? `Your score is ${result.score}/${result.max_score} (${result.percentage}%).`
+      : "Your results are currently being reviewed.";
+
+  return !isUserContextReady ? (
+    <AssessmentContainer>
+      <p className="text-base text-muted-foreground">
+        Loading your assessment summary...
+      </p>
+    </AssessmentContainer>
+  ) : (
     <AssessmentContainer>
       <Image
-        alt="Assessement icon"
+        alt="Assessment icon"
         src={"/assets/icons/portfolio-icon.svg"}
         height={56}
         width={56}
@@ -15,15 +43,16 @@ const AdvancedAssessmentSummary = () => {
         <h2 className="font-bold text-xl md:text-3xl leading-[150%]">
           Advanced assessment summary
         </h2>
-        <p className="text-base md:text-lg font-light">
-          Congratulations!🎉 You’ve completed the Advanced Skill Assessment.
-          <br />{" "}
-          <p className="mt-2">
-            Your results are currently being reviewed and a detailed performance
-            report will be sent to your email shortly. The report will include
-            your validated skill level, strengths, and recommended growth areas.
+        <div className="text-base md:text-lg font-light">
+          <p>
+            Congratulations! You have completed the Advanced Skill Assessment.
           </p>
-        </p>
+          <p className="mt-2">
+            {scoreSummary} Your current result tier is{" "}
+            <span className="font-bold capitalize">{tier}</span>. A detailed
+            performance report will be sent to your email shortly.
+          </p>
+        </div>
       </section>
       <div className="flex flex-col items-center">
         <Image
@@ -40,7 +69,7 @@ const AdvancedAssessmentSummary = () => {
         assessement="advanced"
         duration="30-45 minutes"
         title="AI mock interview"
-        route="#"
+        route="/t/dashboard"
       />
     </AssessmentContainer>
   );

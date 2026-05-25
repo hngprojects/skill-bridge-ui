@@ -1,5 +1,6 @@
+import type { Metadata } from "next";
+
 import ResourcesPage from "@/components/resources/resource-page";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Resources",

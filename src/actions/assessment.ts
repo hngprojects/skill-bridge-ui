@@ -1,5 +1,7 @@
-import { authApi } from "@/lib/api";
+import { ApiError, authApi } from "@/lib/api";
 import type {
+  AdvancedAssessmentLt2SubmitInput,
+  AdvancedAssessmentLt2SubmitResponseData,
   AdvancedAssessmentStartResponseData,
   AdvancedAssessmentSubmitInput,
   AdvancedAssessmentSubmitResponseData,
@@ -91,6 +93,42 @@ export async function getAssessmentSession(
   return unwrapData(res);
 }
 
+/**
+ * Starts an advanced assessment, or transparently resumes the existing one
+ * when the API returns `409 CONFLICT` with `existing_session_id`. Either path
+ * resolves to the same `AdvancedAssessmentStartResponseData` shape so callers
+ * don't need to branch.
+ */
+export async function resolveAdvancedAssessmentSession(): Promise<AdvancedAssessmentStartResponseData> {
+  try {
+    return await startAdvancedAssessment();
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 409) {
+      const data = error.data as { existing_session_id?: unknown } | undefined;
+      const existingId = data?.existing_session_id;
+      if (typeof existingId === "string" && existingId.length > 0) {
+        return await getAssessmentSession(existingId);
+      }
+    }
+    throw error;
+  }
+}
+
+/**
+ * Submits the LT-2 (last work_task long-text) answer and receives the
+ * server-generated LT-3 reflection question. The session is appended to
+ * server-side; the client is expected to render the returned question next.
+ */
+export async function submitAdvancedAssessmentLt2(
+  sessionId: string,
+  body: AdvancedAssessmentLt2SubmitInput,
+): Promise<AdvancedAssessmentLt2SubmitResponseData> {
+  const res = await authApi.post<
+    ApiEnvelope<AdvancedAssessmentLt2SubmitResponseData>
+  >(`/talent/assessment/session/${sessionId}/lt2-submit`, body);
+  return unwrapData(res);
+}
+
 export async function submitAdvancedAssessment(
   body: AdvancedAssessmentSubmitInput,
 ): Promise<AdvancedAssessmentSubmitResponseData> {
@@ -105,11 +143,16 @@ export async function submitAdvancedAssessment(
 }
 
 export async function flagAssessmentEvent(
+  type: "advanced" | "skill",
   sessionId: string,
   body: AssessmentFlagInput,
 ): Promise<AssessmentFlagResponseData> {
+  const url =
+    type === "advanced"
+      ? `/talent/assessment/session/${sessionId}/flag`
+      : `/talent/assessment/skill/session/${sessionId}/flag`;
   const res = await authApi.post<ApiEnvelope<AssessmentFlagResponseData>>(
-    `/talent/assessment/session/${sessionId}/flag`,
+    url,
     body,
   );
   return unwrapData(res);

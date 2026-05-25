@@ -1,5 +1,6 @@
 import type {
   AdvancedAssessmentApiQuestion,
+  AdvancedAssessmentQuestionBlock,
   AdvancedAssessmentQuestionType,
   AdvancedAssessmentSubmitAnswer,
   SkillAssessmentApiQuestion,
@@ -7,6 +8,21 @@ import type {
   SkillAssessmentSubmitAnswer,
 } from "@/types/api";
 import type { InputTypeParams, Question } from "@/types/questionnaire";
+
+/**
+ * Per-block character floors required by the advanced assessment spec
+ * (short_text 60–600, long_text 150–2000). Used as a client-side fallback
+ * when the API doesn't include explicit min/max — keeps validation aligned
+ * with server scoring even if the field is missing on a payload.
+ */
+const ADVANCED_TEXT_DEFAULTS: Record<
+  AdvancedAssessmentQuestionBlock,
+  { min?: number; max?: number }
+> = {
+  mcq: {},
+  short_text: { min: 60, max: 600 },
+  long_text: { min: 150, max: 2000 },
+};
 
 /** Normalize API questions that already use the personal Question shape. */
 export function normalizePersonalQuestions(questions: Question[]): Question[] {
@@ -44,6 +60,8 @@ export function mapSkillQuestions(
     prompt: q.question_text,
     required: true,
     options: q.options ?? undefined,
+    minLength: q.min_length ?? undefined,
+    maxLength: q.max_length ?? undefined,
   }));
 }
 
@@ -71,6 +89,7 @@ export function mapAdvancedQuestions(
 ): Question[] {
   return questions.map((q) => {
     const { inputType, required } = mapAdvancedTypeToInputType(q.question_type);
+    const blockDefaults = ADVANCED_TEXT_DEFAULTS[q.block];
     return {
       id: q.question_id,
       key: q.question_id,
@@ -79,6 +98,8 @@ export function mapAdvancedQuestions(
       prompt: q.question_text,
       required,
       options: q.options ?? undefined,
+      minLength: q.min_length ?? blockDefaults?.min,
+      maxLength: q.max_length ?? blockDefaults?.max,
     };
   });
 }
@@ -99,10 +120,15 @@ export function buildPersonalPrefillAnswers(
   return result;
 }
 
-/** Build the advanced submit payload from QuestionnaireFlow answers (keyed by question.key). */
+/**
+ * Build the advanced submit payload from QuestionnaireFlow answers.
+ * `timeSpentByKey` is keyed by `question.key` (same as `answersByKey`).
+ * When omitted, falls back to `0` per answer.
+ */
 export function toAdvancedSubmitAnswers(
   questions: Question[],
   answersByKey: Record<string, string | string[]>,
+  timeSpentByKey?: Record<string, number>,
 ): AdvancedAssessmentSubmitAnswer[] {
   const result: AdvancedAssessmentSubmitAnswer[] = [];
   for (const q of questions) {
@@ -117,7 +143,7 @@ export function toAdvancedSubmitAnswers(
     result.push({
       question_id: q.id,
       answer: value,
-      time_spent_seconds: 0,
+      time_spent_seconds: timeSpentByKey?.[q.key] ?? 0,
     });
   }
   return result;

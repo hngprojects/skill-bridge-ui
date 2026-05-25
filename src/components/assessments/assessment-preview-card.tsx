@@ -8,9 +8,17 @@ import type { AssessmentPreview } from "@/constants/assessment-previews";
 
 type AssessmentPreviewCardProps = {
   assessment: AssessmentPreview;
+  /** Optional override for the footer CTA's destination. */
+  startHref?: string;
+  /** Optional override for the footer CTA's label. */
+  startLabel?: string;
 };
 
-function AssessmentPreviewCard({ assessment }: AssessmentPreviewCardProps) {
+function AssessmentPreviewCard({
+  assessment,
+  startHref,
+  startLabel,
+}: AssessmentPreviewCardProps) {
   return (
     <Card className="w-full rounded-xl border border-[#D9D9D9] bg-white py-0 shadow-none 2xl:rounded-[24px]">
       <CardContent className="px-4 py-4 sm:px-5 lg:px-6 2xl:p-8">
@@ -18,7 +26,11 @@ function AssessmentPreviewCard({ assessment }: AssessmentPreviewCardProps) {
         <AssessmentPreviewMeta assessment={assessment} />
         <AssessmentPreviewExpectations />
         <AssessmentPreviewWarning warning={assessment.warning} />
-        <AssessmentPreviewFooter assessmentSlug={assessment.slug} />
+        <AssessmentPreviewFooter
+          assessmentSlug={assessment.slug}
+          startHref={startHref}
+          startLabel={startLabel}
+        />
       </CardContent>
     </Card>
   );
