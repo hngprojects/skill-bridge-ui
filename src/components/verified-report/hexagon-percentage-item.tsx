@@ -1,4 +1,10 @@
-const HexagonPercentageItem = ({ value }: { value: number }) => {
+const HexagonPercentageItem = ({
+  value,
+  tierLabel,
+}: {
+  value: number;
+  tierLabel?: string;
+}) => {
   return (
     <div className="flex flex-col gap-y-1">
       <div className="relative w-26.5 h-26.5 flex items-center justify-center">
@@ -17,7 +23,7 @@ const HexagonPercentageItem = ({ value }: { value: number }) => {
         </svg>
         <span className="relative text-white font-bold text-3xl">{value}%</span>
       </div>
-      <p className="text-[#008458] font-semibold text-lg">Job Ready!</p>
+      <p className="text-[#008458] font-semibold text-lg">{tierLabel}</p>
     </div>
   );
 };
