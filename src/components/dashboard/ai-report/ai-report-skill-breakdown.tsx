@@ -1,6 +1,6 @@
 "use client";
 
-import { InsightSection, SkillList } from "./summaries";
+import { InsightSection, SkillList, ZoneGroup } from "./summaries";
 
 import { AI_SUMMARY, CHART_ZONES, GROWTH_INSIGHT, STRENGTHS, WEAK_AREAS, } from "@/constants/ai-report-skill-breakdown";
 
