@@ -23,7 +23,9 @@ const HexagonPercentageItem = ({
         </svg>
         <span className="relative text-white font-bold text-3xl">{value}%</span>
       </div>
-      <p className="text-[#008458] font-semibold text-lg">{tierLabel}</p>
+      <p className="text-[#008458] font-semibold text-lg">
+        {tierLabel ?? "Job Ready!"}
+      </p>
     </div>
   );
 };

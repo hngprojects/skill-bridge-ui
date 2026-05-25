@@ -29,14 +29,14 @@ export type VerifiedProfileResponseData = {
   verified: boolean;
   status: string;
   seniorityBadge: string;
-  skills: string[];
+  skills?: string[];
   tierLabel: string;
   scorePercentage: number;
   keyStrengths: VerifiedProfileKeyStrength[];
   professionalSkills: VerifiedProfileSkillItem[];
-  skillProficiency: VerifiedProfileSkillProficiency;
-  workplaceReadiness: VerifiedProfileMetric;
-  practicalApplication: VerifiedProfileMetric;
+  skillProficiency?: VerifiedProfileSkillProficiency;
+  workplaceReadiness?: VerifiedProfileMetric;
+  practicalApplication?: VerifiedProfileMetric;
   shareUrl: string;
   qrCodeUrl: string;
   isOwner: boolean;
