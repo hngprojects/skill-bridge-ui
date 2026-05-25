@@ -17,6 +17,7 @@ export type TalentOnboardingState = {
   profileLinkedin: string;
   profileSaved: boolean;
   resetForUser: (userId: string) => void;
+  reset: () => void;
   setCurrentStepId: (id: OnboardingStepId) => void;
   setSelectedGoalId: (id: GoalOptionId | undefined) => void;
   setSelectedTrackIds: (ids: TrackOptionId[]) => void;

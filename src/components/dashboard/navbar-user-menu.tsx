@@ -2,7 +2,6 @@
 
 import { Bell, ChevronDown, Settings, UserRound } from "lucide-react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 
 import { getInitials } from "@/components/dashboard/nav-utils";
@@ -26,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useAppLogout } from "@/hooks/use-app-logout";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 
 type DashboardNavbarUserMenuProps = {
@@ -37,7 +37,12 @@ export function DashboardNavbarUserMenu({
 }: DashboardNavbarUserMenuProps) {
   const { fullName, email } = useSessionUserProfile();
   const { data: session } = useSession();
+  const { isLoggingOut, logoutAndRedirect } = useAppLogout();
   const initials = getInitials(fullName, email);
+
+  const handleSignOut = async () => {
+    await logoutAndRedirect();
+  };
   const avatarUrl = session?.user?.image ?? undefined;
 
   return (
@@ -117,7 +122,8 @@ export function DashboardNavbarUserMenu({
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  onClick={handleSignOut}
+                  disabled={isLoggingOut}
                 >
                   Sign Out
                 </AlertDialogAction>

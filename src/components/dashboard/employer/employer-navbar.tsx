@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
+import { useAppLogout } from "@/hooks/use-app-logout";
 
 const LOGO = "/assets/logo/logo.svg";
 
@@ -14,6 +14,12 @@ const LOGO = "/assets/logo/logo.svg";
  * placeholder. Logo on the left, an explicit Sign Out button on the right.
  */
 export function EmployerNavbar() {
+  const { isLoggingOut, logoutAndRedirect } = useAppLogout();
+
+  const handleSignOut = async () => {
+    await logoutAndRedirect();
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center px-4 sm:px-6 lg:h-[72px]">
@@ -39,7 +45,8 @@ export function EmployerNavbar() {
           <Button
             type="button"
             variant="ghost"
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={handleSignOut}
+            disabled={isLoggingOut}
             className="gap-2 text-sm font-medium"
           >
             <LogOut className="size-4" aria-hidden />

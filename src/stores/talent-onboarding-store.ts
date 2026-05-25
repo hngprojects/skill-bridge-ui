@@ -23,6 +23,7 @@ export const useTalentOnboardingStore = create<TalentOnboardingState>()(
     (set) => ({
       ...initialOnboardingState(),
       resetForUser: (userId) => set(initialOnboardingState(userId)),
+      reset: () => set(initialOnboardingState()),
       setCurrentStepId: (id) => set({ currentStepId: id }),
       setSelectedGoalId: (id) => set({ selectedGoalId: id ?? null }),
       setSelectedTrackIds: (ids) => set({ selectedTrackIds: ids }),
