@@ -18,24 +18,24 @@ export function QuestionnaireToolbar({
 }: QuestionnaireToolbarProps) {
   const showTimer = secondsLeft != null;
 
-  if (!showTimer) return null;
-
   return (
     <div className="flex items-center gap-4 py-6">
-      <div className="flex items-center gap-3">
-        <div
-          className="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-success"
-          aria-hidden
-        >
-          <Timer className="size-5 text-foreground" strokeWidth={2} />
+      {showTimer ? (
+        <div className="flex items-center gap-3">
+          <div
+            className="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-success"
+            aria-hidden
+          >
+            <Timer className="size-5 text-foreground" strokeWidth={2} />
+          </div>
+          <p className="font-sans text-base text-foreground">
+            Time left:{" "}
+            <span className="font-semibold text-success tabular-nums">
+              {formatCountdown(secondsLeft ?? 0)}
+            </span>
+          </p>
         </div>
-        <p className="font-sans text-base text-foreground">
-          Time left:{" "}
-          <span className="font-semibold text-success tabular-nums">
-            {formatCountdown(secondsLeft ?? 0)}
-          </span>
-        </p>
-      </div>
+      ) : null}
     </div>
   );
 }
