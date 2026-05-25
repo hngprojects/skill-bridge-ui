@@ -69,7 +69,21 @@ interface DashboardStatusCardProps {
   tier?: string;
   description?: string;
   score?: number;
+  /** Length of the cooling period in days (the cap). */
   coolingDays?: number;
+  /** Live days remaining until the user can retake the assessment. */
+  daysRemaining?: number;
+}
+
+function formatRetakeWarning(coolingDays: number, daysRemaining?: number) {
+  if (daysRemaining == null) {
+    return `${coolingDays}-day cooling period between attempts`;
+  }
+  if (daysRemaining <= 0) {
+    return "You're eligible for a retake now";
+  }
+  if (daysRemaining === 1) return "1 day until your next attempt";
+  return `${daysRemaining} days until your next attempt`;
 }
 
 export function DashboardStatusCard({
@@ -78,7 +92,9 @@ export function DashboardStatusCard({
   description = "Your next attempt is coming up. Keep preparing while you wait. Use the resources below to strengthen your weak areas and come back stronger.",
   score = 47,
   coolingDays = 14,
+  daysRemaining,
 }: DashboardStatusCardProps) {
+  const retakeLine = formatRetakeWarning(coolingDays, daysRemaining);
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-[#F2F2F2]">
       {/* Main row */}
@@ -117,7 +133,7 @@ export function DashboardStatusCard({
                 />
               </span>
               <p className="body-3 text-muted-foreground">
-                {coolingDays}-day cooling period between attempts
+                {retakeLine}
                 <span className="mx-1.5">•</span>
                 Use this time to prepare
               </p>

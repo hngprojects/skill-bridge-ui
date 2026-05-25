@@ -45,6 +45,18 @@ export function goalIdToApiGoal(id: GoalOptionId): string {
   return GOAL_TO_API[id];
 }
 
+/** Reverse map of `GOAL_TO_API` — API slug -> display label. */
+const API_GOAL_TO_LABEL: Record<string, string> = Object.fromEntries(
+  GOAL_OPTIONS.map(({ id, label }) => [GOAL_TO_API[id], label]),
+);
+
+export function apiGoalToLabel(
+  apiGoal: string | undefined,
+): string | undefined {
+  if (!apiGoal) return undefined;
+  return API_GOAL_TO_LABEL[apiGoal];
+}
+
 export const TRACK_OPTIONS = [
   {
     id: "product-designer",
@@ -94,4 +106,16 @@ export function trackIdToApiRoleTrack(id: TrackOptionId): string {
 
 export function trackIdsToApiRoleTracks(ids: TrackOptionId[]): string[] {
   return ids.map(trackIdToApiRoleTrack);
+}
+
+/** Reverse map: API track slug -> display label. */
+const API_TRACK_TO_LABEL: Record<string, string> = Object.fromEntries(
+  TRACK_OPTIONS.map(({ id, label }) => [trackIdToApiRoleTrack(id), label]),
+);
+
+export function apiRoleTrackToLabel(
+  apiTrack: string | undefined,
+): string | undefined {
+  if (!apiTrack) return undefined;
+  return API_TRACK_TO_LABEL[apiTrack];
 }

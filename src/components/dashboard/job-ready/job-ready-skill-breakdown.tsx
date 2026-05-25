@@ -77,16 +77,25 @@ function ZoneGroup({ zone }: { zone: ChartZone }) {
 type JobReadySkillBreakdownProps = {
   /** User's advanced-assessment percentage; drives the active bar's label. */
   activePercentage?: number;
+
+  completedAt?: string;
 };
 
-export function JobReadySkillBreakdown({
-  activePercentage,
-}: JobReadySkillBreakdownProps = {}) {
-  const today = new Date().toLocaleDateString("en-US", {
+function formatAttemptDate(iso: string | undefined): string {
+  const date = iso ? new Date(iso) : new Date();
+  const valid = !Number.isNaN(date.getTime());
+  return (valid ? date : new Date()).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
+}
+
+export function JobReadySkillBreakdown({
+  activePercentage,
+  completedAt,
+}: JobReadySkillBreakdownProps = {}) {
+  const lastAttempt = formatAttemptDate(completedAt);
   const chartZones = buildChartZones(activePercentage);
 
   return (
@@ -113,7 +122,7 @@ export function JobReadySkillBreakdown({
 
       {/* Date */}
       <p className="mb-6 text-[13px] text-muted-foreground">
-        Last attempt • {today}
+        Last attempt • {lastAttempt}
       </p>
 
       {/* Bar chart — extra top padding so hex badge has room */}
