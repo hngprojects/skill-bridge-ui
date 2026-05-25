@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 
 import { getInitials } from "@/components/dashboard/nav-utils";
+import { SignOutDialog } from "@/components/dashboard/sign-out-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,18 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useAppLogout } from "@/hooks/use-app-logout";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 
 type DashboardNavbarUserMenuProps = {
@@ -37,12 +26,7 @@ export function DashboardNavbarUserMenu({
 }: DashboardNavbarUserMenuProps) {
   const { fullName, email } = useSessionUserProfile();
   const { data: session } = useSession();
-  const { isLoggingOut, logoutAndRedirect } = useAppLogout();
   const initials = getInitials(fullName, email);
-
-  const handleSignOut = async () => {
-    await logoutAndRedirect();
-  };
   const avatarUrl = session?.user?.image ?? undefined;
 
   return (
@@ -103,33 +87,14 @@ export function DashboardNavbarUserMenu({
           >
             <Link href="/contact">Help Center</Link>
           </DropdownMenuItem>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <DropdownMenuItem
-                className="h-8 rounded-md px-2 text-xs text-[#667085]"
-                onSelect={(e) => e.preventDefault()}
-              >
-                Sign Out
-              </DropdownMenuItem>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Sign out?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to sign out of your account?
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleSignOut}
-                  disabled={isLoggingOut}
-                >
-                  Sign Out
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <SignOutDialog>
+            <DropdownMenuItem
+              className="h-8 rounded-md px-2 text-xs text-[#667085]"
+              onSelect={(e) => e.preventDefault()}
+            >
+              Sign Out
+            </DropdownMenuItem>
+          </SignOutDialog>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
