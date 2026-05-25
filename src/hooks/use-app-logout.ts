@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 import { logout } from "@/actions/auth";
@@ -14,20 +15,31 @@ type AppLogoutOptions = {
 
 export function useAppLogout() {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const logoutAndRedirect = useCallback(
     async ({ callbackUrl = "/login" }: AppLogoutOptions = {}) => {
       setIsLoggingOut(true);
+      let shouldResetLoading = true;
+
       try {
-        await logout();
+        try {
+          await logout();
+        } finally {
+          queryClient.clear();
+          clearPersistedSessionState();
+          const result = await signOut({ callbackUrl, redirect: false });
+          router.replace(result.url ?? callbackUrl);
+          shouldResetLoading = false;
+        }
       } finally {
-        queryClient.clear();
-        clearPersistedSessionState();
-        await signOut({ callbackUrl });
+        if (shouldResetLoading) {
+          setIsLoggingOut(false);
+        }
       }
     },
-    [queryClient],
+    [queryClient, router],
   );
 
   return { isLoggingOut, logoutAndRedirect };
