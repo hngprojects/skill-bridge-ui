@@ -246,6 +246,7 @@ export function AdvancedAssessmentFlow() {
         isLoading={startState === "loading"}
         isSubmitting={isSubmitting || isSubmittingLt2}
         initialSeconds={remainingSeconds}
+        totalQuestions={apiQuestions.length + (lt3Generated ? 0 : 1)}
         onSubmit={submit}
         onLastQuestionAdvance={onLastQuestionAdvance}
       />

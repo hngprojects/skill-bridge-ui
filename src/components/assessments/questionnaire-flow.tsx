@@ -35,6 +35,7 @@ export type QuestionnaireFlowProps = {
   isSubmitting: boolean;
   initialSeconds?: number;
   prefillAnswers?: Record<string, string | string[]>;
+  totalQuestions?: number;
   /**
    * Called on the final question's Next click. `timeSpentByKey` mirrors
    * `answers` (keyed by `question.key`) and carries the seconds the user
@@ -69,6 +70,7 @@ export function QuestionnaireFlow({
   isSubmitting,
   initialSeconds,
   prefillAnswers,
+  totalQuestions,
   onSubmit,
   onLastQuestionAdvance,
 }: QuestionnaireFlowProps) {
@@ -135,7 +137,15 @@ export function QuestionnaireFlow({
   }, [questions, name]);
 
   const question = questions[currentIndex];
+  // Internal `isLast` drives the onLastQuestionAdvance / onSubmit branch in
+  // handleNext — must stay tied to the current `questions` array length.
   const isLast = currentIndex === questions.length - 1;
+  // `displayedTotal` / `displayedIsLast` drive the user-facing count + the
+  // Submit/Next button label. They honor the optional `totalQuestions`
+  // override so flows that know an extra question is coming (advanced LT-3)
+  // can show the honest total from the first render.
+  const displayedTotal = totalQuestions ?? questions.length;
+  const displayedIsLast = currentIndex === displayedTotal - 1;
 
   // Capture the moment the questionnaire first becomes interactive (loading
   // finished + a question is mounted) so the first question's elapsed time
@@ -236,7 +246,8 @@ export function QuestionnaireFlow({
         }
       }
       const result = await onSubmit(builtAnswers, builtTimeByKey);
-      if (isAssessmentSlug(name) && user?.id) {
+      // Advanced submission is async (202 + email); nothing to stash for it.
+      if (isAssessmentSlug(name) && name !== "advanced" && user?.id) {
         if (result != null) {
           setSummaryResult(user.id, name, result);
         } else {
@@ -289,7 +300,7 @@ export function QuestionnaireFlow({
   }
 
   const overallProgress =
-    questions.length > 0 ? (currentIndex + 1) / questions.length : 0;
+    displayedTotal > 0 ? (currentIndex + 1) / displayedTotal : 0;
   const mobileSectionTitle =
     sections[activeSectionNumber - 1]?.title ?? "Assessment";
 
@@ -320,8 +331,8 @@ export function QuestionnaireFlow({
           onNext={handleNext}
           onBack={handleBack}
           questionNumber={currentIndex + 1}
-          totalQuestions={questions.length}
-          isLast={isLast}
+          totalQuestions={displayedTotal}
+          isLast={displayedIsLast}
           showBack={currentIndex > 0}
           nextDisabled={!canProceed}
           nextLoading={isSubmitting}
@@ -329,10 +340,10 @@ export function QuestionnaireFlow({
       </div>
       <QuestionnaireMobileActions
         questionNumber={currentIndex + 1}
-        totalQuestions={questions.length}
+        totalQuestions={displayedTotal}
         onBack={handleBack}
         onNext={handleNext}
-        isLast={isLast}
+        isLast={displayedIsLast}
         showBack={currentIndex > 0}
         nextDisabled={!canProceed}
         nextLoading={isSubmitting}
