@@ -106,7 +106,7 @@ export function JobReadyStatusCard({
             )}
           >
             <Link
-              href="/t/assessments"
+              href="/t/offers"
               className={cn(
                 "flex items-center label shrink-0 text-foreground underline underline-offset-2",
                 "hover:opacity-70 transition-opacity group",
