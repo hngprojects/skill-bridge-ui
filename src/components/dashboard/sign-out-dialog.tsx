@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
 import {
   AlertDialog,
@@ -23,7 +23,8 @@ type SignOutDialogProps = {
 export function SignOutDialog({ children }: SignOutDialogProps) {
   const { isLoggingOut, logoutAndRedirect } = useAppLogout();
 
-  const handleSignOut = async () => {
+  const handleSignOut = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     await logoutAndRedirect();
   };
 
@@ -38,7 +39,7 @@ export function SignOutDialog({ children }: SignOutDialogProps) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoggingOut}>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={handleSignOut} disabled={isLoggingOut}>
             {isLoggingOut ? (
               <>
