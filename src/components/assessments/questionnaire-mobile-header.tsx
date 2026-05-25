@@ -14,8 +14,11 @@ type QuestionnaireMobileHeaderProps = {
 };
 
 function formatCountdown(totalSeconds: number): string {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
+  const safe = Number.isFinite(totalSeconds)
+    ? Math.max(0, Math.floor(totalSeconds))
+    : 0;
+  const minutes = Math.floor(safe / 60);
+  const seconds = safe % 60;
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 

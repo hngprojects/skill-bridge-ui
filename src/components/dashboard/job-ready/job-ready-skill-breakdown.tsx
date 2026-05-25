@@ -81,10 +81,11 @@ type JobReadySkillBreakdownProps = {
   completedAt?: string;
 };
 
-function formatAttemptDate(iso: string | undefined): string {
-  const date = iso ? new Date(iso) : new Date();
-  const valid = !Number.isNaN(date.getTime());
-  return (valid ? date : new Date()).toLocaleDateString("en-US", {
+function formatAttemptDate(iso: string | undefined): string | undefined {
+  if (!iso) return undefined;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -121,9 +122,11 @@ export function JobReadySkillBreakdown({
       </div>
 
       {/* Date */}
-      <p className="mb-6 text-[13px] text-muted-foreground">
-        Last attempt • {lastAttempt}
-      </p>
+      {lastAttempt ? (
+        <p className="mb-6 text-[13px] text-muted-foreground">
+          Last attempt • {lastAttempt}
+        </p>
+      ) : null}
 
       {/* Bar chart — extra top padding so hex badge has room */}
       <div className="flex items-end gap-4 pt-18">

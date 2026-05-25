@@ -95,6 +95,7 @@ export function DashboardStatusCard({
   daysRemaining,
 }: DashboardStatusCardProps) {
   const retakeLine = formatRetakeWarning(coolingDays, daysRemaining);
+  const isEligibleNow = daysRemaining != null && daysRemaining <= 0;
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-[#F2F2F2]">
       {/* Main row */}
@@ -134,8 +135,12 @@ export function DashboardStatusCard({
               </span>
               <p className="body-3 text-muted-foreground">
                 {retakeLine}
-                <span className="mx-1.5">•</span>
-                Use this time to prepare
+                {!isEligibleNow ? (
+                  <>
+                    <span className="mx-1.5">•</span>
+                    Use this time to prepare
+                  </>
+                ) : null}
               </p>
             </div>
 
