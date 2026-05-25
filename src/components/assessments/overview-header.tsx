@@ -2,6 +2,7 @@
 
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type OverviewHeaderProps = {
   profileCompletion: number;
@@ -25,9 +26,15 @@ export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
       </div>
 
       <div className="w-full self-start lg:max-w-55 lg:text-right">
-        <div className="block w-full text-sm leading-5 font-semibold text-[#05060F]">
+        <Link
+          href="/t/settings"
+          className={cn(
+            "label text-foreground underline underline-offset-2",
+            "hover:opacity-70 transition-opacity",
+          )}
+        >
           {isProfileComplete ? "View profile" : "Complete your profile"}
-        </div>
+        </Link>
         {!isProfileComplete ? (
           <div className="mt-3 flex items-center gap-3">
             <div className="h-1 flex-1 rounded-full bg-[#D6FFBE]">

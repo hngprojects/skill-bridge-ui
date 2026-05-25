@@ -25,6 +25,8 @@ export type DashboardPerformanceSkill = {
   percentage: number;
   validatedLevel: SkillLevel;
   passed: boolean;
+  /** Mirror of `!passed`, sent by the API. */
+  failed?: boolean;
   /** ISO timestamp. */
   completedAt: string;
   /** May be empty `{}` until AI grading produces a report. */
@@ -36,6 +38,10 @@ export type DashboardPerformanceSkill = {
 };
 
 export type DashboardAdvancedRetake = {
+  /** ISO timestamp the probation period started. */
+  probationStartDate?: string;
+  /** ISO timestamp the probation period ends. */
+  probationEndDate?: string;
   /** ISO timestamp at which the user becomes eligible to retake. */
   eligibilityDate: string;
   ctaEnabled: boolean;
@@ -65,6 +71,8 @@ export type DashboardPerformance = {
 
 export type DashboardHomeResponseData = {
   firstName: string;
+  avatarUrl?: string;
+  goal?: string;
   profileCompletionPercentage: number;
   journeyOverview: DashboardJourneyOverviewItem[];
   /** Present once the user has at least started skill or advanced. */
