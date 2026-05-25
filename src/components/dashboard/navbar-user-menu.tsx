@@ -2,10 +2,10 @@
 
 import { Bell, ChevronDown, Settings, UserRound } from "lucide-react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 
 import { getInitials } from "@/components/dashboard/nav-utils";
+import { SignOutDialog } from "@/components/dashboard/sign-out-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,17 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 
 type DashboardNavbarUserMenuProps = {
@@ -98,32 +87,14 @@ export function DashboardNavbarUserMenu({
           >
             <Link href="/contact">Help Center</Link>
           </DropdownMenuItem>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <DropdownMenuItem
-                className="h-8 rounded-md px-2 text-xs text-[#667085]"
-                onSelect={(e) => e.preventDefault()}
-              >
-                Sign Out
-              </DropdownMenuItem>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Sign out?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to sign out of your account?
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => signOut({ callbackUrl: "/login" })}
-                >
-                  Sign Out
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <SignOutDialog>
+            <DropdownMenuItem
+              className="h-8 rounded-md px-2 text-xs text-[#667085]"
+              onSelect={(e) => e.preventDefault()}
+            >
+              Sign Out
+            </DropdownMenuItem>
+          </SignOutDialog>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
