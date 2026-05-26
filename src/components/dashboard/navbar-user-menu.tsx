@@ -67,9 +67,14 @@ export function DashboardNavbarUserMenu({
               Verified profile
             </DropdownMenuItem>
           ) : null}
-          <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
-            <Bell className="size-5 text-[#00000]" aria-hidden />
-            Notifications
+          <DropdownMenuItem
+            asChild
+            className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]"
+          >
+            <Link href="/t/notifications">
+              <Bell className="size-5 text-[#00000]" aria-hidden />
+              Notifications
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
             asChild

@@ -3,7 +3,7 @@ import NotificationsHeader from "@/components/notifications/notifications-header
 
 const NotificationsPage = () => {
   return (
-    <div className="flex flex-col my-8.5 gap-y-5 md:gap-y-10">
+    <div className="mx-auto my-8 flex w-full max-w-[1400px] flex-col gap-y-6 px-4 sm:px-6 md:my-9 lg:px-8 2xl:px-0">
       <NotificationsHeader />
       <NotificationView />
     </div>
