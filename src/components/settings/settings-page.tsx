@@ -1,13 +1,9 @@
 "use client";
 
-import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
-
 import { SettingsAboutMe } from "./settings-about-me";
 import { SettingsTabsCard } from "./settings-tabs-card";
 
 export function SettingsPage() {
-  const { fullName, email } = useSessionUserProfile();
-
   return (
     <div className="py-8 sm:py-10">
       <div className="mb-6">
@@ -18,11 +14,7 @@ export function SettingsPage() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <SettingsAboutMe
-          initialFullName={fullName}
-          initialEmail={email}
-          isVerified
-        />
+        <SettingsAboutMe />
         <SettingsTabsCard />
       </div>
     </div>
