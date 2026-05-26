@@ -19,7 +19,7 @@ export function SettingsTabsCard() {
   return (
     <div className="rounded-2xl border border-border bg-[#FAFAFA] p-6">
       <TabsPrimitive.Root defaultValue="resume">
-        <TabsPrimitive.List className="flex flex-wrap gap-2">
+        <TabsPrimitive.List className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
           {TAB_ITEMS.map((tab) => (
             <TabsPrimitive.Trigger
               key={tab.value}

@@ -20,7 +20,7 @@ function AccountRow({
   action: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-white p-5">
+    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
       <div className="flex flex-col gap-1">
         <p className="text-base font-semibold text-foreground">{title}</p>
         <div className="text-sm text-muted-foreground">{description}</div>
@@ -86,10 +86,13 @@ export function SettingsAccount() {
       <AccountRow
         title="Active Sessions"
         description={
-          <span className="flex items-center gap-2">
-            <HugeiconsIcon icon={ChromeIcon} className="size-4 shrink-0" />
-            Chrome on Mac OS X<span className="text-border">•</span>
-            Last access: Today at 4:38 PM
+          <span className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+            <span className="flex items-center gap-2">
+              <HugeiconsIcon icon={ChromeIcon} className="size-4 shrink-0" />
+              Chrome on Mac OS X
+            </span>
+            <span className="hidden sm:inline text-border">•</span>
+            <span>Last access: Today at 4:38 PM</span>
           </span>
         }
         action={

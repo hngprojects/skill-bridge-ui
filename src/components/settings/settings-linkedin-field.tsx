@@ -5,11 +5,15 @@ import { Input } from "@/components/ui/input";
 interface SettingsLinkedInFieldProps {
   value: string;
   onChange: (v: string) => void;
+  onSave: () => void;
+  isSaving: boolean;
 }
 
 export function SettingsLinkedInField({
   value,
   onChange,
+  onSave,
+  isSaving,
 }: SettingsLinkedInFieldProps) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -22,15 +26,20 @@ export function SettingsLinkedInField({
           value={value}
           placeholder="Enter LinkedIn URL"
           onChange={(e) => onChange(e.target.value)}
+          onBlur={onSave}
           className="pr-12"
         />
         <span className="absolute right-3 pointer-events-none">
-          <Image
-            src="/waitlist-icons/linkedin.svg"
-            alt="LinkedIn"
-            width={20}
-            height={20}
-          />
+          {isSaving ? (
+            <span className="text-xs text-muted-foreground">Saving…</span>
+          ) : (
+            <Image
+              src="/waitlist-icons/linkedin.svg"
+              alt="LinkedIn"
+              width={20}
+              height={20}
+            />
+          )}
         </span>
       </div>
     </div>
