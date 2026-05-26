@@ -80,9 +80,13 @@ const ResourcesPage = () => {
     [data],
   );
   const normalizedSearchQuery = normalizeSearchValue(debouncedSearchQuery);
-  const filteredSections = sections
-    .map((section) => sectionMatchesSearch(section, normalizedSearchQuery))
-    .filter((section): section is ResourceSection => Boolean(section));
+  const filteredSections = useMemo(
+    () =>
+      sections
+        .map((section) => sectionMatchesSearch(section, normalizedSearchQuery))
+        .filter((section): section is ResourceSection => Boolean(section)),
+    [sections, normalizedSearchQuery],
+  );
   const hasSearchResults = filteredSections.length > 0;
 
   if (isPending) {
