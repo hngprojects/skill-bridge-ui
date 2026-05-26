@@ -22,11 +22,17 @@ function normalizeSearchValue(value: string) {
 function sectionMatchesSearch(section: ResourceSection, query: string) {
   if (!query) return section;
 
-  const items = section.items.filter((item) =>
-    Object.values(item).some((value) =>
+  const items = section.items.filter((item) => {
+    const visibleValues = [
+      item.title,
+      "description" in item ? item.description : undefined,
+      item.duration,
+    ];
+
+    return visibleValues.some((value) =>
       String(value).toLowerCase().includes(query),
-    ),
-  );
+    );
+  });
 
   return items.length ? { ...section, items } : undefined;
 }
