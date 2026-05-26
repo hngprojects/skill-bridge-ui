@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
 
+import { SignOutDialog } from "@/components/dashboard/sign-out-dialog";
 import { Button } from "@/components/ui/button";
 
 const LOGO = "/assets/logo/logo.svg";
@@ -36,15 +36,16 @@ export function EmployerNavbar() {
         </Link>
 
         <div className="ml-auto flex items-center">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="gap-2 text-sm font-medium"
-          >
-            <LogOut className="size-4" aria-hidden />
-            Sign Out
-          </Button>
+          <SignOutDialog>
+            <Button
+              type="button"
+              variant="ghost"
+              className="gap-2 text-sm font-medium"
+            >
+              <LogOut className="size-4" aria-hidden />
+              Sign Out
+            </Button>
+          </SignOutDialog>
         </div>
       </div>
     </header>

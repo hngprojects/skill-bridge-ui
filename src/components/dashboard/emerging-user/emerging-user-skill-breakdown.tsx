@@ -77,16 +77,25 @@ function ZoneGroup({ zone }: { zone: ChartZone }) {
 type DashboardSkillBreakdownProps = {
   /** User's advanced-assessment percentage; drives the active bar's label. */
   activePercentage?: number;
+  completedAt?: string;
 };
 
-export function DashboardSkillBreakdown({
-  activePercentage,
-}: DashboardSkillBreakdownProps = {}) {
-  const today = new Date().toLocaleDateString("en-US", {
+function formatAttemptDate(iso: string | undefined): string | undefined {
+  if (!iso) return undefined;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
+}
+
+export function DashboardSkillBreakdown({
+  activePercentage,
+  completedAt,
+}: DashboardSkillBreakdownProps = {}) {
+  const lastAttempt = formatAttemptDate(completedAt);
   const chartZones = buildChartZones(activePercentage);
 
   return (
@@ -112,10 +121,12 @@ export function DashboardSkillBreakdown({
       </div>
 
       {/* Date */}
-      <p className="mb-6 text-[13px] text-muted-foreground">
-        {" "}
-        Last attempt • {today}
-      </p>
+      {lastAttempt ? (
+        <p className="mb-6 text-[13px] text-muted-foreground">
+          {" "}
+          Last attempt • {lastAttempt}
+        </p>
+      ) : null}
 
       {/* Bar chart — extra top padding so hex badge has room */}
       <div className="flex items-end gap-4 pt-18">

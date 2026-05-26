@@ -29,7 +29,7 @@ export const ASSESSMENT_PREVIEWS = {
     description:
       "Tell us about your specialization, tools, experience level, and work preferences.",
     iconSrc: "/assets/assessments/personal-assessment-icon.svg",
-    questionCount: "15 - 20 Questions",
+    questionCount: "15 Questions",
     duration: "No duration",
     attempts: "1 attempt",
   },
@@ -39,7 +39,7 @@ export const ASSESSMENT_PREVIEWS = {
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     iconSrc: "/assets/assessments/skill-assessment-icon.svg",
-    questionCount: "15-20 Questions",
+    questionCount: "20 Questions (15 MCQ, 5 Open-ended)",
     duration: "30 minutes",
     attempts: "3 attempts (allowed within time limit)",
   },
@@ -49,8 +49,8 @@ export const ASSESSMENT_PREVIEWS = {
     description:
       "This assessment is designed to evaluate your current skill level at your selected tracks.",
     iconSrc: "/assets/assessments/advanced-assessment-icon.svg",
-    questionCount: "25 Questions",
-    duration: "35 minutes",
+    questionCount: "15 Questions",
+    duration: "90 minutes",
     attempts: "1 attempt (allowed within time limit)",
     retakeText: "Retake valid after 14 days",
   },

@@ -4,5 +4,7 @@ export * from "./talent-onboarding";
 export * from "./employer";
 export * from "./health";
 export * from "./inquiries";
+export * from "./resources";
+export * from "./verified-profile";
 export * from "./users";
 export * from "./utils";

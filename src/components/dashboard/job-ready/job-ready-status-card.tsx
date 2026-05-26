@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, AlertCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -69,7 +69,6 @@ interface JobReadyStatusCardProps {
   tier?: string;
   description?: string;
   score?: number;
-  coolingDays?: number;
 }
 
 export function JobReadyStatusCard({
@@ -77,7 +76,6 @@ export function JobReadyStatusCard({
   tier = "Job Ready Talent",
   description = "Your next attempt is coming up. Keep preparing while you wait. Use the resources below to strengthen your weak areas and come back stronger.",
   score = 85,
-  coolingDays = 14,
 }: JobReadyStatusCardProps) {
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-[#F2F2F2]">
@@ -104,27 +102,11 @@ export function JobReadyStatusCard({
           </div>
           <div
             className={cn(
-              "flex flex-col gap-3 border-t border-border bg-white px-6 py-3 rounded-2xl",
-              "sm:flex-row sm:items-center sm:justify-between sm:gap-4",
+              "flex justify-end border-t border-border bg-white px-6 py-3 rounded-2xl",
             )}
           >
-            <div className="flex items-center gap-2">
-              {/* Orange clock badge */}
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-100">
-                <AlertCircle
-                  className="size-3.5 text-orange-500"
-                  aria-hidden="true"
-                />
-              </span>
-              <p className="body-3 text-muted-foreground">
-                {coolingDays}-day cooling period between attempts
-                <span className="mx-1.5">•</span>
-                Use this time to prepare
-              </p>
-            </div>
-
             <Link
-              href="/t/assessments"
+              href="/t/offers"
               className={cn(
                 "flex items-center label shrink-0 text-foreground underline underline-offset-2",
                 "hover:opacity-70 transition-opacity group",

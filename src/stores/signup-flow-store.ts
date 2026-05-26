@@ -10,17 +10,23 @@ type SignupFlowState = {
   setEmployerLead: (lead: EmployerSignup) => void;
   clearTalentSignup: () => void;
   clearEmployerLead: () => void;
+  reset: () => void;
+};
+
+const initialSignupFlowState = {
+  talentSignup: null,
+  employerLead: null,
 };
 
 export const useSignupFlowStore = create<SignupFlowState>()(
   persist(
     (set) => ({
-      talentSignup: null,
-      employerLead: null,
+      ...initialSignupFlowState,
       setTalentSignup: (signup) => set({ talentSignup: signup }),
       setEmployerLead: (lead) => set({ employerLead: lead }),
       clearTalentSignup: () => set({ talentSignup: null }),
       clearEmployerLead: () => set({ employerLead: null }),
+      reset: () => set(initialSignupFlowState),
     }),
     {
       name: "skillbridge-signup-flow",

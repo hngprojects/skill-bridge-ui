@@ -146,7 +146,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     description:
       "To get verified score and become discoverable to top employers.",
     ctaLabel: "Start",
-    estimatedTime: "35 minutes",
+    estimatedTime: "90 minutes",
     panelTitle: "Get Job Ready!",
     panelIcon: BriefcaseBusiness,
     panelIconSrc: "/assets/icons/portfolio-icon.svg",

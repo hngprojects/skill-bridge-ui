@@ -18,12 +18,15 @@ import {
   useSaveTalentOnboardingTrack,
   useUpdateTalentOnboardingGoal,
   useSaveTalentOnboardingProfile,
-  useUploadAvatar,
-} from "@/hooks/api";
+} from "@/hooks/api/use-talent-onboarding";
+
+import { useUploadAvatar } from "@/hooks/api/use-avatar";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
 import { useTalentOnboardingStore } from "@/stores/talent-onboarding-store";
+import { getMe } from "@/actions/auth";
+import { signInWithVerifiedUser } from "@/lib/auth-client";
 
 function stepIndex(id: OnboardingStepId): number {
   return ONBOARDING_STEPS.findIndex((s) => s.id === id);
@@ -150,7 +153,7 @@ function OnboardingPageClient() {
 
       if (currentStepId === "complete-profile" && profileStepReady) {
         const avatarResult = profileImage
-          ? await uploadAvatar(profileImage)
+          ? ((await uploadAvatar(profileImage)) as { avatarUrl: string })
           : null;
         await saveProfile({
           region: profileRegion,
@@ -159,6 +162,8 @@ function OnboardingPageClient() {
           ...(avatarResult ? { avatarUrl: avatarResult.avatarUrl } : {}),
         });
         if (!profileSaved) setProfileSaved(true);
+        const updatedUser = await getMe();
+        await signInWithVerifiedUser(updatedUser);
         advanceStep();
         return;
       }

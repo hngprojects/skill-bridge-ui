@@ -1,14 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { LogOut, Timer } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { Timer } from "lucide-react";
 
 function formatCountdown(totalSeconds: number): string {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
+  const safe = Number.isFinite(totalSeconds)
+    ? Math.max(0, Math.floor(totalSeconds))
+    : 0;
+  const minutes = Math.floor(safe / 60);
+  const seconds = safe % 60;
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
@@ -20,12 +19,11 @@ type QuestionnaireToolbarProps = {
 export function QuestionnaireToolbar({
   secondsLeft,
 }: QuestionnaireToolbarProps) {
-  const { name } = useParams<{ name: string }>();
   const showTimer = secondsLeft != null;
 
   return (
-    <div className="flex items-center justify-between gap-4 py-6">
-      {showTimer && (
+    <div className="flex items-center gap-4 py-6">
+      {showTimer ? (
         <div className="flex items-center gap-3">
           <div
             className="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-success"
@@ -40,18 +38,7 @@ export function QuestionnaireToolbar({
             </span>
           </p>
         </div>
-      )}
-
-      <Button
-        variant="ghost"
-        asChild
-        className="ml-auto h-auto gap-2 px-2 font-sans text-base font-medium text-foreground hover:bg-transparent hover:text-foreground/80"
-      >
-        <Link href={`/t/assessments/${name}`}>
-          Exit
-          <LogOut className="size-5" aria-hidden />
-        </Link>
-      </Button>
+      ) : null}
     </div>
   );
 }

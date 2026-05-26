@@ -101,3 +101,12 @@ export type {
   NotificationsListResponseData,
   UnreadCountResponseData,
 } from "./notifications";
+
+export type { ResourceApiItem, ResourcesResponseData } from "./resources";
+export type {
+  VerifiedProfileKeyStrength,
+  VerifiedProfileMetric,
+  VerifiedProfileResponseData,
+  VerifiedProfileSkillItem,
+  VerifiedProfileSkillProficiency,
+} from "./verified-profile";

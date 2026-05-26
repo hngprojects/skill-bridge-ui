@@ -6,5 +6,7 @@ export * from "./use-employer";
 export * from "./use-talent-onboarding";
 export * from "./use-health";
 export * from "./use-inquiries";
+export * from "./use-resources";
+export * from "./use-verified-profile";
 export * from "./use-users";
 export * from "./use-assessment";

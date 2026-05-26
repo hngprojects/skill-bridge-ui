@@ -1,6 +1,14 @@
 import Image from "next/image";
 
-const ResourcesHeroBanner = () => {
+type ResourcesHeroBannerProps = {
+  title: string;
+  description: string;
+};
+
+const ResourcesHeroBanner = ({
+  title,
+  description,
+}: ResourcesHeroBannerProps) => {
   return (
     <div
       className="relative w-full rounded-2xl overflow-hidden min-h-40 md:min-h-57.75 flex items-center"
@@ -10,20 +18,8 @@ const ResourcesHeroBanner = () => {
       }}
     >
       <div className="flex flex-col gap-y-2 px-6 py-6 md:px-10 md:py-8 max-w-2xl">
-        <h1 className="section-h2 font-bold text-background">
-          Life as a Frontend Developer
-        </h1>
-        <p className="body text-background">
-          Succeed faster with these frontend developer career resources.
-        </p>
-        <div className="flex flex-row gap-x-2.5 mt-4">
-          {[0, 1, 2, 3].map((dot) => (
-            <span
-              key={dot}
-              className={`w-2.5 h-2.5 rounded-full ${dot === 0 ? "bg-background/40" : "bg-background/25"}`}
-            />
-          ))}
-        </div>
+        <h1 className="section-h2 font-bold text-background">{title}</h1>
+        <p className="body text-background">{description}</p>
       </div>
       <Image
         src="/assets/resources/resources-hero-illustration.svg"

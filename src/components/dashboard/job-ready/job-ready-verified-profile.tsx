@@ -1,16 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight } from "lucide-react";
 
 type JobReadyVerifiedProfileProps = {
-  /** First name displayed on the profile card. */
   firstName?: string;
-  /** ISO timestamp of the advanced-assessment completion. */
   verifiedAt?: string;
+  avatarUrl?: string;
+  role?: string;
 };
 
 function formatVerifiedDate(iso: string | undefined): string {
@@ -27,9 +27,12 @@ function formatVerifiedDate(iso: string | undefined): string {
 export function JobReadyVerifiedProfile({
   firstName,
   verifiedAt,
+  avatarUrl,
+  role,
 }: JobReadyVerifiedProfileProps = {}) {
   const displayName = firstName || "Alex Smith";
   const verifiedOn = formatVerifiedDate(verifiedAt);
+  const displayRole = role || "Frontend Developer";
 
   return (
     <section className="p-6 flex flex-col gap-0 w-full border border-border rounded-2xl bg-[#FAFAFA] text-gray-900">
@@ -39,7 +42,7 @@ export function JobReadyVerifiedProfile({
           Verified profile
         </h2>
         <Link
-          href="#"
+          href="/t/verified-profile"
           className="flex items-center text-foreground text-[15px] font-medium hover:opacity-70 transition-opacity group label shrink-0"
         >
           <span className="underline underline-offset-4 decoration-gray-900">
@@ -52,10 +55,13 @@ export function JobReadyVerifiedProfile({
       {/* Avatar */}
       <div className="mb-6">
         <Avatar className="h-24 w-24">
+          {avatarUrl ? (
+            <AvatarImage src={avatarUrl} alt={`${displayName} avatar`} />
+          ) : null}
           <AvatarFallback className="bg-[#E5E5E5]">
             <Image
               src="/assets/user.svg"
-              alt="user-icon"
+              alt=""
               width={32}
               height={32}
               className="size-14 text-white"
@@ -75,7 +81,7 @@ export function JobReadyVerifiedProfile({
           </Badge>
         </div>
         <p className="text-[20px] text-gray-800 mb-2 font-normal">
-          Frontend Developer
+          {displayRole}
         </p>
         <p className="text-[#A38A40] text-[15px] font-normal tracking-tight">
           Top 1% Job Ready talent in selected role

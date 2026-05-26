@@ -280,7 +280,10 @@ authApi.interceptors.response.use(
       return authApi(originalRequest);
     } catch (refreshError) {
       if (typeof window !== "undefined") {
+        const { clearPersistedSessionState } =
+          await import("@/lib/client-session-cleanup");
         const { signOut } = await import("next-auth/react");
+        clearPersistedSessionState();
         await signOut({ callbackUrl: "/login" });
       }
       return Promise.reject(refreshError);
