@@ -1,17 +1,45 @@
+"use client";
+
 import Image from "next/image";
+import { Dot, Download } from "lucide-react";
+
 import InfoDisplay from "@/components/verified-report/info-display";
 import { Button } from "@/components/ui/button";
-import { Dot, Download } from "lucide-react";
-import { userReport } from "@/constants/verified-report";
 import HexagonPercentageItem from "@/components/verified-report/hexagon-percentage-item";
 import SkillsDisplay from "@/components/verified-report/skills-display";
+import { useVerifiedProfile } from "@/hooks/api/use-verified-profile";
+import { toVerifiedProfileViewModel } from "@/lib/verified-profile-view";
 
 const VerifiedReportPage = () => {
+  const { data, isPending, isError } = useVerifiedProfile();
+
+  if (isPending) {
+    return (
+      <div className="flex flex-col gap-y-6 my-8.5 animate-pulse">
+        <div className="h-10 w-64 rounded-lg bg-muted" />
+        <div className="min-h-80 rounded-xl bg-muted" />
+        <div className="min-h-64 rounded-xl bg-muted" />
+      </div>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <div className="flex items-center justify-center my-8.5 min-h-64">
+        <p className="text-base text-muted-foreground">
+          Failed to load verified profile. Please try again later.
+        </p>
+      </div>
+    );
+  }
+
+  const profile = toVerifiedProfileViewModel(data);
+
   return (
     <div className="flex flex-col gap-y-6 my-8.5">
       <section className="flex flex-row justify-between items-center">
         <div className="flex flex-col gap-y-2">
-          <h2 className="font-bold text-2xl text-black">Verified Report</h2>
+          <h2 className="font-bold text-2xl text-black">Verified Profile</h2>
           <p className="font-light text-base">
             Here&apos;s how to know how employers see your profile!
           </p>
@@ -29,31 +57,36 @@ const VerifiedReportPage = () => {
           <div className="flex flex-1 flex-col gap-y-6 min-w-0">
             <div className="flex flex-col gap-y-2 sm:flex-row gap-x-6 sm:items-center">
               <Image
-                src={"/assets/placeholder-avatar.svg"}
+                src={profile.avatarUrl ?? "/assets/placeholder-avatar.svg"}
                 height={124}
                 width={124}
                 alt="User avatar"
+                className="rounded-full object-cover size-[124px]"
+                unoptimized={Boolean(profile.avatarUrl)}
               />
               <div className="flex flex-col gap-y-1">
-                <p className="font-bold text-2xl">{userReport.name}</p>
+                <p className="font-bold text-2xl">{profile.name}</p>
                 <p className="text-lg font-light flex flex-row gap-x-2 items-center flex-wrap">
-                  {userReport.role}
+                  {profile.role}
                   <Dot size={30} className="hidden lg:block" />
-                  <span>Goal: {userReport.goal}</span>
+                  <span>Goal: {profile.goal}</span>
                 </p>
               </div>
             </div>
-            <InfoDisplay title="About" info={userReport.about} />
-            <InfoDisplay title="Skills" info={userReport.skills} />
-            <InfoDisplay title="AI Report" info={userReport.aiReport} />
+            <InfoDisplay title="About" info={profile.about} />
+            <InfoDisplay title="Skills" info={profile.skills} />
+            <InfoDisplay title="AI Report" info={profile.aiReport} />
           </div>
           <div className="max-md:self-center">
-            <HexagonPercentageItem value={85} />
+            <HexagonPercentageItem
+              value={profile.scorePercentage}
+              tierLabel={profile.tierLabel}
+            />
           </div>
         </div>
 
         <div className="flex flex-col bg-[#FAFAFA] rounded-xl border border-[#DBDBDB] p-3 md:p-6">
-          <SkillsDisplay skills={userReport.detailedSkills} />
+          <SkillsDisplay skills={profile.detailedSkills} />
         </div>
       </section>
     </div>

@@ -62,9 +62,14 @@ export function DashboardNavbarUserMenu({
           className="w-full rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"
         >
           {isVerified ? (
-            <DropdownMenuItem className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]">
-              <UserRound className="size-5 text-[#00000]" aria-hidden />
-              Verified profile
+            <DropdownMenuItem
+              asChild
+              className="h-8 gap-2 rounded-md px-2 text-xs text-[#344054]"
+            >
+              <Link href="/t/verified-profile">
+                <UserRound className="size-5 text-[#00000]" aria-hidden />
+                Verified profile
+              </Link>
             </DropdownMenuItem>
           ) : null}
           <DropdownMenuItem
