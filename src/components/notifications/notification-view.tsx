@@ -37,7 +37,7 @@ const NotificationView = () => {
       : notifications;
 
   return (
-    <div className="border bg-[#FAFAFA] border-[#BDBDBD] rounded-xl flex flex-col gap-y-5 md:gap-y-10 p-3 md:p-6 md:rounded-2xl">
+    <div className="flex flex-col gap-y-8 rounded-xl border border-[#D9D9D9] bg-[#FAFAFA] p-4 md:rounded-2xl md:p-6">
       <div className="flex flex-row gap-x-3">
         {notificationTabs.map((tab) => (
           <NotificationTabButton
@@ -65,7 +65,7 @@ const NotificationView = () => {
       ) : filtered.length === 0 ? (
         <p className="body text-muted-foreground">No notifications yet.</p>
       ) : (
-        <ul className="flex flex-col gap-y-4 mb-6">
+        <ul className="mb-4 flex flex-col gap-y-3">
           {filtered.map((notification) => (
             <NotificationItem
               key={notification.id}

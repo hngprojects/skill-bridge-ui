@@ -42,7 +42,7 @@ export function JobReadyVerifiedProfile({
           Verified profile
         </h2>
         <Link
-          href="#"
+          href="/t/verified-profile"
           className="flex items-center text-foreground text-[15px] font-medium hover:opacity-70 transition-opacity group label shrink-0"
         >
           <span className="underline underline-offset-4 decoration-gray-900">
