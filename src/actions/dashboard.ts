@@ -113,18 +113,27 @@ function mapAdvancedPerformance(
 function mapDashboardHome(
   data: RawDashboardHomeResponseData,
 ): DashboardHomeResponseData {
+  const mappedSkill = data.performance?.skill
+    ? mapSkillPerformance(data.performance.skill)
+    : undefined;
+  const mappedAdvanced = data.performance?.advanced
+    ? mapAdvancedPerformance(data.performance.advanced)
+    : undefined;
+  const performance =
+    data.performance && (mappedSkill || mappedAdvanced)
+      ? {
+          skill: mappedSkill,
+          advanced: mappedAdvanced,
+        }
+      : undefined;
+
   return {
     firstName: data.first_name,
     avatarUrl: data.avatar_url,
     goal: data.goal,
     profileCompletionPercentage: data.profile_completion_percentage,
     journeyOverview: data.journey_overview ?? [],
-    performance: data.performance
-      ? {
-          skill: mapSkillPerformance(data.performance.skill),
-          advanced: mapAdvancedPerformance(data.performance.advanced),
-        }
-      : undefined,
+    performance,
     advancedRetake: mapRetake(data.advanced_retake),
     skillAttemptsUsed: data.skill_attempts_used,
     skillMaxAttempts: data.skill_max_attempts,
