@@ -61,7 +61,7 @@ export type DashboardPerformanceAdvanced = {
   completedAt: string;
   /** May be empty `{}` until AI grading produces a report. */
   guidanceReport: Partial<GuidanceReport>;
-  retake: DashboardAdvancedRetake;
+  retake?: DashboardAdvancedRetake;
 };
 
 export type DashboardPerformance = {
