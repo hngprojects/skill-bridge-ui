@@ -60,6 +60,10 @@ export type {
   DashboardPerformance,
   DashboardPerformanceAdvanced,
   DashboardPerformanceSkill,
+  RawDashboardAdvancedRetake,
+  RawDashboardHomeResponseData,
+  RawDashboardPerformanceAdvanced,
+  RawDashboardPerformanceSkill,
 } from "./dashboard";
 export type {
   AdvancedAssessmentApiQuestion,
