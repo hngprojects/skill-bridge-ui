@@ -85,3 +85,52 @@ export type DashboardHomeResponseData = {
   /** Total skill attempts allowed for this user (e.g. 3). */
   skillMaxAttempts?: number;
 };
+
+export type RawDashboardAdvancedRetake = {
+  probation_start_date?: string;
+  probation_end_date?: string;
+  eligibility_date: string;
+  cta_enabled: boolean;
+  countdown_seconds: number;
+  days_remaining: number;
+};
+
+export type RawDashboardPerformanceSkill = {
+  score: number;
+  max_score: number;
+  percentage: number;
+  validated_level: DashboardPerformanceSkill["validatedLevel"];
+  passed: boolean;
+  failed?: boolean;
+  completed_at: string;
+  guidance_report: DashboardPerformanceSkill["guidanceReport"];
+  attempts_used?: number;
+  attempts_remaining?: number;
+};
+
+export type RawDashboardPerformanceAdvanced = {
+  score: number;
+  max_score: number;
+  percentage: number;
+  tier: DashboardPerformanceAdvanced["tier"];
+  tier_label: string;
+  integrity_confidence: DashboardPerformanceAdvanced["integrityConfidence"];
+  completed_at: string;
+  guidance_report: DashboardPerformanceAdvanced["guidanceReport"];
+  retake?: RawDashboardAdvancedRetake;
+};
+
+export type RawDashboardHomeResponseData = {
+  first_name: string;
+  avatar_url?: string;
+  goal?: string;
+  profile_completion_percentage: number;
+  journey_overview: DashboardHomeResponseData["journeyOverview"];
+  performance?: {
+    skill?: RawDashboardPerformanceSkill;
+    advanced?: RawDashboardPerformanceAdvanced;
+  };
+  advanced_retake?: RawDashboardAdvancedRetake;
+  skill_attempts_used?: number;
+  skill_max_attempts?: number;
+};
