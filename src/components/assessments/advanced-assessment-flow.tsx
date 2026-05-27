@@ -175,7 +175,7 @@ export function AdvancedAssessmentFlow() {
     timeSpentByKey?: Record<string, number>,
   ) =>
     submitAssessment({
-      session_id: sessionId,
+      sessionId,
       answers: toAdvancedSubmitAnswers(questions, answersByKey, timeSpentByKey),
     }).then(() => {});
 
@@ -200,7 +200,7 @@ export function AdvancedAssessmentFlow() {
 
     try {
       const lt3 = await submitLt2({
-        question_id: lastLt2QuestionId,
+        questionId: lastLt2QuestionId,
         answer: lt2Answer,
       });
 
@@ -232,7 +232,7 @@ export function AdvancedAssessmentFlow() {
 
   const recordViolation = (count: number) => {
     if (count >= 3 && !flagViolation.isPending && !flagViolation.isSuccess)
-      flagViolation.mutate({ event_type: "tab_switch" });
+      flagViolation.mutate({ eventType: "tab_switch" });
   };
 
   return (

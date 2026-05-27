@@ -132,13 +132,13 @@ export function SkillAssessmentFlow() {
 
   const submit = (answersByKey: Record<string, string | string[]>) =>
     submitAssessment({
-      attempt_id: sessionId,
+      attemptId: sessionId,
       answers: toSkillSubmitAnswers(questions, answersByKey),
     });
 
   const recordViolation = (count: number) => {
     if (count >= 3 && !flagViolation.isPending && !flagViolation.isSuccess)
-      flagViolation.mutate({ event_type: "tab_switch" });
+      flagViolation.mutate({ eventType: "tab_switch" });
   };
 
   return (
