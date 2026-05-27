@@ -8,7 +8,13 @@ import { Button } from "@/components/ui/button";
 import HexagonPercentageItem from "@/components/verified-report/hexagon-percentage-item";
 import SkillsDisplay from "@/components/verified-report/skills-display";
 import { useVerifiedProfile } from "@/hooks/api/use-verified-profile";
-import { toVerifiedProfileViewModel } from "@/lib/verified-profile-view";
+import type { VerifiedProfileResponseData } from "@/types/api";
+
+function aboutTags(data: VerifiedProfileResponseData): string[] {
+  if (data.about_tags.length > 0) return data.about_tags;
+  if (data.about.trim()) return [data.about.trim()];
+  return [];
+}
 
 const VerifiedReportPage = () => {
   const { data, isPending, isError } = useVerifiedProfile();
@@ -33,7 +39,7 @@ const VerifiedReportPage = () => {
     );
   }
 
-  const profile = toVerifiedProfileViewModel(data);
+  const aiReport = data.ai_report || data.ai_summary;
 
   return (
     <div className="flex flex-col gap-y-6 my-8.5">
@@ -57,36 +63,36 @@ const VerifiedReportPage = () => {
           <div className="flex flex-1 flex-col gap-y-6 min-w-0">
             <div className="flex flex-col gap-y-2 sm:flex-row gap-x-6 sm:items-center">
               <Image
-                src={profile.avatarUrl ?? "/assets/placeholder-avatar.svg"}
+                src={data.avatar_url ?? "/assets/placeholder-avatar.svg"}
                 height={124}
                 width={124}
                 alt="User avatar"
                 className="rounded-full object-cover size-[124px]"
-                unoptimized={Boolean(profile.avatarUrl)}
+                unoptimized={Boolean(data.avatar_url)}
               />
               <div className="flex flex-col gap-y-1">
-                <p className="font-bold text-2xl">{profile.name}</p>
+                <p className="font-bold text-2xl">{data.full_name}</p>
                 <p className="text-lg font-light flex flex-row gap-x-2 items-center flex-wrap">
-                  {profile.role}
+                  {data.role}
                   <Dot size={30} className="hidden lg:block" />
-                  <span>Goal: {profile.goal}</span>
+                  <span>Goal: {data.goal}</span>
                 </p>
               </div>
             </div>
-            <InfoDisplay title="About" info={profile.about} />
-            <InfoDisplay title="Skills" info={profile.skills} />
-            <InfoDisplay title="AI Report" info={profile.aiReport} />
+            <InfoDisplay title="About" info={aboutTags(data)} />
+            <InfoDisplay title="Skills" info={data.skills} />
+            <InfoDisplay title="AI Report" info={aiReport} />
           </div>
           <div className="max-md:self-center">
             <HexagonPercentageItem
-              value={profile.scorePercentage}
-              tierLabel={profile.tierLabel}
+              value={data.score_percentage}
+              tierLabel={data.tier_label}
             />
           </div>
         </div>
 
         <div className="flex flex-col bg-[#FAFAFA] rounded-xl border border-[#DBDBDB] p-3 md:p-6">
-          <SkillsDisplay skills={profile.detailedSkills} />
+          <SkillsDisplay skills={data.detailed_skills} />
         </div>
       </section>
     </div>

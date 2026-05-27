@@ -4,9 +4,10 @@ import { useState } from "react";
 import SkillTitleCard from "@/components/verified-report/skill-title-card";
 import ProfessionalSkillCard from "@/components/verified-report/professional-skill-card";
 import { cn } from "@/lib/utils";
+import type { VerifiedProfileDetailedSkill } from "@/types/api";
 
 type SkillDisplayProps = {
-  skills: { title: string; skillInfo: { label: string; value: number }[] }[];
+  skills: VerifiedProfileDetailedSkill[];
 };
 
 const SkillsDisplay = ({ skills }: SkillDisplayProps) => {
@@ -35,7 +36,7 @@ const SkillsDisplay = ({ skills }: SkillDisplayProps) => {
         ))}
       </ul>
       <ul className="flex flex-col gap-y-6">
-        {activeItem?.skillInfo?.map((item, i) => (
+        {activeItem?.skill_info?.map((item, i) => (
           <ProfessionalSkillCard
             key={item.label + i}
             value={item.value}
