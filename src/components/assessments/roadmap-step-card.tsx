@@ -2,12 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { LockKeyhole } from "lucide-react";
+import { LockKeyhole, MoreHorizontal } from "lucide-react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { SparklesIcon, Tick01Icon } from "@hugeicons/core-free-icons";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { AssessmentRoadmapStep } from "@/constants/assessment-roadmap";
 import { cn } from "@/lib/utils";
 
@@ -103,9 +109,30 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
               </p>
             </div>
 
-            {isComingSoon || isLocked ? (
-              <div className="hidden sm:block">{sideBadge}</div>
-            ) : null}
+            <div className="flex items-center gap-2 shrink-0">
+              {isComingSoon || isLocked ? (
+                <div className="hidden sm:block">{sideBadge}</div>
+              ) : null}
+              {isCompleted && step.slug ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted transition-colors"
+                      aria-label="More options"
+                    >
+                      <MoreHorizontal className="size-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href={`/t/assessments/${step.slug}/summary`}>
+                        View Summary
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : null}
+            </div>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
