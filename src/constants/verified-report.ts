@@ -1,3 +1,74 @@
+import type { VerifiedProfileResponseData } from "@/types/api";
+
+/** Placeholder profile shown blurred behind the unverified overlay. */
+export const verifiedProfilePlaceholder: VerifiedProfileResponseData = {
+  full_name: "Alex Smith",
+  role: "Frontend Developer",
+  goal: "Land my first role",
+  about: "",
+  about_tags: ["Mid Level", "Open to Work", "Remote", "Hybrid", "5 years exp."],
+  ai_summary:
+    "Assessment behaviour reflects a structured, detail-oriented approach to complex problem decomposition.",
+  ai_report:
+    "Assessment behaviour reflects a structured, detail-oriented approach to complex problem decomposition.",
+  avatar_url: null,
+  verified: false,
+  status: "in_progress",
+  seniority_badge: "Mid Level",
+  skills: [
+    "React Fundamentals",
+    "Typescript patterns",
+    "API Designs",
+    "React Native",
+  ],
+  tier_label: "Job Ready",
+  score_percentage: 85,
+  key_strengths: [],
+  professional_skills: [],
+  skill_proficiency: {
+    validated_level: "mid",
+    skill_assessment_percentage: 70,
+  },
+  workplace_readiness: {
+    label: "Workplace Readiness",
+    percentage: 82,
+  },
+  practical_application: {
+    label: "Practical Application",
+    percentage: 82,
+  },
+  detailed_skills: [
+    {
+      title: "Assessment Scores",
+      skill_info: [
+        { label: "Skill Proficiency", value: 70 },
+        { label: "Workplace Readiness", value: 82 },
+        { label: "Practical Application", value: 82 },
+      ],
+    },
+    {
+      title: "Professional Skills",
+      skill_info: [
+        { label: "Communication", value: 78 },
+        { label: "Teamwork", value: 85 },
+        { label: "Adaptability", value: 72 },
+      ],
+    },
+    {
+      title: "Strengths",
+      skill_info: [
+        { label: "Problem Solving", value: 90 },
+        { label: "Analytical Thinking", value: 84 },
+        { label: "Attention to Detail", value: 76 },
+      ],
+    },
+  ],
+  share_url: "",
+  qr_code_url: "",
+  is_owner: true,
+  verified_at: "",
+  tier: "job_ready",
+};
 type UserReport = {
   name: string;
   role: string;
