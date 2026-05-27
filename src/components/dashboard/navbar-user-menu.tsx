@@ -2,7 +2,6 @@
 
 import { Bell, ChevronDown, Settings, UserRound } from "lucide-react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 
 import { getInitials } from "@/components/dashboard/nav-utils";
 import { SignOutDialog } from "@/components/dashboard/sign-out-dialog";
@@ -16,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
+import { useMe } from "@/hooks/api";
 
 type DashboardNavbarUserMenuProps = {
   isVerified?: boolean;
@@ -25,9 +25,9 @@ export function DashboardNavbarUserMenu({
   isVerified = true,
 }: DashboardNavbarUserMenuProps) {
   const { fullName, email } = useSessionUserProfile();
-  const { data: session } = useSession();
+  const { data: user } = useMe({ enabled: true });
   const initials = getInitials(fullName, email);
-  const avatarUrl = session?.user?.image ?? undefined;
+  const avatarUrl = user?.avatar_url;
 
   return (
     <>
