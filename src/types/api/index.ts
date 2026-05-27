@@ -108,9 +108,16 @@ export type {
 
 export type { ResourceApiItem, ResourcesResponseData } from "./resources";
 export type {
+  RawVerifiedProfileDetailedSkill,
+  RawVerifiedProfileKeyStrength,
+  RawVerifiedProfileResponseData,
+  RawVerifiedProfileSkillItem,
+  RawVerifiedProfileSkillProficiency,
+  VerifiedProfileDetailedSkill,
   VerifiedProfileKeyStrength,
   VerifiedProfileMetric,
   VerifiedProfileResponseData,
+  VerifiedProfileSkillInfo,
   VerifiedProfileSkillItem,
   VerifiedProfileSkillProficiency,
 } from "./verified-profile";
