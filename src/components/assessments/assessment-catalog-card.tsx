@@ -2,12 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { LockKeyhole } from "lucide-react";
+import { LockKeyhole, MoreHorizontal } from "lucide-react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { SparklesIcon, Tick01Icon } from "@hugeicons/core-free-icons";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { AssessmentCatalogStep } from "@/constants/assessment-roadmap";
 import { cn } from "@/lib/utils";
 
@@ -93,23 +99,45 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
               </p>
             </div>
 
-            {isComingSoon ? (
-              <Badge
-                variant="outline"
-                className="hidden rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:inline-flex"
-              >
-                Coming Soon
-                <HugeiconsIcon icon={SparklesIcon} size={14} />
-              </Badge>
-            ) : isLocked ? (
-              <Badge
-                variant="outline"
-                className="hidden rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:inline-flex"
-              >
-                {step.lockLabel ?? "Unlock Assessment"}
-                <LockKeyhole className="size-3.5" />
-              </Badge>
-            ) : null}
+            <div className="flex items-center gap-2 shrink-0">
+              {isComingSoon ? (
+                <Badge
+                  variant="outline"
+                  className="hidden rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:inline-flex"
+                >
+                  Coming Soon
+                  <HugeiconsIcon icon={SparklesIcon} size={14} />
+                </Badge>
+              ) : isLocked ? (
+                <Badge
+                  variant="outline"
+                  className="hidden rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:inline-flex"
+                >
+                  {step.lockLabel ?? "Unlock Assessment"}
+                  <LockKeyhole className="size-3.5" />
+                </Badge>
+              ) : null}
+
+              {isCompleted && step.slug ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted transition-colors"
+                      aria-label="More options"
+                    >
+                      <MoreHorizontal className="size-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href={`/t/assessments/${step.slug}/summary`}>
+                        View Summary
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : null}
+            </div>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
