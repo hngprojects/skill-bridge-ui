@@ -33,9 +33,15 @@ export function SettingsResume() {
       ? (existingResumeUrl.split("/").pop() ?? "My Resume")
       : "My Resume");
 
+  const clearSelectedFile = () => {
+    setFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) setFile(selected);
+    e.target.value = "";
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -59,7 +65,7 @@ export function SettingsResume() {
       onSuccess: () => {
         appToast.success("Resume uploaded successfully!");
         setUploadedFileName(originalName);
-        setFile(null);
+        clearSelectedFile();
       },
       onError: () => {
         appToast.error("Failed to upload resume. Please try again.");
@@ -94,7 +100,7 @@ export function SettingsResume() {
           onZoneClick={() => fileInputRef.current?.click()}
           onDrop={handleDrop}
           onUpload={handleUpload}
-          onCancel={() => setFile(null)}
+          onCancel={clearSelectedFile}
         />
       )}
 
