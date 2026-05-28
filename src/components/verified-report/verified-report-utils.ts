@@ -30,11 +30,11 @@ function getAssessmentInsightPercentage(
 ): number {
   switch (key) {
     case "skill_proficiency":
-      return data.skill_proficiency.skill_assessment_percentage;
+      return data.skill_proficiency?.skill_assessment_percentage ?? 0;
     case "workplace_readiness":
-      return data.workplace_readiness.percentage;
+      return data.workplace_readiness?.percentage ?? 0;
     case "practical_application":
-      return data.practical_application.percentage;
+      return data.practical_application?.percentage ?? 0;
   }
 }
 
@@ -62,18 +62,26 @@ function buildAssessmentScoresTab(
     return { title: "Assessment Scores", skill_info };
   }
 
+  if (
+    !data.skill_proficiency &&
+    !data.workplace_readiness &&
+    !data.practical_application
+  ) {
+    return null;
+  }
+
   const skill_info = [
     {
       label: "Skill Proficiency",
-      value: data.skill_proficiency.skill_assessment_percentage,
+      value: data.skill_proficiency?.skill_assessment_percentage ?? 0,
     },
     {
-      label: data.workplace_readiness.label,
-      value: data.workplace_readiness.percentage,
+      label: data.workplace_readiness?.label ?? "Workplace Readiness",
+      value: data.workplace_readiness?.percentage ?? 0,
     },
     {
-      label: data.practical_application.label,
-      value: data.practical_application.percentage,
+      label: data.practical_application?.label ?? "Practical Application",
+      value: data.practical_application?.percentage ?? 0,
     },
   ];
 
@@ -83,7 +91,7 @@ function buildAssessmentScoresTab(
 function buildProfessionalSkillsTab(
   data: VerifiedProfileResponseData,
 ): VerifiedProfileDetailedSkill | null {
-  if (!data.professional_skills.length) return null;
+  if (!data.professional_skills?.length) return null;
 
   return {
     title: "Professional Skills",
@@ -97,7 +105,7 @@ function buildProfessionalSkillsTab(
 function buildStrengthsTab(
   data: VerifiedProfileResponseData,
 ): VerifiedProfileDetailedSkill | null {
-  if (!data.key_strengths.length) return null;
+  if (!data.key_strengths?.length) return null;
 
   return {
     title: "Strengths",
@@ -122,7 +130,7 @@ function buildTabsFromLegacyFields(
 export function getSkillBreakdownTabs(
   data: VerifiedProfileResponseData,
 ): VerifiedProfileDetailedSkill[] {
-  if (data.skill_breakdown_tabs?.length) {
+  if (data.skill_breakdown_tabs.length > 0) {
     return data.skill_breakdown_tabs
       .map(tabToDetailedSkill)
       .filter((tab) => tab.skill_info.length > 0);

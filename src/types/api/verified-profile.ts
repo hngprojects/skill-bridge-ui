@@ -19,11 +19,13 @@ export type VerifiedProfileSkillProficiency = {
   skill_assessment_percentage: number;
 };
 
+/** @deprecated Legacy interim shape; use skill_breakdown_tabs */
 export type VerifiedProfileAssessmentInsight = {
   label: string;
   insight: string;
 };
 
+/** @deprecated Legacy interim shape; use skill_breakdown_tabs */
 export type VerifiedProfileAssessmentInsights = {
   skill_proficiency: VerifiedProfileAssessmentInsight;
   workplace_readiness: VerifiedProfileAssessmentInsight;
@@ -77,26 +79,26 @@ export type VerifiedProfileResponseData = {
   verified: boolean;
   status: string;
   seniority_badge: string;
-  skills: string[];
+  tier: string;
   tier_label: string;
   score_percentage: number;
-  key_strengths: VerifiedProfileKeyStrength[];
-  professional_skills: VerifiedProfileSkillItem[];
+  skills: string[];
   working_style?: string[];
   growth_insight?: string;
-  skill_proficiency: VerifiedProfileSkillProficiency;
-  workplace_readiness: VerifiedProfileMetric;
-  practical_application: VerifiedProfileMetric;
-  assessment_insights?: VerifiedProfileAssessmentInsights;
-  skill_breakdown_tabs?: VerifiedProfileSkillBreakdownTab[];
+  skill_breakdown_tabs: VerifiedProfileSkillBreakdownTab[];
   recommended_resources?: VerifiedProfileRecommendedResource[];
   resource_page_url?: string;
   resume_url?: string | null;
-  /** @deprecated Prefer skill_breakdown_tabs */
-  detailed_skills?: VerifiedProfileDetailedSkill[];
   share_url: string;
   qr_code_url: string;
   is_owner: boolean;
   verified_at: string;
-  tier: string;
+  /** @deprecated Legacy fields — may be absent on newer API versions */
+  key_strengths?: VerifiedProfileKeyStrength[];
+  professional_skills?: VerifiedProfileSkillItem[];
+  skill_proficiency?: VerifiedProfileSkillProficiency;
+  workplace_readiness?: VerifiedProfileMetric;
+  practical_application?: VerifiedProfileMetric;
+  assessment_insights?: VerifiedProfileAssessmentInsights;
+  detailed_skills?: VerifiedProfileDetailedSkill[];
 };

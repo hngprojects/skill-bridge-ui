@@ -21,22 +21,9 @@ export const verifiedProfilePlaceholder: VerifiedProfileResponseData = {
     "API Designs",
     "React Native",
   ],
+  tier: "job_ready",
   tier_label: "Job Ready",
   score_percentage: 85,
-  key_strengths: [],
-  professional_skills: [],
-  skill_proficiency: {
-    validated_level: "mid",
-    skill_assessment_percentage: 70,
-  },
-  workplace_readiness: {
-    label: "Workplace Readiness",
-    percentage: 82,
-  },
-  practical_application: {
-    label: "Practical Application",
-    percentage: 82,
-  },
   skill_breakdown_tabs: [
     {
       id: "assessment_scores",
@@ -116,7 +103,6 @@ export const verifiedProfilePlaceholder: VerifiedProfileResponseData = {
   qr_code_url: "",
   is_owner: true,
   verified_at: "",
-  tier: "job_ready",
 };
 type UserReport = {
   name: string;
