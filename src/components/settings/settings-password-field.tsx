@@ -10,6 +10,7 @@ type SettingsPasswordFieldProps = {
   value: string;
   autoComplete: string;
   disabled: boolean;
+  "aria-describedby"?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -18,6 +19,7 @@ export function SettingsPasswordField({
   value,
   autoComplete,
   disabled,
+  "aria-describedby": ariaDescribedBy,
   onChange,
 }: SettingsPasswordFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -32,6 +34,7 @@ export function SettingsPasswordField({
           value={value}
           onChange={onChange}
           disabled={disabled}
+          aria-describedby={ariaDescribedBy}
           className={cn(
             "h-9 w-full rounded-md border border-border bg-white px-3 pr-10",
             "text-sm font-medium text-foreground outline-none",

@@ -5,7 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useId, useRef, useState } from "react";
 
 import { SettingsAccountActionLink } from "@/components/settings/settings-account-action-link";
 import { SettingsPasswordField } from "@/components/settings/settings-password-field";
@@ -39,6 +39,7 @@ export function SettingsChangePasswordDialog() {
   const [passwordForm, setPasswordForm] = useState(initialPasswordForm);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const changeInFlightRef = useRef(false);
+  const passwordErrorId = useId();
   const isUpdating = changePasswordMutation.isPending;
 
   const updatePasswordField =
@@ -54,8 +55,15 @@ export function SettingsChangePasswordDialog() {
   const redirectToLogin = async () => {
     queryClient.clear();
     clearPersistedSessionState();
-    const result = await signOut({ callbackUrl: "/login", redirect: false });
-    router.replace(result.url ?? "/login");
+    try {
+      const result = await signOut({ callbackUrl: "/login", redirect: false });
+      router.replace(result.url ?? "/login");
+    } catch (error) {
+      console.error("Password change redirect failed", error);
+      router.replace("/login");
+    } finally {
+      changeInFlightRef.current = false;
+    }
   };
 
   const handleChangePassword = async (event: FormEvent<HTMLFormElement>) => {
@@ -134,12 +142,18 @@ export function SettingsChangePasswordDialog() {
               autoComplete={autoComplete}
               value={passwordForm[field]}
               disabled={isUpdating}
+              aria-describedby={passwordError ? passwordErrorId : undefined}
               onChange={updatePasswordField(field)}
             />
           ))}
 
           {passwordError && (
-            <p className="text-xs leading-5 text-destructive">
+            <p
+              id={passwordErrorId}
+              role="alert"
+              aria-live="polite"
+              className="text-xs leading-5 text-destructive"
+            >
               {passwordError}
             </p>
           )}
