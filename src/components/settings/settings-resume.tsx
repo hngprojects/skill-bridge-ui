@@ -27,7 +27,11 @@ export function SettingsResume() {
   const [localWebsite, setLocalWebsite] = useState<string | null>(null);
   const website = localWebsite ?? serverWebsite;
   const existingResumeUrl = settings?.profile.resume_url ?? null;
-  const resumeFileName = uploadedFileName ?? "My Resume";
+  const resumeFileName =
+    uploadedFileName ??
+    (existingResumeUrl
+      ? (existingResumeUrl.split("/").pop() ?? "My Resume")
+      : "My Resume");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
