@@ -5,8 +5,11 @@ export type {
   PaginationMeta,
 } from "./common";
 export type {
+  AccountDataExport,
+  AccountDataExportResponseData,
   AuthTokens,
   AuthUser,
+  DeleteAccountInput,
   ForgotPasswordInput,
   GoogleVerifyCodeInput,
   GoogleVerifyCodeResponseData,

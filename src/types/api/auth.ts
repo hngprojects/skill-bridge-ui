@@ -94,3 +94,18 @@ export type RefreshResponseData = {
 };
 
 export type MeResponseData = AuthUser;
+
+export type AccountDataExport = {
+  generated_at?: string;
+  user?: Record<string, unknown>;
+  talent_profile?: Record<string, unknown> | null;
+  [key: string]: unknown;
+};
+
+export type AccountDataExportResponseData = {
+  data_export: AccountDataExport;
+};
+
+export type DeleteAccountInput = {
+  confirmation: "DELETE";
+};
