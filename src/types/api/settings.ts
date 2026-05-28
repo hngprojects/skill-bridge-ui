@@ -43,6 +43,20 @@ export type TalentSettingsAccount = {
   active_sessions: TalentSettingsActiveSession[];
 };
 
+export type TalentAvailabilityStatus =
+  | "actively_looking"
+  | "open_to_opportunities"
+  | "not_looking";
+
+export type UpdateTalentAvailabilityInput = {
+  availabilityStatus: TalentAvailabilityStatus;
+};
+
+export type UpdateTalentAvailabilityResponseData = {
+  availability_status: TalentAvailabilityStatus;
+  is_published: boolean;
+};
+
 export type AccountDataExport = {
   generated_at?: string;
   user?: Record<string, unknown>;
