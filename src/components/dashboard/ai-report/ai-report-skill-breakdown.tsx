@@ -1,12 +1,17 @@
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { InsightSection, SkillList, ZoneGroup } from "./summaries";
 
-import { AI_SUMMARY, CHART_ZONES, GROWTH_INSIGHT, STRENGTHS, WEAK_AREAS, } from "@/constants/ai-report-skill-breakdown";
+import { CHART_ZONES } from "@/constants/ai-report-skill-breakdown";
+import { aiReportQueryOptions } from "@/hooks/api/use-ai-report";
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function AiReportSkillBreakdown() {
+  const { data: report } = useSuspenseQuery(aiReportQueryOptions());
+
   const today = new Date().toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -29,7 +34,7 @@ export function AiReportSkillBreakdown() {
           </h2>
 
           <div className="flex shrink-0 items-center rounded-xl bg-gray-200 px-2.5 py-1 text-[12px] font-medium text-foreground transition-opacity hover:opacity-70 sm:px-3 sm:text-sm">
-            Top 30%
+            Top {report.percentile}%
           </div>
         </div>
 
@@ -46,24 +51,32 @@ export function AiReportSkillBreakdown() {
       </div>
 
       {/* AI Summary */}
-      <InsightSection card={AI_SUMMARY} />
+      <InsightSection
+        card={{ title: "AI Summary", description: report.ai_summary }}
+      />
 
       {/* Growth Insight */}
-      <InsightSection card={GROWTH_INSIGHT} />
+      <InsightSection
+        card={{ title: "Growth Insight", description: report.growth_insight }}
+      />
 
       {/* Strengths & Weak Areas */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <SkillList
           title="Your strengths"
           description="You are doing well in this area, keep it up"
-          items={STRENGTHS}
+          items={(report.strength_ratings ?? []).map((rating) => ({
+            text: rating.item,
+          }))}
           variant="success"
         />
 
         <SkillList
           title="Weak Areas"
           description="These areas had the biggest impact on your score"
-          items={WEAK_AREAS}
+          items={(report.weak_area_ratings ?? []).map((rating) => ({
+            text: rating.item,
+          }))}
           variant="warning"
         />
       </div>
