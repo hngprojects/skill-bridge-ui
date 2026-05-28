@@ -12,38 +12,59 @@ const RELATIVE_TIME_UNITS = [
 function formatRelativeTime(value: string) {
   const parsedDate = new Date(value);
   if (Number.isNaN(parsedDate.getTime())) return `${value} ago`;
-
   const elapsedSeconds = Math.max(
     0,
     Math.floor((Date.now() - parsedDate.getTime()) / 1000),
   );
-
   for (const unit of RELATIVE_TIME_UNITS) {
     const count = Math.floor(elapsedSeconds / unit.seconds);
     if (count >= 1) return `${count} ${unit.label}${count > 1 ? "s" : ""} ago`;
   }
-
   return "Just now";
 }
 
-const NotificationItem = ({ notification }: { notification: Notification }) => {
+type NotificationItemProps = {
+  notification: Notification;
+  isRead?: boolean;
+  onMarkRead?: () => void;
+};
+
+const NotificationItem = ({
+  notification,
+  isRead = false,
+  onMarkRead,
+}: NotificationItemProps) => {
   return (
-    <li className="flex flex-row items-start gap-x-4 rounded-xl border border-[#34A853] bg-white px-4 py-4 md:rounded-xl md:px-5 md:py-5">
+    <li
+      onClick={() => {
+        if (!isRead && onMarkRead) onMarkRead();
+      }}
+      className={`flex flex-row items-start gap-x-4 rounded-xl border px-4 py-4 md:rounded-xl md:px-5 md:py-5 transition-colors ${
+        isRead
+          ? "border-[#D9D9D9] bg-[#FAFAFA] cursor-default"
+          : "border-[#34A853] bg-white cursor-pointer hover:bg-green-50"
+      }`}
+    >
       <Image
-        src={"/assets/icons/notification-bell-active.svg"}
+        src="/assets/icons/notification-bell-active.svg"
         height={48}
         width={48}
         alt="Notification bell icon"
-        className="shrink-0"
+        className={`shrink-0 ${isRead ? "opacity-40" : "opacity-100"}`}
       />
-      <div className="flex flex-col gap-y-4 pt-1">
+      <div className="flex flex-col gap-y-4 pt-1 flex-1">
         <p className="text-sm leading-5 font-normal text-foreground">
           <span className="font-bold">{notification.boldText}</span>{" "}
           {notification.normalText}
         </p>
-        <p className="text-sm font-normal text-[#757575]">
-          {formatRelativeTime(notification.time)}
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-normal text-[#757575]">
+            {formatRelativeTime(notification.time)}
+          </p>
+          {!isRead && (
+            <span className="size-2 rounded-full bg-[#34A853] shrink-0" />
+          )}
+        </div>
       </div>
     </li>
   );
