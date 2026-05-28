@@ -60,15 +60,15 @@ export type SkillAssessmentStartResponseData = {
 };
 
 export type SkillAssessmentSubmitAnswer = {
-  question_id: string;
+  questionId: string;
   /** string for single_pick / required_text, string[] for multi_pick. */
   answer: string | string[];
-  time_spent_seconds: number;
+  timeSpentSeconds: number;
 };
 
 export type SkillAssessmentSubmitInput = {
-  /** The submit endpoint still keys on attempt_id (start/session use session_id). */
-  attempt_id: string;
+  /** The submit endpoint still keys on attemptId (start/session use session_id). */
+  attemptId: string;
   answers: SkillAssessmentSubmitAnswer[];
 };
 
@@ -188,19 +188,19 @@ export type AdvancedAssessmentStartResponseData = {
 export type AssessmentSessionResponseData = AdvancedAssessmentStartResponseData;
 
 export type AdvancedAssessmentSubmitAnswer = {
-  question_id: string;
+  questionId: string;
   answer: string | string[];
-  time_spent_seconds?: number;
+  timeSpentSeconds?: number;
 };
 
 export type AdvancedAssessmentSubmitInput = {
-  session_id: string;
+  sessionId: string;
   answers: AdvancedAssessmentSubmitAnswer[];
 };
 
 /** Body for POST /talent/assessment/session/:id/lt2-submit. */
 export type AdvancedAssessmentLt2SubmitInput = {
-  question_id: string;
+  questionId: string;
   answer: string;
 };
 
@@ -242,7 +242,7 @@ export type AdvancedAssessmentSubmitResponseData = {
 export type AssessmentFlagEventType = "tab_switch" | "copy_paste";
 
 export type AssessmentFlagInput = {
-  event_type: AssessmentFlagEventType;
+  eventType: AssessmentFlagEventType;
 };
 
 export type AssessmentFlagResponseData = {

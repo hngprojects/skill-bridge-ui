@@ -7,6 +7,7 @@ export type {
 export type {
   AuthTokens,
   AuthUser,
+  ChangePasswordInput,
   ForgotPasswordInput,
   GoogleVerifyCodeInput,
   GoogleVerifyCodeResponseData,
@@ -107,6 +108,19 @@ export type {
 } from "./notifications";
 
 export type { ResourceApiItem, ResourcesResponseData } from "./resources";
+export type {
+  AccountDataExport,
+  AccountDataExportResponseData,
+  DeleteAccountInput,
+  TalentSettingsAccount,
+  TalentSettingsActiveSession,
+  TalentSettingsCommunicationPreferences,
+  TalentSettingsNotificationPrefs,
+  TalentSettingsProfile,
+  TalentSettingsResponseData,
+  TalentSettingsUser,
+  UpdateTalentSettingsProfileInput,
+} from "./settings";
 export type {
   VerifiedProfileAssessmentInsight,
   VerifiedProfileAssessmentInsights,

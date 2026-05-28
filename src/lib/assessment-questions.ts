@@ -141,9 +141,9 @@ export function toAdvancedSubmitAnswers(
       continue;
     }
     result.push({
-      question_id: q.id,
+      questionId: q.id,
       answer: value,
-      time_spent_seconds: timeSpentByKey?.[q.key] ?? 0,
+      timeSpentSeconds: timeSpentByKey?.[q.key] ?? 0,
     });
   }
   return result;
@@ -165,9 +165,9 @@ export function toSkillSubmitAnswers(
       continue;
     }
     result.push({
-      question_id: q.id,
+      questionId: q.id,
       answer: value,
-      time_spent_seconds: 0,
+      timeSpentSeconds: 0,
     });
   }
   return result;

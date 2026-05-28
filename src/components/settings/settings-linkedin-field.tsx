@@ -1,20 +1,26 @@
+import { useState } from "react";
 import Image from "next/image";
 
 import { Input } from "@/components/ui/input";
+import { useTalentSettings, useUpdateTalentSettingsProfile } from "@/hooks/api";
 
-interface SettingsLinkedInFieldProps {
-  value: string;
-  onChange: (v: string) => void;
-  onSave: () => void;
-  isSaving: boolean;
-}
+export function SettingsLinkedInField() {
+  const { data: settings } = useTalentSettings();
+  const { mutate: updateProfile, isPending: isSaving } =
+    useUpdateTalentSettingsProfile();
 
-export function SettingsLinkedInField({
-  value,
-  onChange,
-  onSave,
-  isSaving,
-}: SettingsLinkedInFieldProps) {
+  const serverValue = settings?.profile.linkedin_url ?? "";
+  const [localValue, setLocalValue] = useState<string | null>(null);
+  const value = localValue ?? serverValue;
+
+  function handleSave() {
+    if (!value.trim()) return;
+    updateProfile(
+      { linkedinUrl: value.trim() },
+      { onSuccess: () => setLocalValue(null) },
+    );
+  }
+
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-medium text-foreground">
@@ -25,8 +31,8 @@ export function SettingsLinkedInField({
           type="url"
           value={value}
           placeholder="Enter LinkedIn URL"
-          onChange={(e) => onChange(e.target.value)}
-          onBlur={onSave}
+          onChange={(e) => setLocalValue(e.target.value)}
+          onBlur={handleSave}
           className="pr-12"
         />
         <span className="absolute right-3 pointer-events-none">

@@ -1,7 +1,7 @@
 "use client";
 
 import { UserRound } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -11,58 +11,36 @@ import { Textarea } from "@/components/ui/textarea";
 import { SettingsEditableField } from "./settings-editable-field";
 import { SettingsLinkedInField } from "./settings-linkedin-field";
 import {
-  useMe,
+  useTalentSettings,
   useUploadAvatar,
-  authKeys,
-  useSaveTalentOnboardingProfile,
+  talentSettingsKeys,
 } from "@/hooks/api";
 import Image from "next/image";
 
-interface SettingsAboutMeProps {
-  initialFullName?: string;
-  initialEmail?: string;
-  initialRole?: string;
-  isVerified?: boolean;
-}
-
-export function SettingsAboutMe({}: SettingsAboutMeProps) {
+export function SettingsAboutMe() {
   const qc = useQueryClient();
-  const { data: user } = useMe({ enabled: true });
+  const { data: settings } = useTalentSettings();
   const { mutate: uploadAvatar, isPending: uploading } = useUploadAvatar();
-  const { mutate: saveProfile, isPending: savingLinkedin } =
-    useSaveTalentOnboardingProfile();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fullName = `${user?.first_name ?? ""} ${user?.last_name ?? ""}`.trim();
-  const [linkedin, setLinkedin] = useState("");
-
-  function handleSaveLinkedin() {
-    if (!linkedin.trim()) return;
-    saveProfile({ linkedinUrl: linkedin.trim() });
-  }
+  const user = settings?.user;
+  const profile = settings?.profile;
 
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     uploadAvatar(file, {
-      onSuccess: () => void qc.invalidateQueries({ queryKey: authKeys.me() }),
+      onSuccess: () =>
+        void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
     });
     e.target.value = "";
   }
-
-  const formatRole = (role?: string) => {
-    if (!role) return "";
-    return role
-      .split("_")
-      .map((part) => part[0].toUpperCase() + part.slice(1))
-      .join(" ");
-  };
 
   return (
     <div className="rounded-2xl border border-border bg-[#FAFAFA] p-6">
       <div className="flex items-start justify-between mb-6">
         <h2 className="text-lg font-semibold text-foreground">About me</h2>
-        {user?.is_verified && (
+        {profile?.profile_verified && (
           <Badge
             variant="outline"
             className="h-auto px-3 py-1.5 text-xs font-medium text-foreground rounded-md bg-[#EBEBEB] border-[#EBEBEB]"
@@ -77,7 +55,7 @@ export function SettingsAboutMe({}: SettingsAboutMeProps) {
           {user?.avatar_url ? (
             <Image
               src={user.avatar_url}
-              alt={`${fullName}'s profile picture`}
+              alt={`${user.full_name}'s profile picture`}
               width={80}
               height={80}
               className="size-full rounded-full object-cover"
@@ -111,7 +89,7 @@ export function SettingsAboutMe({}: SettingsAboutMeProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <SettingsEditableField
           label="Full name"
-          value={fullName}
+          value={user?.full_name ?? ""}
           placeholder="Your full name"
         />
         <SettingsEditableField
@@ -122,15 +100,10 @@ export function SettingsAboutMe({}: SettingsAboutMeProps) {
         />
         <SettingsEditableField
           label="Role"
-          value={formatRole(user?.track ?? "")}
+          value={profile?.role_label ?? ""}
           placeholder="e.g. Frontend Developer"
         />
-        <SettingsLinkedInField
-          value={linkedin}
-          onChange={setLinkedin}
-          onSave={handleSaveLinkedin}
-          isSaving={savingLinkedin}
-        />
+        <SettingsLinkedInField />
       </div>
 
       <div className="flex flex-col gap-1.5">
