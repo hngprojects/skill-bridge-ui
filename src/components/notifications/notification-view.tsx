@@ -1,7 +1,11 @@
 "use client";
-
 import { useState, useEffect } from "react";
-import { getNotifications } from "@/actions/notifications";
+import {
+  getNotifications,
+  markAsRead,
+  markAllAsRead,
+  getUnreadCount,
+} from "@/actions/notifications";
 import type { NotificationApiItem } from "@/types/api/notifications";
 import { notificationTabs, NotificationTab } from "@/constants/notifications";
 import NotificationItem from "./notification-item";
@@ -13,14 +17,19 @@ const NotificationView = () => {
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
+    const fetchAll = async () => {
       try {
         setLoading(true);
         setHasError(false);
-        const res = await getNotifications();
+        const [res, countRes] = await Promise.all([
+          getNotifications(),
+          getUnreadCount(),
+        ]);
         setNotifications(res.items);
+        setUnreadCount(countRes.count);
       } catch {
         setHasError(true);
         setNotifications([]);
@@ -28,8 +37,31 @@ const NotificationView = () => {
         setLoading(false);
       }
     };
-    fetchNotifications();
+
+    fetchAll();
   }, [retryCount]);
+
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      await markAsRead(id);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
+      );
+      setUnreadCount((c) => Math.max(0, c - 1));
+    } catch {
+      // fail silently
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAllAsRead();
+      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+      setUnreadCount(0);
+    } catch {
+      // fail silently
+    }
+  };
 
   const filtered =
     activeTab === "Unread"
@@ -38,16 +70,27 @@ const NotificationView = () => {
 
   return (
     <div className="flex flex-col gap-y-8 rounded-xl border border-[#D9D9D9] bg-[#FAFAFA] p-4 md:rounded-2xl md:p-6">
-      <div className="flex flex-row gap-x-3">
-        {notificationTabs.map((tab) => (
-          <NotificationTabButton
-            key={tab}
-            tab={tab}
-            activeTab={activeTab}
-            setTab={setActiveTab}
-          />
-        ))}
+      <div className="flex items-center justify-between">
+        <div className="flex flex-row gap-x-3">
+          {notificationTabs.map((tab) => (
+            <NotificationTabButton
+              key={tab}
+              tab={tab}
+              activeTab={activeTab}
+              setTab={setActiveTab}
+            />
+          ))}
+        </div>
+        {unreadCount > 0 && (
+          <button
+            onClick={handleMarkAllAsRead}
+            className="text-sm font-medium text-[#34A853] underline underline-offset-2 hover:opacity-75 transition-opacity"
+          >
+            Mark all as read
+          </button>
+        )}
       </div>
+
       {loading ? (
         <p className="body text-muted-foreground">Loading notifications...</p>
       ) : hasError ? (
@@ -74,6 +117,8 @@ const NotificationView = () => {
                 normalText: notification.body,
                 time: notification.createdAt,
               }}
+              isRead={notification.isRead}
+              onMarkRead={() => handleMarkAsRead(notification.id)}
             />
           ))}
         </ul>
