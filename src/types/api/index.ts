@@ -108,6 +108,16 @@ export type {
 
 export type { ResourceApiItem, ResourcesResponseData } from "./resources";
 export type {
+  TalentSettingsAccount,
+  TalentSettingsActiveSession,
+  TalentSettingsCommunicationPreferences,
+  TalentSettingsNotificationPrefs,
+  TalentSettingsProfile,
+  TalentSettingsResponseData,
+  TalentSettingsUser,
+  UpdateTalentSettingsProfileInput,
+} from "./settings";
+export type {
   VerifiedProfileKeyStrength,
   VerifiedProfileMetric,
   VerifiedProfileResponseData,
