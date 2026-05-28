@@ -1,76 +1,30 @@
 "use client";
-import { useState, useEffect } from "react";
-import {
-  getNotifications,
-  markAsRead,
-  markAllAsRead,
-  getUnreadCount,
-} from "@/actions/notifications";
-import type { NotificationApiItem } from "@/types/api/notifications";
+import { useState } from "react";
 import { notificationTabs, NotificationTab } from "@/constants/notifications";
 import NotificationItem from "./notification-item";
 import NotificationTabButton from "./notification-tab-button";
-import { appToast } from "@/lib/toast";
+import {
+  useNotifications,
+  useUnreadCount,
+  useMarkAsRead,
+  useMarkAllAsRead,
+} from "@/hooks/api";
 
 const NotificationView = () => {
   const [activeTab, setActiveTab] = useState<NotificationTab>("All");
-  const [notifications, setNotifications] = useState<NotificationApiItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        setLoading(true);
-        setHasError(false);
-        const [res, countRes] = await Promise.all([
-          getNotifications(),
-          getUnreadCount(),
-        ]);
-        setNotifications(res.items);
-        setUnreadCount(countRes.count);
-      } catch {
-        setHasError(true);
-        setNotifications([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const {
+    data: notificationsData,
+    isLoading,
+    isError,
+    refetch,
+  } = useNotifications();
+  const { data: unreadData } = useUnreadCount();
+  const { mutate: markAsRead } = useMarkAsRead();
+  const { mutate: markAllAsRead } = useMarkAllAsRead();
 
-    fetchAll();
-  }, [retryCount]);
-
-  const handleMarkAsRead = async (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
-    );
-    setUnreadCount((c) => Math.max(0, c - 1));
-    try {
-      await markAsRead(id);
-    } catch {
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, isRead: false } : n)),
-      );
-      setUnreadCount((c) => c + 1);
-      appToast.error("Failed to mark notification as read.");
-    }
-  };
-
-  const handleMarkAllAsRead = async () => {
-    const previous = notifications;
-    const previousCount = unreadCount;
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-    setUnreadCount(0);
-    try {
-      await markAllAsRead();
-    } catch {
-      setNotifications(previous);
-      setUnreadCount(previousCount);
-      appToast.error("Failed to mark all notifications as read.");
-    }
-  };
+  const notifications = notificationsData?.items ?? [];
+  const unreadCount = unreadData?.count ?? 0;
 
   const filtered =
     activeTab === "Unread"
@@ -92,7 +46,7 @@ const NotificationView = () => {
         </div>
         {unreadCount > 0 && (
           <button
-            onClick={handleMarkAllAsRead}
+            onClick={() => markAllAsRead()}
             className="text-sm font-medium text-[#34A853] underline underline-offset-2 hover:opacity-75 transition-opacity"
           >
             Mark all as read
@@ -100,15 +54,15 @@ const NotificationView = () => {
         )}
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <p className="body text-muted-foreground">Loading notifications...</p>
-      ) : hasError ? (
+      ) : isError ? (
         <div className="flex flex-col gap-y-2">
           <p className="body text-destructive">
             Couldn&apos;t load notifications. Please try again.
           </p>
           <button
-            onClick={() => setRetryCount((c) => c + 1)}
+            onClick={() => refetch()}
             className="body text-muted-foreground underline w-fit"
           >
             Retry
@@ -127,7 +81,7 @@ const NotificationView = () => {
                 time: notification.createdAt,
               }}
               isRead={notification.isRead}
-              onMarkRead={() => handleMarkAsRead(notification.id)}
+              onMarkRead={() => markAsRead(notification.id)}
             />
           ))}
         </ul>
