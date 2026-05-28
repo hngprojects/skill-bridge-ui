@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { REGIONS, EDUCATION_LEVELS } from "@/constants/complete-profile";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 import { ProfileImageUploader } from "../complete-profile/profile-image-holder";
@@ -33,7 +33,13 @@ const CompleteProfileStep = ({
 }: CompleteProfileStepProps) => {
   const { fullName, email } = useSessionUserProfile();
 
-  const { register, setValue, control } = useForm<ProfileFormValues>({
+  const {
+    register,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm<ProfileFormValues>({
+    mode: "onTouched",
     defaultValues: { region: "", education: "", linkedin: "" },
   });
 
@@ -61,15 +67,35 @@ const CompleteProfileStep = ({
       <div className="flex flex-col w-full gap-7">
         <ReadOnlyField label="Full name" value={fullName} />
         <ReadOnlyField label="Email" value={email} />
-        <SelectField
-          label="Select your region"
-          options={REGIONS}
-          onChange={(val) => setValue("region", val)}
+        <Controller
+          name="region"
+          control={control}
+          rules={{ required: "Please select your region." }}
+          render={({ field }) => (
+            <SelectField
+              label="Select your region"
+              options={REGIONS}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              error={errors.region?.message}
+            />
+          )}
         />
-        <SelectField
-          label="What is your highest level of education?"
-          options={EDUCATION_LEVELS}
-          onChange={(val) => setValue("education", val)}
+        <Controller
+          name="education"
+          control={control}
+          rules={{ required: "Please select your highest level of education." }}
+          render={({ field }) => (
+            <SelectField
+              label="What is your highest level of education?"
+              options={EDUCATION_LEVELS}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              error={errors.education?.message}
+            />
+          )}
         />
         <LinkedInField register={register} />
       </div>

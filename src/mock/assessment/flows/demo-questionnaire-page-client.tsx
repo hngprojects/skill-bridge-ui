@@ -158,7 +158,7 @@ function DemoSkillAssessmentFlow() {
     setIsSubmitting(true);
     try {
       await mockSubmitSkillAssessment({
-        attempt_id: phase.sessionId ?? "",
+        attemptId: phase.sessionId ?? "",
         answers: toSkillSubmitAnswers(questions, answersByKey),
       });
     } finally {
@@ -219,7 +219,7 @@ function DemoAdvancedAssessmentFlow() {
     setIsSubmitting(true);
     try {
       await mockSubmitAdvancedAssessment({
-        session_id: phase.sessionId ?? "",
+        sessionId: phase.sessionId ?? "",
         answers: toAdvancedSubmitAnswers(questions, answersByKey),
       });
     } finally {

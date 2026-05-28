@@ -65,7 +65,7 @@ export async function mockSubmitAdvancedAssessment(
 ): Promise<AdvancedAssessmentSubmitResponseData> {
   await mockDelay();
   const answersByKey = Object.fromEntries(
-    body.answers.map((a) => [a.question_id, a.answer]),
+    body.answers.map((a) => [a.questionId, a.answer]),
   );
   const store = useAssessmentDemoStore.getState();
   store.saveAnswers("advanced", answersByKey);
@@ -74,7 +74,7 @@ export async function mockSubmitAdvancedAssessment(
   return {
     status: "success",
     message: "Demo advanced assessment complete.",
-    session_id: body.session_id,
+    session_id: body.sessionId,
     score: 130,
     max_score: 186,
     percentage: 70,

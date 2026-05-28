@@ -26,7 +26,7 @@ export async function mockSubmitSkillAssessment(
 ): Promise<SkillAssessmentSubmitResponseData> {
   await mockDelay();
   const answersByKey = Object.fromEntries(
-    body.answers.map((a) => [a.question_id, a.answer]),
+    body.answers.map((a) => [a.questionId, a.answer]),
   );
   const store = useAssessmentDemoStore.getState();
   store.saveAnswers("skill", answersByKey);
@@ -35,7 +35,7 @@ export async function mockSubmitSkillAssessment(
   return {
     status: "success",
     message: "Demo skill assessment complete.",
-    session_id: body.attempt_id,
+    session_id: body.attemptId,
     score: 78,
     total: 100,
     percentage: 78,
