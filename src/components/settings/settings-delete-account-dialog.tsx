@@ -47,15 +47,22 @@ export function SettingsDeleteAccountDialog({
       deleteInFlightRef.current = true;
       setIsDeleting(true);
       await deleteAccount({ confirmation: "DELETE" });
-      appToast.success("Account deleted successfully.");
-      queryClient.clear();
-      clearPersistedSessionState();
-      const result = await signOut({ callbackUrl: "/login", redirect: false });
-      router.replace(result.url ?? "/login");
     } catch (error) {
       deleteInFlightRef.current = false;
       appToast.error(authFailureMessage(error));
       setIsDeleting(false);
+      return;
+    }
+
+    appToast.success("Account deleted successfully.");
+    queryClient.clear();
+    clearPersistedSessionState();
+
+    try {
+      const result = await signOut({ callbackUrl: "/login", redirect: false });
+      router.replace(result.url ?? "/login");
+    } catch {
+      window.location.assign("/login");
     }
   };
 
