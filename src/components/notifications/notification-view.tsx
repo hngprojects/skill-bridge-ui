@@ -10,6 +10,7 @@ import type { NotificationApiItem } from "@/types/api/notifications";
 import { notificationTabs, NotificationTab } from "@/constants/notifications";
 import NotificationItem from "./notification-item";
 import NotificationTabButton from "./notification-tab-button";
+import { appToast } from "@/lib/toast";
 
 const NotificationView = () => {
   const [activeTab, setActiveTab] = useState<NotificationTab>("All");
@@ -42,24 +43,32 @@ const NotificationView = () => {
   }, [retryCount]);
 
   const handleMarkAsRead = async (id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
+    );
+    setUnreadCount((c) => Math.max(0, c - 1));
     try {
       await markAsRead(id);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
-      );
-      setUnreadCount((c) => Math.max(0, c - 1));
     } catch {
-      // fail silently
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, isRead: false } : n)),
+      );
+      setUnreadCount((c) => c + 1);
+      appToast.error("Failed to mark notification as read.");
     }
   };
 
   const handleMarkAllAsRead = async () => {
+    const previous = notifications;
+    const previousCount = unreadCount;
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setUnreadCount(0);
     try {
       await markAllAsRead();
-      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-      setUnreadCount(0);
     } catch {
-      // fail silently
+      setNotifications(previous);
+      setUnreadCount(previousCount);
+      appToast.error("Failed to mark all notifications as read.");
     }
   };
 
