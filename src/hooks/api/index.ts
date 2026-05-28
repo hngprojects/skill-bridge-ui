@@ -10,3 +10,4 @@ export * from "./use-resources";
 export * from "./use-verified-profile";
 export * from "./use-users";
 export * from "./use-assessment";
+export * from "./use-settings";

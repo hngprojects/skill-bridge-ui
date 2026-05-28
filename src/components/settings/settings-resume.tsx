@@ -6,13 +6,19 @@ import { Pdf01Icon } from "@hugeicons/core-free-icons";
 import { useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
+import { useTalentSettings, useUpdateTalentSettingsProfile } from "@/hooks/api";
 
 const ACCEPTED_TYPES = ".doc,.docx,.pdf,.txt";
 
 export function SettingsResume() {
+  const { data: settings } = useTalentSettings();
+  const { mutate: updateProfile } = useUpdateTalentSettingsProfile();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [website, setWebsite] = useState("");
+  const serverWebsite = settings?.profile.personal_website ?? "";
+  const [localWebsite, setLocalWebsite] = useState<string | null>(null);
+  const website = localWebsite ?? serverWebsite;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -24,6 +30,14 @@ export function SettingsResume() {
     const dropped = e.dataTransfer.files?.[0];
     if (dropped) setFile(dropped);
   };
+
+  function handleSaveWebsite() {
+    if (!website.trim()) return;
+    updateProfile(
+      { personalWebsite: website.trim() },
+      { onSuccess: () => setLocalWebsite(null) },
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -75,7 +89,8 @@ export function SettingsResume() {
             type="url"
             value={website}
             placeholder="Enter your website link"
-            onChange={(e) => setWebsite(e.target.value)}
+            onChange={(e) => setLocalWebsite(e.target.value)}
+            onBlur={handleSaveWebsite}
             className="pr-10"
           />
           <span className="absolute right-3 pointer-events-none text-muted-foreground">

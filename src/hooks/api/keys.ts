@@ -38,3 +38,8 @@ export const verifiedProfileKeys = {
   all: ["verified-profile"] as const,
   talent: () => [...verifiedProfileKeys.all, "talent"] as const,
 };
+
+export const talentSettingsKeys = {
+  all: ["talent-settings"] as const,
+  detail: () => [...talentSettingsKeys.all, "detail"] as const,
+};
