@@ -4,7 +4,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-
 import { deleteAccount } from "@/actions/settings";
 import { SettingsAccountActionLink } from "@/components/settings/settings-account-action-link";
 import { Button } from "@/components/ui/button";
@@ -27,6 +26,8 @@ type SettingsDeleteAccountDialogProps = {
   email?: string;
 };
 
+const DELETE_CONFIRMATION_PHRASE = "DELETE MY ACCOUNT";
+
 export function SettingsDeleteAccountDialog({
   email,
 }: SettingsDeleteAccountDialogProps) {
@@ -36,12 +37,7 @@ export function SettingsDeleteAccountDialog({
   const [confirmation, setConfirmation] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const deleteInFlightRef = useRef(false);
-  const deleteConfirmationPhrase = email
-    ? `I AGREE TO DELETE THE ACCOUNT FOR ${email.toUpperCase()}`
-    : "";
-  const isConfirmed =
-    Boolean(deleteConfirmationPhrase) &&
-    confirmation.trim() === deleteConfirmationPhrase;
+  const isConfirmed = confirmation.trim() === DELETE_CONFIRMATION_PHRASE;
 
   const handleDeleteAccount = async () => {
     if (deleteInFlightRef.current) return;
@@ -91,8 +87,7 @@ export function SettingsDeleteAccountDialog({
           <span>
             Type{" "}
             <span className="font-semibold text-foreground">
-              &quot;{deleteConfirmationPhrase || "THE CONFIRMATION SENTENCE"}
-              &quot;
+              &quot;{DELETE_CONFIRMATION_PHRASE}&quot;
             </span>{" "}
             to confirm that you want to delete your SkillBridge account.
           </span>
@@ -124,7 +119,7 @@ export function SettingsDeleteAccountDialog({
           </DialogClose>
           <Button
             type="button"
-            className="h-9 rounded-md bg-[#DE3B46] text-xs text-white hover:bg-[#DE3B46]/90"
+            className="h-9 rounded-md bg-[#DE3B46] text-xs text-white hover:bg-[#DE3B46]/90 disabled:bg-[#DE3B46] disabled:text-white disabled:opacity-60"
             disabled={!isConfirmed || isDeleting}
             onClick={handleDeleteAccount}
           >
