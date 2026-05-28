@@ -128,9 +128,16 @@ export type {
   UpdateTalentSettingsProfileInput,
 } from "./settings";
 export type {
+  VerifiedProfileAssessmentInsight,
+  VerifiedProfileAssessmentInsights,
+  VerifiedProfileDetailedSkill,
   VerifiedProfileKeyStrength,
   VerifiedProfileMetric,
+  VerifiedProfileRecommendedResource,
   VerifiedProfileResponseData,
+  VerifiedProfileSkillBreakdownItem,
+  VerifiedProfileSkillBreakdownTab,
+  VerifiedProfileSkillInfo,
   VerifiedProfileSkillItem,
   VerifiedProfileSkillProficiency,
 } from "./verified-profile";
