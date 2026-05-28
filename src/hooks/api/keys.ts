@@ -42,4 +42,6 @@ export const verifiedProfileKeys = {
 export const talentSettingsKeys = {
   all: ["talent-settings"] as const,
   detail: () => [...talentSettingsKeys.all, "detail"] as const,
+  communicationPreferences: () =>
+    [...talentSettingsKeys.all, "communication-preferences"] as const,
 };

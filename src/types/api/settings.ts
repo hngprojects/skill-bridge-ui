@@ -33,6 +33,25 @@ export type TalentSettingsCommunicationPreferences = {
   inApp: TalentSettingsNotificationPrefs;
 };
 
+export type RawTalentSettingsNotificationPrefs = {
+  newOffers?: boolean;
+  assessmentReminders?: boolean;
+  retakeWindowOpen?: boolean;
+  new_offers?: boolean;
+  assessment_reminders?: boolean;
+  retake_window_open?: boolean;
+};
+
+export type RawTalentSettingsCommunicationPreferences = {
+  email?: RawTalentSettingsNotificationPrefs;
+  inApp?: RawTalentSettingsNotificationPrefs;
+  in_app?: RawTalentSettingsNotificationPrefs;
+};
+
+export type TalentSettingsCommunicationPreferencesResponseData = {
+  communication_preferences: RawTalentSettingsCommunicationPreferences;
+};
+
 export type TalentSettingsActiveSession = {
   label: string;
   is_current: boolean;

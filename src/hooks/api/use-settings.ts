@@ -1,12 +1,16 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  getTalentCommunicationPreferences,
   getTalentSettings,
+  unsubscribeTalentEmailNotifications,
+  updateTalentCommunicationPreferences,
   updateTalentAvailability,
   updateTalentSettingsProfile,
   uploadTalentResume,
 } from "@/actions/settings";
 import type {
+  TalentSettingsCommunicationPreferences,
   UpdateTalentAvailabilityInput,
   UpdateTalentSettingsProfileInput,
 } from "@/types/api";
@@ -46,5 +50,42 @@ export function useUpdateTalentAvailability() {
       updateTalentAvailability(body),
     onSuccess: () =>
       void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+  });
+}
+
+export function useTalentCommunicationPreferences(options?: {
+  enabled?: boolean;
+}) {
+  return useQuery({
+    queryKey: talentSettingsKeys.communicationPreferences(),
+    queryFn: () => getTalentCommunicationPreferences(),
+    enabled: options?.enabled ?? true,
+  });
+}
+
+export function useUpdateTalentCommunicationPreferences() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: TalentSettingsCommunicationPreferences) =>
+      updateTalentCommunicationPreferences(body),
+    onSuccess: () => {
+      void qc.invalidateQueries({
+        queryKey: talentSettingsKeys.communicationPreferences(),
+      });
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
+    },
+  });
+}
+
+export function useUnsubscribeTalentEmailNotifications() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => unsubscribeTalentEmailNotifications(),
+    onSuccess: () => {
+      void qc.invalidateQueries({
+        queryKey: talentSettingsKeys.communicationPreferences(),
+      });
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
+    },
   });
 }
