@@ -8,7 +8,7 @@ export type AdminCreateUserInput = {
   lastName: string;
   country: string;
   role: UserRole;
-  profile_pic_url?: string | null;
+  profilePicUrl?: string | null;
 };
 
 export type AdminCreateUserResponseData = {
