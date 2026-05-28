@@ -1,94 +1,31 @@
 "use client";
 
-import Image from "next/image";
-import { Dot, Download } from "lucide-react";
-
-import InfoDisplay from "@/components/verified-report/info-display";
-import { Button } from "@/components/ui/button";
-import HexagonPercentageItem from "@/components/verified-report/hexagon-percentage-item";
-import SkillsDisplay from "@/components/verified-report/skills-display";
 import { useVerifiedProfile } from "@/hooks/api/use-verified-profile";
-import { toVerifiedProfileViewModel } from "@/lib/verified-profile-view";
+import { ApiError } from "@/lib/api";
+
+import { VerifiedReportContent } from "./verified-report-content";
+import { VerifiedReportErrorState } from "./verified-report-error-state";
+import { VerifiedReportLoadingState } from "./verified-report-loading-state";
+import { VerifiedReportUnavailableState } from "./verified-report-unavailable-state";
 
 const VerifiedReportPage = () => {
-  const { data, isPending, isError } = useVerifiedProfile();
+  const { data, isPending, isError, error } = useVerifiedProfile();
 
   if (isPending) {
-    return (
-      <div className="flex flex-col gap-y-6 my-8.5 animate-pulse">
-        <div className="h-10 w-64 rounded-lg bg-muted" />
-        <div className="min-h-80 rounded-xl bg-muted" />
-        <div className="min-h-64 rounded-xl bg-muted" />
-      </div>
-    );
+    return <VerifiedReportLoadingState />;
   }
 
-  if (isError || !data) {
-    return (
-      <div className="flex items-center justify-center my-8.5 min-h-64">
-        <p className="text-base text-muted-foreground">
-          Failed to load verified profile. Please try again later.
-        </p>
-      </div>
-    );
-  }
+  const notFoundError =
+    error instanceof ApiError && error.status === 404 ? error : null;
 
-  const profile = toVerifiedProfileViewModel(data);
+  if (notFoundError) {
+    return <VerifiedReportUnavailableState message={notFoundError.message} />;
+  }
+  if (isError || !data) return <VerifiedReportErrorState />;
 
   return (
     <div className="flex flex-col gap-y-6 my-8.5">
-      <section className="flex flex-row justify-between items-center">
-        <div className="flex flex-col gap-y-2">
-          <h2 className="font-bold text-2xl text-black">Verified Profile</h2>
-          <p className="font-light text-base">
-            Here&apos;s how to know how employers see your profile!
-          </p>
-        </div>
-        <div className="flex flex-row gap-x-2 items-center">
-          <Button className="underline" variant={"ghost"}>
-            Download CV
-            <Download size={16} />
-          </Button>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-y-5">
-        <div className="flex flex-col gap-y-5 md:flex-row md:justify-between gap-x-10 rounded-xl border border-[#DBDBDB] p-3 md:p-6 bg-[#FAFAFA]">
-          <div className="flex flex-1 flex-col gap-y-6 min-w-0">
-            <div className="flex flex-col gap-y-2 sm:flex-row gap-x-6 sm:items-center">
-              <Image
-                src={profile.avatarUrl ?? "/assets/placeholder-avatar.svg"}
-                height={124}
-                width={124}
-                alt="User avatar"
-                className="rounded-full object-cover size-[124px]"
-                unoptimized={Boolean(profile.avatarUrl)}
-              />
-              <div className="flex flex-col gap-y-1">
-                <p className="font-bold text-2xl">{profile.name}</p>
-                <p className="text-lg font-light flex flex-row gap-x-2 items-center flex-wrap">
-                  {profile.role}
-                  <Dot size={30} className="hidden lg:block" />
-                  <span>Goal: {profile.goal}</span>
-                </p>
-              </div>
-            </div>
-            <InfoDisplay title="About" info={profile.about} />
-            <InfoDisplay title="Skills" info={profile.skills} />
-            <InfoDisplay title="AI Report" info={profile.aiReport} />
-          </div>
-          <div className="max-md:self-center">
-            <HexagonPercentageItem
-              value={profile.scorePercentage}
-              tierLabel={profile.tierLabel}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col bg-[#FAFAFA] rounded-xl border border-[#DBDBDB] p-3 md:p-6">
-          <SkillsDisplay skills={profile.detailedSkills} />
-        </div>
-      </section>
+      <VerifiedReportContent data={data} />
     </div>
   );
 };
