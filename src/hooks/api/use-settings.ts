@@ -1,7 +1,6 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  getTalentCommunicationPreferences,
   getTalentSettings,
   unsubscribeTalentEmailNotifications,
   updateTalentCommunicationPreferences,
@@ -53,22 +52,12 @@ export function useUpdateTalentAvailability() {
   });
 }
 
-export function useTalentCommunicationPreferences() {
-  return useQuery({
-    queryKey: talentSettingsKeys.communicationPreferences(),
-    queryFn: () => getTalentCommunicationPreferences(),
-  });
-}
-
 export function useUpdateTalentCommunicationPreferences() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: TalentSettingsCommunicationPreferences) =>
       updateTalentCommunicationPreferences(body),
     onSuccess: () => {
-      void qc.invalidateQueries({
-        queryKey: talentSettingsKeys.communicationPreferences(),
-      });
       void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
     },
   });
@@ -79,9 +68,6 @@ export function useUnsubscribeTalentEmailNotifications() {
   return useMutation({
     mutationFn: () => unsubscribeTalentEmailNotifications(),
     onSuccess: () => {
-      void qc.invalidateQueries({
-        queryKey: talentSettingsKeys.communicationPreferences(),
-      });
       void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
     },
   });

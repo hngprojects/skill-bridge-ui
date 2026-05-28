@@ -21,6 +21,13 @@ const DEFAULT_COMMUNICATION_GROUP = {
   retakeWindowOpen: true,
 };
 
+type RawTalentSettingsResponseData = Omit<
+  TalentSettingsResponseData,
+  "communication_preferences"
+> & {
+  communication_preferences: TalentSettingsCommunicationPreferencesResponseData["communication_preferences"];
+};
+
 function normalizeNotificationPrefs(
   preferences?: RawTalentSettingsNotificationPrefs,
 ) {
@@ -53,10 +60,17 @@ function normalizeCommunicationPreferences(
 
 export async function getTalentSettings(): Promise<TalentSettingsResponseData> {
   const res =
-    await authApi.get<ApiEnvelope<TalentSettingsResponseData>>(
+    await authApi.get<ApiEnvelope<RawTalentSettingsResponseData>>(
       "/talent/settings",
     );
-  return unwrapData(res);
+  const settings = unwrapData(res);
+
+  return {
+    ...settings,
+    communication_preferences: normalizeCommunicationPreferences({
+      communication_preferences: settings.communication_preferences,
+    }),
+  };
 }
 
 export async function updateTalentSettingsProfile(
@@ -89,13 +103,6 @@ export async function updateTalentAvailability(
     ApiEnvelope<UpdateTalentAvailabilityResponseData>
   >("/talent/settings/availability", body);
   return unwrapData(res);
-}
-
-export async function getTalentCommunicationPreferences(): Promise<TalentSettingsCommunicationPreferences> {
-  const res = await authApi.get<
-    ApiEnvelope<TalentSettingsCommunicationPreferencesResponseData>
-  >("/talent/settings/communication-preferences");
-  return normalizeCommunicationPreferences(unwrapData(res));
 }
 
 export async function updateTalentCommunicationPreferences(

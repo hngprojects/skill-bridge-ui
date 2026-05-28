@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Switch } from "@/components/ui/switch";
 import {
-  useTalentCommunicationPreferences,
+  useTalentSettings,
   useUnsubscribeTalentEmailNotifications,
   useUpdateTalentCommunicationPreferences,
 } from "@/hooks/api";
@@ -130,7 +130,7 @@ function NotificationGroup({
 }
 
 export function SettingsCommunication() {
-  const { data: serverPreferences } = useTalentCommunicationPreferences();
+  const { data: settings } = useTalentSettings();
   const { mutateAsync: updatePreferences, isPending: isUpdating } =
     useUpdateTalentCommunicationPreferences();
   const { mutateAsync: unsubscribeEmails, isPending: isUnsubscribing } =
@@ -140,7 +140,7 @@ export function SettingsCommunication() {
 
   const preferences =
     optimisticPreferences ??
-    serverPreferences ??
+    settings?.communication_preferences ??
     DEFAULT_COMMUNICATION_PREFERENCES;
   const isSaving = isUpdating || isUnsubscribing;
 
