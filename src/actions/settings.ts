@@ -25,11 +25,16 @@ function normalizeNotificationPrefs(
   preferences?: RawTalentSettingsNotificationPrefs,
 ) {
   return {
-    newOffers: preferences?.new_offers ?? DEFAULT_COMMUNICATION_GROUP.newOffers,
+    newOffers:
+      preferences?.newOffers ??
+      preferences?.new_offers ??
+      DEFAULT_COMMUNICATION_GROUP.newOffers,
     assessmentReminders:
+      preferences?.assessmentReminders ??
       preferences?.assessment_reminders ??
       DEFAULT_COMMUNICATION_GROUP.assessmentReminders,
     retakeWindowOpen:
+      preferences?.retakeWindowOpen ??
       preferences?.retake_window_open ??
       DEFAULT_COMMUNICATION_GROUP.retakeWindowOpen,
   };
@@ -42,7 +47,7 @@ function normalizeCommunicationPreferences(
 
   return {
     email: normalizeNotificationPrefs(preferences.email),
-    inApp: normalizeNotificationPrefs(preferences.in_app),
+    inApp: normalizeNotificationPrefs(preferences.inApp ?? preferences.in_app),
   };
 }
 
