@@ -7,6 +7,7 @@ export type {
 export type {
   AuthTokens,
   AuthUser,
+  ChangePasswordInput,
   ForgotPasswordInput,
   GoogleVerifyCodeInput,
   GoogleVerifyCodeResponseData,

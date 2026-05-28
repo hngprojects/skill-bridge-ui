@@ -1,6 +1,7 @@
 import { publicApi, authApi } from "@/lib/api";
 import type {
   ApiEnvelope,
+  ChangePasswordInput,
   EmptyData,
   ForgotPasswordInput,
   GoogleVerifyCodeInput,
@@ -135,6 +136,16 @@ export async function resetPassword(
 ): Promise<EmptyData> {
   const res = await publicApi.post<ApiEnvelope<EmptyData>>(
     "/auth/reset-password",
+    body,
+  );
+  return unwrapData(res);
+}
+
+export async function changePassword(
+  body: ChangePasswordInput,
+): Promise<EmptyData> {
+  const res = await authApi.post<ApiEnvelope<EmptyData>>(
+    "/auth/change-password",
     body,
   );
   return unwrapData(res);
