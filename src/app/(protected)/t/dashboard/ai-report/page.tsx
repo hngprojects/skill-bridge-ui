@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   title: "AI Report",
 };
 
+export const dynamic = "force-dynamic";
+
 const AiReport = () => {
   return (
     <main className="min-h-screen bg-[#FAFAFA]">
