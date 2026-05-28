@@ -4,10 +4,12 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowRight01Icon,
   ChromeIcon,
-  Download01Icon,
   InformationCircleIcon,
 } from "@hugeicons/core-free-icons";
 
+import { SettingsAccountActionLink } from "@/components/settings/settings-account-action-link";
+import { SettingsDeleteAccountDialog } from "@/components/settings/settings-delete-account-dialog";
+import { SettingsExportAccountDialog } from "@/components/settings/settings-export-account-dialog";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 
 function AccountRow({
@@ -30,30 +32,6 @@ function AccountRow({
   );
 }
 
-function ActionLink({
-  children,
-  destructive,
-  icon,
-}: {
-  children: React.ReactNode;
-  destructive?: boolean;
-  icon?: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      className={`flex items-center gap-1 text-sm font-medium underline underline-offset-2 transition-colors ${
-        destructive
-          ? "text-destructive hover:text-destructive/80"
-          : "text-foreground hover:text-muted-foreground"
-      }`}
-    >
-      {children}
-      {icon}
-    </button>
-  );
-}
-
 export function SettingsAccount() {
   const { email } = useSessionUserProfile();
 
@@ -61,13 +39,13 @@ export function SettingsAccount() {
     <div className="flex flex-col gap-3">
       <AccountRow
         title="Email Address"
-        description={email || "—"}
+        description={email || "-"}
         action={
-          <ActionLink
+          <SettingsAccountActionLink
             icon={<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />}
           >
             Change email
-          </ActionLink>
+          </SettingsAccountActionLink>
         }
       />
 
@@ -75,11 +53,11 @@ export function SettingsAccount() {
         title="Password"
         description="**************"
         action={
-          <ActionLink
+          <SettingsAccountActionLink
             icon={<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />}
           >
             Change password
-          </ActionLink>
+          </SettingsAccountActionLink>
         }
       />
 
@@ -91,7 +69,7 @@ export function SettingsAccount() {
               <HugeiconsIcon icon={ChromeIcon} className="size-4 shrink-0" />
               Chrome on Mac OS X
             </span>
-            <span className="hidden sm:inline text-border">•</span>
+            <span className="hidden text-border sm:inline">-</span>
             <span>Last access: Today at 4:38 PM</span>
           </span>
         }
@@ -106,19 +84,17 @@ export function SettingsAccount() {
       <AccountRow
         title="Download Personal Data"
         description="Request a copy of your data for export. You will receive an email when your export is ready for download"
-        action={
-          <ActionLink
-            icon={<HugeiconsIcon icon={Download01Icon} className="size-4" />}
-          >
-            Request export
-          </ActionLink>
-        }
+        action={<SettingsExportAccountDialog />}
       />
 
       <AccountRow
         title="Deactivate my account"
         description="Your account will be hidden but not deleted"
-        action={<ActionLink>Deactivate my account</ActionLink>}
+        action={
+          <SettingsAccountActionLink>
+            Deactivate my account
+          </SettingsAccountActionLink>
+        }
       />
 
       <div className="flex items-center gap-3">
@@ -129,8 +105,8 @@ export function SettingsAccount() {
 
       <AccountRow
         title="Delete my account"
-        description="This will permanently and irreversibly remove all your CredLane data."
-        action={<ActionLink destructive>Delete account</ActionLink>}
+        description="This will permanently and irreversibly remove all your SkillBridge data."
+        action={<SettingsDeleteAccountDialog email={email} />}
       />
     </div>
   );

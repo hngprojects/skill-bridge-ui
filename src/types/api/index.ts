@@ -108,6 +108,9 @@ export type {
 
 export type { ResourceApiItem, ResourcesResponseData } from "./resources";
 export type {
+  AccountDataExport,
+  AccountDataExportResponseData,
+  DeleteAccountInput,
   TalentSettingsAccount,
   TalentSettingsActiveSession,
   TalentSettingsCommunicationPreferences,
