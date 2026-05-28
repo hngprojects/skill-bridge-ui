@@ -40,8 +40,10 @@ const NotificationItem = ({
         if (!isRead && onMarkRead) onMarkRead();
       }}
       onKeyDown={(e) => {
-        if ((e.key === "Enter" || e.key === " ") && !isRead && onMarkRead)
+        if ((e.key === "Enter" || e.key === " ") && !isRead && onMarkRead) {
+          if (e.key === " ") e.preventDefault();
           onMarkRead();
+        }
       }}
       role={!isRead ? "button" : undefined}
       tabIndex={!isRead ? 0 : undefined}
