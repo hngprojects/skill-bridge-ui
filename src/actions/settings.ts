@@ -1,6 +1,9 @@
 import { authApi } from "@/lib/api";
 import type {
+  AccountDataExportResponseData,
   ApiEnvelope,
+  DeleteAccountInput,
+  EmptyData,
   TalentSettingsResponseData,
   UpdateTalentSettingsProfileInput,
 } from "@/types/api";
@@ -35,5 +38,21 @@ export async function uploadTalentResume(
     formData,
     { headers: { "Content-Type": "multipart/form-data" } },
   );
+  return unwrapData(res);
+}
+
+export async function exportAccountData(): Promise<AccountDataExportResponseData> {
+  const res = await authApi.post<ApiEnvelope<AccountDataExportResponseData>>(
+    "/auth/account/data-export",
+  );
+  return unwrapData(res);
+}
+
+export async function deleteAccount(
+  body: DeleteAccountInput,
+): Promise<EmptyData> {
+  const res = await authApi.delete<ApiEnvelope<EmptyData>>("/auth/account", {
+    data: body,
+  });
   return unwrapData(res);
 }

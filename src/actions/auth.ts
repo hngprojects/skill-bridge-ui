@@ -1,8 +1,6 @@
 import { publicApi, authApi } from "@/lib/api";
 import type {
   ApiEnvelope,
-  AccountDataExportResponseData,
-  DeleteAccountInput,
   EmptyData,
   ForgotPasswordInput,
   GoogleVerifyCodeInput,
@@ -157,21 +155,5 @@ export async function logout(): Promise<EmptyData> {
 
 export async function getMe(): Promise<MeResponseData> {
   const res = await authApi.get<ApiEnvelope<MeResponseData>>("/auth/me");
-  return unwrapData(res);
-}
-
-export async function exportAccountData(): Promise<AccountDataExportResponseData> {
-  const res = await authApi.post<ApiEnvelope<AccountDataExportResponseData>>(
-    "/auth/account/data-export",
-  );
-  return unwrapData(res);
-}
-
-export async function deleteAccount(
-  body: DeleteAccountInput,
-): Promise<EmptyData> {
-  const res = await authApi.delete<ApiEnvelope<EmptyData>>("/auth/account", {
-    data: body,
-  });
   return unwrapData(res);
 }

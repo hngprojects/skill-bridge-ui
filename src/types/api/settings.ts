@@ -43,6 +43,21 @@ export type TalentSettingsAccount = {
   active_sessions: TalentSettingsActiveSession[];
 };
 
+export type AccountDataExport = {
+  generated_at?: string;
+  user?: Record<string, unknown>;
+  talent_profile?: Record<string, unknown> | null;
+  [key: string]: unknown;
+};
+
+export type AccountDataExportResponseData = {
+  data_export: AccountDataExport;
+};
+
+export type DeleteAccountInput = {
+  confirmation: "DELETE";
+};
+
 export type UpdateTalentSettingsProfileInput = {
   firstName?: string;
   lastName?: string;

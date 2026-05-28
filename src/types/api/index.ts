@@ -5,11 +5,8 @@ export type {
   PaginationMeta,
 } from "./common";
 export type {
-  AccountDataExport,
-  AccountDataExportResponseData,
   AuthTokens,
   AuthUser,
-  DeleteAccountInput,
   ForgotPasswordInput,
   GoogleVerifyCodeInput,
   GoogleVerifyCodeResponseData,
@@ -111,6 +108,9 @@ export type {
 
 export type { ResourceApiItem, ResourcesResponseData } from "./resources";
 export type {
+  AccountDataExport,
+  AccountDataExportResponseData,
+  DeleteAccountInput,
   TalentSettingsAccount,
   TalentSettingsActiveSession,
   TalentSettingsCommunicationPreferences,
