@@ -7,6 +7,7 @@ export type {
 export type {
   AuthTokens,
   AuthUser,
+  ChangePasswordInput,
   ForgotPasswordInput,
   GoogleVerifyCodeInput,
   GoogleVerifyCodeResponseData,
@@ -118,6 +119,9 @@ export type {
   TalentSettingsProfile,
   TalentSettingsResponseData,
   TalentSettingsUser,
+  TalentAvailabilityStatus,
+  UpdateTalentAvailabilityInput,
+  UpdateTalentAvailabilityResponseData,
   UpdateTalentSettingsProfileInput,
 } from "./settings";
 export type {

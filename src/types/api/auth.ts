@@ -89,6 +89,12 @@ export type ResetPasswordInput = {
   confirmPassword: string;
 };
 
+export type ChangePasswordInput = {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
 export type RefreshResponseData = {
   tokens?: AuthTokens;
 };
