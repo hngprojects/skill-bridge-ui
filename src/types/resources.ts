@@ -52,8 +52,8 @@ type GuidanceReport = {
 };
 
 type AIReportResponse = {
-  skill_guidance_report: GuidanceReport;
-  advanced_guidance_report: GuidanceReport;
+  skill_guidance_report: GuidanceReport | null;
+  advanced_guidance_report: GuidanceReport | null;
 };
 
 type Rating = { item: string; rating: number };

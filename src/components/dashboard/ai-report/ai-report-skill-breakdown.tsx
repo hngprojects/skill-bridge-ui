@@ -18,6 +18,29 @@ export function AiReportSkillBreakdown() {
     year: "numeric",
   });
 
+  if (!report) {
+    return (
+      <section
+        aria-labelledby="skill-breakdown-heading"
+        className="flex flex-col gap-4 rounded-2xl border border-border bg-[#FAFAFA] p-4 sm:gap-5 sm:p-5 lg:p-6"
+      >
+        <h2
+          id="skill-breakdown-heading"
+          className="text-[16px] font-bold tracking-tight text-foreground sm:text-[18px]"
+        >
+          Skill breakdown
+        </h2>
+
+        <div className="flex items-center justify-center rounded-xl border border-dashed border-border py-12">
+          <p className="text-[13px] text-muted-foreground sm:text-[14px]">
+            No report available yet. Complete an assessment to see your skill
+            breakdown.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       aria-labelledby="skill-breakdown-heading"
