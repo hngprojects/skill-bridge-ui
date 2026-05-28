@@ -1,35 +1,30 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { getNotifications } from "@/actions/notifications";
-import type { NotificationApiItem } from "@/types/api/notifications";
+import { useState } from "react";
 import { notificationTabs, NotificationTab } from "@/constants/notifications";
 import NotificationItem from "./notification-item";
 import NotificationTabButton from "./notification-tab-button";
+import {
+  useNotifications,
+  useUnreadCount,
+  useMarkAsRead,
+  useMarkAllAsRead,
+} from "@/hooks/api";
 
 const NotificationView = () => {
   const [activeTab, setActiveTab] = useState<NotificationTab>("All");
-  const [notifications, setNotifications] = useState<NotificationApiItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        setLoading(true);
-        setHasError(false);
-        const res = await getNotifications();
-        setNotifications(res.items);
-      } catch {
-        setHasError(true);
-        setNotifications([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNotifications();
-  }, [retryCount]);
+  const {
+    data: notificationsData,
+    isLoading,
+    isError,
+    refetch,
+  } = useNotifications();
+  const { data: unreadData } = useUnreadCount();
+  const { mutate: markAsRead } = useMarkAsRead();
+  const { mutate: markAllAsRead } = useMarkAllAsRead();
+
+  const notifications = notificationsData?.items ?? [];
+  const unreadCount = unreadData?.count ?? 0;
 
   const filtered =
     activeTab === "Unread"
@@ -38,25 +33,36 @@ const NotificationView = () => {
 
   return (
     <div className="flex flex-col gap-y-8 rounded-xl border border-[#D9D9D9] bg-[#FAFAFA] p-4 md:rounded-2xl md:p-6">
-      <div className="flex flex-row gap-x-3">
-        {notificationTabs.map((tab) => (
-          <NotificationTabButton
-            key={tab}
-            tab={tab}
-            activeTab={activeTab}
-            setTab={setActiveTab}
-          />
-        ))}
+      <div className="flex items-center justify-between">
+        <div className="flex flex-row gap-x-3">
+          {notificationTabs.map((tab) => (
+            <NotificationTabButton
+              key={tab}
+              tab={tab}
+              activeTab={activeTab}
+              setTab={setActiveTab}
+            />
+          ))}
+        </div>
+        {unreadCount > 0 && (
+          <button
+            onClick={() => markAllAsRead()}
+            className="text-sm font-medium text-[#34A853] underline underline-offset-2 hover:opacity-75 transition-opacity"
+          >
+            Mark all as read
+          </button>
+        )}
       </div>
-      {loading ? (
+
+      {isLoading ? (
         <p className="body text-muted-foreground">Loading notifications...</p>
-      ) : hasError ? (
+      ) : isError ? (
         <div className="flex flex-col gap-y-2">
           <p className="body text-destructive">
             Couldn&apos;t load notifications. Please try again.
           </p>
           <button
-            onClick={() => setRetryCount((c) => c + 1)}
+            onClick={() => refetch()}
             className="body text-muted-foreground underline w-fit"
           >
             Retry
@@ -74,6 +80,8 @@ const NotificationView = () => {
                 normalText: notification.body,
                 time: notification.createdAt,
               }}
+              isRead={notification.isRead}
+              onMarkRead={() => markAsRead(notification.id)}
             />
           ))}
         </ul>
