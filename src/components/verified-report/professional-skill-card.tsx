@@ -4,8 +4,9 @@ import VerifiedReportProgressIndicator from "./verified-reports-progress-indicat
 type Props = {
   title: string;
   value: number;
+  insight?: string;
 };
-const ProfessionalSkillCard = ({ title, value }: Props) => {
+const ProfessionalSkillCard = ({ title, value, insight }: Props) => {
   return (
     <div className="border border-[#DBDBDB] rounded-lg bg-white p-4">
       <div className="flex flex-row gap-x-2.5">
@@ -25,7 +26,9 @@ const ProfessionalSkillCard = ({ title, value }: Props) => {
           width={24}
           alt="Sparkle icon"
         />
-        <p className="text-[#535862] text-sm">Placeholder for AI insight</p>
+        <p className="text-[#535862] text-sm">
+          {insight ?? "No insight available for this area yet."}
+        </p>
       </div>
     </div>
   );

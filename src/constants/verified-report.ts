@@ -37,29 +37,78 @@ export const verifiedProfilePlaceholder: VerifiedProfileResponseData = {
     label: "Practical Application",
     percentage: 82,
   },
-  detailed_skills: [
+  skill_breakdown_tabs: [
     {
-      title: "Assessment Scores",
-      skill_info: [
-        { label: "Skill Proficiency", value: 70 },
-        { label: "Workplace Readiness", value: 82 },
-        { label: "Practical Application", value: 82 },
+      id: "assessment_scores",
+      label: "Assessment Scores",
+      items: [
+        {
+          id: "skill_proficiency",
+          label: "Skill Proficiency",
+          percentage: 70,
+          validated_level: "mid",
+          insight:
+            "Assessment behaviour reflects a structured, detail-oriented approach to complex problem decomposition.",
+        },
+        {
+          id: "workplace_readiness",
+          label: "Workplace Readiness",
+          percentage: 82,
+          insight:
+            "Demonstrates reliability and clear communication in collaborative settings.",
+        },
+        {
+          id: "practical_application",
+          label: "Practical Application",
+          percentage: 82,
+          insight:
+            "Applies fundamentals effectively when building user-facing features.",
+        },
       ],
     },
     {
-      title: "Professional Skills",
-      skill_info: [
-        { label: "Communication", value: 78 },
-        { label: "Teamwork", value: 85 },
-        { label: "Adaptability", value: 72 },
+      id: "professional_skills",
+      label: "Professional Skills",
+      items: [
+        {
+          label: "Communication",
+          percentage: 78,
+          insight: "Communicates technical decisions clearly to stakeholders.",
+        },
+        {
+          label: "Teamwork",
+          percentage: 85,
+          insight: "Works well in cross-functional product teams.",
+        },
+        {
+          label: "Adaptability",
+          percentage: 72,
+          insight: "Adjusts quickly when requirements or priorities shift.",
+        },
       ],
     },
     {
-      title: "Strengths",
-      skill_info: [
-        { label: "Problem Solving", value: 90 },
-        { label: "Analytical Thinking", value: 84 },
-        { label: "Attention to Detail", value: 76 },
+      id: "key_strengths",
+      label: "Strengths",
+      items: [
+        {
+          competency: "problem_solving",
+          label: "Problem Solving",
+          percentage: 90,
+          insight: "Breaks down ambiguous problems into actionable steps.",
+        },
+        {
+          competency: "analytical_thinking",
+          label: "Analytical Thinking",
+          percentage: 84,
+          insight: "Evaluates trade-offs before committing to an approach.",
+        },
+        {
+          competency: "attention_to_detail",
+          label: "Attention to Detail",
+          percentage: 76,
+          insight: "Catches edge cases during implementation and review.",
+        },
       ],
     },
   ],

@@ -41,6 +41,7 @@ const SkillsDisplay = ({ skills }: SkillDisplayProps) => {
             key={item.label + i}
             value={item.value}
             title={item.label}
+            insight={item.insight}
           />
         ))}
       </ul>

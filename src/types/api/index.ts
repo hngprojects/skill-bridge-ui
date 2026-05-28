@@ -108,10 +108,15 @@ export type {
 
 export type { ResourceApiItem, ResourcesResponseData } from "./resources";
 export type {
+  VerifiedProfileAssessmentInsight,
+  VerifiedProfileAssessmentInsights,
   VerifiedProfileDetailedSkill,
   VerifiedProfileKeyStrength,
   VerifiedProfileMetric,
+  VerifiedProfileRecommendedResource,
   VerifiedProfileResponseData,
+  VerifiedProfileSkillBreakdownItem,
+  VerifiedProfileSkillBreakdownTab,
   VerifiedProfileSkillInfo,
   VerifiedProfileSkillItem,
   VerifiedProfileSkillProficiency,

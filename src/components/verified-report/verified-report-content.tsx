@@ -1,5 +1,6 @@
 import type { VerifiedProfileResponseData } from "@/types/api";
 
+import { getSkillBreakdownTabs } from "./verified-report-utils";
 import { VerifiedReportHeader } from "./verified-report-header";
 import { VerifiedReportSkillsSection } from "./verified-report-skills-section";
 import { VerifiedReportSummary } from "./verified-report-summary";
@@ -18,7 +19,7 @@ export function VerifiedReportContent({
       <VerifiedReportHeader downloadDisabled={preview} />
       <section className="flex flex-col gap-y-5">
         <VerifiedReportSummary data={data} />
-        <VerifiedReportSkillsSection skills={data.detailed_skills} />
+        <VerifiedReportSkillsSection skills={getSkillBreakdownTabs(data)} />
       </section>
     </>
   );
