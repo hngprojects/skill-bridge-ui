@@ -8,6 +8,7 @@ import {
 } from "@hugeicons/core-free-icons";
 
 import { SettingsAccountActionLink } from "@/components/settings/settings-account-action-link";
+import { SettingsChangePasswordDialog } from "@/components/settings/settings-change-password-dialog";
 import { SettingsDeleteAccountDialog } from "@/components/settings/settings-delete-account-dialog";
 import { SettingsExportAccountDialog } from "@/components/settings/settings-export-account-dialog";
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
@@ -52,13 +53,7 @@ export function SettingsAccount() {
       <AccountRow
         title="Password"
         description="**************"
-        action={
-          <SettingsAccountActionLink
-            icon={<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />}
-          >
-            Change password
-          </SettingsAccountActionLink>
-        }
+        action={<SettingsChangePasswordDialog />}
       />
 
       <AccountRow

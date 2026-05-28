@@ -3,6 +3,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
+  changePassword,
   forgotPassword,
   getMe,
   login,
@@ -20,6 +21,7 @@ import type {
   RegisterInput,
   ResendVerificationInput,
   ResetPasswordInput,
+  ChangePasswordInput,
   VerifyEmailInput,
   VerifyPasswordResetOtpInput,
 } from "@/types/api";
@@ -66,6 +68,12 @@ export function useVerifyPasswordResetOtp() {
 export function useResetPassword() {
   return useMutation({
     mutationFn: (body: ResetPasswordInput) => resetPassword(body),
+  });
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (body: ChangePasswordInput) => changePassword(body),
   });
 }
 
