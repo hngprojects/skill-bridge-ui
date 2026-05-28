@@ -34,9 +34,6 @@ export type TalentSettingsCommunicationPreferences = {
 };
 
 export type RawTalentSettingsNotificationPrefs = {
-  newOffers?: boolean;
-  assessmentReminders?: boolean;
-  retakeWindowOpen?: boolean;
   new_offers?: boolean;
   assessment_reminders?: boolean;
   retake_window_open?: boolean;
@@ -44,7 +41,6 @@ export type RawTalentSettingsNotificationPrefs = {
 
 export type RawTalentSettingsCommunicationPreferences = {
   email?: RawTalentSettingsNotificationPrefs;
-  inApp?: RawTalentSettingsNotificationPrefs;
   in_app?: RawTalentSettingsNotificationPrefs;
 };
 

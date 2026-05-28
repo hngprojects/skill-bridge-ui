@@ -53,13 +53,10 @@ export function useUpdateTalentAvailability() {
   });
 }
 
-export function useTalentCommunicationPreferences(options?: {
-  enabled?: boolean;
-}) {
+export function useTalentCommunicationPreferences() {
   return useQuery({
     queryKey: talentSettingsKeys.communicationPreferences(),
     queryFn: () => getTalentCommunicationPreferences(),
-    enabled: options?.enabled ?? true,
   });
 }
 
