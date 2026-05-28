@@ -24,3 +24,16 @@ export async function updateTalentSettingsProfile(
   );
   return unwrapData(res);
 }
+
+export async function uploadTalentResume(
+  file: File,
+): Promise<{ resume_url: string }> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await authApi.post<ApiEnvelope<{ resume_url: string }>>(
+    "/talent/settings/resume",
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } },
+  );
+  return unwrapData(res);
+}
