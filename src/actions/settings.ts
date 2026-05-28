@@ -5,6 +5,8 @@ import type {
   DeleteAccountInput,
   EmptyData,
   TalentSettingsResponseData,
+  UpdateTalentAvailabilityInput,
+  UpdateTalentAvailabilityResponseData,
   UpdateTalentSettingsProfileInput,
 } from "@/types/api";
 
@@ -38,6 +40,15 @@ export async function uploadTalentResume(
     formData,
     { headers: { "Content-Type": "multipart/form-data" } },
   );
+  return unwrapData(res);
+}
+
+export async function updateTalentAvailability(
+  body: UpdateTalentAvailabilityInput,
+): Promise<UpdateTalentAvailabilityResponseData> {
+  const res = await authApi.patch<
+    ApiEnvelope<UpdateTalentAvailabilityResponseData>
+  >("/talent/settings/availability", body);
   return unwrapData(res);
 }
 

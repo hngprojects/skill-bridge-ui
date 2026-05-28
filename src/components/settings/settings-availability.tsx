@@ -3,22 +3,26 @@
 import { useState } from "react";
 
 import { Switch } from "@/components/ui/switch";
+import { useTalentSettings, useUpdateTalentAvailability } from "@/hooks/api";
+import { authFailureMessage } from "@/lib/api";
+import { appToast } from "@/lib/toast";
+import type { TalentAvailabilityStatus } from "@/types/api";
 
 const AVAILABILITY_ITEMS = [
   {
-    id: "actively-looking",
+    id: "actively_looking",
     label: "Actively Looking",
     description:
       "You demonstrate strong visual thinking, interface structuring, and product intuition. Your growth opportunities currently lie in communication confidence, systems thinking, and decision-making under ambiguity.",
   },
   {
-    id: "open-to-opportunities",
+    id: "open_to_opportunities",
     label: "Open to Opportunities",
     description:
       "You demonstrate strong visual thinking, interface structuring, and product intuition. Your growth opportunities currently lie in communication confidence, systems thinking, and decision-making under ambiguity.",
   },
   {
-    id: "not-looking",
+    id: "not_looking",
     label: "Not Looking Profile Visibility",
     description:
       "You demonstrate strong visual thinking, interface structuring, and product intuition. Your growth opportunities currently lie in communication confidence, systems thinking, and decision-making under ambiguity.",
@@ -27,8 +31,37 @@ const AVAILABILITY_ITEMS = [
 
 type AvailabilityId = (typeof AVAILABILITY_ITEMS)[number]["id"];
 
+function isAvailabilityId(value: unknown): value is AvailabilityId {
+  return AVAILABILITY_ITEMS.some((item) => item.id === value);
+}
+
 export function SettingsAvailability() {
-  const [active, setActive] = useState<AvailabilityId>("actively-looking");
+  const { data: settings } = useTalentSettings();
+  const { mutateAsync: updateAvailability, isPending } =
+    useUpdateTalentAvailability();
+  const [optimisticActive, setOptimisticActive] =
+    useState<AvailabilityId | null>(null);
+  const serverAvailability = settings?.profile.availability_status;
+  const active =
+    optimisticActive ??
+    (isAvailabilityId(serverAvailability) ? serverAvailability : null) ??
+    "actively_looking";
+
+  const handleAvailabilityChange = async (next: AvailabilityId) => {
+    if (next === active || isPending) return;
+
+    setOptimisticActive(next);
+
+    try {
+      await updateAvailability({
+        availabilityStatus: next as TalentAvailabilityStatus,
+      });
+      appToast.success("Availability updated.");
+    } catch (error) {
+      setOptimisticActive(null);
+      appToast.error(authFailureMessage(error));
+    }
+  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -44,8 +77,9 @@ export function SettingsAvailability() {
             <Switch
               checked={active === item.id}
               onCheckedChange={(checked) => {
-                if (checked) setActive(item.id);
+                if (checked) void handleAvailabilityChange(item.id);
               }}
+              disabled={isPending}
             />
           </div>
           <p className="text-sm text-muted-foreground">{item.description}</p>
