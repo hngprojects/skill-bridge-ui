@@ -11,7 +11,7 @@ const RELATIVE_TIME_UNITS = [
 
 function formatRelativeTime(value: string) {
   const parsedDate = new Date(value);
-  if (Number.isNaN(parsedDate.getTime())) return `${value} ago`;
+  if (Number.isNaN(parsedDate.getTime())) return "Just now";
   const elapsedSeconds = Math.max(
     0,
     Math.floor((Date.now() - parsedDate.getTime()) / 1000),
@@ -39,6 +39,13 @@ const NotificationItem = ({
       onClick={() => {
         if (!isRead && onMarkRead) onMarkRead();
       }}
+      onKeyDown={(e) => {
+        if ((e.key === "Enter" || e.key === " ") && !isRead && onMarkRead)
+          onMarkRead();
+      }}
+      role={!isRead ? "button" : undefined}
+      tabIndex={!isRead ? 0 : undefined}
+      aria-label={!isRead ? "Mark notification as read" : undefined}
       className={`flex flex-row items-start gap-x-4 rounded-xl border px-4 py-4 md:rounded-xl md:px-5 md:py-5 transition-colors ${
         isRead
           ? "border-[#D9D9D9] bg-[#FAFAFA] cursor-default"
