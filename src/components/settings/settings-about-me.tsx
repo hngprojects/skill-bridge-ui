@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { SettingsEditableField } from "./settings-editable-field";
 import { SettingsLinkedInField } from "./settings-linkedin-field";
 import { useTalentSettings, useUploadAvatar } from "@/hooks/api";
+import { appToast } from "@/lib/toast";
 import Image from "next/image";
 
 export function SettingsAboutMe() {
@@ -23,7 +24,11 @@ export function SettingsAboutMe() {
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    uploadAvatar(file);
+    uploadAvatar(file, {
+      onError: () => {
+        appToast.error("Failed to upload photo. Please try again.");
+      },
+    });
     e.target.value = "";
   }
 
