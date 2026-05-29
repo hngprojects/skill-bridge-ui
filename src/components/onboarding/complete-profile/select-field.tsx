@@ -20,6 +20,10 @@ interface Props {
   onChange: (val: string) => void;
   onBlur?: () => void;
   error?: string;
+  /** Renders a red `*` next to the label. Visual hint only; actual validation
+   * is owned by the form (e.g. react-hook-form rules). Matches FormInput's
+   * `requiredMark` markup so the affordance is consistent across the app. */
+  required?: boolean;
 }
 
 export const SelectField = ({
@@ -29,9 +33,20 @@ export const SelectField = ({
   onChange,
   onBlur,
   error,
+  required,
 }: Props) => (
   <div className="flex flex-col gap-1.25 w-full">
-    <label className="text-base font-medium text-primary">{label}</label>
+    <label className="text-base font-medium text-primary">
+      {label}
+      {required ? (
+        <>
+          <span aria-hidden className="text-error">
+            *
+          </span>
+          <span className="sr-only"> (required)</span>
+        </>
+      ) : null}
+    </label>
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger
         aria-invalid={Boolean(error)}

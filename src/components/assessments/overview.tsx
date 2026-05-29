@@ -27,10 +27,12 @@ export function Overview() {
     );
   }, [demoSteps, dashboardHome]);
 
+  // Demo mode uses a static constant for the progress bar; real users get the
+  // live value or `undefined` while loading — never a fake fallback that would
+  // flash a misleading percentage before the dashboard resolves.
   const profileCompletion = isAssessmentDemoMode()
     ? ASSESSMENT_PROFILE_COMPLETION
-    : (dashboardHome?.profileCompletionPercentage ??
-      ASSESSMENT_PROFILE_COMPLETION);
+    : dashboardHome?.profileCompletionPercentage;
 
   return (
     <div className="mx-auto max-w-260.5 animate-in fade-in slide-in-from-bottom-1 px-1 pb-10 duration-500 sm:px-0">

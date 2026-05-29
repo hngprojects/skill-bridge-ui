@@ -17,7 +17,6 @@ const ResourceVideoCard = ({ url, title, duration }: ResourceVideo) => {
   return (
     <a
       href={url}
-      target="_blank"
       rel="noopener noreferrer"
       className="relative flex flex-1 rounded-2xl border border-border overflow-hidden min-h-57.75 min-w-0"
     >

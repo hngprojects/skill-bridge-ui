@@ -15,12 +15,13 @@ import {
   useUploadAvatar,
   talentSettingsKeys,
 } from "@/hooks/api";
+import { appToast } from "@/lib/toast";
 import Image from "next/image";
 
 export function SettingsAboutMe() {
-  const qc = useQueryClient();
   const { data: settings } = useTalentSettings();
   const { mutate: uploadAvatar, isPending: uploading } = useUploadAvatar();
+  const qc = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cropFile, setCropFile] = useState<File | null>(null);
 
@@ -39,6 +40,9 @@ export function SettingsAboutMe() {
     uploadAvatar(croppedFile, {
       onSuccess: () =>
         void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+      onError: () => {
+        appToast.error("Failed to upload photo. Please try again.");
+      },
     });
   }
 
