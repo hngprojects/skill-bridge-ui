@@ -1,11 +1,15 @@
+import { Suspense } from "react";
+
 import { AiReportSkillBreakdown } from "@/components/dashboard/ai-report/ai-report-skill-breakdown";
 import Resources from "@/components/dashboard/ai-report/resources";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:"AI Report",
+  title: "AI Report",
 };
+
+export const dynamic = "force-dynamic";
 
 const AiReport = () => {
   return (
@@ -18,13 +22,23 @@ const AiReport = () => {
           </h1>
 
           <p className="mt-2 max-w-2xl text-[14px] leading-6 text-muted-foreground sm:text-[15px] sm:leading-7 lg:text-[16px]">
-            AI-powered insights to help you understand your strengths and
-            areas to improve
+            AI-powered insights to help you understand your strengths and areas
+            to improve
           </p>
         </div>
 
         {/* AI Report Skill Breakdown */}
-        <AiReportSkillBreakdown />
+        <Suspense
+          fallback={
+            <div className="flex flex-col gap-4 my-8 animate-pulse">
+              <div className="h-40 w-full rounded-2xl bg-muted" />
+              <div className="h-32 w-full rounded-2xl bg-muted" />
+              <div className="h-64 w-full rounded-2xl bg-muted" />
+            </div>
+          }
+        >
+          <AiReportSkillBreakdown />
+        </Suspense>
 
         {/* Recommended Resources */}
         <section className="flex flex-col">

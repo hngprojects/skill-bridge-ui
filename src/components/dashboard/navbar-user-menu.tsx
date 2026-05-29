@@ -36,7 +36,8 @@ export function DashboardNavbarUserMenu({
           <Button
             type="button"
             variant="ghost"
-            className="h-10 gap-2 rounded-md px-0 hover:bg-transparent"
+            tabIndex={-1}
+            className="h-10 gap-2 rounded-md px-0 hover:bg-transparent outline-none focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
           >
             <Avatar
               size="lg"
@@ -57,6 +58,9 @@ export function DashboardNavbarUserMenu({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+          }}
           align="end"
           sideOffset={8}
           className="w-full rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"

@@ -1,13 +1,18 @@
 "use client";
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
 import {
   getTalentSettings,
+  unsubscribeTalentEmailNotifications,
+  updateTalentCommunicationPreferences,
+  updateTalentAvailability,
   updateTalentSettingsProfile,
+  uploadTalentResume,
 } from "@/actions/settings";
-import type { UpdateTalentSettingsProfileInput } from "@/types/api";
-
+import type {
+  TalentSettingsCommunicationPreferences,
+  UpdateTalentAvailabilityInput,
+  UpdateTalentSettingsProfileInput,
+} from "@/types/api";
 import { talentSettingsKeys } from "./keys";
 
 export function useTalentSettings(options?: { enabled?: boolean }) {
@@ -25,5 +30,45 @@ export function useUpdateTalentSettingsProfile() {
       updateTalentSettingsProfile(body),
     onSuccess: () =>
       void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+  });
+}
+
+export function useUploadTalentResume() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => uploadTalentResume(file),
+    onSuccess: () =>
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+  });
+}
+
+export function useUpdateTalentAvailability() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: UpdateTalentAvailabilityInput) =>
+      updateTalentAvailability(body),
+    onSuccess: () =>
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+  });
+}
+
+export function useUpdateTalentCommunicationPreferences() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: TalentSettingsCommunicationPreferences) =>
+      updateTalentCommunicationPreferences(body),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
+    },
+  });
+}
+
+export function useUnsubscribeTalentEmailNotifications() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => unsubscribeTalentEmailNotifications(),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
+    },
   });
 }

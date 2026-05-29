@@ -1,32 +1,39 @@
 "use client";
 
-import { Check, Globe } from "lucide-react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Pdf01Icon } from "@hugeicons/core-free-icons";
 import { useRef, useState } from "react";
 
-import { Input } from "@/components/ui/input";
-import { useTalentSettings, useUpdateTalentSettingsProfile } from "@/hooks/api";
-import { personalWebsiteSchema } from "@/types/form-schema";
+import { useTalentSettings, useUploadTalentResume } from "@/hooks/api";
+import { appToast } from "@/lib/toast";
+import { SettingsResumePreview } from "./settings-resume-preview";
+import { SettingsResumeDropzone } from "./settings-resume-dropzone";
+import { SettingsResumeWebsite } from "./settings-resume-website";
 
 const ACCEPTED_TYPES = ".doc,.docx,.pdf,.txt";
 
 export function SettingsResume() {
   const { data: settings } = useTalentSettings();
-  const { mutate: updateProfile } = useUpdateTalentSettingsProfile();
+  const { mutate: uploadResume, isPending: isUploading } =
+    useUploadTalentResume();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const serverWebsite = settings?.profile.personal_website ?? "";
-  const [localWebsite, setLocalWebsite] = useState<string | null>(null);
-  const [websiteError, setWebsiteError] = useState<string | null>(null);
-  const website = localWebsite ?? serverWebsite;
-  const isWebsiteDirty =
-    localWebsite !== null && localWebsite.trim() !== serverWebsite.trim();
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const existingResumeUrl = settings?.profile.resume_url ?? null;
+  const resumeFileName =
+    uploadedFileName ??
+    (existingResumeUrl
+      ? (existingResumeUrl.split("/").pop() ?? "My Resume")
+      : "My Resume");
+
+  const clearSelectedFile = () => {
+    setFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) setFile(selected);
+    e.target.value = "";
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -42,23 +49,19 @@ export function SettingsResume() {
     }
   };
 
-  function handleSaveWebsite() {
-    const trimmed = website.trim();
-    if (!trimmed) {
-      setWebsiteError(null);
-      setLocalWebsite(null);
-      return;
-    }
-    const result = personalWebsiteSchema.safeParse(trimmed);
-    if (!result.success) {
-      setWebsiteError(result.error.issues[0]?.message ?? "Invalid URL");
-      return;
-    }
-    setWebsiteError(null);
-    updateProfile(
-      { personalWebsite: trimmed },
-      { onSuccess: () => setLocalWebsite(null) },
-    );
+  function handleUpload() {
+    if (!file) return;
+    const originalName = file.name;
+    uploadResume(file, {
+      onSuccess: () => {
+        appToast.success("Resume uploaded successfully!");
+        setUploadedFileName(originalName);
+        clearSelectedFile();
+      },
+      onError: () => {
+        appToast.error("Failed to upload resume. Please try again.");
+      },
+    });
   }
 
   return (
@@ -75,24 +78,22 @@ export function SettingsResume() {
         </p>
       </div>
 
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() => fileInputRef.current?.click()}
-        onKeyDown={(e) => e.key === "Enter" && fileInputRef.current?.click()}
-        onDrop={handleDrop}
-        onDragOver={(e) => e.preventDefault()}
-        className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border py-12 cursor-pointer hover:bg-muted/40 transition-colors"
-      >
-        <HugeiconsIcon
-          icon={Pdf01Icon}
-          className="size-10 text-muted-foreground"
-          strokeWidth={1.5}
+      {existingResumeUrl && !file ? (
+        <SettingsResumePreview
+          resumeUrl={existingResumeUrl}
+          fileName={resumeFileName}
+          onReupload={() => fileInputRef.current?.click()}
         />
-        <p className="text-sm text-foreground">
-          {file ? file.name : "Upload new file"}
-        </p>
-      </div>
+      ) : (
+        <SettingsResumeDropzone
+          file={file}
+          isUploading={isUploading}
+          onZoneClick={() => fileInputRef.current?.click()}
+          onDrop={handleDrop}
+          onUpload={handleUpload}
+          onCancel={clearSelectedFile}
+        />
+      )}
 
       <input
         ref={fileInputRef}
@@ -102,42 +103,7 @@ export function SettingsResume() {
         onChange={handleFileChange}
       />
 
-      <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium text-foreground">
-          Personal website
-        </label>
-        <div className="relative flex items-center">
-          <Input
-            type="url"
-            value={website}
-            placeholder="https://yourwebsite.com"
-            onChange={(e) => {
-              setLocalWebsite(e.target.value);
-              setWebsiteError(null);
-            }}
-            className={`pr-10 ${websiteError ? "border-destructive focus-visible:ring-destructive" : ""}`}
-          />
-          <span className="absolute right-3">
-            {isWebsiteDirty ? (
-              <button
-                type="button"
-                onClick={handleSaveWebsite}
-                className="flex items-center justify-center size-5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                aria-label="Save website URL"
-              >
-                <Check className="size-3" strokeWidth={2.5} />
-              </button>
-            ) : (
-              <span className="pointer-events-none text-muted-foreground">
-                <Globe className="size-4" />
-              </span>
-            )}
-          </span>
-        </div>
-        {websiteError && (
-          <p className="text-xs text-destructive">{websiteError}</p>
-        )}
-      </div>
+      <SettingsResumeWebsite />
     </div>
   );
 }

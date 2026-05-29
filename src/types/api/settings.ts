@@ -33,6 +33,25 @@ export type TalentSettingsCommunicationPreferences = {
   inApp: TalentSettingsNotificationPrefs;
 };
 
+export type RawTalentSettingsNotificationPrefs = {
+  newOffers?: boolean;
+  assessmentReminders?: boolean;
+  retakeWindowOpen?: boolean;
+  new_offers?: boolean;
+  assessment_reminders?: boolean;
+  retake_window_open?: boolean;
+};
+
+export type RawTalentSettingsCommunicationPreferences = {
+  email?: RawTalentSettingsNotificationPrefs;
+  inApp?: RawTalentSettingsNotificationPrefs;
+  in_app?: RawTalentSettingsNotificationPrefs;
+};
+
+export type TalentSettingsCommunicationPreferencesResponseData = {
+  communication_preferences: RawTalentSettingsCommunicationPreferences;
+};
+
 export type TalentSettingsActiveSession = {
   label: string;
   is_current: boolean;
@@ -41,6 +60,35 @@ export type TalentSettingsActiveSession = {
 export type TalentSettingsAccount = {
   password_set: boolean;
   active_sessions: TalentSettingsActiveSession[];
+};
+
+export type TalentAvailabilityStatus =
+  | "actively_looking"
+  | "open_to_opportunities"
+  | "not_looking";
+
+export type UpdateTalentAvailabilityInput = {
+  availabilityStatus: TalentAvailabilityStatus;
+};
+
+export type UpdateTalentAvailabilityResponseData = {
+  availability_status: TalentAvailabilityStatus;
+  is_published: boolean;
+};
+
+export type AccountDataExport = {
+  generated_at?: string;
+  user?: Record<string, unknown>;
+  talent_profile?: Record<string, unknown> | null;
+  [key: string]: unknown;
+};
+
+export type AccountDataExportResponseData = {
+  data_export: AccountDataExport;
+};
+
+export type DeleteAccountInput = {
+  confirmation: "DELETE";
 };
 
 export type UpdateTalentSettingsProfileInput = {

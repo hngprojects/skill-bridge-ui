@@ -43,3 +43,13 @@ export const talentSettingsKeys = {
   all: ["talent-settings"] as const,
   detail: () => [...talentSettingsKeys.all, "detail"] as const,
 };
+
+export const aiGuidanceReport = {
+  all: ["ai-guidance-report"] as const,
+};
+
+export const notificationsKeys = {
+  all: ["notifications"] as const,
+  list: () => [...notificationsKeys.all, "list"] as const,
+  unreadCount: () => [...notificationsKeys.all, "unread-count"] as const,
+};
