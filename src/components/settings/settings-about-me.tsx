@@ -2,7 +2,6 @@
 
 import { UserRound } from "lucide-react";
 import { useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -10,16 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { SettingsEditableField } from "./settings-editable-field";
 import { SettingsLinkedInField } from "./settings-linkedin-field";
-import {
-  useTalentSettings,
-  useUploadAvatar,
-  talentSettingsKeys,
-} from "@/hooks/api";
+import { useTalentSettings, useUploadAvatar } from "@/hooks/api";
 import Image from "next/image";
 
 export function SettingsAboutMe() {
-  const qc = useQueryClient();
   const { data: settings } = useTalentSettings();
+  // `useUploadAvatar` invalidates me / dashboard.home / talent-settings on
+  // success — no need to re-invalidate here.
   const { mutate: uploadAvatar, isPending: uploading } = useUploadAvatar();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -29,10 +25,7 @@ export function SettingsAboutMe() {
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    uploadAvatar(file, {
-      onSuccess: () =>
-        void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
-    });
+    uploadAvatar(file);
     e.target.value = "";
   }
 
