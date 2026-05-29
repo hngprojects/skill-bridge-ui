@@ -1,58 +1,14 @@
 "use client";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  ArrowRight01Icon,
-  ChromeIcon,
-  Download01Icon,
-  InformationCircleIcon,
-} from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon, Download01Icon } from "@hugeicons/core-free-icons";
 
 import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
 
-function AccountRow({
-  title,
-  description,
-  action,
-}: {
-  title: string;
-  description: React.ReactNode;
-  action: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-      <div className="flex flex-col gap-1">
-        <p className="text-base font-semibold text-foreground">{title}</p>
-        <div className="text-sm text-muted-foreground">{description}</div>
-      </div>
-      <div className="shrink-0">{action}</div>
-    </div>
-  );
-}
+import { AccountRow, ActionLink } from "./account-row";
+import { ActiveSessionsCard } from "./active-sessions-card";
 
-function ActionLink({
-  children,
-  destructive,
-  icon,
-}: {
-  children: React.ReactNode;
-  destructive?: boolean;
-  icon?: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      className={`flex items-center gap-1 text-sm font-medium underline underline-offset-2 transition-colors ${
-        destructive
-          ? "text-destructive hover:text-destructive/80"
-          : "text-foreground hover:text-muted-foreground"
-      }`}
-    >
-      {children}
-      {icon}
-    </button>
-  );
-}
+const ArrowIcon = <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />;
 
 export function SettingsAccount() {
   const { email } = useSessionUserProfile();
@@ -62,46 +18,15 @@ export function SettingsAccount() {
       <AccountRow
         title="Email Address"
         description={email || "—"}
-        action={
-          <ActionLink
-            icon={<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />}
-          >
-            Change email
-          </ActionLink>
-        }
+        action={<ActionLink icon={ArrowIcon}>Change email</ActionLink>}
       />
-
       <AccountRow
         title="Password"
         description="**************"
-        action={
-          <ActionLink
-            icon={<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />}
-          >
-            Change password
-          </ActionLink>
-        }
+        action={<ActionLink icon={ArrowIcon}>Change password</ActionLink>}
       />
 
-      <AccountRow
-        title="Active Sessions"
-        description={
-          <span className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
-            <span className="flex items-center gap-2">
-              <HugeiconsIcon icon={ChromeIcon} className="size-4 shrink-0" />
-              Chrome on Mac OS X
-            </span>
-            <span className="hidden sm:inline text-border">•</span>
-            <span>Last access: Today at 4:38 PM</span>
-          </span>
-        }
-        action={
-          <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            Current session
-            <HugeiconsIcon icon={InformationCircleIcon} className="size-4" />
-          </span>
-        }
-      />
+      <ActiveSessionsCard />
 
       <AccountRow
         title="Download Personal Data"
@@ -114,7 +39,6 @@ export function SettingsAccount() {
           </ActionLink>
         }
       />
-
       <AccountRow
         title="Deactivate my account"
         description="Your account will be hidden but not deleted"
