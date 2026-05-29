@@ -14,11 +14,16 @@ interface DashboardWelcomeProps {
 export function DashboardWelcome({
   firstName,
   goal = "Become a global talent",
-  profileCompletion = 70,
+  profileCompletion,
 }: DashboardWelcomeProps) {
   const { fullName } = useSessionUserProfile();
   const resolvedFirstName = firstName || fullName?.split(" ")[0] || "Alex";
-  const isProfileComplete = profileCompletion >= 100;
+  // Only surface the CTA when we know the profile is incomplete. Unknown
+  // (undefined / loading) and complete (>= 100) both render nothing — the
+  // CTA shouldn't appear on a complete profile and shouldn't lie about
+  // completion before the dashboard has loaded.
+  const showCta =
+    typeof profileCompletion === "number" && profileCompletion < 100;
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -31,17 +36,17 @@ export function DashboardWelcome({
         </p>
       </div>
 
-      <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
-        <Link
-          href="/t/settings"
-          className={cn(
-            "label text-foreground underline underline-offset-2",
-            "hover:opacity-70 transition-opacity",
-          )}
-        >
-          {isProfileComplete ? "View profile" : "Complete your profile"}
-        </Link>
-        {!isProfileComplete ? (
+      {showCta ? (
+        <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
+          <Link
+            href="/t/settings"
+            className={cn(
+              "label text-foreground underline underline-offset-2",
+              "hover:opacity-70 transition-opacity",
+            )}
+          >
+            Complete your profile
+          </Link>
           <div className="flex items-center gap-2">
             <div className="h-1.5 w-44 overflow-hidden rounded-full bg-gray-200">
               <div
@@ -53,8 +58,8 @@ export function DashboardWelcome({
               {profileCompletion}%
             </span>
           </div>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 }
