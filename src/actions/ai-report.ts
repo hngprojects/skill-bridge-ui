@@ -1,4 +1,4 @@
-import { AIReportResponse } from "@/types/resources";
+import { AIReportResponse } from "@/types/ai-reports";
 import { unwrapData } from "@/actions";
 import { authApi } from "@/lib/api";
 import { ApiEnvelope } from "@/types/api";
