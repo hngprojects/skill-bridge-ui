@@ -11,9 +11,6 @@ export function useUploadAvatar() {
 
   return useMutation({
     mutationFn: (file: File) => uploadAvatar(file),
-    // Avatar URL is surfaced from three independent queries — `me` (navbar),
-    // `dashboard/home` (job-ready dashboard), and `talent-settings` (settings
-    // page). Invalidate all three here so callers don't have to remember to.
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: authKeys.me() });
       void qc.invalidateQueries({ queryKey: dashboardKeys.home() });

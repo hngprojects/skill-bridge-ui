@@ -11,9 +11,7 @@ type OverviewHeaderProps = {
 export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
   const { fullName, isLoading } = useSessionUserProfile();
   const displayName = !isLoading && fullName ? fullName : "";
-  // Only surface the CTA when we know the profile is incomplete. Unknown
-  // (undefined / loading) and complete (>= 100) both render nothing — the
-  // CTA shouldn't appear on a complete profile.
+
   const showCta =
     typeof profileCompletion === "number" && profileCompletion < 100;
 

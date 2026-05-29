@@ -14,8 +14,6 @@ import Image from "next/image";
 
 export function SettingsAboutMe() {
   const { data: settings } = useTalentSettings();
-  // `useUploadAvatar` invalidates me / dashboard.home / talent-settings on
-  // success — no need to re-invalidate here.
   const { mutate: uploadAvatar, isPending: uploading } = useUploadAvatar();
   const fileInputRef = useRef<HTMLInputElement>(null);
 

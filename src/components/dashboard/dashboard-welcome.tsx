@@ -18,10 +18,7 @@ export function DashboardWelcome({
 }: DashboardWelcomeProps) {
   const { fullName } = useSessionUserProfile();
   const resolvedFirstName = firstName || fullName?.split(" ")[0] || "Alex";
-  // Only surface the CTA when we know the profile is incomplete. Unknown
-  // (undefined / loading) and complete (>= 100) both render nothing — the
-  // CTA shouldn't appear on a complete profile and shouldn't lie about
-  // completion before the dashboard has loaded.
+
   const showCta =
     typeof profileCompletion === "number" && profileCompletion < 100;
 

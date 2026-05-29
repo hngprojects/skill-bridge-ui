@@ -95,9 +95,6 @@ export function applyDashboardHomeToRoadmapSteps(
     dashboardHome.journeyOverview,
   );
 
-  // When the user has used all skill attempts they're effectively done with
-  // skill — surface it as "completed" on the roadmap even though the journey
-  // status comes back as "locked".
   const skillAttemptsExhausted = isSkillExhausted(dashboardHome);
   const skillAttemptsUsed = getSkillAttemptsUsed(dashboardHome);
 

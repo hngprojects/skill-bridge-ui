@@ -46,13 +46,8 @@ function AssessmentPreviewPage({ assessmentName }: AssessmentPreviewPageProps) {
     dashboardHome,
   );
 
-  // When skill attempts are exhausted, the Start CTA can't open the skill
-  // questionnaire — redirect the user to the next step in their journey
-  // (advanced) instead. Other previews keep their default Start → /q route.
   const skillExhausted =
     assessmentName === "skill" && isSkillExhausted(dashboardHome);
-  // Once the user has attempted skill at least once but still has attempts
-  // left, label the CTA "Retake" so it's clear they're not starting fresh.
   const skillAttemptsUsed =
     assessmentName === "skill"
       ? (dashboardHome?.performance?.skill?.attemptsUsed ??
