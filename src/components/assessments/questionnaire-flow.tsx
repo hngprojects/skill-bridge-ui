@@ -24,6 +24,13 @@ import { useQuestionnaireSections } from "@/hooks/use-questionnaire-sections";
 import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
 import type { Question } from "@/types/questionnaire";
 
+/**
+ * Minimum character count for the free-text "Other" follow-up. A single
+ * character isn't a meaningful answer ("X") and tends to mean the user
+ * tapped Next by accident — bump the floor so the form pushes back.
+ */
+const OTHER_MIN_LENGTH = 2;
+
 export type QuestionnaireFlowProps = {
   questions: Question[];
   isLoading: boolean;
@@ -98,7 +105,7 @@ export function QuestionnaireFlow({
   const otherSatisfied =
     !question ||
     !hasOtherReveal(question, currentValue) ||
-    currentOther.trim().length > 0;
+    currentOther.trim().length >= OTHER_MIN_LENGTH;
   const canProceed = question
     ? isAnswerValid(question, currentValue) && otherSatisfied
     : false;

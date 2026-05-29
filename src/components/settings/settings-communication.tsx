@@ -158,7 +158,6 @@ export function SettingsCommunication() {
     try {
       const updatedPreferences = await updatePreferences(nextPreferences);
       setOptimisticPreferences(updatedPreferences);
-      appToast.success("Communication preferences updated.");
     } catch (error) {
       setOptimisticPreferences(null);
       appToast.error(authFailureMessage(error));

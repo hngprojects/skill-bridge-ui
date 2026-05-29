@@ -2,7 +2,6 @@
 
 import { UserRound } from "lucide-react";
 import { useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -10,15 +9,11 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { SettingsEditableField } from "./settings-editable-field";
 import { SettingsLinkedInField } from "./settings-linkedin-field";
-import {
-  useTalentSettings,
-  useUploadAvatar,
-  talentSettingsKeys,
-} from "@/hooks/api";
+import { useTalentSettings, useUploadAvatar } from "@/hooks/api";
+import { appToast } from "@/lib/toast";
 import Image from "next/image";
 
 export function SettingsAboutMe() {
-  const qc = useQueryClient();
   const { data: settings } = useTalentSettings();
   const { mutate: uploadAvatar, isPending: uploading } = useUploadAvatar();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -30,8 +25,9 @@ export function SettingsAboutMe() {
     const file = e.target.files?.[0];
     if (!file) return;
     uploadAvatar(file, {
-      onSuccess: () =>
-        void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+      onError: () => {
+        appToast.error("Failed to upload photo. Please try again.");
+      },
     });
     e.target.value = "";
   }

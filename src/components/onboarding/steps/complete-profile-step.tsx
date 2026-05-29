@@ -74,6 +74,7 @@ const CompleteProfileStep = ({
           render={({ field }) => (
             <SelectField
               label="Select your region"
+              required
               options={REGIONS}
               value={field.value}
               onChange={field.onChange}
@@ -89,6 +90,7 @@ const CompleteProfileStep = ({
           render={({ field }) => (
             <SelectField
               label="What is your highest level of education?"
+              required
               options={EDUCATION_LEVELS}
               value={field.value}
               onChange={field.onChange}
