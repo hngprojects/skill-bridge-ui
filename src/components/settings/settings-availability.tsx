@@ -56,7 +56,6 @@ export function SettingsAvailability() {
       await updateAvailability({
         availabilityStatus: next as TalentAvailabilityStatus,
       });
-      appToast.success("Availability updated.");
     } catch (error) {
       setOptimisticActive(null);
       appToast.error(authFailureMessage(error));
