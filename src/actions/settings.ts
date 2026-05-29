@@ -4,7 +4,10 @@ import type {
   ApiEnvelope,
   DeleteAccountInput,
   EmptyData,
+  RawTalentSettingsNotificationPrefs,
   TalentSettingsResponseData,
+  TalentSettingsCommunicationPreferences,
+  TalentSettingsCommunicationPreferencesResponseData,
   UpdateTalentAvailabilityInput,
   UpdateTalentAvailabilityResponseData,
   UpdateTalentSettingsProfileInput,
@@ -12,12 +15,62 @@ import type {
 
 import { unwrapData } from "./utils";
 
+const DEFAULT_COMMUNICATION_GROUP = {
+  newOffers: true,
+  assessmentReminders: true,
+  retakeWindowOpen: true,
+};
+
+type RawTalentSettingsResponseData = Omit<
+  TalentSettingsResponseData,
+  "communication_preferences"
+> & {
+  communication_preferences: TalentSettingsCommunicationPreferencesResponseData["communication_preferences"];
+};
+
+function normalizeNotificationPrefs(
+  preferences?: RawTalentSettingsNotificationPrefs,
+) {
+  return {
+    newOffers:
+      preferences?.newOffers ??
+      preferences?.new_offers ??
+      DEFAULT_COMMUNICATION_GROUP.newOffers,
+    assessmentReminders:
+      preferences?.assessmentReminders ??
+      preferences?.assessment_reminders ??
+      DEFAULT_COMMUNICATION_GROUP.assessmentReminders,
+    retakeWindowOpen:
+      preferences?.retakeWindowOpen ??
+      preferences?.retake_window_open ??
+      DEFAULT_COMMUNICATION_GROUP.retakeWindowOpen,
+  };
+}
+
+function normalizeCommunicationPreferences(
+  data: TalentSettingsCommunicationPreferencesResponseData,
+): TalentSettingsCommunicationPreferences {
+  const preferences = data.communication_preferences;
+
+  return {
+    email: normalizeNotificationPrefs(preferences.email),
+    inApp: normalizeNotificationPrefs(preferences.inApp ?? preferences.in_app),
+  };
+}
+
 export async function getTalentSettings(): Promise<TalentSettingsResponseData> {
   const res =
-    await authApi.get<ApiEnvelope<TalentSettingsResponseData>>(
+    await authApi.get<ApiEnvelope<RawTalentSettingsResponseData>>(
       "/talent/settings",
     );
-  return unwrapData(res);
+  const settings = unwrapData(res);
+
+  return {
+    ...settings,
+    communication_preferences: normalizeCommunicationPreferences({
+      communication_preferences: settings.communication_preferences,
+    }),
+  };
 }
 
 export async function updateTalentSettingsProfile(
@@ -50,6 +103,22 @@ export async function updateTalentAvailability(
     ApiEnvelope<UpdateTalentAvailabilityResponseData>
   >("/talent/settings/availability", body);
   return unwrapData(res);
+}
+
+export async function updateTalentCommunicationPreferences(
+  body: TalentSettingsCommunicationPreferences,
+): Promise<TalentSettingsCommunicationPreferences> {
+  const res = await authApi.patch<
+    ApiEnvelope<TalentSettingsCommunicationPreferencesResponseData>
+  >("/talent/settings/communication-preferences", body);
+  return normalizeCommunicationPreferences(unwrapData(res));
+}
+
+export async function unsubscribeTalentEmailNotifications(): Promise<TalentSettingsCommunicationPreferences> {
+  const res = await authApi.patch<
+    ApiEnvelope<TalentSettingsCommunicationPreferencesResponseData>
+  >("/talent/settings/communication-preferences/email/unsubscribe");
+  return normalizeCommunicationPreferences(unwrapData(res));
 }
 
 export async function exportAccountData(): Promise<AccountDataExportResponseData> {
