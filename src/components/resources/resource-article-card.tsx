@@ -10,7 +10,6 @@ const ResourceArticleCard = ({
   return (
     <a
       href={url}
-      target="_blank"
       rel="noopener noreferrer"
       className="flex flex-col flex-1 bg-muted border border-border rounded-2xl p-4 gap-y-4 min-w-0 hover:border-primary/50 transition-colors"
     >
