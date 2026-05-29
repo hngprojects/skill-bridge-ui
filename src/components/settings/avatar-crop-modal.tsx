@@ -35,18 +35,31 @@ export function AvatarCropModal({ file, onClose, onApply }: Props) {
 
   useEffect(() => {
     if (!file) return;
+    let active = true;
     const url = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => {
-      createImageBitmap(img).then((bmp) => {
-        setImageBitmap(bmp);
-        setOffset({ x: 0, y: 0 });
-        setZoom(1);
-      });
-      URL.revokeObjectURL(url);
+      createImageBitmap(img)
+        .then((bmp) => {
+          if (!active) {
+            bmp.close();
+            return;
+          }
+          setImageBitmap((prev) => {
+            prev?.close();
+            return bmp;
+          });
+          setOffset({ x: 0, y: 0 });
+          setZoom(1);
+        })
+        .catch(() => {})
+        .finally(() => URL.revokeObjectURL(url));
     };
     img.onerror = () => URL.revokeObjectURL(url);
     img.src = url;
+    return () => {
+      active = false;
+    };
   }, [file]);
 
   useEffect(() => {

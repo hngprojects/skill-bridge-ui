@@ -39,14 +39,15 @@ export function SettingsResume() {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const dropped = e.dataTransfer.files?.[0];
-    if (
-      dropped &&
-      ACCEPTED_TYPES.split(",").some((ext) =>
-        dropped.name.toLowerCase().endsWith(ext),
-      )
-    ) {
-      setFile(dropped);
+    if (!dropped) return;
+    const isAccepted = ACCEPTED_TYPES.split(",").some((ext) =>
+      dropped.name.toLowerCase().endsWith(ext),
+    );
+    if (!isAccepted) {
+      appToast.error("Unsupported file type. Use DOC, DOCX, PDF, or TXT.");
+      return;
     }
+    setFile(dropped);
   };
 
   function handleUpload() {

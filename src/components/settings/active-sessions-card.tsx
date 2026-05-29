@@ -7,7 +7,25 @@ import {
   InformationCircleIcon,
 } from "@hugeicons/core-free-icons";
 
+import { useSyncExternalStore } from "react";
+
 import { useTalentSettings } from "@/hooks/api";
+
+const subscribe = () => () => {};
+const SESSION_TIME =
+  typeof window !== "undefined"
+    ? new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    : null;
+
+function useClientInfo() {
+  const label = useSyncExternalStore(subscribe, parseBrowserLabel, () => "");
+  const time = useSyncExternalStore(
+    subscribe,
+    () => SESSION_TIME,
+    () => null,
+  );
+  return { label, time };
+}
 
 function parseBrowserLabel(): string {
   if (typeof navigator === "undefined") return "Unknown browser";
@@ -32,8 +50,9 @@ function parseBrowserLabel(): string {
 
 export function ActiveSessionsCard() {
   const { data: settings } = useTalentSettings();
+  const { label: currentBrowserLabel, time: currentTime } = useClientInfo();
+
   const sessions = settings?.account.active_sessions ?? [];
-  const currentBrowserLabel = parseBrowserLabel();
   const displaySessions =
     sessions.length > 0
       ? sessions
@@ -44,12 +63,7 @@ export function ActiveSessionsCard() {
       <p className="text-base font-semibold text-foreground">Active Sessions</p>
       {displaySessions.map((session, i) => {
         const label = session.is_current ? currentBrowserLabel : session.label;
-        const time = session.is_current
-          ? new Date().toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })
-          : null;
+        const time = session.is_current ? currentTime : null;
         return (
           <div
             key={i}

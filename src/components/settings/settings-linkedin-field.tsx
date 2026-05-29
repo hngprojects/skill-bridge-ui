@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Check } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { useTalentSettings, useUpdateTalentSettingsProfile } from "@/hooks/api";
 import { linkedinUrlSchema } from "@/types/form-schema";
 
@@ -20,15 +21,15 @@ export function SettingsLinkedInField() {
 
   function handleSave() {
     const trimmed = value.trim();
-    if (!trimmed) {
-      setError(null);
-      setLocalValue(null);
-      return;
-    }
-    const result = linkedinUrlSchema.safeParse(trimmed);
-    if (!result.success) {
-      setError(result.error.issues[0]?.message ?? "Invalid LinkedIn URL");
-      return;
+    if (trimmed) {
+      const result = linkedinUrlSchema.safeParse(trimmed);
+      if (!result.success) {
+        setError(
+          result.error.issues[0]?.message ??
+            "Enter a valid LinkedIn profile URL (e.g. https://linkedin.com/in/username)",
+        );
+        return;
+      }
     }
     setError(null);
     updateProfile(
@@ -51,7 +52,12 @@ export function SettingsLinkedInField() {
             setLocalValue(e.target.value);
             setError(null);
           }}
-          className={`pr-12 ${error ? "border-destructive focus-visible:ring-destructive" : ""}`}
+          aria-invalid={error ? "true" : "false"}
+          aria-describedby={error ? "linkedin-url-error" : undefined}
+          className={cn(
+            "pr-12",
+            error && "border-destructive focus-visible:ring-destructive",
+          )}
         />
         <span className="absolute right-3">
           {isSaving ? (
@@ -79,7 +85,15 @@ export function SettingsLinkedInField() {
           )}
         </span>
       </div>
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && (
+        <p
+          id="linkedin-url-error"
+          role="alert"
+          className="text-xs text-destructive"
+        >
+          {error}
+        </p>
+      )}
     </div>
   );
 }
