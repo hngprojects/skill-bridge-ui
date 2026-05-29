@@ -51,8 +51,22 @@ function AssessmentPreviewPage({ assessmentName }: AssessmentPreviewPageProps) {
   // (advanced) instead. Other previews keep their default Start → /q route.
   const skillExhausted =
     assessmentName === "skill" && isSkillExhausted(dashboardHome);
+  // Once the user has attempted skill at least once but still has attempts
+  // left, label the CTA "Retake" so it's clear they're not starting fresh.
+  const skillAttemptsUsed =
+    assessmentName === "skill"
+      ? (dashboardHome?.performance?.skill?.attemptsUsed ??
+        dashboardHome?.skillAttemptsUsed ??
+        0)
+      : 0;
+  const skillIsRetake =
+    assessmentName === "skill" && !skillExhausted && skillAttemptsUsed > 0;
   const startHref = skillExhausted ? "/t/assessments/advanced" : undefined;
-  const startLabel = skillExhausted ? "Continue to advanced" : undefined;
+  const startLabel = skillExhausted
+    ? "Continue to advanced"
+    : skillIsRetake
+      ? "Retake"
+      : undefined;
 
   return (
     <div className="flex min-h-[calc(100dvh-72px)] items-start justify-center px-4 pt-11 pb-14 sm:pt-14 lg:pt-16 2xl:pt-20">
