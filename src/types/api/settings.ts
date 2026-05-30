@@ -85,8 +85,6 @@ export type AccountDataExport = {
 
 export type AccountDataExportResponseData = {
   data_export: AccountDataExport;
-  download_url?: string;
-  email_sent?: boolean;
 };
 
 export type DeleteAccountInput = {
