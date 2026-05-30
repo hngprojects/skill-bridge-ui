@@ -7,6 +7,7 @@ import {
   updateTalentAvailability,
   updateTalentSettingsProfile,
   uploadTalentResume,
+  deleteTalentResume,
 } from "@/actions/settings";
 import type {
   TalentSettingsCommunicationPreferences,
@@ -37,6 +38,15 @@ export function useUploadTalentResume() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (file: File) => uploadTalentResume(file),
+    onSuccess: () =>
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+  });
+}
+
+export function useDeleteTalentResume() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => deleteTalentResume(),
     onSuccess: () =>
       void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
   });
