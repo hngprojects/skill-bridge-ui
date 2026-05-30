@@ -11,7 +11,7 @@ import { useMe } from "@/hooks/api";
 const TRACK_LABELS: Record<string, string> = {
   backend_developer: "Backend Development",
   cloud_devops: "Cloud / DevOps",
-  cybersecurity: "Cybersecurity",
+  social_media_marketing: "Social media marketing",
   data_analyst: "Data Analysis",
   frontend_developer: "Frontend Development",
   fullstack_developer: "Fullstack Development",
