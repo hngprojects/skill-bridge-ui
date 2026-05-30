@@ -9,7 +9,7 @@ import {
   Briefcase,
   Wrench,
   Smartphone,
-  ShieldCheck,
+  Megaphone,
   BrainCircuit,
 } from "lucide-react";
 import type { TrackOptionId } from "@/constants/talent-onboarding";
@@ -24,7 +24,7 @@ const TRACK_ICONS: Record<TrackOptionId, React.ElementType> = {
   "product-manager": Briefcase,
   "backend-developer": Wrench,
   "mobile-developer": Smartphone,
-  cybersecurity: ShieldCheck,
+  "social-media-marketing": Megaphone,
   "data-scientist": BrainCircuit,
 };
 
