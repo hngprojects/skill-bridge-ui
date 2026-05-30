@@ -2,28 +2,37 @@
 
 import { useRef, useState } from "react";
 
-import { useTalentSettings, useUploadTalentResume } from "@/hooks/api";
+import {
+  useTalentSettings,
+  useUploadTalentResume,
+  useDeleteTalentResume,
+} from "@/hooks/api";
 import { appToast } from "@/lib/toast";
 import { SettingsResumePreview } from "./settings-resume-preview";
 import { SettingsResumeDropzone } from "./settings-resume-dropzone";
 import { SettingsResumeWebsite } from "./settings-resume-website";
 
 const ACCEPTED_TYPES = ".doc,.docx,.pdf,.txt";
+const RESUME_FILENAME_KEY = "resume_original_filename";
 
 export function SettingsResume() {
   const { data: settings } = useTalentSettings();
   const { mutate: uploadResume, isPending: isUploading } =
     useUploadTalentResume();
+  const { mutate: deleteResume, isPending: isDeleting } =
+    useDeleteTalentResume();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+
+  // Initialize from localStorage so filename survives tab switches
+  const [storedFileName, setStoredFileName] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem(RESUME_FILENAME_KEY);
+  });
+
   const existingResumeUrl = settings?.profile.resume_url ?? null;
-  const resumeFileName =
-    uploadedFileName ??
-    (existingResumeUrl
-      ? (existingResumeUrl.split("/").pop() ?? "My Resume")
-      : "My Resume");
+  const resumeFileName = storedFileName ?? "My Resume";
 
   const clearSelectedFile = () => {
     setFile(null);
@@ -39,15 +48,20 @@ export function SettingsResume() {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const dropped = e.dataTransfer.files?.[0];
-    if (!dropped) return;
-    const isAccepted = ACCEPTED_TYPES.split(",").some((ext) =>
-      dropped.name.toLowerCase().endsWith(ext),
-    );
-    if (!isAccepted) {
-      appToast.error("Unsupported file type. Use DOC, DOCX, PDF, or TXT.");
-      return;
-    }
-    setFile(dropped);
+    if (dropped) setFile(dropped);
+  };
+
+  const handleDelete = () => {
+    deleteResume(undefined, {
+      onSuccess: () => {
+        localStorage.removeItem(RESUME_FILENAME_KEY);
+        setStoredFileName(null);
+        appToast.success("Resume deleted successfully.");
+      },
+      onError: () => {
+        appToast.error("Failed to delete resume. Please try again.");
+      },
+    });
   };
 
   function handleUpload() {
@@ -56,7 +70,8 @@ export function SettingsResume() {
     uploadResume(file, {
       onSuccess: () => {
         appToast.success("Resume uploaded successfully!");
-        setUploadedFileName(originalName);
+        localStorage.setItem(RESUME_FILENAME_KEY, originalName);
+        setStoredFileName(originalName);
         clearSelectedFile();
       },
       onError: () => {
@@ -83,7 +98,9 @@ export function SettingsResume() {
         <SettingsResumePreview
           resumeUrl={existingResumeUrl}
           fileName={resumeFileName}
+          isDeleting={isDeleting}
           onReupload={() => fileInputRef.current?.click()}
+          onDelete={handleDelete}
         />
       ) : (
         <SettingsResumeDropzone
