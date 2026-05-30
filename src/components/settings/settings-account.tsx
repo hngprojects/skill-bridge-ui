@@ -1,9 +1,5 @@
 "use client";
 
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
-
-import { SettingsAccountActionLink } from "@/components/settings/settings-account-action-link";
 import { SettingsChangePasswordDialog } from "@/components/settings/settings-change-password-dialog";
 import { SettingsDeleteAccountDialog } from "@/components/settings/settings-delete-account-dialog";
 import { SettingsExportAccountDialog } from "@/components/settings/settings-export-account-dialog";
@@ -17,7 +13,7 @@ export function SettingsAccount() {
 
   return (
     <div className="flex flex-col gap-3">
-      <AccountRow
+      {/* <AccountRow
         title="Email Address"
         description={email || "—"}
         action={
@@ -27,7 +23,7 @@ export function SettingsAccount() {
             Change email
           </SettingsAccountActionLink>
         }
-      />
+      /> */}
 
       <AccountRow
         title="Password"
@@ -42,7 +38,7 @@ export function SettingsAccount() {
         description="Request a copy of your data for export. You will receive an email when your export is ready for download"
         action={<SettingsExportAccountDialog />}
       />
-      <AccountRow
+      {/* <AccountRow
         title="Deactivate my account"
         description="Your account will be hidden but not deleted"
         action={
@@ -50,7 +46,7 @@ export function SettingsAccount() {
             Deactivate my account
           </SettingsAccountActionLink>
         }
-      />
+      /> */}
 
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
