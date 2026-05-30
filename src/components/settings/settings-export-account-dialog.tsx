@@ -20,15 +20,6 @@ import {
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
 
-function triggerDownload(downloadUrl: string) {
-  const link = document.createElement("a");
-  link.href = downloadUrl;
-  link.download = "skillbridge-account-data.json";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-}
-
 export function SettingsExportAccountDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -40,15 +31,8 @@ export function SettingsExportAccountDialog() {
     try {
       exportInFlightRef.current = true;
       setIsExporting(true);
-      const response = await exportAccountData();
-      if (response.download_url) {
-        triggerDownload(response.download_url);
-      }
-      appToast.success(
-        response.download_url
-          ? "Account data download started. A copy has also been sent to your email."
-          : "Account data export generated and sent to your email.",
-      );
+      await exportAccountData();
+      appToast.success("Account data export generated.");
       setIsOpen(false);
     } catch (error) {
       appToast.error(authFailureMessage(error));
