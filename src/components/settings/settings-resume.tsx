@@ -51,7 +51,7 @@ export function SettingsResume() {
     if (dropped) setFile(dropped);
   };
 
-  function handleDelete() {
+  const handleDelete = () => {
     deleteResume(undefined, {
       onSuccess: () => {
         localStorage.removeItem(RESUME_FILENAME_KEY);
@@ -62,7 +62,7 @@ export function SettingsResume() {
         appToast.error("Failed to delete resume. Please try again.");
       },
     });
-  }
+  };
 
   function handleUpload() {
     if (!file) return;
