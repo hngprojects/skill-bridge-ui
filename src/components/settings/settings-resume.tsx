@@ -2,11 +2,7 @@
 
 import { useRef, useState } from "react";
 
-import {
-  useTalentSettings,
-  useUpdateTalentSettingsProfile,
-  useUploadTalentResume,
-} from "@/hooks/api";
+import { useTalentSettings, useUploadTalentResume } from "@/hooks/api";
 import { appToast } from "@/lib/toast";
 import { SettingsResumePreview } from "./settings-resume-preview";
 import { SettingsResumeDropzone } from "./settings-resume-dropzone";
@@ -16,16 +12,12 @@ const ACCEPTED_TYPES = ".doc,.docx,.pdf,.txt";
 
 export function SettingsResume() {
   const { data: settings } = useTalentSettings();
-  const { mutate: updateProfile } = useUpdateTalentSettingsProfile();
   const { mutate: uploadResume, isPending: isUploading } =
     useUploadTalentResume();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
-  const serverWebsite = settings?.profile.personal_website ?? "";
-  const [localWebsite, setLocalWebsite] = useState<string | null>(null);
-  const website = localWebsite ?? serverWebsite;
   const existingResumeUrl = settings?.profile.resume_url ?? null;
   const resumeFileName =
     uploadedFileName ??
@@ -47,16 +39,16 @@ export function SettingsResume() {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const dropped = e.dataTransfer.files?.[0];
-    if (dropped) setFile(dropped);
-  };
-
-  function handleSaveWebsite() {
-    if (!website.trim()) return;
-    updateProfile(
-      { personalWebsite: website.trim() },
-      { onSuccess: () => setLocalWebsite(null) },
+    if (!dropped) return;
+    const isAccepted = ACCEPTED_TYPES.split(",").some((ext) =>
+      dropped.name.toLowerCase().endsWith(ext),
     );
-  }
+    if (!isAccepted) {
+      appToast.error("Unsupported file type. Use DOC, DOCX, PDF, or TXT.");
+      return;
+    }
+    setFile(dropped);
+  };
 
   function handleUpload() {
     if (!file) return;
@@ -112,11 +104,7 @@ export function SettingsResume() {
         onChange={handleFileChange}
       />
 
-      <SettingsResumeWebsite
-        website={website}
-        onChange={setLocalWebsite}
-        onBlur={handleSaveWebsite}
-      />
+      <SettingsResumeWebsite />
     </div>
   );
 }
