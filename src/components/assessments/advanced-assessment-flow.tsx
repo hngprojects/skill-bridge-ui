@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
 import { QuestionnaireFlow } from "@/components/assessments/questionnaire-flow";
@@ -18,11 +18,12 @@ import {
   toAdvancedSubmitAnswers,
 } from "@/lib/assessment-questions";
 import {
-  ApiError,
-  authFailureMessage,
-  isServiceUnavailableError,
-} from "@/lib/api";
-import { appToast } from "@/lib/toast";
+  ASSESSMENT_START_FAILED_MESSAGE,
+  ASSESSMENT_START_TIMEOUT_MESSAGE,
+  isAssessmentStartTimeoutError,
+  withAssessmentStartTimeout,
+} from "@/lib/assessment-start";
+import { ApiError, isServiceUnavailableError } from "@/lib/api";
 import type { AdvancedAssessmentApiQuestion } from "@/types/api";
 import type { Question } from "@/types/questionnaire";
 
@@ -75,7 +76,10 @@ export function AdvancedAssessmentFlow() {
   const [retakeUnlocksAt, setRetakeUnlocksAt] = useState<string | undefined>(
     undefined,
   );
-  const startRequestedRef = useRef(false);
+  const [failedMessage, setFailedMessage] = useState(
+    ASSESSMENT_START_FAILED_MESSAGE,
+  );
+  const [startAttempt, setStartAttempt] = useState(0);
 
   const { mutateAsync: resolveSession } = useResolveAdvancedAssessmentSession();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
@@ -84,18 +88,26 @@ export function AdvancedAssessmentFlow() {
     useSubmitAdvancedAssessmentLt2(sessionId);
   const flagViolation = useFlagAssessmentEvent("advanced", sessionId);
 
-  useEffect(() => {
-    if (startRequestedRef.current) return;
-    startRequestedRef.current = true;
+  const handleRetry = useCallback(() => {
+    setFailedMessage(ASSESSMENT_START_FAILED_MESSAGE);
+    setStartState("loading");
+    setStartAttempt((n) => n + 1);
+  }, []);
 
-    resolveSession()
+  useEffect(() => {
+    let cancelled = false;
+
+    withAssessmentStartTimeout(resolveSession())
       .then((data) => {
+        if (cancelled) return;
         setSessionId(data.session_id);
         setApiQuestions(data.questions ?? []);
         setRemainingSeconds(data.remaining_seconds);
         setStartState("ready");
       })
       .catch((e) => {
+        if (cancelled) return;
+
         if (isServiceUnavailableError(e)) {
           setStartState("unavailable");
           return;
@@ -106,18 +118,24 @@ export function AdvancedAssessmentFlow() {
           setStartState("retake-locked");
           return;
         }
+        setFailedMessage(
+          isAssessmentStartTimeoutError(e)
+            ? ASSESSMENT_START_TIMEOUT_MESSAGE
+            : ASSESSMENT_START_FAILED_MESSAGE,
+        );
         setStartState("failed");
-        appToast.error(authFailureMessage(e));
       });
-  }, [resolveSession]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [resolveSession, startAttempt]);
 
   const questions = useMemo(
     () => mapAdvancedQuestions(apiQuestions),
     [apiQuestions],
   );
 
-  // LT-2 is the last work_task long_text question in the original session.
-  // Finishing it triggers the server-side LT-3 synthesis.
   const lastLt2QuestionId = useMemo(() => {
     const lt2s = apiQuestions.filter(
       (q) => q.block === "long_text" && q.slot_type === "work_task",
@@ -125,9 +143,6 @@ export function AdvancedAssessmentFlow() {
     return lt2s[lt2s.length - 1]?.question_id;
   }, [apiQuestions]);
 
-  // LT-3 has been appended once any question's question_number exceeds LT-2's.
-  // Handles both the freshly-generated case and the resume-mid-LT-3 case where
-  // the session already contains the reflection question.
   const lt3Generated = useMemo(() => {
     if (!lastLt2QuestionId) return false;
     const lt2 = apiQuestions.find((q) => q.question_id === lastLt2QuestionId);
@@ -164,8 +179,9 @@ export function AdvancedAssessmentFlow() {
     return (
       <AssessmentStartBlocked
         title="Couldn't start assessment"
-        message="Something went wrong while starting your assessment. Please try again later."
+        message={failedMessage}
         backHref={ADVANCED_PREVIEW_PATH}
+        onRetry={handleRetry}
       />
     );
   }
@@ -179,12 +195,6 @@ export function AdvancedAssessmentFlow() {
       answers: toAdvancedSubmitAnswers(questions, answersByKey, timeSpentByKey),
     }).then(() => {});
 
-  /**
-   * Intercepts the Next click on the LT-2 question, submits it on its own
-   * endpoint, appends the returned LT-3 to the questions list, and re-syncs
-   * the timer from the server's authoritative `max_seconds_remaining`.
-   * Returns `true` so QuestionnaireFlow advances to LT-3 instead of finalising.
-   */
   const onLastQuestionAdvance = async (
     finalQuestion: Question,
     answersByKey: Record<string, string | string[]>,
@@ -222,9 +232,6 @@ export function AdvancedAssessmentFlow() {
       setRemainingSeconds(lt3.max_seconds_remaining);
       return true;
     } catch (e) {
-      // Per spec: 422 SESSION_EXPIRED on /lt2-submit means the timer ran
-      // out — fall through to the final submit with whatever answers we
-      // have so the candidate isn't stuck on LT-2 with a dead timer.
       if (isSessionExpiredError(e)) return false;
       throw e;
     }

@@ -8,6 +8,8 @@ type AssessmentStartBlockedProps = {
   message: string;
   backHref: string;
   backLabel?: string;
+  onRetry?: () => void;
+  retryLabel?: string;
 };
 
 export function AssessmentStartBlocked({
@@ -15,6 +17,8 @@ export function AssessmentStartBlocked({
   message,
   backHref,
   backLabel = "Back to assessment",
+  onRetry,
+  retryLabel = "Try again",
 }: AssessmentStartBlockedProps) {
   return (
     <div className="flex min-h-96 flex-col items-center justify-center gap-4 px-4 text-center">
@@ -30,9 +34,22 @@ export function AssessmentStartBlocked({
         </p>
         <p className="font-sans text-sm text-muted-foreground">{message}</p>
       </div>
-      <Button variant="outline" asChild>
-        <Link href={backHref}>{backLabel}</Link>
-      </Button>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        {onRetry ? (
+          <>
+            <Button type="button" onClick={onRetry}>
+              {retryLabel}
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href={backHref}>{backLabel}</Link>
+            </Button>
+          </>
+        ) : (
+          <Button variant="outline" asChild>
+            <Link href={backHref}>{backLabel}</Link>
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

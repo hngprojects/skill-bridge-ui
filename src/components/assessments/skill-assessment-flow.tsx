@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getSkillAssessmentSession } from "@/actions/assessment";
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
@@ -16,12 +16,17 @@ import {
   mapSkillQuestions,
   toSkillSubmitAnswers,
 } from "@/lib/assessment-questions";
-import { authFailureMessage, isServiceUnavailableError } from "@/lib/api";
+import {
+  ASSESSMENT_START_FAILED_MESSAGE,
+  ASSESSMENT_START_TIMEOUT_MESSAGE,
+  isAssessmentStartTimeoutError,
+  withAssessmentStartTimeout,
+} from "@/lib/assessment-start";
+import { isServiceUnavailableError } from "@/lib/api";
 import {
   existingSessionIdFromError,
   loadSkillSessionWithQuestions,
 } from "@/lib/skill-assessment-session";
-import { appToast } from "@/lib/toast";
 import { useAssessmentSummaryStore } from "@/stores/assessment-summary-store";
 import type {
   SkillAssessmentApiQuestion,
@@ -39,7 +44,10 @@ export function SkillAssessmentFlow() {
   >([]);
   const [claimedLevel, setClaimedLevel] = useState<string | null>(null);
   const [startState, setStartState] = useState<SkillStartState>("loading");
-  const startRequestedRef = useRef(false);
+  const [failedMessage, setFailedMessage] = useState(
+    ASSESSMENT_START_FAILED_MESSAGE,
+  );
+  const [startAttempt, setStartAttempt] = useState(0);
 
   const { data: user } = useMe({ enabled: true });
   const setSkillClaimedLevel = useAssessmentSummaryStore(
@@ -50,9 +58,13 @@ export function SkillAssessmentFlow() {
     useSubmitSkillAssessment();
   const flagViolation = useFlagAssessmentEvent("skill", sessionId);
 
+  const handleRetry = useCallback(() => {
+    setFailedMessage(ASSESSMENT_START_FAILED_MESSAGE);
+    setStartState("loading");
+    setStartAttempt((n) => n + 1);
+  }, []);
+
   useEffect(() => {
-    if (startRequestedRef.current) return;
-    startRequestedRef.current = true;
     let cancelled = false;
 
     const applySession = (data: SkillAssessmentStartResponseData) => {
@@ -63,25 +75,45 @@ export function SkillAssessmentFlow() {
       setStartState("ready");
     };
 
+    const fail = (message: string) => {
+      if (cancelled) return;
+      setFailedMessage(message);
+      setStartState("failed");
+    };
+
     (async () => {
       try {
-        applySession(await loadSkillSessionWithQuestions(await startSession()));
+        const session = await withAssessmentStartTimeout(
+          loadSkillSessionWithQuestions(await startSession()),
+        );
+        applySession(session);
       } catch (e) {
+        if (cancelled) return;
+
+        if (isAssessmentStartTimeoutError(e)) {
+          fail(ASSESSMENT_START_TIMEOUT_MESSAGE);
+          return;
+        }
+
         const existingId = existingSessionIdFromError(e);
         if (existingId) {
           try {
-            applySession(
-              await loadSkillSessionWithQuestions(
+            const resumed = await withAssessmentStartTimeout(
+              loadSkillSessionWithQuestions(
                 await getSkillAssessmentSession(existingId),
               ),
             );
+            applySession(resumed);
           } catch (resumeError) {
             if (isServiceUnavailableError(resumeError)) {
               setStartState("unavailable");
               return;
             }
-            setStartState("failed");
-            appToast.error(authFailureMessage(resumeError));
+            if (isAssessmentStartTimeoutError(resumeError)) {
+              fail(ASSESSMENT_START_TIMEOUT_MESSAGE);
+              return;
+            }
+            fail(ASSESSMENT_START_FAILED_MESSAGE);
           }
           return;
         }
@@ -89,8 +121,7 @@ export function SkillAssessmentFlow() {
         if (isServiceUnavailableError(e)) {
           setStartState("unavailable");
         } else {
-          setStartState("failed");
-          appToast.error(authFailureMessage(e));
+          fail(ASSESSMENT_START_FAILED_MESSAGE);
         }
       }
     })();
@@ -98,7 +129,7 @@ export function SkillAssessmentFlow() {
     return () => {
       cancelled = true;
     };
-  }, [startSession]);
+  }, [startSession, startAttempt]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -124,8 +155,9 @@ export function SkillAssessmentFlow() {
     return (
       <AssessmentStartBlocked
         title="Couldn't start assessment"
-        message="Something went wrong while starting your assessment. Please try again later."
+        message={failedMessage}
         backHref={SKILL_PREVIEW_PATH}
+        onRetry={handleRetry}
       />
     );
   }
