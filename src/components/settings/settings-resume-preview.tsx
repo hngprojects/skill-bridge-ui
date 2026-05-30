@@ -53,9 +53,11 @@ export function SettingsResumePreview({
           variant="ghost"
           onClick={onDelete}
           disabled={isDeleting}
+          aria-label="Delete resume"
           className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
         >
           <Trash2 className="size-4" />
+          <span className="sr-only">Delete resume</span>
           {isDeleting ? "Deleting..." : ""}
         </Button>
       </div>
