@@ -55,7 +55,7 @@ const SkillAssessementSummary = () => {
   const maxAttempts = dashboardHome?.skillMaxAttempts;
   const hasAttemptsInfo = attemptsUsed != null && maxAttempts != null;
   const noAttemptsLeft = isSkillExhausted(dashboardHome);
-  const advancedStatus = dashboardHome?.journeyOverview.find(
+  const advancedStatus = dashboardHome?.journeyOverview?.find(
     (item) => item.key === "advanced",
   )?.status;
   const canContinueToAdvanced = advancedStatus === "available";
