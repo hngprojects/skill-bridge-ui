@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 
 import {
   useTalentSettings,
-  useUpdateTalentSettingsProfile,
   useUploadTalentResume,
   useDeleteTalentResume,
 } from "@/hooks/api";
@@ -18,7 +17,6 @@ const RESUME_FILENAME_KEY = "resume_original_filename";
 
 export function SettingsResume() {
   const { data: settings } = useTalentSettings();
-  const { mutate: updateProfile } = useUpdateTalentSettingsProfile();
   const { mutate: uploadResume, isPending: isUploading } =
     useUploadTalentResume();
   const { mutate: deleteResume, isPending: isDeleting } =
@@ -33,9 +31,6 @@ export function SettingsResume() {
     return localStorage.getItem(RESUME_FILENAME_KEY);
   });
 
-  const serverWebsite = settings?.profile.personal_website ?? "";
-  const [localWebsite, setLocalWebsite] = useState<string | null>(null);
-  const website = localWebsite ?? serverWebsite;
   const existingResumeUrl = settings?.profile.resume_url ?? null;
   const resumeFileName = storedFileName ?? "My Resume";
 
@@ -56,7 +51,7 @@ export function SettingsResume() {
     if (dropped) setFile(dropped);
   };
 
-  const handleDelete = () => {
+  function handleDelete() {
     deleteResume(undefined, {
       onSuccess: () => {
         localStorage.removeItem(RESUME_FILENAME_KEY);
@@ -67,14 +62,6 @@ export function SettingsResume() {
         appToast.error("Failed to delete resume. Please try again.");
       },
     });
-  };
-
-  function handleSaveWebsite() {
-    if (!website.trim()) return;
-    updateProfile(
-      { personalWebsite: website.trim() },
-      { onSuccess: () => setLocalWebsite(null) },
-    );
   }
 
   function handleUpload() {
@@ -134,11 +121,7 @@ export function SettingsResume() {
         onChange={handleFileChange}
       />
 
-      <SettingsResumeWebsite
-        website={website}
-        onChange={setLocalWebsite}
-        onBlur={handleSaveWebsite}
-      />
+      <SettingsResumeWebsite />
     </div>
   );
 }
