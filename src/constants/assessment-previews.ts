@@ -39,7 +39,7 @@ export const ASSESSMENT_PREVIEWS = {
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     iconSrc: "/assets/assessments/skill-assessment-icon.svg",
-    questionCount: "20 Questions (15 MCQ, 5 Open-ended)",
+    questionCount: "20 Questions",
     duration: "30 minutes",
     attempts: "3 attempts (allowed within time limit)",
   },
