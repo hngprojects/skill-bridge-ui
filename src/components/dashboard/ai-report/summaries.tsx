@@ -98,7 +98,7 @@ export function SkillList({
               className="flex items-center justify-between gap-4 py-3 sm:py-4"
             >
               <div className="flex items-start gap-3">
-                <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                <span className="mt-2.25 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
 
                 <p className="text-[14px] leading-6 text-foreground sm:text-[15px]">
                   {item.text}
@@ -106,12 +106,12 @@ export function SkillList({
               </div>
 
               {/* Indicator bars */}
-              <div className="flex shrink-0 items-end gap-[2px]">
+              <div className="flex shrink-0 items-end gap-0.5">
                 {[1, 2, 3].map((bar) => (
                   <div
                     key={bar}
                     className={cn(
-                      "w-[5px] rounded-sm sm:w-[6px]",
+                      "w-1.25 rounded-sm sm:w-1.5",
                       variant === "success" ? "bg-emerald-500" : "bg-amber-400",
                     )}
                     style={{
