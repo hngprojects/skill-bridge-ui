@@ -96,6 +96,13 @@ export async function uploadTalentResume(
   return unwrapData(res);
 }
 
+export async function deleteTalentResume(): Promise<EmptyData> {
+  const res = await authApi.delete<ApiEnvelope<EmptyData>>(
+    "/talent/settings/resume",
+  );
+  return unwrapData(res);
+}
+
 export async function updateTalentAvailability(
   body: UpdateTalentAvailabilityInput,
 ): Promise<UpdateTalentAvailabilityResponseData> {
