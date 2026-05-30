@@ -55,7 +55,7 @@ const SkillAssessementSummary = () => {
   const maxAttempts = dashboardHome?.skillMaxAttempts;
   const hasAttemptsInfo = attemptsUsed != null && maxAttempts != null;
   const noAttemptsLeft = isSkillExhausted(dashboardHome);
-  const advancedStatus = dashboardHome?.journeyOverview.find(
+  const advancedStatus = dashboardHome?.journeyOverview?.find(
     (item) => item.key === "advanced",
   )?.status;
   const canContinueToAdvanced = advancedStatus === "available";
@@ -83,24 +83,28 @@ const SkillAssessementSummary = () => {
           Skill assessment summary
         </h2>
         <p className="text-base md:text-lg font-light max-w-208.75">
-          Congratulations, you completed your assessment. Based on your
-          evaluation, your validated level is{" "}
-          <span className="font-bold capitalize">{validatedLevel}</span>
-          {isDowngraded ? (
+          {!canContinueToAdvanced ? (
             <>
-              {" "}
-              instead of your claim of{" "}
-              <span className="font-bold capitalize">{claimedLevel}</span>. You
-              {canContinueToAdvanced ? (
-                " can continue to the next assessment."
-              ) : (
-                <>
-                  can <span className="font-bold">retake</span> the assessment.
-                </>
-              )}
+              You completed the assessment, but you did not meet the required
+              cutoff to progress. Based on your evaluation, your result was
+              below your claimed level, and you can retake the assessment.
             </>
           ) : (
-            ". You can continue to the next assessment."
+            <>
+              Congratulations, you completed your assessment. Based on your
+              evaluation, your validated level is{" "}
+              <span className="font-bold capitalize">{validatedLevel}</span>
+              {isDowngraded ? (
+                <>
+                  {" "}
+                  instead of your claim of{" "}
+                  <span className="font-bold capitalize">{claimedLevel}</span>.
+                  You can continue to the next assessment.
+                </>
+              ) : (
+                ". You can continue to the next assessment."
+              )}
+            </>
           )}
         </p>
       </section>
