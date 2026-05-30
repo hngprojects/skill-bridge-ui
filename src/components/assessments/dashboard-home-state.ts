@@ -33,6 +33,32 @@ function ctaLabelForStatus(status: AssessmentRoadmapStepStatus) {
   return status === "completed" ? "Completed" : "Start";
 }
 
+/**
+ * Skill step gets a "Retake" label once the user has attempted it at least
+ * once but still has attempts remaining. Completed and exhausted states are
+ * already collapsed to "completed" upstream, so this branch only fires for
+ * the in-progress state where the user has a failed (or partial) attempt
+ * on the record.
+ */
+function ctaLabelForSkillStep(
+  status: AssessmentRoadmapStepStatus,
+  skillAttemptsUsed: number,
+) {
+  if (status === "completed") return "Completed";
+  if (skillAttemptsUsed > 0) return "Retake";
+  return "Start";
+}
+
+function getSkillAttemptsUsed(
+  dashboardHome: DashboardHomeResponseData | undefined,
+): number {
+  return (
+    dashboardHome?.performance?.skill?.attemptsUsed ??
+    dashboardHome?.skillAttemptsUsed ??
+    0
+  );
+}
+
 function tabForStatus(
   status: AssessmentRoadmapStepStatus,
 ): AssessmentRoadmapTab {
@@ -69,25 +95,24 @@ export function applyDashboardHomeToRoadmapSteps(
     dashboardHome.journeyOverview,
   );
 
-  // When the user has used all skill attempts they're effectively done with
-  // skill — surface it as "completed" on the roadmap even though the journey
-  // status comes back as "locked".
   const skillAttemptsExhausted = isSkillExhausted(dashboardHome);
+  const skillAttemptsUsed = getSkillAttemptsUsed(dashboardHome);
 
   return steps.map((step) => {
     const status = getStepStatus(step.id, statusByJourneyKey);
     if (!status) return step;
 
+    const isSkillStep = step.id === "skill-career-assessment";
     const effectiveStatus: AssessmentRoadmapStepStatus =
-      step.id === "skill-career-assessment" && skillAttemptsExhausted
-        ? "completed"
-        : status;
+      isSkillStep && skillAttemptsExhausted ? "completed" : status;
 
     return {
       ...step,
       state: effectiveStatus,
       tab: tabForStatus(effectiveStatus),
-      ctaLabel: ctaLabelForStatus(effectiveStatus),
+      ctaLabel: isSkillStep
+        ? ctaLabelForSkillStep(effectiveStatus, skillAttemptsUsed)
+        : ctaLabelForStatus(effectiveStatus),
     };
   });
 }
@@ -106,20 +131,22 @@ export function applyDashboardHomeToCatalogSteps(
   // with skill, so the catalog should render it as completed too even
   // though the journey status comes back as "locked".
   const skillAttemptsExhausted = isSkillExhausted(dashboardHome);
+  const skillAttemptsUsed = getSkillAttemptsUsed(dashboardHome);
 
   return steps.map((step) => {
     const status = getStepStatus(step.id, statusByJourneyKey);
     if (!status) return step;
 
+    const isSkillStep = step.id === "skill-career-assessment";
     const effectiveStatus: AssessmentRoadmapStepStatus =
-      step.id === "skill-career-assessment" && skillAttemptsExhausted
-        ? "completed"
-        : status;
+      isSkillStep && skillAttemptsExhausted ? "completed" : status;
 
     return {
       ...step,
       state: effectiveStatus,
-      ctaLabel: ctaLabelForStatus(effectiveStatus),
+      ctaLabel: isSkillStep
+        ? ctaLabelForSkillStep(effectiveStatus, skillAttemptsUsed)
+        : ctaLabelForStatus(effectiveStatus),
     };
   });
 }

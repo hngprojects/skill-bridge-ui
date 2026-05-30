@@ -1,18 +1,22 @@
 "use client";
 
-import { FileText, ExternalLink } from "lucide-react";
+import { FileText, ExternalLink, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type SettingsResumePreviewProps = {
   resumeUrl: string;
   fileName: string;
+  isDeleting: boolean;
   onReupload: () => void;
+  onDelete: () => void;
 };
 
 export function SettingsResumePreview({
   resumeUrl,
   fileName,
+  isDeleting,
   onReupload,
+  onDelete,
 }: SettingsResumePreviewProps) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-border bg-white p-4">
@@ -39,9 +43,22 @@ export function SettingsResumePreview({
           size="sm"
           variant="outline"
           onClick={onReupload}
+          disabled={isDeleting}
           className="text-xs"
         >
           Reupload
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={onDelete}
+          disabled={isDeleting}
+          aria-label="Delete resume"
+          className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+        >
+          <Trash2 className="size-4" />
+          <span className="sr-only">Delete resume</span>
+          {isDeleting ? "Deleting..." : ""}
         </Button>
       </div>
     </div>

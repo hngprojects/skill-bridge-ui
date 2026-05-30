@@ -1,27 +1,29 @@
 "use client";
 
 import { UserRound } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
 
 import { SettingsEditableField } from "./settings-editable-field";
 import { SettingsLinkedInField } from "./settings-linkedin-field";
+import { AvatarCropModal } from "./avatar-crop-modal";
 import {
   useTalentSettings,
   useUploadAvatar,
   talentSettingsKeys,
 } from "@/hooks/api";
+import { appToast } from "@/lib/toast";
 import Image from "next/image";
 
 export function SettingsAboutMe() {
-  const qc = useQueryClient();
   const { data: settings } = useTalentSettings();
   const { mutate: uploadAvatar, isPending: uploading } = useUploadAvatar();
+  const qc = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
 
   const user = settings?.user;
   const profile = settings?.profile;
@@ -29,11 +31,19 @@ export function SettingsAboutMe() {
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    uploadAvatar(file, {
+    setCropFile(file);
+    e.target.value = "";
+  }
+
+  function handleCropApply(croppedFile: File) {
+    setCropFile(null);
+    uploadAvatar(croppedFile, {
       onSuccess: () =>
         void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+      onError: () => {
+        appToast.error("Failed to upload photo. Please try again.");
+      },
     });
-    e.target.value = "";
   }
 
   return (
@@ -75,7 +85,7 @@ export function SettingsAboutMe() {
         />
         <button
           type="button"
-          disabled={uploading}
+          disabled={uploading || !!cropFile}
           onClick={() => fileInputRef.current?.click()}
           className="mt-3 text-sm font-medium text-foreground underline underline-offset-2 hover:text-primary transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -85,6 +95,12 @@ export function SettingsAboutMe() {
           Recommended size is 400 x 300
         </p>
       </div>
+
+      <AvatarCropModal
+        file={cropFile}
+        onClose={() => setCropFile(null)}
+        onApply={handleCropApply}
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <SettingsEditableField
@@ -104,16 +120,6 @@ export function SettingsAboutMe() {
           placeholder="e.g. Frontend Developer"
         />
         <SettingsLinkedInField />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium text-foreground">Bio</label>
-        <Textarea
-          value=""
-          readOnly
-          placeholder="Brief description about yourself"
-          className="min-h-22 resize-none rounded-md border-border text-sm placeholder:text-muted-foreground/50"
-        />
       </div>
     </div>
   );
