@@ -36,6 +36,7 @@ export function SettingsChangePasswordDialog() {
   const queryClient = useQueryClient();
   const changePasswordMutation = useChangePassword();
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutWarning, setShowLogoutWarning] = useState(false);
   const [passwordForm, setPasswordForm] = useState(initialPasswordForm);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const changeInFlightRef = useRef(false);
@@ -94,91 +95,138 @@ export function SettingsChangePasswordDialog() {
       return;
     }
 
+    // Show logout warning before redirecting
+    setShowLogoutWarning(true);
+  };
+
+  const handleConfirmLogout = async () => {
     appToast.success("Password changed. Please sign in again.");
     await redirectToLogin();
   };
 
+  const handleCancelLogout = () => {
+    setShowLogoutWarning(false);
+    changeInFlightRef.current = false;
+    setPasswordForm(initialPasswordForm);
+    setIsOpen(false);
+  };
+
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (isUpdating) return;
-        setIsOpen(open);
-        if (!open) {
-          setPasswordForm(initialPasswordForm);
-          setPasswordError(null);
-        }
-      }}
-    >
-      <DialogTrigger asChild>
-        <SettingsAccountActionLink
-          disabled={isUpdating}
-          icon={<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />}
-        >
-          Change password
-        </SettingsAccountActionLink>
-      </DialogTrigger>
-      <DialogContent className="max-w-[390px] gap-5 rounded-2xl p-6">
-        <DialogHeader className="items-center text-center">
-          <DialogTitle className="text-base font-bold">
+    <>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (isUpdating) return;
+          setIsOpen(open);
+          if (!open) {
+            setPasswordForm(initialPasswordForm);
+            setPasswordError(null);
+          }
+        }}
+      >
+        <DialogTrigger asChild>
+          <SettingsAccountActionLink
+            disabled={isUpdating}
+            icon={<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />}
+          >
             Change password
-          </DialogTitle>
-          <DialogDescription className="max-w-67 text-xs leading-5">
-            Enter your current password and choose a new one.
-          </DialogDescription>
-        </DialogHeader>
+          </SettingsAccountActionLink>
+        </DialogTrigger>
+        <DialogContent className="max-w-[390px] gap-5 rounded-2xl p-6">
+          <DialogHeader className="items-center text-center">
+            <DialogTitle className="text-base font-bold">
+              Change password
+            </DialogTitle>
+            <DialogDescription className="max-w-67 text-xs leading-5">
+              Enter your current password and choose a new one.
+            </DialogDescription>
+          </DialogHeader>
 
-        <form className="flex flex-col gap-4" onSubmit={handleChangePassword}>
-          {(
-            [
-              ["currentPassword", "Current password", "current-password"],
-              ["newPassword", "New password", "new-password"],
-              ["confirmNewPassword", "Confirm new password", "new-password"],
-            ] as const
-          ).map(([field, label, autoComplete]) => (
-            <SettingsPasswordField
-              key={field}
-              label={label}
-              autoComplete={autoComplete}
-              value={passwordForm[field]}
-              disabled={isUpdating}
-              aria-describedby={passwordError ? passwordErrorId : undefined}
-              onChange={updatePasswordField(field)}
-            />
-          ))}
+          <form className="flex flex-col gap-4" onSubmit={handleChangePassword}>
+            {(
+              [
+                ["currentPassword", "Current password", "current-password"],
+                ["newPassword", "New password", "new-password"],
+                ["confirmNewPassword", "Confirm new password", "new-password"],
+              ] as const
+            ).map(([field, label, autoComplete]) => (
+              <SettingsPasswordField
+                key={field}
+                label={label}
+                autoComplete={autoComplete}
+                value={passwordForm[field]}
+                disabled={isUpdating}
+                aria-describedby={passwordError ? passwordErrorId : undefined}
+                onChange={updatePasswordField(field)}
+              />
+            ))}
 
-          {passwordError && (
-            <p
-              id={passwordErrorId}
-              role="alert"
-              aria-live="polite"
-              className="text-xs leading-5 text-destructive"
-            >
-              {passwordError}
-            </p>
-          )}
+            {passwordError && (
+              <p
+                id={passwordErrorId}
+                role="alert"
+                aria-live="polite"
+                className="text-xs leading-5 text-destructive"
+              >
+                {passwordError}
+              </p>
+            )}
 
-          <DialogFooter className="grid grid-cols-2 gap-3 sm:grid-cols-2">
-            <DialogClose asChild>
+            <DialogFooter className="grid grid-cols-2 gap-3 sm:grid-cols-2">
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="h-9 rounded-md bg-[#D9D9D9] text-xs text-foreground hover:bg-[#D9D9D9]/80"
+                  disabled={isUpdating}
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
               <Button
-                type="button"
-                variant="secondary"
-                className="h-9 rounded-md bg-[#D9D9D9] text-xs text-foreground hover:bg-[#D9D9D9]/80"
+                type="submit"
+                className="h-9 rounded-md bg-primary text-xs text-primary-foreground hover:bg-primary/90"
                 disabled={isUpdating}
               >
-                Cancel
+                {isUpdating ? "Updating..." : "Update password"}
               </Button>
-            </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Logout warning confirmation dialog */}
+      <Dialog open={showLogoutWarning} onOpenChange={setShowLogoutWarning}>
+        <DialogContent className="max-w-[390px] gap-5 rounded-2xl p-6">
+          <DialogHeader className="items-center text-center">
+            <DialogTitle className="text-base font-bold">
+              You&apos;ll be signed out
+            </DialogTitle>
+            <DialogDescription className="text-xs leading-5">
+              Your password has been updated successfully. For security, you
+              will be signed out and need to log in again with your new
+              password.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="grid grid-cols-2 gap-3 sm:grid-cols-2">
             <Button
-              type="submit"
-              className="h-9 rounded-md bg-primary text-xs text-primary-foreground hover:bg-primary/90"
-              disabled={isUpdating}
+              type="button"
+              variant="secondary"
+              className="h-9 rounded-md bg-[#D9D9D9] text-xs text-foreground hover:bg-[#D9D9D9]/80"
+              onClick={handleCancelLogout}
             >
-              {isUpdating ? "Updating..." : "Update password"}
+              Stay signed in
+            </Button>
+            <Button
+              type="button"
+              className="h-9 rounded-md bg-primary text-xs text-primary-foreground hover:bg-primary/90"
+              onClick={handleConfirmLogout}
+            >
+              Sign out
             </Button>
           </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
