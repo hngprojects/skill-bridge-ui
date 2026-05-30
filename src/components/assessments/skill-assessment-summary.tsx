@@ -24,7 +24,8 @@ function formatLevel(level: string | undefined, fallback: string) {
 
 const SkillAssessementSummary = () => {
   const { data: user } = useMe({ enabled: true });
-  const { data: dashboardHome } = useDashboardHome();
+  const { data: dashboardHome, isLoading: isDashboardHomeLoading } =
+    useDashboardHome();
   const result = useAssessmentSummaryStore((state) =>
     user?.id ? state.resultsByUser[user.id]?.skill : null,
   );
@@ -54,7 +55,14 @@ const SkillAssessementSummary = () => {
   const maxAttempts = dashboardHome?.skillMaxAttempts;
   const hasAttemptsInfo = attemptsUsed != null && maxAttempts != null;
   const noAttemptsLeft = isSkillExhausted(dashboardHome);
-  const showRetakeButton = isDowngraded && !noAttemptsLeft;
+  const advancedStatus = dashboardHome?.journeyOverview.find(
+    (item) => item.key === "advanced",
+  )?.status;
+  const canContinueToAdvanced = advancedStatus === "available";
+  const showRetakeButton = !canContinueToAdvanced && !noAttemptsLeft;
+  const nextUpLockedLabel = isDashboardHomeLoading
+    ? "Checking unlock status"
+    : "Assessment locked";
 
   return !isUserContextReady ? (
     <AssessmentContainer>
@@ -83,7 +91,13 @@ const SkillAssessementSummary = () => {
               {" "}
               instead of your claim of{" "}
               <span className="font-bold capitalize">{claimedLevel}</span>. You
-              can <span className="font-bold">retake</span> after 24 hours.
+              {canContinueToAdvanced ? (
+                " can continue to the next assessment."
+              ) : (
+                <>
+                  can <span className="font-bold">retake</span> the assessment.
+                </>
+              )}
             </>
           ) : (
             ". You can continue to the next assessment."
@@ -127,17 +141,21 @@ const SkillAssessementSummary = () => {
         <div className="flex flex-col gap-y-4 sm:flex-row items-center self-center mt-15.5 gap-x-2">
           {showRetakeButton && (
             <Button
-              disabled={true}
+              asChild
               className="bg-[#322B2B] text-white disabled:text-white rounded-lg h-10 min-w-fit md:w-52.25 hover:bg-[#322B2B]/70 transition-all disabled:bg-[#0F1724]/50 duration-300 cursor-pointer"
             >
-              Retake (valid in 24h)
+              <Link href="/t/assessments/skill">Retake </Link>
             </Button>
           )}
           <Button
             asChild
             className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
           >
-            <Link href="/t/dashboard">Accept &amp; continue</Link>
+            <Link href="/t/dashboard">
+              {canContinueToAdvanced
+                ? "Accept & continue"
+                : "Return to dashboard"}
+            </Link>
           </Button>
         </div>
       </div>
@@ -146,6 +164,8 @@ const SkillAssessementSummary = () => {
         duration="30-45 minutes"
         title="Advanced assessment"
         route="/t/assessments/advanced"
+        locked={!canContinueToAdvanced}
+        lockedLabel={nextUpLockedLabel}
       />
     </AssessmentContainer>
   );
