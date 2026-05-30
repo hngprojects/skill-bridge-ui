@@ -9,9 +9,18 @@ type Props = {
   title: string;
   assessement: AssessmentSlug;
   route: string;
+  locked?: boolean;
+  lockedLabel?: string;
 };
 
-const NextUpCard = ({ assessement, title, duration, route }: Props) => {
+const NextUpCard = ({
+  assessement,
+  title,
+  duration,
+  route,
+  locked = false,
+  lockedLabel = "Assessment locked",
+}: Props) => {
   const isUnlockAssessmentDisabled = true;
   return (
     <section className="mt-7 md:mt-12.5">
@@ -50,12 +59,19 @@ const NextUpCard = ({ assessement, title, duration, route }: Props) => {
             To get verified score and become discoverable to top employers.
           </p>
           <div className="text-[#757575] text-base flex flex-col max-sm:gap-y-2 md:flex-row gap-x-4 ">
-            <Link
-              className="text-[#34A853] underline font-semibold"
-              href={route}
-            >
-              Continue to next
-            </Link>
+            {locked ? (
+              <span className="inline-flex items-center gap-1.5 font-semibold text-[#757575]">
+                {lockedLabel}
+                <LockKeyhole className="size-4" />
+              </span>
+            ) : (
+              <Link
+                className="text-[#34A853] underline font-semibold"
+                href={route}
+              >
+                Continue to next
+              </Link>
+            )}
             <p>Estimated time: {duration}</p>
           </div>
         </div>
