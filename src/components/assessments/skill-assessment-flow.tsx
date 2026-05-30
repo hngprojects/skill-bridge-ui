@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { getSkillAssessmentSession } from "@/actions/assessment";
 import { AssessmentStartBlocked } from "@/components/assessments/assessment-start-blocked";
@@ -11,6 +12,7 @@ import {
   useStartSkillAssessment,
   useSubmitSkillAssessment,
 } from "@/hooks/api";
+import { dashboardKeys } from "@/hooks/api/keys";
 import { useFlagAssessmentEvent } from "@/hooks/api/use-assessment";
 import {
   mapSkillQuestions,
@@ -41,6 +43,7 @@ export function SkillAssessmentFlow() {
   const [startState, setStartState] = useState<SkillStartState>("loading");
   const startRequestedRef = useRef(false);
 
+  const queryClient = useQueryClient();
   const { data: user } = useMe({ enabled: true });
   const setSkillClaimedLevel = useAssessmentSummaryStore(
     (state) => state.setSkillClaimedLevel,
@@ -76,6 +79,9 @@ export function SkillAssessmentFlow() {
               ),
             );
           } catch (resumeError) {
+            void queryClient.invalidateQueries({
+              queryKey: dashboardKeys.home(),
+            });
             if (isServiceUnavailableError(resumeError)) {
               setStartState("unavailable");
               return;
@@ -89,6 +95,9 @@ export function SkillAssessmentFlow() {
         if (isServiceUnavailableError(e)) {
           setStartState("unavailable");
         } else {
+          void queryClient.invalidateQueries({
+            queryKey: dashboardKeys.home(),
+          });
           setStartState("failed");
           appToast.error(authFailureMessage(e));
         }
@@ -98,7 +107,7 @@ export function SkillAssessmentFlow() {
     return () => {
       cancelled = true;
     };
-  }, [startSession]);
+  }, [queryClient, startSession]);
 
   useEffect(() => {
     if (!user?.id) return;
