@@ -113,7 +113,7 @@ export function JobReadySkillBreakdown({
           Skill breakdown
         </h2>
         <Link
-          href="#"
+          href="/t/dashboard/ai-report"
           className="flex items-center label shrink-0 text-foreground underline underline-offset-2 hover:opacity-70 transition-opacity group"
         >
           Learn more

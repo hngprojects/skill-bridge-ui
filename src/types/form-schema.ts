@@ -186,3 +186,33 @@ export const signInFormSchema = z.object({
 });
 
 export type SignInFormValues = z.infer<typeof signInFormSchema>;
+
+export const linkedinUrlSchema = z.url("Enter a valid URL").refine(
+  (val) => {
+    try {
+      const url = new URL(val);
+      return (
+        (url.hostname === "linkedin.com" ||
+          url.hostname === "www.linkedin.com") &&
+        /^\/in\/[^/]+/.test(url.pathname)
+      );
+    } catch {
+      return false;
+    }
+  },
+  {
+    message:
+      "Enter a valid LinkedIn profile URL (e.g. https://linkedin.com/in/username)",
+  },
+);
+
+export const personalWebsiteSchema = z.url("Enter a valid website URL").refine(
+  (val) => {
+    const parts = new URL(val).hostname.split(".");
+    const tld = parts[parts.length - 1];
+    return (
+      parts.length >= 2 && parts.every((p) => p.length > 0) && tld.length >= 2
+    );
+  },
+  { message: "Enter a valid website URL" },
+);
