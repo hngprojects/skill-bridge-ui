@@ -196,7 +196,12 @@ export function SettingsChangePasswordDialog() {
       </Dialog>
 
       {/* Logout warning confirmation dialog */}
-      <Dialog open={showLogoutWarning} onOpenChange={setShowLogoutWarning}>
+      <Dialog
+        open={showLogoutWarning}
+        onOpenChange={(open) => {
+          if (!open) handleCancelLogout();
+        }}
+      >
         <DialogContent className="max-w-[390px] gap-5 rounded-2xl p-6">
           <DialogHeader className="items-center text-center">
             <DialogTitle className="text-base font-bold">
