@@ -7,6 +7,13 @@ import {
   MonitorCog,
   TestTubeDiagonal,
 } from "lucide-react";
+import type { IconSvgElement } from "@hugeicons/react";
+import {
+  LaptopIcon,
+  Note01Icon,
+  PaintBoardIcon,
+  UserIcon,
+} from "@hugeicons/core-free-icons";
 
 export type AssessmentRoadmapTab = "in-progress" | "completed";
 export type AssessmentRoadmapStepStatus = "available" | "locked" | "completed";
@@ -20,8 +27,7 @@ export type AssessmentCatalogCategory =
 export type AssessmentExpectation = {
   id: string;
   title: string;
-  icon?: LucideIcon;
-  iconSrc?: string;
+  icon: IconSvgElement;
 };
 
 export type AssessmentRoadmapStep = {
@@ -34,10 +40,14 @@ export type AssessmentRoadmapStep = {
   estimatedTime: string;
   panelTitle: string;
   panelIcon: LucideIcon;
+  panelIconSrc?: string;
   panelClassName: string;
   panelIconClassName: string;
   state: AssessmentRoadmapStepStatus;
   tab: AssessmentRoadmapTab;
+  /** When true, the card renders a "Coming Soon" badge + disabled button
+   *  regardless of `state`. */
+  comingSoon?: boolean;
 };
 
 export type AssessmentCatalogTab = {
@@ -48,11 +58,13 @@ export type AssessmentCatalogTab = {
 
 export type AssessmentCatalogStep = {
   id: string;
+  slug?: string;
   order: number;
   title: string;
   description: string;
   panelTitle: string;
   panelIcon: LucideIcon;
+  panelIconSrc?: string;
   panelClassName: string;
   panelIconClassName: string;
   state: AssessmentRoadmapStepStatus;
@@ -61,6 +73,9 @@ export type AssessmentCatalogStep = {
   cooldownLabel?: string;
   estimatedTime?: string;
   lockLabel?: string;
+  /** When true, the card renders a "Coming Soon" badge + disabled button
+   *  regardless of `state`. */
+  comingSoon?: boolean;
 };
 
 export const ASSESSMENT_PROFILE_COMPLETION = 70;
@@ -69,37 +84,38 @@ export const ASSESSMENT_EXPECTATIONS: AssessmentExpectation[] = [
   {
     id: "personal",
     title: "Personal Assessment to find your level",
-    iconSrc: "/assets/assessments/personal-assessment-icon.svg",
+    icon: UserIcon,
   },
   {
     id: "career",
     title: "Skill/Career assessment to determine your level",
-    iconSrc: "/assets/assessments/skill-assessment-icon.svg",
+    icon: PaintBoardIcon,
   },
   {
     id: "advanced",
     title: "Advanced Assessment to evaluate your core knowledge",
-    iconSrc: "/assets/assessments/advanced-assessment-icon.svg",
+    icon: LaptopIcon,
   },
   {
     id: "score",
     title: "Get your score and be job-ready",
-    iconSrc: "/file.svg",
+    icon: Note01Icon,
   },
 ];
 
 export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
   {
     id: "personal-assessment",
-    slug: "personal-assessment",
+    slug: "personal",
     order: 1,
     title: "Personal assessment",
     description:
       "Tell us about your specialization, tools, experience level, and work preferences.",
     ctaLabel: "Start",
-    estimatedTime: "30-45 minutes",
+    estimatedTime: "No duration",
     panelTitle: "Find your level!",
     panelIcon: MonitorCog,
+    panelIconSrc: "/assets/icons/assessement-icon.svg",
     panelClassName: "bg-[#FE9667] text-[#1B0904]",
     panelIconClassName: "text-[#2D150D]",
     state: "available",
@@ -107,15 +123,16 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
   },
   {
     id: "skill-career-assessment",
-    slug: "skill-career-assessment",
+    slug: "skill",
     order: 2,
     title: "Skill/career assessment",
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     ctaLabel: "Start",
-    estimatedTime: "30-45 minutes",
+    estimatedTime: "30 minutes",
     panelTitle: "Choose a stack",
     panelIcon: LaptopMinimal,
+    panelIconSrc: "/assets/icons/computer-setup-icon.svg",
     panelClassName: "bg-[#F9E796] text-[#401D09]",
     panelIconClassName: "text-[#49330A]",
     state: "locked",
@@ -123,15 +140,16 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
   },
   {
     id: "advanced-assessment",
-    slug: "advanced-assessment",
+    slug: "advanced",
     order: 3,
     title: "Advanced assessment",
     description:
       "To get verified score and become discoverable to top employers.",
     ctaLabel: "Start",
-    estimatedTime: "30-45 minutes",
+    estimatedTime: "90 minutes",
     panelTitle: "Get Job Ready!",
     panelIcon: BriefcaseBusiness,
+    panelIconSrc: "/assets/icons/portfolio-icon.svg",
     panelClassName: "bg-[#CBB0EB] text-[#231F29]",
     panelIconClassName: "text-[#2D2742]",
     state: "locked",
@@ -151,32 +169,34 @@ export const ASSESSMENT_CATALOG_TABS: AssessmentCatalogTab[] = [
       "job-assessment",
     ],
   },
-  {
-    id: "data-type-assessment",
-    label: "Data type assessment",
-    aliases: ["data-type-assessment"],
-  },
-  {
-    id: "system-design",
-    label: "System design",
-    aliases: ["system-design"],
-  },
-  {
-    id: "miscellaneous",
-    label: "Miscellaneous",
-    aliases: ["miscellaneous"],
-  },
+  // {
+  //   id: "data-type-assessment",
+  //   label: "Data type assessment",
+  //   aliases: ["data-type-assessment"],
+  // },
+  // {
+  //   id: "system-design",
+  //   label: "System design",
+  //   aliases: ["system-design"],
+  // },
+  // {
+  //   id: "miscellaneous",
+  //   label: "Miscellaneous",
+  //   aliases: ["miscellaneous"],
+  // },
 ];
 
 export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
   {
     id: "personal-assessment",
+    slug: "personal",
     order: 1,
     title: "Personal assessment",
     description:
       "Tell us about your specialization, tools, experience level, and work preferences.",
     panelTitle: "Find your level!",
     panelIcon: MonitorCog,
+    panelIconSrc: "/assets/icons/assessement-icon.svg",
     panelClassName: "bg-[#FE9667] text-[#1B0904]",
     panelIconClassName: "text-[#2D150D]",
     state: "completed",
@@ -185,32 +205,36 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
   },
   {
     id: "skill-career-assessment",
+    slug: "skill",
     order: 2,
     title: "Skill/career assessment",
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     panelTitle: "Choose a stack",
     panelIcon: LaptopMinimal,
+    panelIconSrc: "/assets/icons/computer-setup-icon.svg",
     panelClassName: "bg-[#F9E796] text-[#401D09]",
     panelIconClassName: "text-[#49330A]",
-    state: "completed",
+    state: "available",
     category: "job-assessment",
-    ctaLabel: "Completed",
-    cooldownLabel: "Retake in 24 hours",
+    ctaLabel: "Start",
+    cooldownLabel: "3 Attempts",
   },
   {
     id: "advanced-assessment",
+    slug: "advanced",
     order: 3,
     title: "Advanced assessment",
     description:
       "To get verified score and become discoverable to top employers.",
     panelTitle: "Get Job Ready!",
     panelIcon: BriefcaseBusiness,
+    panelIconSrc: "/assets/icons/portfolio-icon.svg",
     panelClassName: "bg-[#CBB0EB] text-[#231F29]",
     panelIconClassName: "text-[#2D2742]",
-    state: "completed",
+    state: "locked",
     category: "job-assessment",
-    ctaLabel: "Completed",
+    ctaLabel: "Start",
     cooldownLabel: "Retake in 14 days",
   },
   {
@@ -228,6 +252,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     ctaLabel: "Start",
     estimatedTime: "30-45 minutes",
     lockLabel: "Unlock Assessment",
+    comingSoon: true,
   },
   {
     id: "practical-assessment",
@@ -244,6 +269,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     ctaLabel: "Start",
     estimatedTime: "30-45 minutes",
     lockLabel: "Unlock Assessment",
+    comingSoon: true,
   },
 ];
 

@@ -6,6 +6,7 @@ import type {
   TrackOptionId,
 } from "@/constants/talent-onboarding";
 export type TalentOnboardingState = {
+  ownerUserId: string | null;
   currentStepId: OnboardingStepId;
   selectedGoalId: GoalOptionId | null;
   selectedTrackIds: TrackOptionId[];
@@ -15,6 +16,8 @@ export type TalentOnboardingState = {
   profileEducation: string;
   profileLinkedin: string;
   profileSaved: boolean;
+  resetForUser: (userId: string) => void;
+  reset: () => void;
   setCurrentStepId: (id: OnboardingStepId) => void;
   setSelectedGoalId: (id: GoalOptionId | undefined) => void;
   setSelectedTrackIds: (ids: TrackOptionId[]) => void;

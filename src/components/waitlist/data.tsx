@@ -55,10 +55,8 @@ const steps: Step[] = [
 ];
 
 const footerLinks = [
-  { label: "Talent Terms", href: "#" },
-  { label: "Employer Terms", href: "terms-of-use" },
+  { label: "Terms of use", href: "terms-of-use" },
   { label: "Privacy Policy", href: "privacy-policy" },
-  { label: "Cookies Settings", href: "#" },
 ];
 
 const socials = [

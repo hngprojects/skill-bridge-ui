@@ -11,7 +11,7 @@ export type AssessmentPreview = {
   questionCount: string;
   duration: string;
   attempts: string;
-  retakeText: string;
+  retakeText?: string;
   warning?: AssessmentPreviewWarning;
 };
 
@@ -29,10 +29,9 @@ export const ASSESSMENT_PREVIEWS = {
     description:
       "Tell us about your specialization, tools, experience level, and work preferences.",
     iconSrc: "/assets/assessments/personal-assessment-icon.svg",
-    questionCount: "25 Multiple-Choice",
-    duration: "15-20 minutes",
-    attempts: "1/3 (allowed within time limit)",
-    retakeText: "Retake valid after 24 hours",
+    questionCount: "15 Questions",
+    duration: "No duration",
+    attempts: "1 attempt",
   },
   skill: {
     slug: "skill",
@@ -40,10 +39,9 @@ export const ASSESSMENT_PREVIEWS = {
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     iconSrc: "/assets/assessments/skill-assessment-icon.svg",
-    questionCount: "8 Multiple-Choice",
+    questionCount: "20 Questions",
     duration: "30 minutes",
-    attempts: "1/3 (allowed within time limit)",
-    retakeText: "Retake valid after 24 hours",
+    attempts: "3 attempts (allowed within time limit)",
   },
   advanced: {
     slug: "advanced",
@@ -51,16 +49,26 @@ export const ASSESSMENT_PREVIEWS = {
     description:
       "This assessment is designed to evaluate your current skill level at your selected tracks.",
     iconSrc: "/assets/assessments/advanced-assessment-icon.svg",
-    questionCount: "10 Multiple-Choice",
-    duration: "20-30 minutes",
-    attempts: "1/3 (allowed within time limit)",
-    retakeText: "Retake valid after 24 hours",
+    questionCount: "15 Questions",
+    duration: "90 minutes",
+    attempts: "1 attempt (allowed within time limit)",
+    retakeText: "Retake valid after 14 days",
   },
 } satisfies Record<string, AssessmentPreview>;
 
 export const ASSESSMENT_EXPECTATIONS = sharedExpectations;
 
 export type AssessmentSlug = keyof typeof ASSESSMENT_PREVIEWS;
+
+/** Fallback questionnaire section label when a question carries no section title. */
+export const ASSESSMENT_FALLBACK_SECTION_TITLES: Record<
+  AssessmentSlug,
+  string
+> = {
+  personal: "Personal Assessment",
+  skill: "Skill Assessment",
+  advanced: "Advanced Assessment",
+};
 
 export function isAssessmentSlug(slug: string): slug is AssessmentSlug {
   return slug in ASSESSMENT_PREVIEWS;

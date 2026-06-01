@@ -1,5 +1,4 @@
 import { privacySections, tableOfContents } from "@/constants/privacy-policy";
-import { CookieBanner } from "@/components/custom/cookie-banner";
 
 import { PrivacyHero } from "./_components/privacy-hero";
 import { PrivacyToc } from "./_components/privacy-toc";
@@ -15,7 +14,7 @@ export default function PrivacyPage() {
           relative z-10
           mx-auto
           flex
-          max-w-[1440px]
+          max-w-360
           flex-col
           gap-10
           px-4
@@ -23,7 +22,7 @@ export default function PrivacyPage() {
           lg:flex-row
           lg:items-start
           lg:gap-20
-          lg:px-[120px]
+          lg:px-30
         "
       >
         {/* TOC */}
@@ -42,10 +41,17 @@ export default function PrivacyPage() {
               items={section.items}
             />
           ))}
+          <p className="text-[#64748B]">
+            If you have any questions about our privacy policy, contact us at{" "}
+            <a
+              className="font-bold text-[#030409]"
+              href="mailto:Privacy@Skillbridge.com"
+            >
+              Privacy@Skillbridge.com
+            </a>
+          </p>
         </div>
       </section>
-
-      <CookieBanner />
     </main>
   );
 }

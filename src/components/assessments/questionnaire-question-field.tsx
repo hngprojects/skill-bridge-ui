@@ -26,20 +26,18 @@ export function QuestionnaireQuestionField({
     <div className="flex w-full flex-col gap-5">
       <header className="flex flex-col gap-1">
         <h2 className="font-sans text-base font-semibold text-foreground">
-          {question.question}
+          {question.prompt}
           {question.required && (
             <span className="ml-1 text-[#9B3048]" aria-hidden>
               *
             </span>
           )}
           {question.required && <span className="sr-only"> (required)</span>}
-          {question.input_type === "multi_pick" && (
-            <SelectedCount value={value} />
-          )}
+          {question.inputType === "multi" && <SelectedCount value={value} />}
         </h2>
-        {question.hint && (
+        {question.helperText && (
           <p className="font-sans text-sm text-muted-foreground">
-            {question.hint}
+            {question.helperText}
           </p>
         )}
       </header>

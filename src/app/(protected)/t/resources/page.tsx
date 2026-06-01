@@ -1,7 +1,13 @@
-import React from "react";
+import type { Metadata } from "next";
 
-const ResourcesPage = () => {
-  return <div>ResourcesPage</div>;
+import ResourcesPage from "@/components/resources/resource-page";
+
+export const metadata: Metadata = {
+  title: "Resources",
 };
 
-export default ResourcesPage;
+const Page = () => {
+  return <ResourcesPage />;
+};
+
+export default Page;

@@ -9,7 +9,7 @@ import {
   Briefcase,
   Wrench,
   Smartphone,
-  ShieldCheck,
+  Megaphone,
   BrainCircuit,
 } from "lucide-react";
 import type { TrackOptionId } from "@/constants/talent-onboarding";
@@ -24,7 +24,7 @@ const TRACK_ICONS: Record<TrackOptionId, React.ElementType> = {
   "product-manager": Briefcase,
   "backend-developer": Wrench,
   "mobile-developer": Smartphone,
-  cybersecurity: ShieldCheck,
+  "social-media-marketing": Megaphone,
   "data-scientist": BrainCircuit,
 };
 
@@ -37,13 +37,7 @@ function SelectTrackStep({ value = [], onValueChange }: SelectTrackStepProps) {
   const selected = new Set(value);
 
   function toggle(id: TrackOptionId) {
-    const next = new Set(selected);
-    if (next.has(id)) {
-      next.delete(id);
-    } else {
-      next.add(id);
-    }
-    onValueChange?.([...next]);
+    onValueChange?.(selected.has(id) ? [] : [id]);
   }
 
   return (

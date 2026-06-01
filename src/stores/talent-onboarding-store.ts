@@ -3,18 +3,27 @@ import { persist } from "zustand/middleware";
 
 import type { TalentOnboardingState } from "@/types/onboarding";
 
+function initialOnboardingState(ownerUserId: string | null = null) {
+  return {
+    ownerUserId,
+    currentStepId: "set-goal" as const,
+    selectedGoalId: null,
+    selectedTrackIds: [],
+    goalSaved: false,
+    tracksSaved: false,
+    profileRegion: "",
+    profileEducation: "",
+    profileLinkedin: "",
+    profileSaved: false,
+  };
+}
+
 export const useTalentOnboardingStore = create<TalentOnboardingState>()(
   persist(
     (set) => ({
-      currentStepId: "set-goal",
-      selectedGoalId: null,
-      selectedTrackIds: [],
-      goalSaved: false,
-      tracksSaved: false,
-      profileRegion: "",
-      profileEducation: "",
-      profileLinkedin: "",
-      profileSaved: false,
+      ...initialOnboardingState(),
+      resetForUser: (userId) => set(initialOnboardingState(userId)),
+      reset: () => set(initialOnboardingState()),
       setCurrentStepId: (id) => set({ currentStepId: id }),
       setSelectedGoalId: (id) => set({ selectedGoalId: id ?? null }),
       setSelectedTrackIds: (ids) => set({ selectedTrackIds: ids }),
@@ -28,6 +37,7 @@ export const useTalentOnboardingStore = create<TalentOnboardingState>()(
     {
       name: "skillbridge-talent-onboarding",
       partialize: (state) => ({
+        ownerUserId: state.ownerUserId,
         currentStepId: state.currentStepId,
         selectedGoalId: state.selectedGoalId,
         selectedTrackIds: state.selectedTrackIds,

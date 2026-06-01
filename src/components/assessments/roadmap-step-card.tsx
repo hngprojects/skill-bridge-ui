@@ -1,10 +1,19 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { LockKeyhole, MoreHorizontal } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { SparklesIcon, Tick01Icon } from "@hugeicons/core-free-icons";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { AssessmentRoadmapStep } from "@/constants/assessment-roadmap";
 import { cn } from "@/lib/utils";
 
@@ -14,9 +23,18 @@ type RoadmapStepCardProps = {
 
 export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
   const PanelIcon = step.panelIcon;
-  const isLocked = step.state === "locked";
-  const isCompleted = step.state === "completed";
-  const lockBadge = (
+  const isComingSoon = step.comingSoon === true;
+  const isLocked = !isComingSoon && step.state === "locked";
+  const isCompleted = !isComingSoon && step.state === "completed";
+  const sideBadge = isComingSoon ? (
+    <Badge
+      variant="outline"
+      className="w-full justify-center rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:w-auto"
+    >
+      Coming Soon
+      <HugeiconsIcon icon={SparklesIcon} size={14} />
+    </Badge>
+  ) : (
     <Badge
       variant="outline"
       className="w-full justify-center rounded-lg border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:w-auto"
@@ -31,17 +49,47 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
       <div className="flex flex-col lg:flex-row">
         <div
           className={cn(
-            "flex min-h-[170px] w-full flex-col justify-between px-4 py-4 lg:w-[217px] lg:px-5",
+            "flex min-h-42.5 w-full flex-col justify-between px-4 py-4 lg:w-54.25 lg:px-5",
             step.panelClassName,
           )}
         >
-          <p className="text-base leading-6 font-semibold tracking-[0.017em]">
-            {step.panelTitle}
-          </p>
-          <PanelIcon
-            className={cn("size-16 shrink-0", step.panelIconClassName)}
-            strokeWidth={1.8}
-          />
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-base leading-6 font-semibold tracking-[0.017em]">
+              {step.panelTitle}
+            </p>
+            {isComingSoon ? (
+              <Badge
+                variant="outline"
+                className="shrink-0 rounded-lg border-transparent bg-white px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:hidden"
+              >
+                Coming Soon
+                <HugeiconsIcon icon={SparklesIcon} size={14} />
+              </Badge>
+            ) : isLocked ? (
+              <Badge
+                variant="outline"
+                className="shrink-0 rounded-lg border-transparent bg-white px-2 py-1 text-[12px] leading-4 font-normal tracking-[0.016em] text-[#151515] sm:hidden"
+              >
+                Locked
+                <LockKeyhole className="size-3.5" />
+              </Badge>
+            ) : null}
+          </div>
+          {step.panelIconSrc ? (
+            <Image
+              src={step.panelIconSrc}
+              alt=""
+              width={56}
+              height={56}
+              aria-hidden
+              className="size-14 shrink-0"
+            />
+          ) : (
+            <PanelIcon
+              className={cn("size-16 shrink-0", step.panelIconClassName)}
+              strokeWidth={1.8}
+            />
+          )}
         </div>
 
         <div className="flex flex-1 flex-col gap-5 px-4 py-4 sm:px-6">
@@ -56,45 +104,75 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
                 </h3>
               </div>
 
-              <p className="max-w-[560px] text-sm leading-6 tracking-[0.016em] text-[#151515]/80 sm:text-base sm:tracking-[0.017em]">
+              <p className="max-w-140 text-sm leading-6 tracking-[0.016em] text-[#151515]/80 sm:text-base sm:tracking-[0.017em]">
                 {step.description}
               </p>
             </div>
 
-            {isLocked ? (
-              <div className="hidden sm:block">{lockBadge}</div>
-            ) : (
-              <button
-                type="button"
-                aria-label={`More actions for ${step.title}`}
-                className="rounded-md p-1 text-[#151515] transition-colors hover:bg-[#F5F5F5]"
-              >
-                <MoreHorizontal className="size-5" />
-              </button>
-            )}
+            <div className="flex items-center gap-2 shrink-0">
+              {isComingSoon || isLocked ? (
+                <div className="hidden sm:block">{sideBadge}</div>
+              ) : null}
+              {isCompleted && step.slug ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted transition-colors"
+                      aria-label="More options"
+                    >
+                      <MoreHorizontal className="size-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href={`/t/assessments/${step.slug}/summary`}>
+                        View Summary
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : null}
+            </div>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            {isLocked ? <div className="sm:hidden">{lockBadge}</div> : null}
-
-            {isLocked ? (
+            {isComingSoon ? (
               <Button
                 size="lg"
                 disabled
-                className="h-10 w-full rounded-lg bg-[#757575] text-base font-semibold tracking-[0.016em] text-white hover:bg-[#757575] disabled:bg-[#757575] disabled:text-white sm:w-[170px]"
+                className="h-10 w-full rounded-lg bg-[#757575] text-base font-semibold tracking-[0.016em] text-white hover:bg-[#757575] disabled:bg-[#757575] disabled:text-white sm:w-42.5"
+              >
+                Coming Soon
+              </Button>
+            ) : isLocked ? (
+              <Button
+                size="lg"
+                disabled
+                className="h-10 w-full rounded-lg bg-[#757575] text-base font-semibold tracking-[0.016em] text-white hover:bg-[#757575] disabled:bg-[#757575] disabled:text-white sm:w-42.5"
               >
                 {step.ctaLabel}
+              </Button>
+            ) : isCompleted ? (
+              <Button
+                size="lg"
+                disabled
+                className="h-10 w-full rounded-lg bg-[#CCCCCC] text-base font-semibold tracking-[0.016em] text-[#151515] hover:bg-[#CCCCCC] disabled:bg-[#CCCCCC] disabled:text-[#151515] sm:w-42.5"
+              >
+                Completed
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#34A853]">
+                  <HugeiconsIcon
+                    icon={Tick01Icon}
+                    size={12}
+                    strokeWidth={3}
+                    className="text-white"
+                  />
+                </span>
               </Button>
             ) : (
               <Button
                 asChild
                 size="lg"
-                className={cn(
-                  "h-10 w-full rounded-lg text-base font-semibold tracking-[0.016em] sm:w-[170px]",
-                  isCompleted
-                    ? "bg-[#0F766E] text-white hover:bg-[#0F766E]"
-                    : "bg-[#322B2B] text-white hover:bg-[#322B2B]/95",
-                )}
+                className="h-10 w-full rounded-lg bg-primary text-base font-semibold tracking-[0.016em] text-white hover:bg-primary/95 sm:w-42.5"
               >
                 <Link href={`/t/assessments/${step.slug}`}>
                   {step.ctaLabel}

@@ -25,3 +25,14 @@ export function getOnboardingStepProgress(currentStepId: OnboardingStepId) {
     totalSteps: ONBOARDING_STEPS.length,
   };
 }
+
+export function formatOptionLabel(option: string): string {
+  // Already human-readable (no underscores) — pass through unchanged
+  if (!option.includes("_")) return option;
+  const formatted = option
+    .replace(/(\d)_(\d)/g, "$1–$2") // 0_1 → 0–1
+    .replace(/_plus/g, "+") // _plus → +
+    .replace(/_to_/g, " to ") // _to_ → " to "
+    .replace(/_/g, " "); // remaining underscores → spaces
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
