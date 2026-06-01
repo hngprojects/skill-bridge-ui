@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Dot } from "lucide-react";
 
 import AssessmentContainer from "@/components/assessments/assessment-container";
 import { isSkillExhausted } from "@/components/assessments/dashboard-home-state";
@@ -40,10 +39,10 @@ const SkillAssessementSummary = () => {
   );
   const progressValue = result?.percentage ?? 57;
   const isDowngraded = result?.downgraded ?? true;
-  const feedback =
-    result?.personalised_message ??
-    result?.guidance_report?.summary ??
-    "This does not define your potential. It helps us tailor your assessment accurately.";
+  // const feedback =
+  //   result?.personalised_message ??
+  //   result?.guidance_report?.summary ??
+  //   "This does not define your potential. It helps us tailor your assessment accurately.";
 
   // Attempt counts come from /dashboard/home, not the submit response — the
   // skill submit doesn't carry the user's running attempt tally. Exhaustion
@@ -110,11 +109,11 @@ const SkillAssessementSummary = () => {
       </section>
       <div className="flex flex-col">
         <div className="flex flex-col gap-y-2">
-          <p className="text-[#4FB609] font-bold text-base md:text-2xl flex flex-row items-center">
+          {/* <p className="text-[#4FB609] font-bold text-base md:text-2xl flex flex-row items-center">
             Validated
             <Dot size={40} />
             {validatedLevel} Level
-          </p>
+          </p> */}
           <Progress value={progressValue} className="h-1 *:bg-[#4FB609]" />
           {hasAttemptsInfo ? (
             <p className="mt-2 font-sans text-sm text-muted-foreground">
@@ -131,7 +130,7 @@ const SkillAssessementSummary = () => {
             </p>
           ) : null}
         </div>
-        {isDowngraded && (
+        {/* {isDowngraded && (
           <div className="border mt-6 w-fit border-[#FF7854] bg-[#FFF1EE] flex flex-row gap-x-4 items-center py-2.5 px-3 rounded-lg">
             <Image
               src={"/assets/icons/alert-icon.svg"}
@@ -141,7 +140,7 @@ const SkillAssessementSummary = () => {
             />
             <p className="text-[#757575] text-[14px]">{feedback}</p>
           </div>
-        )}
+        )} */}
         <div className="flex flex-col gap-y-4 sm:flex-row items-center self-center mt-15.5 gap-x-2">
           {showRetakeButton && (
             <Button
