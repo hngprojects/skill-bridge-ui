@@ -1,30 +1,4 @@
-import type {
-  ChartZone,
-  InsightCard,
-  SkillItem,
-} from "@/types/ai-report-skill-breakdown";
-
-export const CHART_ZONES: ChartZone[] = [
-  {
-    id: "emerging",
-    label: "Emerging",
-    bars: [
-      { value: 12 },
-      { value: 39 },
-      { value: 47, active: true, activeLabel: "47%" },
-    ],
-  },
-  {
-    id: "intermediate",
-    label: "Intermediate",
-    bars: [{ value: 60 }, { value: 82 }, { value: 40 }],
-  },
-  {
-    id: "job-ready",
-    label: "Job Ready",
-    bars: [{ value: 48 }, { value: 12 }, { value: 6 }],
-  },
-];
+import type { InsightCard, SkillItem } from "@/types/ai-report-skill-breakdown";
 
 export const AI_SUMMARY: InsightCard = {
   title: "AI Summary",
@@ -39,29 +13,13 @@ export const GROWTH_INSIGHT: InsightCard = {
 };
 
 export const STRENGTHS: SkillItem[] = [
-  {
-    text: "Strong hierarchy, spacing, and interface.",
-  },
-  {
-    text: "Good user flows and usability patterns.",
-  },
-  {
-    text: "Quick to learn and apply new concepts.",
-  },
+  { text: "Strong hierarchy, spacing, and interface." },
+  { text: "Good user flows and usability patterns." },
+  { text: "Quick to learn and apply new concepts." },
 ];
 
 export const WEAK_AREAS: SkillItem[] = [
-  {
-    text: "Improve presentation clarity for stakeholder.",
-  },
-  {
-    text: "Breaking down complex product challenges.",
-  },
-  {
-    text: "Develop strong understanding product ecosystems",
-  },
+  { text: "Improve presentation clarity for stakeholder." },
+  { text: "Breaking down complex product challenges." },
+  { text: "Develop strong understanding product ecosystems" },
 ];
-
-export const CHART_HEIGHT = 130;
-
-export const BAR_GAP = 6;

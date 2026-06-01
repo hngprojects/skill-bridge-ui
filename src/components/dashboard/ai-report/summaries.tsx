@@ -1,41 +1,5 @@
-import type {
-  ChartZone,
-  InsightCard,
-  SkillItem,
-} from "@/types/ai-report-skill-breakdown";
+import type { InsightCard, SkillItem } from "@/types/ai-report-skill-breakdown";
 import { cn } from "@/lib/utils";
-import { BAR_GAP, CHART_HEIGHT } from "@/constants/ai-report-skill-breakdown";
-import { BarColumn } from "../emerging-user/emerging-user-skill-bar-column";
-
-export function ZoneGroup({ zone }: { zone: ChartZone }) {
-  return (
-    <div className="flex flex-1 flex-col">
-      {/* Bars */}
-      <div
-        className="flex items-end"
-        style={{ gap: BAR_GAP, height: CHART_HEIGHT }}
-      >
-        {zone.bars.map((bar, i) => (
-          <BarColumn key={i} bar={bar} chartHeight={CHART_HEIGHT} />
-        ))}
-      </div>
-
-      {/* Label */}
-      <div className="mt-2">
-        <span
-          className={cn(
-            "flex h-7 w-full items-center justify-center rounded-md text-[10px] font-medium sm:h-8 sm:text-[11px]",
-            zone.id === "emerging"
-              ? "bg-amber-100 text-amber-700"
-              : "bg-gray-100 text-muted-foreground",
-          )}
-        >
-          {zone.label}
-        </span>
-      </div>
-    </div>
-  );
-}
 
 export function InsightSection({ card }: { card: InsightCard }) {
   return (
@@ -105,7 +69,6 @@ export function SkillList({
                 </p>
               </div>
 
-              {/* Indicator bars */}
               <div className="flex shrink-0 items-end gap-0.5">
                 {[1, 2, 3].map((bar) => (
                   <div

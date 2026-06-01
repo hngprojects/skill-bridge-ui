@@ -4,7 +4,7 @@ import { apiGoalToLabel } from "@/constants/talent-onboarding";
 import type { DashboardHomeResponseData } from "@/types/api";
 
 import { DashboardJobRoadmap } from "./emerging-user-job-roadmap";
-import { DashboardSkillBreakdown } from "./emerging-user-skill-breakdown";
+import { SkillBreakdownSection } from "@/components/dashboard/skill-breakdown";
 import { DashboardStatusCard } from "./emerging-user-status-card";
 
 type EmergingUserDashboardProps = {
@@ -30,7 +30,8 @@ export function EmergingUserDashboard({
         daysRemaining={advanced?.retake?.daysRemaining}
       />
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <DashboardSkillBreakdown
+        <SkillBreakdownSection
+          tier={advanced?.tier}
           activePercentage={advanced?.percentage}
           completedAt={advanced?.completedAt}
         />
