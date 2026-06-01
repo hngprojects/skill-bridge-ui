@@ -45,7 +45,6 @@ const AdvancedAssessmentSummary = () => {
         assessement="advanced"
         duration="30-45 minutes"
         title="AI mock interview"
-        route="/t/resources"
       />
     </AssessmentContainer>
   );

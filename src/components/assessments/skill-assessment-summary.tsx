@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Dot } from "lucide-react";
 
 import AssessmentContainer from "@/components/assessments/assessment-container";
 import { isSkillExhausted } from "@/components/assessments/dashboard-home-state";
@@ -24,8 +23,7 @@ function formatLevel(level: string | undefined, fallback: string) {
 
 const SkillAssessementSummary = () => {
   const { data: user } = useMe({ enabled: true });
-  const { data: dashboardHome, isLoading: isDashboardHomeLoading } =
-    useDashboardHome();
+  const { data: dashboardHome } = useDashboardHome();
   const result = useAssessmentSummaryStore((state) =>
     user?.id ? state.resultsByUser[user.id]?.skill : null,
   );
@@ -39,11 +37,13 @@ const SkillAssessementSummary = () => {
     "your selected level",
   );
   const progressValue = result?.percentage ?? 57;
-  const isDowngraded = result?.downgraded ?? true;
-  const feedback =
-    result?.personalised_message ??
-    result?.guidance_report?.summary ??
-    "This does not define your potential. It helps us tailor your assessment accurately.";
+  const skillPassed =
+    result?.passed ?? dashboardHome?.performance?.skill?.passed === true;
+  const isDowngraded = result?.downgraded ?? !skillPassed;
+  // const feedback =
+  //   result?.personalised_message ??
+  //   result?.guidance_report?.summary ??
+  //   "This does not define your potential. It helps us tailor your assessment accurately.";
 
   // Attempt counts come from /dashboard/home, not the submit response — the
   // skill submit doesn't carry the user's running attempt tally. Exhaustion
@@ -59,11 +59,7 @@ const SkillAssessementSummary = () => {
     (item) => item.key === "advanced",
   )?.status;
   const canContinueToAdvanced = advancedStatus === "available";
-  const showRetakeButton = !canContinueToAdvanced && !noAttemptsLeft;
-  const nextUpLockedLabel = isDashboardHomeLoading
-    ? "Checking unlock status"
-    : "Assessment locked";
-
+  const showRetakeButton = !skillPassed && !noAttemptsLeft;
   return !isUserContextReady ? (
     <AssessmentContainer>
       <p className="text-base text-muted-foreground">
@@ -83,7 +79,7 @@ const SkillAssessementSummary = () => {
           Skill assessment summary
         </h2>
         <p className="text-base md:text-lg font-light max-w-208.75">
-          {!canContinueToAdvanced ? (
+          {!skillPassed ? (
             <>
               You completed the assessment, but you did not meet the required
               cutoff to progress. Based on your evaluation, your result was
@@ -110,11 +106,11 @@ const SkillAssessementSummary = () => {
       </section>
       <div className="flex flex-col">
         <div className="flex flex-col gap-y-2">
-          <p className="text-[#4FB609] font-bold text-base md:text-2xl flex flex-row items-center">
+          {/* <p className="text-[#4FB609] font-bold text-base md:text-2xl flex flex-row items-center">
             Validated
             <Dot size={40} />
             {validatedLevel} Level
-          </p>
+          </p> */}
           <Progress value={progressValue} className="h-1 *:bg-[#4FB609]" />
           {hasAttemptsInfo ? (
             <p className="mt-2 font-sans text-sm text-muted-foreground">
@@ -131,7 +127,7 @@ const SkillAssessementSummary = () => {
             </p>
           ) : null}
         </div>
-        {isDowngraded && (
+        {/* {isDowngraded && (
           <div className="border mt-6 w-fit border-[#FF7854] bg-[#FFF1EE] flex flex-row gap-x-4 items-center py-2.5 px-3 rounded-lg">
             <Image
               src={"/assets/icons/alert-icon.svg"}
@@ -141,7 +137,7 @@ const SkillAssessementSummary = () => {
             />
             <p className="text-[#757575] text-[14px]">{feedback}</p>
           </div>
-        )}
+        )} */}
         <div className="flex flex-col gap-y-4 sm:flex-row items-center self-center mt-15.5 gap-x-2">
           {showRetakeButton && (
             <Button
@@ -155,7 +151,13 @@ const SkillAssessementSummary = () => {
             asChild
             className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
           >
-            <Link href="/t/dashboard">
+            <Link
+              href={
+                canContinueToAdvanced
+                  ? "/t/assessments/advanced"
+                  : "/t/dashboard"
+              }
+            >
               {canContinueToAdvanced
                 ? "Accept & continue"
                 : "Return to dashboard"}
@@ -167,9 +169,6 @@ const SkillAssessementSummary = () => {
         assessement="skill"
         duration="30-45 minutes"
         title="Advanced assessment"
-        route="/t/assessments/advanced"
-        locked={!canContinueToAdvanced}
-        lockedLabel={nextUpLockedLabel}
       />
     </AssessmentContainer>
   );

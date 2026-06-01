@@ -2,10 +2,10 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { InsightSection, SkillList, ZoneGroup } from "./summaries";
-
-import { CHART_ZONES } from "@/constants/ai-report-skill-breakdown";
+import { SkillBreakdownChart } from "@/components/dashboard/skill-breakdown";
 import { aiReportQueryOptions } from "@/hooks/api/use-ai-report";
+
+import { InsightSection, SkillList } from "./summaries";
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
@@ -66,12 +66,10 @@ export function AiReportSkillBreakdown() {
         </p>
       </div>
 
-      {/* Chart */}
-      <div className="flex items-end gap-2 overflow-x-auto pt-10 sm:gap-4 sm:pt-14 lg:pt-18">
-        {CHART_ZONES.map((zone) => (
-          <ZoneGroup key={zone.id} zone={zone} />
-        ))}
-      </div>
+      <SkillBreakdownChart
+        percentage={report.score}
+        reportType={report.report_type}
+      />
 
       {/* AI Summary */}
       <InsightSection

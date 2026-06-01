@@ -1,0 +1,2 @@
+export const SKILL_BREAKDOWN_CHART_HEIGHT = 130;
+export const SKILL_BREAKDOWN_BAR_GAP = 6;
