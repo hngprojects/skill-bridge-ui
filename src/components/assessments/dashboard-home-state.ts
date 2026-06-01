@@ -85,6 +85,36 @@ export function isSkillExhausted(
   return used != null && max != null && used >= max;
 }
 
+function formatSkillAttemptsCooldownLabel(
+  dashboardHome: DashboardHomeResponseData,
+): string | undefined {
+  const skill = dashboardHome.performance?.skill;
+  const used = skill?.attemptsUsed ?? dashboardHome.skillAttemptsUsed;
+  const max = dashboardHome.skillMaxAttempts;
+  if (max == null) return undefined;
+
+  const remaining =
+    skill?.attemptsRemaining ??
+    (used != null ? Math.max(0, max - used) : undefined);
+
+  if (remaining == null) return `${max} attempts`;
+  if (remaining === 0) return "No attempts remaining";
+  if (remaining === 1 && max === 1) return "1 attempt remaining";
+  return `${remaining} of ${max} attempts remaining`;
+}
+
+function formatAdvancedRetakeCooldownLabel(
+  dashboardHome: DashboardHomeResponseData,
+): string | undefined {
+  const retake =
+    dashboardHome.performance?.advanced?.retake ?? dashboardHome.advancedRetake;
+  const daysRemaining = retake?.daysRemaining;
+  if (daysRemaining == null) return undefined;
+  if (daysRemaining <= 0) return "Retake available now";
+  if (daysRemaining === 1) return "Retake in 1 day";
+  return `Retake in ${daysRemaining} days`;
+}
+
 export function applyDashboardHomeToRoadmapSteps(
   steps: AssessmentRoadmapStep[],
   dashboardHome: DashboardHomeResponseData | undefined,
@@ -138,8 +168,16 @@ export function applyDashboardHomeToCatalogSteps(
     if (!status) return step;
 
     const isSkillStep = step.id === "skill-career-assessment";
+    const isAdvancedStep = step.id === "advanced-assessment";
     const effectiveStatus: AssessmentRoadmapStepStatus =
       isSkillStep && skillAttemptsExhausted ? "completed" : status;
+
+    const skillAttemptsLabel = isSkillStep
+      ? formatSkillAttemptsCooldownLabel(dashboardHome)
+      : undefined;
+    const advancedRetakeLabel = isAdvancedStep
+      ? formatAdvancedRetakeCooldownLabel(dashboardHome)
+      : undefined;
 
     return {
       ...step,
@@ -147,6 +185,12 @@ export function applyDashboardHomeToCatalogSteps(
       ctaLabel: isSkillStep
         ? ctaLabelForSkillStep(effectiveStatus, skillAttemptsUsed)
         : ctaLabelForStatus(effectiveStatus),
+      ...(skillAttemptsLabel != null
+        ? { cooldownLabel: skillAttemptsLabel }
+        : {}),
+      ...(advancedRetakeLabel != null
+        ? { cooldownLabel: advancedRetakeLabel }
+        : {}),
     };
   });
 }
