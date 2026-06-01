@@ -9,7 +9,7 @@ import {
 import { useMe } from "@/hooks/api";
 import type { DashboardHomeResponseData } from "@/types/api";
 
-import { JobReadySkillBreakdown } from "./job-ready-skill-breakdown";
+import { SkillBreakdownSection } from "@/components/dashboard/skill-breakdown";
 import { JobReadyStatusCard } from "./job-ready-status-card";
 import { JobReadyVerifiedProfile } from "./job-ready-verified-profile";
 
@@ -36,7 +36,8 @@ export function JobReadyDashboard({ dashboardHome }: JobReadyDashboardProps) {
         score={advanced?.percentage}
       />
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <JobReadySkillBreakdown
+        <SkillBreakdownSection
+          tier={advanced?.tier}
           activePercentage={advanced?.percentage}
           completedAt={advanced?.completedAt}
         />
