@@ -38,7 +38,9 @@ const SkillAssessementSummary = () => {
     "your selected level",
   );
   const progressValue = result?.percentage ?? 57;
-  const isDowngraded = result?.downgraded ?? true;
+  const skillPassed =
+    result?.passed ?? dashboardHome?.performance?.skill?.passed === true;
+  const isDowngraded = result?.downgraded ?? !skillPassed;
   // const feedback =
   //   result?.personalised_message ??
   //   result?.guidance_report?.summary ??
@@ -58,7 +60,7 @@ const SkillAssessementSummary = () => {
     (item) => item.key === "advanced",
   )?.status;
   const canContinueToAdvanced = advancedStatus === "available";
-  const showRetakeButton = !canContinueToAdvanced && !noAttemptsLeft;
+  const showRetakeButton = !skillPassed && !noAttemptsLeft;
   const nextUpLockedLabel = isDashboardHomeLoading
     ? "Checking unlock status"
     : "Assessment locked";
@@ -82,7 +84,7 @@ const SkillAssessementSummary = () => {
           Skill assessment summary
         </h2>
         <p className="text-base md:text-lg font-light max-w-208.75">
-          {!canContinueToAdvanced ? (
+          {!skillPassed ? (
             <>
               You completed the assessment, but you did not meet the required
               cutoff to progress. Based on your evaluation, your result was
