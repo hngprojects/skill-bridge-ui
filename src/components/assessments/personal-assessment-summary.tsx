@@ -107,7 +107,6 @@ const PersonalAssessmentSummary = () => {
         assessement="personal"
         duration="30-45 minutes"
         title="Skill/career assessment"
-        route="/t/assessments/skill"
       />
     </AssessmentContainer>
   );

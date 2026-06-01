@@ -23,8 +23,7 @@ function formatLevel(level: string | undefined, fallback: string) {
 
 const SkillAssessementSummary = () => {
   const { data: user } = useMe({ enabled: true });
-  const { data: dashboardHome, isLoading: isDashboardHomeLoading } =
-    useDashboardHome();
+  const { data: dashboardHome } = useDashboardHome();
   const result = useAssessmentSummaryStore((state) =>
     user?.id ? state.resultsByUser[user.id]?.skill : null,
   );
@@ -61,10 +60,6 @@ const SkillAssessementSummary = () => {
   )?.status;
   const canContinueToAdvanced = advancedStatus === "available";
   const showRetakeButton = !skillPassed && !noAttemptsLeft;
-  const nextUpLockedLabel = isDashboardHomeLoading
-    ? "Checking unlock status"
-    : "Assessment locked";
-
   return !isUserContextReady ? (
     <AssessmentContainer>
       <p className="text-base text-muted-foreground">
@@ -174,9 +169,6 @@ const SkillAssessementSummary = () => {
         assessement="skill"
         duration="30-45 minutes"
         title="Advanced assessment"
-        route="/t/assessments/advanced"
-        locked={!canContinueToAdvanced}
-        lockedLabel={nextUpLockedLabel}
       />
     </AssessmentContainer>
   );

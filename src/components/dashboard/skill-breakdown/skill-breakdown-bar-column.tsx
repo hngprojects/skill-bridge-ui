@@ -27,7 +27,7 @@ export function SkillBreakdownBarColumn({
         <div
           className="absolute"
           style={{
-            bottom: barPx - 20,
+            bottom: Math.max(barPx - 20, 0),
             left: "50%",
             transform: "translateX(-50%)",
           }}

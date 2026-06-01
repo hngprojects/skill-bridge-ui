@@ -7,9 +7,6 @@ type Props = {
   duration: string;
   title: string;
   assessement: AssessmentSlug;
-  route: string;
-  locked?: boolean;
-  lockedLabel?: string;
 };
 
 const NextUpCard = ({ assessement, title, duration }: Props) => {

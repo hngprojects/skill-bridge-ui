@@ -100,7 +100,8 @@ function formatSkillAttemptsCooldownLabel(
   if (remaining == null) return `${max} attempts`;
   if (remaining === 0) return "No attempts remaining";
   if (remaining === 1 && max === 1) return "1 attempt remaining";
-  return `${remaining} of ${max} attempts remaining`;
+  const attemptWord = remaining === 1 ? "attempt" : "attempts";
+  return `${remaining} of ${max} ${attemptWord} remaining`;
 }
 
 function formatAdvancedRetakeCooldownLabel(
@@ -178,6 +179,7 @@ export function applyDashboardHomeToCatalogSteps(
     const advancedRetakeLabel = isAdvancedStep
       ? formatAdvancedRetakeCooldownLabel(dashboardHome)
       : undefined;
+    const cooldownLabel = skillAttemptsLabel ?? advancedRetakeLabel;
 
     return {
       ...step,
@@ -185,12 +187,7 @@ export function applyDashboardHomeToCatalogSteps(
       ctaLabel: isSkillStep
         ? ctaLabelForSkillStep(effectiveStatus, skillAttemptsUsed)
         : ctaLabelForStatus(effectiveStatus),
-      ...(skillAttemptsLabel != null
-        ? { cooldownLabel: skillAttemptsLabel }
-        : {}),
-      ...(advancedRetakeLabel != null
-        ? { cooldownLabel: advancedRetakeLabel }
-        : {}),
+      ...(cooldownLabel != null ? { cooldownLabel } : {}),
     };
   });
 }
