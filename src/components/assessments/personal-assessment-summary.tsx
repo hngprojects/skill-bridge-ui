@@ -100,7 +100,7 @@ const PersonalAssessmentSummary = () => {
           asChild
           className="bg-[#322B2B] text-white rounded-lg h-10 w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
         >
-          <Link href="/t/dashboard">Continue</Link>
+          <Link href="/t/assessments/skill">Continue</Link>
         </Button>
       </div>
       <NextUpCard

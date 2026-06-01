@@ -155,7 +155,13 @@ const SkillAssessementSummary = () => {
             asChild
             className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
           >
-            <Link href="/t/dashboard">
+            <Link
+              href={
+                canContinueToAdvanced
+                  ? "/t/assessments/advanced"
+                  : "/t/dashboard"
+              }
+            >
               {canContinueToAdvanced
                 ? "Accept & continue"
                 : "Return to dashboard"}
