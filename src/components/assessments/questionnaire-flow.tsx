@@ -42,11 +42,6 @@ export type QuestionnaireFlowProps = {
     answers: Record<string, string | string[]>,
     timeSpentByKey?: Record<string, number>,
   ) => Promise<unknown>;
-  onLastQuestionAdvance?: (
-    question: Question,
-    answers: Record<string, string | string[]>,
-    timeSpentByKey: Record<string, number>,
-  ) => Promise<boolean>;
 };
 
 export function QuestionnaireFlow({
@@ -57,7 +52,6 @@ export function QuestionnaireFlow({
   prefillAnswers,
   totalQuestions,
   onSubmit,
-  onLastQuestionAdvance,
 }: QuestionnaireFlowProps) {
   const router = useRouter();
   const { name } = useParams<{ name: string }>();
@@ -139,18 +133,6 @@ export function QuestionnaireFlow({
     const builtTimeByKey = timer.buildByKey(questions);
 
     try {
-      if (onLastQuestionAdvance) {
-        const intercepted = await onLastQuestionAdvance(
-          question,
-          builtAnswers,
-          builtTimeByKey,
-        );
-        if (intercepted) {
-          timer.resetStart();
-          setCurrentIndex((i) => i + 1);
-          return;
-        }
-      }
       const result = await onSubmit(builtAnswers, builtTimeByKey);
       if (isAssessmentSlug(name) && name !== "advanced" && user?.id) {
         if (result != null) {

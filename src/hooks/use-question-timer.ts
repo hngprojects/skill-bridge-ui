@@ -32,10 +32,6 @@ export function useQuestionTimer(
     questionStartRef.current = now;
   };
 
-  const resetStart = () => {
-    questionStartRef.current = Date.now();
-  };
-
   const buildByKey = (questions: Question[]): Record<string, number> => {
     const result: Record<string, number> = {};
     for (const q of questions) {
@@ -45,5 +41,5 @@ export function useQuestionTimer(
     return result;
   };
 
-  return { accumulate, resetStart, buildByKey };
+  return { accumulate, buildByKey };
 }
