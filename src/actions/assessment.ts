@@ -1,7 +1,5 @@
 import { ApiError, authApi } from "@/lib/api";
 import type {
-  AdvancedAssessmentLt2SubmitInput,
-  AdvancedAssessmentLt2SubmitResponseData,
   AdvancedAssessmentStartResponseData,
   AdvancedAssessmentSubmitInput,
   AdvancedAssessmentSubmitResponseData,
@@ -112,21 +110,6 @@ export async function resolveAdvancedAssessmentSession(): Promise<AdvancedAssess
     }
     throw error;
   }
-}
-
-/**
- * Submits the LT-2 (last work_task long-text) answer and receives the
- * server-generated LT-3 reflection question. The session is appended to
- * server-side; the client is expected to render the returned question next.
- */
-export async function submitAdvancedAssessmentLt2(
-  sessionId: string,
-  body: AdvancedAssessmentLt2SubmitInput,
-): Promise<AdvancedAssessmentLt2SubmitResponseData> {
-  const res = await authApi.post<
-    ApiEnvelope<AdvancedAssessmentLt2SubmitResponseData>
-  >(`/talent/assessment/session/${sessionId}/lt2-submit`, body);
-  return unwrapData(res);
 }
 
 export async function submitAdvancedAssessment(
