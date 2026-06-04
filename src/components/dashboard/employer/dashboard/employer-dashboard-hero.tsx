@@ -2,11 +2,11 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
-import { EmployerDashboardHeroIllustration } from "./employer-dashboard-hero-illustration";
+import Image from "next/image";
 
 export function EmployerDashboardHero() {
   return (
-    <section className="overflow-hidden rounded-t-2xl bg-[#dfe4e2] px-5 py-6 sm:px-6 lg:px-8 lg:py-8">
+    <section className="rounded-t-2xl bg-[#dfe4e2]">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-xl space-y-2">
           <h2 className="text-2xl font-semibold leading-normal text-[#081536]">
@@ -35,9 +35,14 @@ export function EmployerDashboardHero() {
           </div>
         </div>
 
-        <div className="hidden shrink-0 lg:block">
-          <EmployerDashboardHeroIllustration />
-        </div>
+        <Image
+          src="/assets/employer-dashboard/employer-dashboard-hero.svg"
+          alt="Verified talent profile with employability score and skill verification checklist"
+          width={407}
+          height={219}
+          className="h-auto w-full"
+          priority
+        />
       </div>
     </section>
   );
