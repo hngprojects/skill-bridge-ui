@@ -227,14 +227,13 @@ function TalentSignupForm() {
         />
 
         <p className="body-2 text-center font-light text-muted-foreground">
-          Already have an account? Click{" "}
+          Already have an account?{" "}
           <Link
             href="/login"
             className="font-normal text-foreground underline decoration-foreground underline-offset-4 transition-all hover:opacity-80"
           >
-            here
-          </Link>{" "}
-          to Log in
+            Login
+          </Link>
         </p>
       </form>
     </>

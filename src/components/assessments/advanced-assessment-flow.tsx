@@ -9,10 +9,7 @@ import {
   useResolveAdvancedAssessmentSession,
   useSubmitAdvancedAssessment,
 } from "@/hooks/api";
-import {
-  useFlagAssessmentEvent,
-  useSubmitAdvancedAssessmentLt2,
-} from "@/hooks/api/use-assessment";
+import { useFlagAssessmentEvent } from "@/hooks/api/use-assessment";
 import {
   mapAdvancedQuestions,
   toAdvancedSubmitAnswers,
@@ -25,7 +22,6 @@ import {
 } from "@/lib/assessment-start";
 import { ApiError, isServiceUnavailableError } from "@/lib/api";
 import type { AdvancedAssessmentApiQuestion } from "@/types/api";
-import type { Question } from "@/types/questionnaire";
 
 type AdvancedStartState =
   | "loading"
@@ -58,12 +54,6 @@ function readRetakeLockedDate(error: unknown): string | undefined {
     : undefined;
 }
 
-function isSessionExpiredError(error: unknown): boolean {
-  if (!(error instanceof ApiError) || error.status !== 422) return false;
-  const data = error.data as { error?: string } | undefined;
-  return data?.error === "SESSION_EXPIRED";
-}
-
 export function AdvancedAssessmentFlow() {
   const [sessionId, setSessionId] = useState("");
   const [apiQuestions, setApiQuestions] = useState<
@@ -84,8 +74,6 @@ export function AdvancedAssessmentFlow() {
   const { mutateAsync: resolveSession } = useResolveAdvancedAssessmentSession();
   const { mutateAsync: submitAssessment, isPending: isSubmitting } =
     useSubmitAdvancedAssessment();
-  const { mutateAsync: submitLt2, isPending: isSubmittingLt2 } =
-    useSubmitAdvancedAssessmentLt2(sessionId);
   const flagViolation = useFlagAssessmentEvent("advanced", sessionId);
 
   const handleRetry = useCallback(() => {
@@ -136,20 +124,6 @@ export function AdvancedAssessmentFlow() {
     [apiQuestions],
   );
 
-  const lastLt2QuestionId = useMemo(() => {
-    const lt2s = apiQuestions.filter(
-      (q) => q.block === "long_text" && q.slot_type === "work_task",
-    );
-    return lt2s[lt2s.length - 1]?.question_id;
-  }, [apiQuestions]);
-
-  const lt3Generated = useMemo(() => {
-    if (!lastLt2QuestionId) return false;
-    const lt2 = apiQuestions.find((q) => q.question_id === lastLt2QuestionId);
-    if (!lt2) return false;
-    return apiQuestions.some((q) => q.question_number > lt2.question_number);
-  }, [apiQuestions, lastLt2QuestionId]);
-
   if (startState === "unavailable") {
     return (
       <AssessmentStartBlocked
@@ -195,48 +169,6 @@ export function AdvancedAssessmentFlow() {
       answers: toAdvancedSubmitAnswers(questions, answersByKey, timeSpentByKey),
     }).then(() => {});
 
-  const onLastQuestionAdvance = async (
-    finalQuestion: Question,
-    answersByKey: Record<string, string | string[]>,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _timeSpentByKey: Record<string, number>,
-  ): Promise<boolean> => {
-    if (lt3Generated) return false;
-    if (!lastLt2QuestionId) return false;
-    if (finalQuestion.id !== lastLt2QuestionId) return false;
-
-    const rawAnswer = answersByKey[finalQuestion.key];
-    const lt2Answer = typeof rawAnswer === "string" ? rawAnswer : "";
-
-    try {
-      const lt3 = await submitLt2({
-        questionId: lastLt2QuestionId,
-        answer: lt2Answer,
-      });
-
-      const lt3Question: AdvancedAssessmentApiQuestion = {
-        question_id: lt3.question_id,
-        question_number: lt3.question_number,
-        block: "long_text",
-        question_type: "required_text",
-        question_text: lt3.question_text,
-        options: null,
-        slot_type: null,
-        metadata: null,
-        correct_answer: null,
-        min_length: null,
-        max_length: null,
-      };
-
-      setApiQuestions((prev) => [...prev, lt3Question]);
-      setRemainingSeconds(lt3.max_seconds_remaining);
-      return true;
-    } catch (e) {
-      if (isSessionExpiredError(e)) return false;
-      throw e;
-    }
-  };
-
   const recordViolation = (count: number) => {
     if (count >= 3 && !flagViolation.isPending && !flagViolation.isSuccess)
       flagViolation.mutate({ eventType: "tab_switch" });
@@ -251,11 +183,10 @@ export function AdvancedAssessmentFlow() {
       <QuestionnaireFlow
         questions={questions}
         isLoading={startState === "loading"}
-        isSubmitting={isSubmitting || isSubmittingLt2}
+        isSubmitting={isSubmitting}
         initialSeconds={remainingSeconds}
-        totalQuestions={apiQuestions.length + (lt3Generated ? 0 : 1)}
+        totalQuestions={apiQuestions.length}
         onSubmit={submit}
-        onLastQuestionAdvance={onLastQuestionAdvance}
       />
     </ViolationDetector>
   );

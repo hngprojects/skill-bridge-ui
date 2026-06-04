@@ -181,7 +181,7 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
             )}
 
             <p className="text-center text-sm leading-6 tracking-[0.016em] text-[#757575] sm:text-left">
-              Estimated time: {step.estimatedTime}
+              {step.cooldownLabel ?? `Estimated time: ${step.estimatedTime}`}
             </p>
           </div>
         </div>

@@ -21,6 +21,7 @@ export function useChangePasswordDialog() {
   const queryClient = useQueryClient();
   const changePasswordMutation = useChangePassword();
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutWarning, setShowLogoutWarning] = useState(false);
   const [passwordForm, setPasswordForm] = useState(initialPasswordForm);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const changeInFlightRef = useRef(false);
@@ -72,6 +73,14 @@ export function useChangePasswordDialog() {
       return;
     }
 
+    // Show logout warning before proceeding
+    setShowLogoutWarning(true);
+  };
+
+  const handleConfirmPasswordChange = async () => {
+    if (changeInFlightRef.current) return;
+    setShowLogoutWarning(false);
+
     try {
       changeInFlightRef.current = true;
       await changePasswordMutation.mutateAsync(passwordForm);
@@ -85,23 +94,31 @@ export function useChangePasswordDialog() {
     await redirectToLogin();
   };
 
+  const handleCancelLogoutWarning = () => {
+    setShowLogoutWarning(false);
+  };
+
   const handleOpenChange = (open: boolean) => {
     if (isUpdating) return;
     setIsOpen(open);
     if (!open) {
       setPasswordForm(initialPasswordForm);
       setPasswordError(null);
+      setShowLogoutWarning(false);
     }
   };
 
   return {
     isOpen,
     isUpdating,
+    showLogoutWarning,
     passwordForm,
     passwordError,
     passwordErrorId,
     handleOpenChange,
     handleChangePassword,
+    handleConfirmPasswordChange,
+    handleCancelLogoutWarning,
     updatePasswordField,
   };
 }

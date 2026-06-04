@@ -17,10 +17,11 @@ export async function getNotifications(
 }
 
 export async function getUnreadCount(): Promise<UnreadCountResponseData> {
-  const res = await authApi.get<ApiEnvelope<UnreadCountResponseData>>(
+  const res = await authApi.get<ApiEnvelope<{ unread_count: number }>>(
     "/talent/notifications/unread-count",
   );
-  return unwrapData(res);
+  const raw = unwrapData(res);
+  return { count: raw.unread_count ?? 0 };
 }
 
 export async function markAllAsRead(): Promise<void> {

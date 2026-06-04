@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Image from "next/image";
-import { Check } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -21,15 +20,19 @@ export function SettingsLinkedInField() {
 
   function handleSave() {
     const trimmed = value.trim();
-    if (trimmed) {
-      const result = linkedinUrlSchema.safeParse(trimmed);
-      if (!result.success) {
-        setError(
-          result.error.issues[0]?.message ??
-            "Enter a valid LinkedIn profile URL (e.g. https://linkedin.com/in/username)",
-        );
-        return;
-      }
+    // Blank is treated as "discard the in-flight edit" rather than a clear
+    if (!trimmed) {
+      setError(null);
+      setLocalValue(null);
+      return;
+    }
+    const result = linkedinUrlSchema.safeParse(trimmed);
+    if (!result.success) {
+      setError(
+        result.error.issues[0]?.message ??
+          "Enter a valid LinkedIn profile URL (e.g. https://linkedin.com/in/username)",
+      );
+      return;
     }
     setError(null);
     updateProfile(
@@ -55,26 +58,27 @@ export function SettingsLinkedInField() {
           aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? "linkedin-url-error" : undefined}
           className={cn(
-            "pr-12",
+            isDirty ? "pr-20" : "pr-10",
             error && "border-destructive focus-visible:ring-destructive",
           )}
         />
-        <span className="absolute right-3">
-          {isSaving ? (
-            <span className="text-xs text-muted-foreground pointer-events-none">
-              Saving…
-            </span>
-          ) : isDirty ? (
+        <span className="absolute right-2 flex items-center">
+          {isDirty ? (
             <button
               type="button"
               onClick={handleSave}
-              className="flex items-center justify-center size-5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              aria-label="Save LinkedIn URL"
+              disabled={isSaving}
+              className={cn(
+                "h-7 cursor-pointer rounded-md px-3 text-xs font-medium",
+                "bg-primary text-primary-foreground transition-colors",
+                "hover:bg-primary/90",
+                "disabled:cursor-not-allowed disabled:opacity-60",
+              )}
             >
-              <Check className="size-3" strokeWidth={2.5} />
+              {isSaving ? "Saving…" : "Save"}
             </button>
           ) : (
-            <span className="pointer-events-none">
+            <span className="pointer-events-none pr-1">
               <Image
                 src="/waitlist-icons/linkedin.svg"
                 alt="LinkedIn"
