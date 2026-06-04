@@ -12,12 +12,15 @@ type AssessmentPreviewCardProps = {
   startHref?: string;
   /** Optional override for the footer CTA's label. */
   startLabel?: string;
+  /** When true, the footer CTA renders as disabled (no navigation). */
+  startDisabled?: boolean;
 };
 
 function AssessmentPreviewCard({
   assessment,
   startHref,
   startLabel,
+  startDisabled,
 }: AssessmentPreviewCardProps) {
   return (
     <Card className="w-full rounded-xl border border-[#D9D9D9] bg-white py-0 shadow-none 2xl:rounded-[24px]">
@@ -30,6 +33,7 @@ function AssessmentPreviewCard({
           assessmentSlug={assessment.slug}
           startHref={startHref}
           startLabel={startLabel}
+          startDisabled={startDisabled}
         />
       </CardContent>
     </Card>

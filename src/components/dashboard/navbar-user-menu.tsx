@@ -63,7 +63,7 @@ export function DashboardNavbarUserMenu({
           }}
           align="end"
           sideOffset={8}
-          className="w-full rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"
+          className="*:cursor-pointer w-full rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"
         >
           {isVerified ? (
             <DropdownMenuItem

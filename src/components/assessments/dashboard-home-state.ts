@@ -91,13 +91,10 @@ function formatSkillAttemptsCooldownLabel(
   const skill = dashboardHome.performance?.skill;
   const used = skill?.attemptsUsed ?? dashboardHome.skillAttemptsUsed;
   const max = dashboardHome.skillMaxAttempts;
-  if (max == null) return undefined;
+  if (max == null || used == null || used <= 0) return undefined;
 
-  const remaining =
-    skill?.attemptsRemaining ??
-    (used != null ? Math.max(0, max - used) : undefined);
+  const remaining = skill?.attemptsRemaining ?? Math.max(0, max - used);
 
-  if (remaining == null) return `${max} attempts`;
   if (remaining === 0) return "No attempts remaining";
   if (remaining === 1 && max === 1) return "1 attempt remaining";
   const attemptWord = remaining === 1 ? "attempt" : "attempts";
@@ -134,8 +131,17 @@ export function applyDashboardHomeToRoadmapSteps(
     if (!status) return step;
 
     const isSkillStep = step.id === "skill-career-assessment";
+    const isAdvancedStep = step.id === "advanced-assessment";
     const effectiveStatus: AssessmentRoadmapStepStatus =
       isSkillStep && skillAttemptsExhausted ? "completed" : status;
+
+    const skillAttemptsLabel = isSkillStep
+      ? formatSkillAttemptsCooldownLabel(dashboardHome)
+      : undefined;
+    const advancedRetakeLabel = isAdvancedStep
+      ? formatAdvancedRetakeCooldownLabel(dashboardHome)
+      : undefined;
+    const cooldownLabel = skillAttemptsLabel ?? advancedRetakeLabel;
 
     return {
       ...step,
@@ -144,6 +150,7 @@ export function applyDashboardHomeToRoadmapSteps(
       ctaLabel: isSkillStep
         ? ctaLabelForSkillStep(effectiveStatus, skillAttemptsUsed)
         : ctaLabelForStatus(effectiveStatus),
+      ...(cooldownLabel != null ? { cooldownLabel } : {}),
     };
   });
 }
