@@ -13,38 +13,49 @@ type AssessmentPreviewPageProps = {
   assessmentName: AssessmentSlug;
 };
 
-/**
- * For the skill assessment, swap the static "3 attempts" copy for a live
- * "X of Y attempts remaining" line driven by `/dashboard/home`. Personal and
- * advanced previews keep their static copy.
- */
-function withDynamicSkillAttempts(
+function withDynamicAttempts(
   base: AssessmentPreview,
   slug: AssessmentSlug,
   dashboardHome: ReturnType<typeof useDashboardHome>["data"],
 ): AssessmentPreview {
-  if (slug !== "skill" || !dashboardHome) return base;
-  const used =
-    dashboardHome.performance?.skill?.attemptsUsed ??
-    dashboardHome.skillAttemptsUsed;
-  const max = dashboardHome.skillMaxAttempts;
-  if (used == null || max == null) return base;
-  const remaining = Math.max(0, max - used);
-  const attempts =
-    remaining === 0
-      ? `No attempts remaining (${used} of ${max} used)`
-      : `${remaining} of ${max} attempts remaining`;
-  return { ...base, attempts };
+  if (!dashboardHome) return base;
+
+  if (slug === "skill") {
+    const used =
+      dashboardHome.performance?.skill?.attemptsUsed ??
+      dashboardHome.skillAttemptsUsed;
+    const max = dashboardHome.skillMaxAttempts;
+    if (used == null || used <= 0 || max == null) return base;
+    const remaining = Math.max(0, max - used);
+    const attempts =
+      remaining === 0
+        ? `No attempts remaining (${used} of ${max} used)`
+        : `${remaining} of ${max} attempts remaining`;
+    return { ...base, attempts };
+  }
+
+  if (slug === "advanced") {
+    const retake =
+      dashboardHome.performance?.advanced?.retake ??
+      dashboardHome.advancedRetake;
+    const daysRemaining = retake?.daysRemaining;
+    if (daysRemaining == null) return base;
+    const attempts =
+      daysRemaining <= 0
+        ? "Retake available now"
+        : daysRemaining === 1
+          ? "Retake available in 1 day"
+          : `Retake available in ${daysRemaining} days`;
+    return { ...base, attempts };
+  }
+
+  return base;
 }
 
 function AssessmentPreviewPage({ assessmentName }: AssessmentPreviewPageProps) {
   const base = getAssessmentPreview(assessmentName);
   const { data: dashboardHome } = useDashboardHome();
-  const assessment = withDynamicSkillAttempts(
-    base,
-    assessmentName,
-    dashboardHome,
-  );
+  const assessment = withDynamicAttempts(base, assessmentName, dashboardHome);
 
   const skillExhausted =
     assessmentName === "skill" && isSkillExhausted(dashboardHome);
@@ -56,12 +67,21 @@ function AssessmentPreviewPage({ assessmentName }: AssessmentPreviewPageProps) {
       : 0;
   const skillIsRetake =
     assessmentName === "skill" && !skillExhausted && skillAttemptsUsed > 0;
+
+  const advancedRetake =
+    assessmentName === "advanced"
+      ? (dashboardHome?.performance?.advanced?.retake ??
+        dashboardHome?.advancedRetake)
+      : undefined;
+  const advancedRetakeBlocked = advancedRetake?.ctaEnabled === false;
+
   const startHref = skillExhausted ? "/t/assessments/advanced" : undefined;
   const startLabel = skillExhausted
     ? "Continue to advanced"
-    : skillIsRetake
+    : skillIsRetake || advancedRetake != null
       ? "Retake"
       : undefined;
+  const startDisabled = advancedRetakeBlocked;
 
   return (
     <div className="flex min-h-[calc(100dvh-72px)] items-start justify-center px-4 pt-11 pb-14 sm:pt-14 lg:pt-16 2xl:pt-20">
@@ -70,6 +90,7 @@ function AssessmentPreviewPage({ assessmentName }: AssessmentPreviewPageProps) {
           assessment={assessment}
           startHref={startHref}
           startLabel={startLabel}
+          startDisabled={startDisabled}
         />
       </div>
     </div>

@@ -50,7 +50,7 @@ export const ASSESSMENT_PREVIEWS = {
       "This assessment is designed to evaluate your current skill level at your selected tracks.",
     iconSrc: "/assets/assessments/advanced-assessment-icon.svg",
     questionCount: "15 Questions",
-    duration: "90 minutes",
+    duration: "25 - 30 minutes",
     attempts: "1 attempt (allowed within time limit)",
     retakeText: "Retake valid after 14 days",
   },

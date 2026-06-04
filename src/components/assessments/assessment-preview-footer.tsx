@@ -7,12 +7,17 @@ type AssessmentPreviewFooterProps = {
   startHref?: string;
   /** CTA label. Defaults to "Start". */
   startLabel?: string;
+  startDisabled?: boolean;
 };
+
+const START_BUTTON_CLASS =
+  "h-8 min-w-43 rounded-md bg-primary text-xs font-semibold text-white hover:bg-[#322B2D]/90 2xl:h-11 2xl:min-w-60 2xl:text-base";
 
 function AssessmentPreviewFooter({
   assessmentSlug,
   startHref,
   startLabel = "Start",
+  startDisabled = false,
 }: AssessmentPreviewFooterProps) {
   const href = startHref ?? `/t/assessments/${assessmentSlug}/q`;
 
@@ -36,12 +41,15 @@ function AssessmentPreviewFooter({
         for support.
       </p>
 
-      <Button
-        asChild
-        className="h-8 min-w-43 rounded-md bg-primary text-xs font-semibold text-white hover:bg-[#322B2D]/90 2xl:h-11 2xl:min-w-60 2xl:text-base"
-      >
-        <Link href={href}>{startLabel}</Link>
-      </Button>
+      {startDisabled ? (
+        <Button type="button" disabled className={START_BUTTON_CLASS}>
+          {startLabel}
+        </Button>
+      ) : (
+        <Button asChild className={START_BUTTON_CLASS}>
+          <Link href={href}>{startLabel}</Link>
+        </Button>
+      )}
     </div>
   );
 }
