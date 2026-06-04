@@ -48,3 +48,68 @@ export const EMPLOYER_TESTIMONIALS = [
       "Placeholder text for the description text of what the user in focus says about their experience with product.",
   },
 ] as const;
+
+export const EMPLOYER_STAT_CARDS = [
+  {
+    label: "Verified Talent",
+    value: "2,184",
+    description:
+      "Candidates across engineering, design, product, and cloud roles.",
+    linkLabel: "Browse talents",
+    linkHref: "/e/talents",
+    iconBg: "#D3E6DF",
+    icon: "/assets/icons/icon-verified-talent.svg",
+  },
+  {
+    label: "Assessments Shared",
+    value: "24",
+    description:
+      "Track candidate submissions and review performance in one place.",
+    linkLabel: "View assessment",
+    linkHref: "/e/assessments",
+    iconBg: "#F9E796",
+    icon: "/assets/icons/icon-assessments-shared.svg",
+  },
+  {
+    label: "Shortlisted Candidates",
+    value: "12",
+    description: "Candidates saved for interviews or next review.",
+    linkLabel: "View shortlist",
+    linkHref: "/e/shortlist",
+    iconBg: "#CBB0EB",
+    icon: "/assets/icons/icon-shortlisted-candidates.svg",
+  },
+  {
+    label: "My Roles",
+    value: "3",
+    description: "Top candidates aligned with your hiring requirements.",
+    linkLabel: "View roles",
+    linkHref: "/e/roles",
+    iconBg: "#EDEEF2",
+    icon: "/assets/icons/icon-my-roles.svg",
+  },
+] as const;
+
+export const EMPLOYER_RECENT_ACTIVITY = [
+  {
+    id: "1",
+    message: "3 candidates completed Frontend engineer assessment",
+    time: "2 hours ago",
+    iconBg: "#F9E796",
+    icon: "/assets/icons/icon-assessments-shared.svg",
+  },
+  {
+    id: "2",
+    message: "2 new verified Product designers added",
+    time: "5 hours ago",
+    iconBg: "#D3E6DF",
+    icon: "/assets/icons/icon-verified-talent.svg",
+  },
+  {
+    id: "3",
+    message: "You shortlisted David Mensah",
+    time: "Yesterday",
+    iconBg: "#CBB0EB",
+    icon: "/assets/icons/icon-shortlisted-candidates.svg",
+  },
+] as const;
