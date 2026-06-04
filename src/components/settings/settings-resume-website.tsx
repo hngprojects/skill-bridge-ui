@@ -1,15 +1,17 @@
 "use client";
 
-import { Check, Globe } from "lucide-react";
+import { Globe } from "lucide-react";
 import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { useTalentSettings, useUpdateTalentSettingsProfile } from "@/hooks/api";
 import { personalWebsiteSchema } from "@/types/form-schema";
 
 export function SettingsResumeWebsite() {
   const { data: settings } = useTalentSettings();
-  const { mutate: updateProfile } = useUpdateTalentSettingsProfile();
+  const { mutate: updateProfile, isPending: isSaving } =
+    useUpdateTalentSettingsProfile();
 
   const serverWebsite = settings?.profile.personal_website ?? "";
   const [localWebsite, setLocalWebsite] = useState<string | null>(null);
@@ -51,17 +53,25 @@ export function SettingsResumeWebsite() {
             setLocalWebsite(e.target.value);
             setError(null);
           }}
-          className={`pr-10 ${error ? "border-destructive focus-visible:ring-destructive" : ""}`}
+          className={cn(
+            isDirty ? "pr-20" : "pr-10",
+            error && "border-destructive focus-visible:ring-destructive",
+          )}
         />
-        <span className="absolute right-3">
+        <span className="absolute right-2 flex items-center">
           {isDirty ? (
             <button
               type="button"
               onClick={handleSave}
-              className="flex items-center justify-center size-5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              aria-label="Save website URL"
+              disabled={isSaving}
+              className={cn(
+                "h-7 cursor-pointer rounded-md px-3 text-xs font-medium",
+                "bg-primary text-primary-foreground transition-colors",
+                "hover:bg-primary/90",
+                "disabled:cursor-not-allowed disabled:opacity-60",
+              )}
             >
-              <Check className="size-3" strokeWidth={2.5} />
+              {isSaving ? "Saving…" : "Save"}
             </button>
           ) : (
             <span className="pointer-events-none text-muted-foreground">
