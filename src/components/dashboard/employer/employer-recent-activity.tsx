@@ -24,7 +24,7 @@ const ACTIVITY_ITEMS: ActivityItem[] = [
     id: "2",
     message: "2 new verified Product designers added",
     time: "5 hours ago",
-    iconBg: "#D3E5DF",
+    iconBg: "#D3E6DF",
     icon: "/assets/icons/icon-verified-talent.svg",
   },
   {

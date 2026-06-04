@@ -6,7 +6,7 @@ import { EmployerRecentActivity } from "@/components/dashboard/employer/employer
 
 export function EmployerDashboardOverview() {
   return (
-    <div className="mx-auto max-w-[1096px] space-y-6 py-8">
+    <div className="mx-auto max-w-[1096px] space-y-6 py-8 px-4 sm:px-6">
       <EmployerDashboardHeader />
       <EmployerStatCards />
       <EmployerRecentActivity />
