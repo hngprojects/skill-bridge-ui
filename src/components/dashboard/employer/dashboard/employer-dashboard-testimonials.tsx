@@ -6,7 +6,11 @@ const STAR = "/assets/employer-dashboard/star.svg";
 
 function StarRating() {
   return (
-    <div className="flex items-center gap-2" aria-label="5 out of 5 stars">
+    <div
+      className="flex items-center gap-2"
+      aria-label="5 out of 5 stars"
+      role="img"
+    >
       {Array.from({ length: 5 }).map((_, index) => (
         <Image
           key={index}
