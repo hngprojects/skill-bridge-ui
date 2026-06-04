@@ -38,6 +38,10 @@ export type AssessmentRoadmapStep = {
   description: string;
   ctaLabel: string;
   estimatedTime: string;
+  /** Set by `applyDashboardHomeToRoadmapSteps` for the skill/advanced steps
+   *  once the user has actually engaged (skill attempts used or advanced
+   *  retake cooldown). Replaces the `Estimated time:` line on the card. */
+  cooldownLabel?: string;
   panelTitle: string;
   panelIcon: LucideIcon;
   panelIconSrc?: string;
@@ -146,7 +150,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     description:
       "To get verified score and become discoverable to top employers.",
     ctaLabel: "Start",
-    estimatedTime: "90 minutes",
+    estimatedTime: "25 - 30 minutes",
     panelTitle: "Get Job Ready!",
     panelIcon: BriefcaseBusiness,
     panelIconSrc: "/assets/icons/portfolio-icon.svg",
@@ -218,7 +222,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     state: "available",
     category: "job-assessment",
     ctaLabel: "Start",
-    cooldownLabel: "3 Attempts",
+    estimatedTime: "30 minutes",
   },
   {
     id: "advanced-assessment",
@@ -235,7 +239,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     state: "locked",
     category: "job-assessment",
     ctaLabel: "Start",
-    cooldownLabel: "Retake in 14 days",
+    estimatedTime: "25 - 30 minutes",
   },
   {
     id: "ai-mock-interview",

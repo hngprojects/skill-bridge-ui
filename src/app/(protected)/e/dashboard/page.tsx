@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { EmployerDashboardOverview } from "@/components/dashboard/employer/employer-dashboard-overview";
+import NewEmployerDashboardPage from "@/components/dashboard/employer/dashboard/dashboard-page";
 
 export const metadata: Metadata = {
   title: "Dashboard",
 };
 
 export default function EmployerDashboardPage() {
-  return <EmployerDashboardOverview />;
+  return <NewEmployerDashboardPage />;
 }
