@@ -8,12 +8,17 @@ import { cn } from "@/lib/utils";
 interface DashboardWelcomeProps {
   firstName?: string;
   goal?: string;
+  /** Label that precedes `goal` in the subheading. Defaults to "Your Goal:";
+   *  pass an empty string to render the goal text on its own (e.g. for the
+   *  employer dashboard where the line is a tagline, not a goal). */
+  goalLabel?: string;
   profileCompletion?: number;
 }
 
 export function DashboardWelcome({
   firstName,
   goal = "Become a global talent",
+  goalLabel = "Your Goal:",
   profileCompletion,
 }: DashboardWelcomeProps) {
   const { fullName } = useSessionUserProfile();
@@ -28,7 +33,8 @@ export function DashboardWelcome({
           Welcome, {resolvedFirstName}!
         </h1>
         <p className="body mt-1 text-muted-foreground">
-          Your Goal: <span>{goal}</span>
+          {goalLabel ? <>{goalLabel} </> : null}
+          <span>{goal}</span>
         </p>
       </div>
 
