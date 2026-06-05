@@ -1,4 +1,10 @@
-export const EMPLOYER_TALENTS = [
+import type {
+  Talent,
+  TalentProfile,
+  EmployerFilterOptions,
+} from "@/types/employer-talents";
+
+export const EMPLOYER_TALENTS: Talent[] = [
   {
     id: "1",
     name: "Adebayo O.",
@@ -41,7 +47,7 @@ export const EMPLOYER_TALENTS = [
   },
 ];
 
-export const EMPLOYER_FILTER_OPTIONS = {
+export const EMPLOYER_FILTER_OPTIONS: EmployerFilterOptions = {
   experience: ["Junior Level", "Mid Level", "Senior Level"],
   roleTrack: [
     "Frontend Developer",
@@ -53,7 +59,7 @@ export const EMPLOYER_FILTER_OPTIONS = {
   region: ["Remote", "Hybrid", "On-site"],
 };
 
-export const EMPLOYER_TALENT_PROFILE = {
+export const EMPLOYER_TALENT_PROFILE: TalentProfile = {
   full_name: "Adebayo O.",
   role: "Frontend Developer",
   goal: "Secure a mid-level frontend position focusing on modern React architectures.",

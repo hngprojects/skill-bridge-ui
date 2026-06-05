@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { List, Grid2X2, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo } from "react";
+
 import { TalentsHeroBanner } from "./talents-hero-banner";
-import {
-  TalentsFilterSidebar,
-  DEFAULT_FILTERS,
-  type TalentFilters,
-} from "./talents-filter-sidebar";
+import { TalentsFilterSidebar } from "./talents-filter-sidebar";
 import { TalentCard } from "./talent-card";
+
 import { EMPLOYER_TALENTS } from "@/constants/employer-talents";
+import type { TalentFilters } from "@/types/employer-talents";
+import { DEFAULT_FILTERS } from "@/types/employer-talents";
 
 export function EmployerTalentsPage() {
   const [pendingFilters, setPendingFilters] =
@@ -18,83 +18,96 @@ export function EmployerTalentsPage() {
   const [appliedFilters, setAppliedFilters] =
     useState<TalentFilters>(DEFAULT_FILTERS);
 
-  function handleApply() {
+  const handleApply = () => {
     setAppliedFilters(pendingFilters);
-  }
+  };
 
-  function handleClear() {
-    setPendingFilters(DEFAULT_FILTERS);
-    setAppliedFilters(DEFAULT_FILTERS);
-  }
+  const handleClear = () => {
+    const cleared = DEFAULT_FILTERS;
+    setPendingFilters(cleared);
+    setAppliedFilters(cleared);
+  };
 
-  function removeChip(
+  const removeChip = (
     key: keyof Pick<
       TalentFilters,
       "roleTrack" | "experience" | "availability" | "region"
     >,
     val: string,
-  ) {
+  ) => {
     const updated = {
       ...appliedFilters,
       [key]: (appliedFilters[key] as string[]).filter((v) => v !== val),
     };
     setAppliedFilters(updated);
     setPendingFilters(updated);
-  }
+  };
 
-  const filtered = useMemo(() => {
-    return EMPLOYER_TALENTS.filter((t) => {
+  const filteredTalents = useMemo(() => {
+    return EMPLOYER_TALENTS.filter((talent) => {
       const f = appliedFilters;
 
+      // Experience Level Filter
       if (f.experience.length > 0) {
-        const levelMap: Record<string, string> = {
-          Junior: "JUNIOR",
-          Mid: "MID-LEVEL",
-          Senior: "Senior Level",
-        };
-        const match = f.experience.some(
-          (e) =>
-            t.level.toUpperCase().includes(e.toUpperCase()) ||
-            t.level === levelMap[e],
+        const match = f.experience.some((exp) => {
+          const normalizedTalentLevel = talent.level.toLowerCase();
+          const normalizedFilter = exp.toLowerCase();
+          return normalizedTalentLevel.includes(normalizedFilter);
+        });
+        if (!match) return false;
+      }
+
+      // Role Track Filter
+      if (f.roleTrack.length > 0) {
+        const match = f.roleTrack.some((role) =>
+          talent.role.toLowerCase().includes(role.toLowerCase()),
         );
         if (!match) return false;
       }
 
-      if (f.roleTrack.length > 0) {
-        if (
-          !f.roleTrack.some((r) =>
-            t.role.toLowerCase().includes(r.toLowerCase()),
-          )
-        )
-          return false;
+      // Availability & Region
+      if (f.availability.length > 0) {
+        const hasAvailability = f.availability.some((item) =>
+          talent.tags?.some((tag) =>
+            tag.toLowerCase().includes(item.toLowerCase()),
+          ),
+        );
+        if (!hasAvailability) return false;
       }
 
-      if (t.score < f.scoreMin || t.score > f.scoreMax) return false;
+      if (f.region.length > 0) {
+        const hasRegion = f.region.some((item) =>
+          talent.tags?.some((tag) =>
+            tag.toLowerCase().includes(item.toLowerCase()),
+          ),
+        );
+        if (!hasRegion) return false;
+      }
+
+      // Score Range
+      if (talent.score < f.scoreMin || talent.score > f.scoreMax) {
+        return false;
+      }
 
       return true;
     });
   }, [appliedFilters]);
 
-  const activeChips: {
-    key: keyof Pick<
-      TalentFilters,
-      "roleTrack" | "experience" | "availability" | "region"
-    >;
-    val: string;
-  }[] = [
-    ...appliedFilters.experience.map((v) => ({
+  // Active filter chips
+  const activeChips = [
+    ...appliedFilters.experience.map((val) => ({
       key: "experience" as const,
-      val: v,
+      val,
     })),
-    ...appliedFilters.roleTrack.map((v) => ({
+    ...appliedFilters.roleTrack.map((val) => ({
       key: "roleTrack" as const,
-      val: v,
+      val,
     })),
-    ...appliedFilters.availability.map((v) => ({
+    ...appliedFilters.availability.map((val) => ({
       key: "availability" as const,
-      val: v,
+      val,
     })),
-    ...appliedFilters.region.map((v) => ({ key: "region" as const, val: v })),
+    ...appliedFilters.region.map((val) => ({ key: "region" as const, val })),
   ];
 
   return (
@@ -103,6 +116,7 @@ export function EmployerTalentsPage() {
 
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[#151515]">Talent list</h1>
+
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 rounded-lg bg-[#EBEBEB] px-2.5 py-1">
             <List className="size-6 text-[#141B34]" />
@@ -119,6 +133,7 @@ export function EmployerTalentsPage() {
         </div>
       </div>
 
+      {/* Active Filters Chips */}
       {activeChips.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {activeChips.map(({ key, val }) => (
@@ -127,7 +142,11 @@ export function EmployerTalentsPage() {
               className="flex items-center gap-1.5 rounded-full border border-[#D9D9D9] bg-white px-3 py-1 text-sm text-[#151515]"
             >
               {val}
-              <button onClick={() => removeChip(key, val)}>
+              <button
+                type="button"
+                onClick={() => removeChip(key, val)}
+                className="focus:outline-none"
+              >
                 <X className="size-3.5 text-[#757575]" />
               </button>
             </span>
@@ -151,37 +170,40 @@ export function EmployerTalentsPage() {
 
         <div className="flex flex-1 flex-col gap-6">
           <div className="flex flex-col gap-6">
-            {filtered.map((talent) => (
+            {filteredTalents.map((talent) => (
               <Link key={talent.id} href={`/e/talents/${talent.id}`}>
                 <TalentCard {...talent} />
               </Link>
             ))}
-            {filtered.length === 0 && (
+
+            {filteredTalents.length === 0 && (
               <p className="py-12 text-center text-base text-[#757575]">
                 No talents match the selected filters.
               </p>
             )}
           </div>
 
+          {/* Pagination  */}
           <div className="flex h-6 w-full max-w-199 flex-row items-center justify-between gap-10 bg-white">
             <span className="text-base font-medium leading-[150%] tracking-[0.017em] text-[#757575]">
-              Showing 1-4 of 50 talents
+              Showing 1-{filteredTalents.length} of {EMPLOYER_TALENTS.length}{" "}
+              talents
             </span>
+
             <div className="flex h-6 w-70 flex-row items-center justify-end gap-2">
               <button className="flex size-6 items-center justify-center rounded bg-[#EBEBEB] text-[#141B34]">
                 <ChevronLeft className="size-4 stroke-[1.5]" />
               </button>
-              {["1", "2", "3", "4", "5", "...", "10"].map((p, i) => (
-                <div
-                  key={i}
-                  className={`flex size-6 items-center justify-center rounded text-base font-semibold leading-[150%] tracking-[0.017em] ${
-                    p === "1"
-                      ? "bg-[rgba(5,6,15,0.1)] text-[#05060F]"
-                      : "text-[#151515]"
+
+              {[1, 2, 3, 4, 5].map((p) => (
+                <button
+                  key={p}
+                  className={`flex size-6 items-center justify-center rounded text-base font-semibold ${
+                    p === 1 ? "bg-[#05060F] text-white" : "text-[#151515]"
                   }`}
                 >
                   {p}
-                </div>
+                </button>
               ))}
               <button className="flex size-6 items-center justify-center rounded bg-[#EBEBEB] text-[#141B34]">
                 <ChevronRight className="size-4 stroke-[1.5]" />
