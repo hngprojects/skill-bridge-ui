@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
 
 import {
   CreateRoleDialog,
@@ -10,10 +9,7 @@ import {
 } from "@/components/dashboard/employer/roles/create-role-dialog";
 import { EmptyRolesState } from "@/components/dashboard/employer/roles/empty-roles-state";
 import { FilledRolesState } from "@/components/dashboard/employer/roles/filled-roles-state";
-import {
-  useEmployerRolesStore,
-  type EmployerRoleItem,
-} from "@/stores/employer-roles-store";
+import type { EmployerRoleItem } from "@/stores/employer-roles-store";
 
 function formatRequirement(values: CreateRoleValues) {
   return values.companyName.trim().length > 0
@@ -22,17 +18,10 @@ function formatRequirement(values: CreateRoleValues) {
 }
 
 export function EmployerRolesPage() {
-  const { data: session } = useSession();
   const [isCreateRoleOpen, setIsCreateRoleOpen] = useState(false);
-  const rolesByUser = useEmployerRolesStore((state) => state.rolesByUser);
-  const addRole = useEmployerRolesStore((state) => state.addRole);
-
-  const userId = session?.user?.id ?? "";
-  const roles = userId ? (rolesByUser[userId] ?? []) : [];
+  const [roles, setRoles] = useState<EmployerRoleItem[]>([]);
 
   const handleCreateRole = (values: CreateRoleValues) => {
-    if (!userId) return;
-
     const newRole: EmployerRoleItem = {
       id: `${values.roleTitle}-${Date.now()}`,
       title: values.roleTitle.trim(),
@@ -42,7 +31,7 @@ export function EmployerRolesPage() {
       createdAt: "Created just now",
     };
 
-    addRole(userId, newRole);
+    setRoles((currentRoles) => [newRole, ...currentRoles]);
     setIsCreateRoleOpen(false);
   };
 
