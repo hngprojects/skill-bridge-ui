@@ -3,24 +3,7 @@
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
 import { useState } from "react";
 import { EMPLOYER_FILTER_OPTIONS } from "@/constants/employer-talents";
-
-export type TalentFilters = {
-  roleTrack: string[];
-  experience: string[];
-  scoreMin: number;
-  scoreMax: number;
-  availability: string[];
-  region: string[];
-};
-
-export const DEFAULT_FILTERS: TalentFilters = {
-  roleTrack: [],
-  experience: [],
-  scoreMin: 75,
-  scoreMax: 100,
-  availability: [],
-  region: [],
-};
+import { type TalentFilters } from "@/types/employer-talents";
 
 type Props = {
   filters: TalentFilters;
@@ -52,8 +35,9 @@ function FilterSection({
   return (
     <div className="flex flex-col gap-2.5">
       <button
+        type="button"
         onClick={() => setOpen((p) => !p)}
-        className="flex w-full items-center justify-between"
+        className="flex w-full items-center justify-between focus:outline-none"
       >
         <p className="text-base font-semibold tracking-[0.017em] text-[#05060F]">
           {title}
@@ -82,10 +66,12 @@ function FilterSection({
           {filtered.map((option) => {
             const checked = selected.includes(option);
             return (
-              <div
+              <button
                 key={option}
+                type="button"
                 onClick={() => onToggle(option)}
-                className="flex cursor-pointer items-center gap-3 rounded-full px-0 py-2 select-none"
+                aria-pressed={checked}
+                className="flex w-full cursor-pointer items-center gap-3 rounded-full px-0 py-2 text-left select-none focus:outline-none"
               >
                 <span
                   className={`flex size-4.5 shrink-0 items-center justify-center rounded-sm border-2 transition-colors ${
@@ -109,7 +95,7 @@ function FilterSection({
                 <span className="text-base font-normal tracking-[0.017em] text-[#151515]">
                   {option}
                 </span>
-              </div>
+              </button>
             );
           })}
         </div>
@@ -131,8 +117,9 @@ function ScoreSlider({
   return (
     <div className="flex flex-col gap-2.5">
       <button
+        type="button"
         onClick={() => setOpen((p) => !p)}
-        className="flex w-full items-center justify-between"
+        className="flex w-full items-center justify-between focus:outline-none"
       >
         <p className="text-base font-semibold tracking-[0.017em] text-[#05060F]">
           Composite score
@@ -247,12 +234,14 @@ export function TalentsFilterSidebar({
       />
       <div className="flex gap-2 pt-2">
         <button
+          type="button"
           onClick={onApply}
           className="flex-1 rounded-lg bg-[#05060F] py-2 text-sm font-semibold text-white"
         >
           Apply
         </button>
         <button
+          type="button"
           onClick={onClear}
           className="flex-1 rounded-lg border border-[#D9D9D9] bg-white py-2 text-sm font-semibold text-[#151515]"
         >

@@ -4,8 +4,11 @@ import { VerifiedReportSummary } from "@/components/verified-report/verified-rep
 import { VerifiedReportSkillsSection } from "@/components/verified-report/verified-report-skills-section";
 import { EmployerTalentProfileHeader } from "@/components/dashboard/employer/employer-talent-profile-header";
 import { getSkillBreakdownTabs } from "@/components/verified-report/verified-report-utils";
-import { EMPLOYER_TALENT_PROFILE } from "@/constants/employer-talents";
-import { cn } from "@/lib/utils"; // Uses your project's cn utility helper
+import {
+  EMPLOYER_TALENT_PROFILE,
+  EMPLOYER_TALENTS,
+} from "@/constants/employer-talents";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Talent Profile",
@@ -16,14 +19,25 @@ interface PageProps {
 }
 
 export default async function EmployerTalentProfilePage({ params }: PageProps) {
-  await params;
-  const talentData = EMPLOYER_TALENT_PROFILE;
+  const { id } = await params;
+
+  const matchedTalent = EMPLOYER_TALENTS.find((t) => t.id === id);
+  const talentData = matchedTalent
+    ? {
+        ...EMPLOYER_TALENT_PROFILE,
+        full_name: matchedTalent.name,
+        role: matchedTalent.role,
+        seniority_badge: matchedTalent.level,
+        score_percentage: matchedTalent.score,
+        avatar_url: matchedTalent.avatar,
+      }
+    : EMPLOYER_TALENT_PROFILE;
 
   return (
     <div className="flex flex-col gap-y-6 my-8 px-4 md:px-8 max-w-7xl mx-auto w-full">
       <EmployerTalentProfileHeader />
 
-      <div className="relative [&_img]:relative [&_picture]:relative [&_img]:z-10">
+      <div className="relative">
         <VerifiedReportSummary data={talentData} />
 
         {talentData.verified && (
