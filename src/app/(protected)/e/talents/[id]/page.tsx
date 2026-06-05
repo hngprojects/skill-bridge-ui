@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import type { Metadata } from "next";
 import { VerifiedReportSummary } from "@/components/verified-report/verified-report-summary";
 import { VerifiedReportSkillsSection } from "@/components/verified-report/verified-report-skills-section";
@@ -33,7 +34,7 @@ export default async function EmployerTalentProfilePage({ params }: PageProps) {
               "top-7 left-27 sm:top-29 sm:left-29",
             )}
           >
-            &#10003;
+            <Check className="size-4" strokeWidth={3} aria-hidden="true" />
           </div>
         )}
       </div>

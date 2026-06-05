@@ -152,7 +152,9 @@ function ScoreSlider({
               min={0}
               max={100}
               value={min}
-              onChange={(e) => onChange(Number(e.target.value), max)}
+              onChange={(e) =>
+                onChange(Math.min(Number(e.target.value), max), max)
+              }
               className="w-full accent-[#05060F]"
             />
           </div>
@@ -163,7 +165,9 @@ function ScoreSlider({
               min={0}
               max={100}
               value={max}
-              onChange={(e) => onChange(min, Number(e.target.value))}
+              onChange={(e) =>
+                onChange(min, Math.max(Number(e.target.value), min))
+              }
               className="w-full accent-[#05060F]"
             />
           </div>

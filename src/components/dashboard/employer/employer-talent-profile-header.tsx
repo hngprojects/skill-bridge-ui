@@ -1,26 +1,50 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function EmployerTalentProfileHeader() {
+  const handleAddToShortlist = () => {
+    alert("Added to Shortlist (Scaffolding)");
+  };
+
+  const handleSendOffer = () => {
+    alert("Initiating Offer Modal (Scaffolding)");
+  };
+
   return (
-    <section className="flex flex-row justify-between items-center h-10">
+    <div className="flex flex-row justify-between items-center w-full pb-4 border-b border-[#EBEBEB]">
       <Link
         href="/e/talents"
-        className="flex items-center gap-0.5 font-semibold text-base leading-[150%] tracking-[0.016em] text-[#05060F] underline"
+        className="flex items-center gap-x-2 text-[#757575] hover:text-[#151515] transition-colors font-medium"
       >
-        <ArrowLeft className="size-6" strokeWidth={1} />
-        Back
+        <ChevronLeft size={20} />
+        Back to Talents
       </Link>
-      <div className="flex flex-row items-center gap-4">
-        <button className="flex items-center justify-center px-[10px] py-1 w-40 h-10 border border-[#05060F] rounded-lg font-semibold text-base leading-5 tracking-[0.016em] text-[#151515]">
+
+      <div className="flex flex-row gap-x-3">
+        <button
+          onClick={handleAddToShortlist}
+          className={cn(
+            "flex items-center justify-center rounded-lg font-semibold text-base",
+            "leading-5 tracking-[0.016em] text-[#151515] hover:bg-black/5",
+            "w-40 h-10 border border-[#05060F] transition-colors",
+          )}
+        >
           Add to Shortlist
         </button>
-        <button className="flex items-center justify-center px-[10px] py-1 w-[108px] h-10 bg-[#05060F] rounded-lg font-semibold text-base leading-5 tracking-[0.016em] text-white">
+        <button
+          onClick={handleSendOffer}
+          className={cn(
+            "flex items-center justify-center rounded-lg font-semibold text-base",
+            "leading-5 tracking-[0.016em] text-white hover:bg-[#151515]/90",
+            "w-27 h-10 bg-[#05060F] transition-colors",
+          )}
+        >
           Send Offer
         </button>
       </div>
-    </section>
+    </div>
   );
 }

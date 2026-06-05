@@ -32,7 +32,6 @@ export function TalentCard({
             width={80}
             height={80}
             className="h-full w-full object-contain"
-            priority
           />
         </div>
 
