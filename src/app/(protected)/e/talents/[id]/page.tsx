@@ -4,6 +4,7 @@ import { VerifiedReportSkillsSection } from "@/components/verified-report/verifi
 import { EmployerTalentProfileHeader } from "@/components/dashboard/employer/employer-talent-profile-header";
 import { getSkillBreakdownTabs } from "@/components/verified-report/verified-report-utils";
 import { EMPLOYER_TALENT_PROFILE } from "@/constants/employer-talents";
+import { cn } from "@/lib/utils"; // Uses your project's cn utility helper
 
 export const metadata: Metadata = {
   title: "Talent Profile",
@@ -15,7 +16,6 @@ interface PageProps {
 
 export default async function EmployerTalentProfilePage({ params }: PageProps) {
   await params;
-
   const talentData = EMPLOYER_TALENT_PROFILE;
 
   return (
@@ -26,7 +26,13 @@ export default async function EmployerTalentProfilePage({ params }: PageProps) {
         <VerifiedReportSummary data={talentData} />
 
         {talentData.verified && (
-          <div className="absolute top-7 left-27 sm:top-29 sm:left-29 z-20 flex size-8 items-center justify-center rounded-full bg-[#34A853] border-4 border-[#FAFAFA] text-white font-bold text-sm select-none shadow-sm">
+          <div
+            className={cn(
+              "absolute z-20 flex size-8 items-center justify-center rounded-full text-white font-bold text-sm select-none shadow-sm",
+              "bg-[#34A853] border-4 border-[#FAFAFA]",
+              "top-7 left-27 sm:top-29 sm:left-29",
+            )}
+          >
             &#10003;
           </div>
         )}
