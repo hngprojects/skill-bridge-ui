@@ -71,8 +71,14 @@ export async function getNotifications(
   return unwrapData(res);
 }
 
+/**
+ * Talent-only — there's no `/employer/notifications/unread-count` endpoint.
+ * The employer bell derives its count from the notifications list cache
+ * inside `useUnreadCount`; this function should never be called with
+ * "employer".
+ */
 export async function getUnreadCount(
-  role: NotificationRole,
+  role: "talent",
 ): Promise<UnreadCountResponseData> {
   const res = await authApi.get<ApiEnvelope<{ unread_count: number }>>(
     `${NOTIFICATIONS_BASE_PATH[role]}/unread-count`,

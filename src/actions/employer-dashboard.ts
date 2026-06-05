@@ -37,9 +37,11 @@ function mapRecentActivity(
   raw: RawEmployerDashboardHomeResponse["recent_activity"],
 ): EmployerRecentActivityItem[] {
   if (!raw) return [];
-  return raw.map((item) => ({
-    // Backend doesn't ship an id — synthesise one from type + timestamp so
-    id: `${item.type}-${item.occurred_at}`,
+  return raw.map((item, index) => ({
+    // Backend doesn't ship an id — synthesise one from type + timestamp +
+    // array index so React keys stay unique even if two events of the same
+    // type fire within the same millisecond.
+    id: `${item.type}-${item.occurred_at}-${index}`,
     type: item.type,
     title: item.title,
     description: item.description,
