@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
 import AssessmentContainer from "./assessment-container";
 import NextUpCard from "./next-up-card";
 
@@ -46,6 +48,15 @@ const AdvancedAssessmentSummary = () => {
         duration="30-45 minutes"
         title="AI mock interview"
       />
+      <div className="mt-6 flex justify-center">
+        <Button
+          asChild
+          variant="ghost"
+          className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+        >
+          <Link href="/t/dashboard">Back to Home</Link>
+        </Button>
+      </div>
     </AssessmentContainer>
   );
 };
