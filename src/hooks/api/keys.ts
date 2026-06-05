@@ -29,6 +29,11 @@ export const dashboardKeys = {
   home: () => [...dashboardKeys.all, "home"] as const,
 };
 
+export const employerDashboardKeys = {
+  all: ["employer-dashboard"] as const,
+  home: () => [...employerDashboardKeys.all, "home"] as const,
+};
+
 export const resourcesKeys = {
   all: ["resources"] as const,
   talent: () => [...resourcesKeys.all, "talent"] as const,

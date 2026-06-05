@@ -49,10 +49,10 @@ export const EMPLOYER_TESTIMONIALS = [
   },
 ] as const;
 
-export const EMPLOYER_STAT_CARDS = [
+export const EMPLOYER_OVERVIEW_CARDS_META = [
   {
+    key: "verified_talent",
     label: "Verified Talent",
-    value: "2,184",
     description:
       "Candidates across engineering, design, product, and cloud roles.",
     linkLabel: "Browse talents",
@@ -61,18 +61,18 @@ export const EMPLOYER_STAT_CARDS = [
     icon: "/assets/icons/icon-verified-talent.svg",
   },
   {
-    label: "Assessments Shared",
-    value: "24",
+    key: "created_assessments",
+    label: "Created Assessments",
     description:
       "Track candidate submissions and review performance in one place.",
-    linkLabel: "View assessment",
+    linkLabel: "View assessments",
     linkHref: "/e/assessments",
     iconBg: "#F9E796",
     icon: "/assets/icons/icon-assessments-shared.svg",
   },
   {
+    key: "shortlisted_candidates",
     label: "Shortlisted Candidates",
-    value: "12",
     description: "Candidates saved for interviews or next review.",
     linkLabel: "View shortlist",
     linkHref: "/e/shortlist",
@@ -80,8 +80,8 @@ export const EMPLOYER_STAT_CARDS = [
     icon: "/assets/icons/icon-shortlisted-candidates.svg",
   },
   {
+    key: "my_roles",
     label: "My Roles",
-    value: "3",
     description: "Top candidates aligned with your hiring requirements.",
     linkLabel: "View roles",
     linkHref: "/e/roles",
@@ -90,26 +90,38 @@ export const EMPLOYER_STAT_CARDS = [
   },
 ] as const;
 
-export const EMPLOYER_RECENT_ACTIVITY = [
-  {
-    id: "1",
-    message: "3 candidates completed Frontend engineer assessment",
-    time: "2 hours ago",
-    iconBg: "#F9E796",
-    icon: "/assets/icons/icon-assessments-shared.svg",
-  },
-  {
-    id: "2",
-    message: "2 new verified Product designers added",
-    time: "5 hours ago",
-    iconBg: "#D3E6DF",
+/**
+ * Icon + route lookup for `recent_activity` items, keyed by the backend's
+ * `type`. Unknown types fall back to a neutral default.
+ */
+export const EMPLOYER_ACTIVITY_TYPE_META: Record<
+  string,
+  { icon: string; iconBg: string; route: string }
+> = {
+  verified_talent: {
     icon: "/assets/icons/icon-verified-talent.svg",
+    iconBg: "#D3E6DF",
+    route: "/e/talents",
   },
-  {
-    id: "3",
-    message: "You shortlisted David Mensah",
-    time: "Yesterday",
-    iconBg: "#CBB0EB",
+  created_assessments: {
+    icon: "/assets/icons/icon-assessments-shared.svg",
+    iconBg: "#F9E796",
+    route: "/e/assessments",
+  },
+  shortlisted_candidates: {
     icon: "/assets/icons/icon-shortlisted-candidates.svg",
+    iconBg: "#CBB0EB",
+    route: "/e/shortlist",
   },
-] as const;
+  my_roles: {
+    icon: "/assets/icons/icon-my-roles.svg",
+    iconBg: "#EDEEF2",
+    route: "/e/roles",
+  },
+};
+
+export const DEFAULT_EMPLOYER_ACTIVITY_META = {
+  icon: "/assets/icons/icon-verified-talent.svg",
+  iconBg: "#D3E6DF",
+  route: "/e/dashboard",
+};

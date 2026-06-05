@@ -7,9 +7,7 @@ export default function EmployerLayout({ children }: { children: ReactNode }) {
     <div className="flex flex-1 flex-col bg-[#FCFCFC]">
       <EmployerNavbar />
       <main className="flex-1">
-        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
-          {children}
-        </div>
+        <div className="mx-auto max-w-360 px-4 sm:px-6 lg:px-8">{children}</div>
       </main>
     </div>
   );
