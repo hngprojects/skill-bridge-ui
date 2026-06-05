@@ -12,8 +12,7 @@ export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
   const { fullName, isLoading } = useSessionUserProfile();
   const displayName = !isLoading && fullName ? fullName : "";
 
-  const showCta =
-    typeof profileCompletion === "number" && profileCompletion < 100;
+  const showCta = profileCompletion == null || profileCompletion < 100;
 
   return (
     <section className="flex flex-col gap-8 py-6 lg:flex-row lg:items-start lg:justify-between lg:gap-8 lg:py-10">
@@ -42,11 +41,11 @@ export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
             <div className="h-1 flex-1 rounded-full bg-[#D6FFBE]">
               <div
                 className={cn("h-1 rounded-full bg-[#4C9924]")}
-                style={{ width: `${profileCompletion}%` }}
+                style={{ width: `${profileCompletion ?? 0}%` }}
               />
             </div>
             <span className="text-xs leading-4 font-semibold text-[#757575]">
-              {profileCompletion}%
+              {profileCompletion ?? 0}%
             </span>
           </div>
         </div>
