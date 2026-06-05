@@ -30,6 +30,7 @@ const NewEmployerDashboardPage = () => {
       <DashboardWelcome
         firstName={firstName}
         goal={EMPLOYER_DASHBOARD_GOAL}
+        goalLabel=""
         profileCompletion={profileCompletion}
       />
 
