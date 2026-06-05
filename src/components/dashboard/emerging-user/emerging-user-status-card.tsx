@@ -94,11 +94,14 @@ export function DashboardStatusCard({
   coolingDays = 14,
   daysRemaining,
 }: DashboardStatusCardProps) {
-  const retakeLine = formatRetakeWarning(coolingDays, daysRemaining);
+  const hasRetakeConstraint = daysRemaining != null;
+  const retakeLine = hasRetakeConstraint
+    ? formatRetakeWarning(coolingDays, daysRemaining)
+    : null;
   const isEligibleNow = daysRemaining != null && daysRemaining <= 0;
+
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-[#F2F2F2]">
-      {/* Main row */}
       <div className="flex items-start justify-between gap-6 p-6">
         <div className="min-w-0 flex-1 space-y-2.5">
           <div className="flex">
@@ -119,42 +122,42 @@ export function DashboardStatusCard({
             </div>
             <HexagonScore value={score} />
           </div>
-          <div
-            className={cn(
-              "flex flex-col gap-3 border-t border-border bg-white px-6 py-3 rounded-lg",
-              "sm:flex-row sm:items-center sm:justify-between sm:gap-4",
-            )}
-          >
-            <div className="flex items-center gap-2">
-              {/* Orange clock badge */}
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-100">
-                <AlertCircle
-                  className="size-3.5 text-orange-500"
-                  aria-hidden="true"
-                />
-              </span>
-              <p className="body-3 text-muted-foreground">
-                {retakeLine}
-                {!isEligibleNow ? (
-                  <>
-                    <span className="mx-1.5">•</span>
-                    Use this time to prepare
-                  </>
-                ) : null}
-              </p>
-            </div>
-
-            <Link
-              href="/t/assessments"
+          {hasRetakeConstraint && (
+            <div
               className={cn(
-                "flex items-center label shrink-0 text-foreground underline underline-offset-2",
-                "hover:opacity-70 transition-opacity group",
+                "flex flex-col gap-3 border-t border-border bg-white px-6 py-3 rounded-lg",
+                "sm:flex-row sm:items-center sm:justify-between sm:gap-4",
               )}
             >
-              See assessment roadmap
-              <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
+              <div className="flex items-center gap-2">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-100">
+                  <AlertCircle
+                    className="size-3.5 text-orange-500"
+                    aria-hidden="true"
+                  />
+                </span>
+                <p className="body-3 text-muted-foreground">
+                  {retakeLine}
+                  {!isEligibleNow ? (
+                    <>
+                      <span className="mx-1.5">•</span>
+                      Use this time to prepare
+                    </>
+                  ) : null}
+                </p>
+              </div>
+              <Link
+                href="/t/assessments"
+                className={cn(
+                  "flex items-center label shrink-0 text-foreground underline underline-offset-2",
+                  "hover:opacity-70 transition-opacity group",
+                )}
+              >
+                See assessment roadmap
+                <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

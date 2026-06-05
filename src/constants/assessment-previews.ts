@@ -49,8 +49,8 @@ export const ASSESSMENT_PREVIEWS = {
     description:
       "This assessment is designed to evaluate your current skill level at your selected tracks.",
     iconSrc: "/assets/assessments/advanced-assessment-icon.svg",
-    questionCount: "15 Questions",
-    duration: "25 - 30 minutes",
+    questionCount: "15 Questions (8 MCQ · 7 Open-ended)",
+    duration: "30 minutes",
     attempts: "1 attempt (allowed within time limit)",
     retakeText: "Retake valid after 14 days",
   },
