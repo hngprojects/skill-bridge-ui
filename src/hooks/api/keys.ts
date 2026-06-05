@@ -50,6 +50,9 @@ export const aiGuidanceReport = {
 
 export const notificationsKeys = {
   all: ["notifications"] as const,
-  list: () => [...notificationsKeys.all, "list"] as const,
-  unreadCount: () => [...notificationsKeys.all, "unread-count"] as const,
+  // Role-scoped so talent and employer caches stay isolated
+  list: (role: "talent" | "employer") =>
+    [...notificationsKeys.all, role, "list"] as const,
+  unreadCount: (role: "talent" | "employer") =>
+    [...notificationsKeys.all, role, "unread-count"] as const,
 };

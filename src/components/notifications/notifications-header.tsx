@@ -2,7 +2,11 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const NotificationsHeader = () => {
+type NotificationsHeaderProps = {
+  settingsHref: string;
+};
+
+const NotificationsHeader = ({ settingsHref }: NotificationsHeaderProps) => {
   return (
     <div className="flex flex-row items-start justify-between">
       <div className="flex flex-col gap-y-1">
@@ -11,7 +15,7 @@ const NotificationsHeader = () => {
           View all activities here
         </p>
       </div>
-      <Link href={"/t/settings"}>
+      <Link href={settingsHref}>
         <Button
           className="h-auto px-0 text-sm font-semibold underline hover:bg-transparent"
           variant={"ghost"}

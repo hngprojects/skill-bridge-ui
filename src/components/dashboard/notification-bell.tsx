@@ -5,19 +5,22 @@ import Link from "next/link";
 
 import { useUnreadCount } from "@/hooks/api/use-notifications";
 import { cn } from "@/lib/utils";
+import type { NotificationRole } from "@/types/api/notifications";
 
 type NotificationBellProps = {
   /** Where the bell links to, e.g. "/t/notifications" or "/e/notifications". */
   href: string;
+  /** Which unread-count endpoint to poll. */
+  role: NotificationRole;
 };
 
 /**
  * Bell icon with an unread-count badge. Same hook drives both the talent and
- * employer navbars; the `href` lets each shell point at its own
- * notifications route.
+ * employer navbars; `role` selects which endpoint the count comes from, and
+ * `href` lets each shell point at its own notifications route.
  */
-export function NotificationBell({ href }: NotificationBellProps) {
-  const { data } = useUnreadCount();
+export function NotificationBell({ href, role }: NotificationBellProps) {
+  const { data } = useUnreadCount(role);
   const count = data?.count ?? 0;
   const capped = count > 99 ? "99+" : count > 0 ? String(count) : null;
 

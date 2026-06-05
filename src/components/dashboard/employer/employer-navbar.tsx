@@ -57,7 +57,7 @@ export function EmployerNavbar() {
         </nav>
 
         <div className="ml-auto flex flex-1 items-center justify-end gap-3 lg:flex-none lg:gap-4">
-          <NotificationBell href="/e/notifications" />
+          <NotificationBell href="/e/notifications" role="employer" />
           <EmployerNavbarUserMenu />
         </div>
       </div>
