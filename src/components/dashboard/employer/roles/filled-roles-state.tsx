@@ -68,9 +68,9 @@ export function FilledRolesState({
               <Image
                 src={OFFERS_SENT}
                 alt=""
-                width={20}
-                height={20}
-                className="h-5 w-5 object-contain"
+                width={28}
+                height={28}
+                className="h-20 w-20 object-contain"
               />
             }
             label="Offers sent"
@@ -78,6 +78,7 @@ export function FilledRolesState({
             helperText="Candidates saved for interviews or next review."
             actionLabel="View shortlists"
             actionIcon={<ArrowRight className="size-3.5" />}
+            actionIconPosition="after"
           />
         </div>
       </section>

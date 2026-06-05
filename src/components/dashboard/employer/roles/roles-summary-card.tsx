@@ -10,6 +10,7 @@ type RolesSummaryCardProps = {
   actionLabel?: string;
   onActionClick?: () => void;
   actionIcon?: React.ReactNode;
+  actionIconPosition?: "before" | "after";
 };
 
 export function RolesSummaryCard({
@@ -20,6 +21,7 @@ export function RolesSummaryCard({
   actionLabel,
   onActionClick,
   actionIcon,
+  actionIconPosition = "before",
 }: RolesSummaryCardProps) {
   return (
     <article className="flex h-full flex-col rounded-lg border border-[#E5E7EB] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
@@ -52,12 +54,17 @@ export function RolesSummaryCard({
           className="mt-auto inline-flex items-center gap-1 pl-11 pt-4 text-left text-xs font-medium text-[#111827] underline underline-offset-4 transition-colors hover:text-[#344054]"
           onClick={onActionClick}
         >
-          {actionIcon ? (
+          {actionIcon && actionIconPosition === "before" ? (
             <span className="flex size-3.5 items-center justify-center">
               {actionIcon}
             </span>
           ) : null}
           {actionLabel}
+          {actionIcon && actionIconPosition === "after" ? (
+            <span className="flex size-3.5 items-center justify-center">
+              {actionIcon}
+            </span>
+          ) : null}
         </button>
       ) : null}
     </article>
