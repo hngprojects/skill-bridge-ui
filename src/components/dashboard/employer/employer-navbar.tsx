@@ -2,21 +2,26 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { usePathname } from "next/navigation";
 
-import { SignOutDialog } from "@/components/dashboard/sign-out-dialog";
-import { Button } from "@/components/ui/button";
+import { DashboardNavLink } from "@/components/dashboard/nav-link";
+import { EmployerNavbarUserMenu } from "@/components/dashboard/employer/employer-navbar-user-menu";
+import { NotificationBell } from "@/components/dashboard/notification-bell";
+import { EMPLOYER_NAV_LINKS } from "@/constants/employer-nav";
+import { cn } from "@/lib/utils";
 
 const LOGO = "/assets/logo/logo.svg";
 
-/**
- * Minimal navbar for the employer shell while the dashboard is still a
- * placeholder. Logo on the left, an explicit Sign Out button on the right.
- */
 export function EmployerNavbar() {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center px-4 sm:px-6 lg:h-[72px]">
+      <div
+        className={cn(
+          "mx-auto flex h-16 w-full max-w-360 items-center px-4 sm:px-6 lg:h-18",
+        )}
+      >
         <Link
           href="/e/dashboard"
           className="inline-flex shrink-0 items-center gap-2"
@@ -35,17 +40,25 @@ export function EmployerNavbar() {
           </span>
         </Link>
 
-        <div className="ml-auto flex items-center">
-          <SignOutDialog>
-            <Button
-              type="button"
-              variant="ghost"
-              className="gap-2 text-sm font-medium"
-            >
-              <LogOut className="size-4" aria-hidden />
-              Sign Out
-            </Button>
-          </SignOutDialog>
+        <nav
+          className="hidden items-center lg:ml-17.5 lg:flex"
+          aria-label="Employer"
+        >
+          <div className="flex items-center gap-8">
+            {EMPLOYER_NAV_LINKS.map((link) => (
+              <DashboardNavLink
+                key={link.href}
+                label={link.label}
+                href={link.href}
+                pathname={pathname}
+              />
+            ))}
+          </div>
+        </nav>
+
+        <div className="ml-auto flex flex-1 items-center justify-end gap-3 lg:flex-none lg:gap-4">
+          <NotificationBell href="/e/notifications" />
+          <EmployerNavbarUserMenu />
         </div>
       </div>
     </header>
