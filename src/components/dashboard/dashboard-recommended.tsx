@@ -100,13 +100,14 @@ function RecommendedItemRow({ item }: { item: RecommendedItem }) {
         </div>
       </div>
 
-      {/* Overflow menu */}
-      <span
-        aria-hidden="true"
-        className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground"
+      {/* Add button */}
+      <Link
+        href={item.actionHref}
+        aria-label={`Add ${item.title}`}
+        className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
       >
-        + <MoreHorizontal className="size-4" />+{" "}
-      </span>
+        <MoreHorizontal className="size-4" />
+      </Link>
     </div>
   );
 }

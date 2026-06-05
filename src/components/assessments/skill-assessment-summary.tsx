@@ -149,7 +149,11 @@ const SkillAssessementSummary = () => {
           )}
           <Button
             asChild
-            className="bg-[#DBDBDB] text-black rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer hover:text-white"
+            className={
+              skillPassed && canContinueToAdvanced
+                ? "bg-primary text-primary-foreground rounded-lg h-10 w-fit md:min-w-60 hover:bg-primary/90 transition-all duration-300 cursor-pointer"
+                : "bg-muted text-foreground rounded-lg h-10 w-fit md:min-w-60 hover:bg-muted/70 transition-all duration-300 cursor-pointer"
+            }
           >
             <Link
               href={

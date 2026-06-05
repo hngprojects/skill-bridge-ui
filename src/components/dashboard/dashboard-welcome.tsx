@@ -19,8 +19,7 @@ export function DashboardWelcome({
   const { fullName } = useSessionUserProfile();
   const resolvedFirstName = firstName || fullName?.split(" ")[0] || "Alex";
 
-  const showCta =
-    typeof profileCompletion === "number" && profileCompletion < 100;
+  const showCta = profileCompletion == null || profileCompletion < 100;
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -48,11 +47,11 @@ export function DashboardWelcome({
             <div className="h-1.5 w-44 overflow-hidden rounded-full bg-gray-200">
               <div
                 className="h-full rounded-full bg-green-500 transition-all duration-500"
-                style={{ width: `${profileCompletion}%` }}
+                style={{ width: `${profileCompletion ?? 0}%` }}
               />
             </div>
             <span className="caption text-muted-foreground">
-              {profileCompletion}%
+              {profileCompletion ?? 0}%
             </span>
           </div>
         </div>
