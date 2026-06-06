@@ -2,27 +2,24 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-type ShortlistPaginationProps = {
+type DataPaginationProps = {
   page: number;
   totalPages: number;
   total: number;
   pageSize: number;
+  itemLabel?: string;
   onPageChange: (next: number) => void;
 };
 
-/** How many numeric buttons to show on either side of the current page
- *  before falling back to an ellipsis. */
 const SIBLING_COUNT = 1;
 
 function range(start: number, end: number): number[] {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 }
 
-/**
- * Build the numeric pagination list
- */
 function paginationItems(
   current: number,
   total: number,
@@ -50,13 +47,14 @@ function paginationItems(
   ];
 }
 
-export function ShortlistPagination({
+export function DataPagination({
   page,
   totalPages,
   total,
   pageSize,
+  itemLabel = "items",
   onPageChange,
-}: ShortlistPaginationProps) {
+}: DataPaginationProps) {
   const effectiveTotalPages = Math.max(1, totalPages);
   const items = paginationItems(page, effectiveTotalPages);
   const start = total === 0 ? 0 : (page - 1) * pageSize + 1;
@@ -65,59 +63,53 @@ export function ShortlistPagination({
   return (
     <div className="flex flex-col items-start justify-between gap-3 px-4 py-4 sm:flex-row sm:items-center">
       <p className="font-sans text-sm text-[#52525B]">
-        Showing {start}–{end} of {total} talents
+        Showing {start}–{end} of {total} {itemLabel}
       </p>
       <nav aria-label="Pagination" className="flex items-center gap-1">
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="icon-xs"
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
           aria-label="Previous page"
-          className={cn(
-            "inline-flex size-8 items-center justify-center rounded-md text-[#52525B] transition-colors",
-            "hover:bg-[#F4F4F5] disabled:cursor-not-allowed disabled:opacity-40",
-          )}
         >
           <ChevronLeft className="size-4" aria-hidden />
-        </button>
+        </Button>
         {items.map((item, idx) =>
           item === "ellipsis" ? (
             <span
               key={`ellipsis-${idx}`}
               aria-hidden
-              className="inline-flex size-8 items-center justify-center text-[#A1A1AA]"
+              className={cn(
+                "inline-flex size-6 items-center justify-center text-[#A1A1AA] sm:size-8",
+              )}
             >
               …
             </span>
           ) : (
-            <button
+            <Button
               key={item}
               type="button"
+              size="icon-xs"
+              variant={item === page ? "default" : "ghost"}
               onClick={() => onPageChange(item)}
               aria-current={item === page ? "page" : undefined}
-              className={cn(
-                "inline-flex size-8 items-center justify-center rounded-md font-sans text-sm font-medium transition-colors",
-                item === page
-                  ? "bg-primary text-white"
-                  : "text-[#52525B] hover:bg-[#F4F4F5]",
-              )}
             >
               {item}
-            </button>
+            </Button>
           ),
         )}
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="icon-xs"
           onClick={() => onPageChange(page + 1)}
           disabled={page >= effectiveTotalPages}
           aria-label="Next page"
-          className={cn(
-            "inline-flex size-8 items-center justify-center rounded-md text-[#52525B] transition-colors",
-            "hover:bg-[#F4F4F5] disabled:cursor-not-allowed disabled:opacity-40",
-          )}
         >
           <ChevronRight className="size-4" aria-hidden />
-        </button>
+        </Button>
       </nav>
     </div>
   );

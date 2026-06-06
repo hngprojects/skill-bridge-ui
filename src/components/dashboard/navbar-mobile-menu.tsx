@@ -1,17 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
-import { isNavLinkActive } from "@/components/dashboard/nav-utils";
-import { Badge } from "@/components/ui/badge";
+import { DashboardNavLink } from "@/components/dashboard/nav-link";
 import { Button } from "@/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
 import {
   Sheet,
   SheetClose,
@@ -19,20 +11,30 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { DASHBOARD_NAV_LINKS } from "@/constants/dashboard-nav";
-import { cn } from "@/lib/utils";
 
-type DashboardNavbarMobileMenuProps = {
+export type NavbarMobileNavLink = {
+  label: string;
+  href: string;
+  badge?: "New";
+};
+
+type NavbarMobileMenuProps = {
   pathname: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  links: readonly NavbarMobileNavLink[];
+  navAriaLabel: string;
+  variant?: "talent" | "employer";
 };
 
-export function DashboardNavbarMobileMenu({
+export function NavbarMobileMenu({
   pathname,
   open,
   onOpenChange,
-}: DashboardNavbarMobileMenuProps) {
+  links,
+  navAriaLabel,
+  variant = "talent",
+}: NavbarMobileMenuProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
@@ -69,57 +71,22 @@ export function DashboardNavbarMobileMenu({
           </SheetClose>
         </div>
 
-        <div className="border-y border-gray-200 px-6 py-5">
-          <InputGroup className="h-11 w-full border border-gray-200 bg-white shadow-none has-[[data-slot=input-group-control]:focus-visible]:ring-0">
-            <InputGroupAddon
-              align="inline-start"
-              className="text-muted-foreground"
-            >
-              <Search className="size-4" aria-hidden />
-            </InputGroupAddon>
-            <InputGroupInput
-              type="search"
-              placeholder="Search"
-              aria-label="Search dashboard"
-              className="bg-transparent text-foreground placeholder:text-muted-foreground"
+        <nav
+          className="flex flex-col gap-8 px-6 py-6"
+          aria-label={navAriaLabel}
+        >
+          {links.map((link) => (
+            <DashboardNavLink
+              key={link.href}
+              label={link.label}
+              href={link.href}
+              badge={link.badge}
+              pathname={pathname}
+              variant={variant}
+              onNavigate={() => onOpenChange(false)}
+              className="flex w-full items-center justify-between font-sans text-base"
             />
-          </InputGroup>
-        </div>
-
-        <nav className="flex flex-col gap-8 px-6 py-6" aria-label="Dashboard">
-          {DASHBOARD_NAV_LINKS.map((link) => {
-            const active = isNavLinkActive(pathname, link.href);
-            const badge = "badge" in link ? link.badge : undefined;
-
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => onOpenChange(false)}
-                className={cn(
-                  "flex w-full items-center justify-between font-sans text-base font-medium transition-colors",
-                  active ? "text-[#9B3048]" : "text-foreground",
-                )}
-              >
-                {link.label}
-                {badge === "New" ? (
-                  <Badge
-                    variant="secondary"
-                    className="h-5 gap-1 rounded-full border-0.5 border-gray-200 bg-white px-2 text-[11px] font-semibold text-foreground"
-                  >
-                    New
-                    <Image
-                      src="/assets/new-flame.svg"
-                      alt=""
-                      width={12}
-                      height={12}
-                      aria-hidden
-                    />
-                  </Badge>
-                ) : null}
-              </Link>
-            );
-          })}
+          ))}
         </nav>
       </SheetContent>
     </Sheet>
