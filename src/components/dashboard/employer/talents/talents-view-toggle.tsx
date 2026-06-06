@@ -14,7 +14,7 @@ export function TalentsViewToggle({ view, onChange }: TalentsViewToggleProps) {
         onClick={() => onChange("list")}
       >
         <List className="size-5" />
-        List
+        <span className="hidden sm:inline">List</span>
       </Button>
       <Button
         variant={view === "grid" ? "secondary" : "ghost"}
@@ -23,7 +23,7 @@ export function TalentsViewToggle({ view, onChange }: TalentsViewToggleProps) {
         onClick={() => onChange("grid")}
       >
         <Grid2X2 className="size-5" />
-        Grid
+        <span className="hidden sm:inline">Grid</span>
       </Button>
     </div>
   );

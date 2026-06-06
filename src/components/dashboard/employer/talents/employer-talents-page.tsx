@@ -1,10 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { getEmployerFilterLabel } from "@/constants/employer-talents";
 import { useDiscoveryCandidates } from "@/hooks/api/use-employer-discovery";
+import { cn } from "@/lib/utils";
 import type { TalentFilters, TalentViewMode } from "@/types/employer-talents";
 import { DEFAULT_FILTERS } from "@/types/employer-talents";
 
@@ -23,6 +32,7 @@ export function EmployerTalentsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [appliedSearch, setAppliedSearch] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [pendingFilters, setPendingFilters] =
     useState<TalentFilters>(DEFAULT_FILTERS);
   const [appliedFilters, setAppliedFilters] =
@@ -43,6 +53,7 @@ export function EmployerTalentsPage() {
     setAppliedFilters(pendingFilters);
     setAppliedSearch(search.trim());
     setPage(1);
+    setFiltersOpen(false);
   };
 
   const handleClear = () => {
@@ -92,6 +103,17 @@ export function EmployerTalentsPage() {
     })),
   ];
 
+  const activeFilterCount = activeChips.length;
+
+  const sidebarProps = {
+    filters: pendingFilters,
+    search,
+    onSearchChange: setSearch,
+    onChange: setPendingFilters,
+    onApply: handleApply,
+    onClear: handleClear,
+  };
+
   const emptyTitle = isError
     ? "Unable to load talents"
     : "No talents match your filters";
@@ -101,10 +123,10 @@ export function EmployerTalentsPage() {
       "Try adjusting your filters or clear them to see more results.");
 
   return (
-    <div className="mx-auto max-w-274 space-y-6 py-8">
+    <div className="mx-auto max-w-274 space-y-6 py-6 sm:py-8">
       <TalentsHeroBanner />
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold text-foreground">Talent list</h1>
         <TalentsViewToggle view={view} onChange={setView} />
       </div>
@@ -115,20 +137,52 @@ export function EmployerTalentsPage() {
         onClear={handleClear}
       />
 
-      <div className="flex items-start gap-10">
-        <TalentsFilterSidebar
-          filters={pendingFilters}
-          search={search}
-          onSearchChange={setSearch}
-          onChange={setPendingFilters}
-          onApply={handleApply}
-          onClear={handleClear}
-        />
-        <div className="flex flex-1 flex-col gap-6">
+      <Collapsible
+        open={filtersOpen}
+        onOpenChange={setFiltersOpen}
+        className="lg:hidden"
+      >
+        <CollapsibleTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            className="flex w-full items-center justify-between gap-2"
+          >
+            <span className="flex items-center gap-2">
+              Filters
+              {activeFilterCount > 0 ? (
+                <Badge variant="secondary">{activeFilterCount}</Badge>
+              ) : null}
+            </span>
+            <ChevronDown
+              className={cn(
+                "size-4 shrink-0 transition-transform",
+                filtersOpen && "rotate-180",
+              )}
+              aria-hidden
+            />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="pt-4">
+          <TalentsFilterSidebar {...sidebarProps} />
+        </CollapsibleContent>
+      </Collapsible>
+
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-10">
+        <aside className="hidden lg:block">
+          <TalentsFilterSidebar
+            {...sidebarProps}
+            className="lg:sticky lg:top-24"
+          />
+        </aside>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-6">
           <div
-            className={
-              view === "grid" ? "grid grid-cols-2 gap-6" : "flex flex-col gap-6"
-            }
+            className={cn(
+              view === "grid"
+                ? "grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6"
+                : "flex flex-col gap-4 sm:gap-6",
+            )}
           >
             {isLoading && candidates.length === 0 ? (
               <div className="py-12 text-center text-base text-muted-foreground">

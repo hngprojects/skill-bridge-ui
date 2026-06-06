@@ -39,15 +39,23 @@ export function TalentCard({ candidate, view = "list" }: TalentCardProps) {
   const level = candidate.seniorityBadge || candidate.validatedLevel;
   const isGrid = view === "grid";
 
+  const shortlistIcon = candidate.isSaved ? (
+    <Check className="size-4" aria-hidden />
+  ) : (
+    <Plus className="size-4" aria-hidden />
+  );
+
   return (
-    <div className="box-border w-full max-w-199 rounded-2xl border border-[#DBDBDB] bg-white p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-1 items-center gap-4">
+    <div className="box-border w-full rounded-2xl border border-[#DBDBDB] bg-white p-4">
+      <div className="flex items-start justify-between gap-2 sm:gap-3">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
           <ScoreBadge
             value={candidate.score}
             className={cn(
               "shrink-0 font-bold",
-              isGrid ? "size-14 text-lg" : "size-20 text-2xl",
+              isGrid
+                ? "size-14 text-lg"
+                : "size-14 text-lg sm:size-20 sm:text-2xl",
             )}
           />
 
@@ -56,7 +64,9 @@ export function TalentCard({ candidate, view = "list" }: TalentCardProps) {
             fullName={candidate.fullName}
             className={cn(
               "shrink-0 border-3 border-white",
-              isGrid ? "size-14 text-base" : "size-20 text-xl",
+              isGrid
+                ? "size-14 text-base"
+                : "size-14 text-base sm:size-20 sm:text-xl",
             )}
           />
 
@@ -64,12 +74,12 @@ export function TalentCard({ candidate, view = "list" }: TalentCardProps) {
             <p
               className={cn(
                 "truncate font-bold leading-normal text-[#151515]",
-                isGrid ? "text-lg" : "text-2xl",
+                isGrid ? "text-lg" : "text-lg sm:text-2xl",
               )}
             >
               {candidate.fullName}
             </p>
-            <div className="flex items-center gap-2 text-base font-light text-[#151515]">
+            <div className="flex items-center gap-2 text-sm font-light text-[#151515] sm:text-base">
               <span className="truncate">{candidate.role}</span>
               {level ? (
                 <>
@@ -81,38 +91,50 @@ export function TalentCard({ candidate, view = "list" }: TalentCardProps) {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleAddToShortlist}
-          disabled={candidate.isSaved || isSaving}
-          aria-label={candidate.isSaved ? "Shortlisted" : "Add to shortlist"}
-          className={cn(
-            "shrink-0 rounded-lg border-[0.5px] border-[#D9D9D9] bg-[#EBEBEB] text-[#151515] disabled:cursor-not-allowed disabled:opacity-60",
-            isGrid
-              ? "flex size-8 items-center justify-center"
-              : "flex items-center gap-1 px-2 py-1.5 text-xs font-normal",
-          )}
-        >
-          {isGrid ? (
-            candidate.isSaved ? (
-              <Check className="size-4" aria-hidden />
-            ) : (
-              <Plus className="size-4" aria-hidden />
-            )
-          ) : (
-            <>
+        {isGrid ? (
+          <button
+            type="button"
+            onClick={handleAddToShortlist}
+            disabled={candidate.isSaved || isSaving}
+            aria-label={candidate.isSaved ? "Shortlisted" : "Add to shortlist"}
+            className="flex size-8 shrink-0 items-center justify-center rounded-lg border-[0.5px] border-[#D9D9D9] bg-[#EBEBEB] text-[#151515] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {shortlistIcon}
+          </button>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={handleAddToShortlist}
+              disabled={candidate.isSaved || isSaving}
+              aria-label={
+                candidate.isSaved ? "Shortlisted" : "Add to shortlist"
+              }
+              className="flex size-8 shrink-0 items-center justify-center rounded-lg border-[0.5px] border-[#D9D9D9] bg-[#EBEBEB] text-[#151515] disabled:cursor-not-allowed disabled:opacity-60 sm:hidden"
+            >
+              {shortlistIcon}
+            </button>
+            <button
+              type="button"
+              onClick={handleAddToShortlist}
+              disabled={candidate.isSaved || isSaving}
+              aria-label={
+                candidate.isSaved ? "Shortlisted" : "Add to shortlist"
+              }
+              className="hidden shrink-0 items-center gap-1 rounded-lg border-[0.5px] border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1.5 text-xs font-normal text-[#151515] disabled:cursor-not-allowed disabled:opacity-60 sm:flex"
+            >
               {candidate.isSaved ? "Shortlisted" : "Add to Shortlist"}
               <PlusCircle className="size-4" aria-hidden />
-            </>
-          )}
-        </button>
+            </button>
+          </>
+        )}
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap gap-2 sm:mt-6">
         {tags.map((tag) => (
           <span
             key={tag}
-            className="box-border rounded-xl border-[0.5px] border-[#D9D9D9] bg-white px-6 py-2 text-base font-normal text-[#151515]"
+            className="box-border rounded-xl border-[0.5px] border-[#D9D9D9] bg-white px-3 py-1.5 text-sm font-normal text-[#151515] sm:px-6 sm:py-2 sm:text-base"
           >
             {tag}
           </span>

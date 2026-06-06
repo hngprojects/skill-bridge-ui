@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EMPLOYER_FILTER_OPTIONS } from "@/constants/employer-talents";
+import { cn } from "@/lib/utils";
 import { DISCOVERY_MIN_SCORE } from "@/types/api/employer-discovery";
 import type {
   TalentFilters,
@@ -19,6 +20,7 @@ export function TalentsFilterSidebar({
   onChange,
   onApply,
   onClear,
+  className,
 }: TalentsFilterSidebarProps) {
   function toggle(
     key: keyof Pick<
@@ -35,7 +37,12 @@ export function TalentsFilterSidebar({
   }
 
   return (
-    <div className="flex w-65 shrink-0 flex-col gap-5 rounded-2xl bg-muted p-4">
+    <div
+      className={cn(
+        "flex w-full flex-col gap-5 rounded-2xl bg-muted p-4 lg:w-65 lg:shrink-0",
+        className,
+      )}
+    >
       <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-2 py-2">
         <Search className="size-4.5 text-muted-foreground" />
         <input

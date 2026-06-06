@@ -63,6 +63,7 @@ export type TalentsFilterSidebarProps = {
   onChange: (filters: TalentFilters) => void;
   onApply: () => void;
   onClear: () => void;
+  className?: string;
 };
 
 export type FilterSectionProps = {
