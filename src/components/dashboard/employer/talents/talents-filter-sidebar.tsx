@@ -1,24 +1,25 @@
 "use client";
+
 import { Search } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { EMPLOYER_FILTER_OPTIONS } from "@/constants/employer-talents";
-import { FilterSection } from "./filter-section";
-import { ScoreSlider } from "./score-slider";
+import { DISCOVERY_MIN_SCORE } from "@/types/api/employer-discovery";
 import type {
   TalentFilters,
   TalentsFilterSidebarProps,
 } from "@/types/employer-talents";
 
+import { FilterSection } from "./filter-section";
+import { ScoreSlider } from "./score-slider";
+
 export function TalentsFilterSidebar({
   filters,
+  search,
+  onSearchChange,
   onChange,
   onApply,
   onClear,
 }: TalentsFilterSidebarProps) {
-  // TODO: wire global search to API query param when endpoint is connected
-  const [search, setSearch] = useState("");
-
   function toggle(
     key: keyof Pick<
       TalentFilters,
@@ -39,9 +40,9 @@ export function TalentsFilterSidebar({
         <Search className="size-4.5 text-muted-foreground" />
         <input
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search"
-          className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground text-foreground"
+          className="w-full bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
         />
       </div>
       <FilterSection
@@ -60,10 +61,12 @@ export function TalentsFilterSidebar({
       />
       <div className="w-full border-t border-border" />
       <ScoreSlider
-        min={filters.scoreMin}
-        max={filters.scoreMax}
-        onChange={(mn, mx) =>
-          onChange({ ...filters, scoreMin: mn, scoreMax: mx })
+        value={filters.scoreMin}
+        onChange={(scoreMin) =>
+          onChange({
+            ...filters,
+            scoreMin: Math.max(DISCOVERY_MIN_SCORE, scoreMin),
+          })
         }
       />
       <div className="w-full border-t border-border" />

@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-import { EMPLOYER_TALENTS } from "@/constants/employer-talents";
+import { getEmployerFilterLabel } from "@/constants/employer-talents";
+import { useDiscoveryCandidates } from "@/hooks/api/use-employer-discovery";
 import type { TalentFilters, TalentViewMode } from "@/types/employer-talents";
 import { DEFAULT_FILTERS } from "@/types/employer-talents";
 
@@ -20,19 +21,35 @@ const PAGE_SIZE = 20;
 export function EmployerTalentsPage() {
   const [view, setView] = useState<TalentViewMode>("list");
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
   const [pendingFilters, setPendingFilters] =
     useState<TalentFilters>(DEFAULT_FILTERS);
   const [appliedFilters, setAppliedFilters] =
     useState<TalentFilters>(DEFAULT_FILTERS);
 
+  const { data, isLoading, isError } = useDiscoveryCandidates(appliedFilters, {
+    page,
+    limit: PAGE_SIZE,
+    search: appliedSearch,
+  });
+
+  const candidates = data?.candidates ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = data?.totalPages ?? 1;
+  const listPage = data?.page ?? page;
+
   const handleApply = () => {
     setAppliedFilters(pendingFilters);
+    setAppliedSearch(search.trim());
     setPage(1);
   };
 
   const handleClear = () => {
     setPendingFilters(DEFAULT_FILTERS);
     setAppliedFilters(DEFAULT_FILTERS);
+    setSearch("");
+    setAppliedSearch("");
     setPage(1);
   };
 
@@ -52,64 +69,36 @@ export function EmployerTalentsPage() {
     setPage(1);
   };
 
-  const filteredTalents = useMemo(() => {
-    return EMPLOYER_TALENTS.filter((talent) => {
-      const f = appliedFilters;
-      if (f.experience.length > 0) {
-        const match = f.experience.some((exp) =>
-          talent.level.toLowerCase().includes(exp.toLowerCase()),
-        );
-        if (!match) return false;
-      }
-      if (f.roleTrack.length > 0) {
-        const match = f.roleTrack.some((role) =>
-          talent.role.toLowerCase().includes(role.toLowerCase()),
-        );
-        if (!match) return false;
-      }
-      if (f.availability.length > 0) {
-        const hasAvailability = f.availability.some((item) =>
-          talent.tags?.some((tag) =>
-            tag.toLowerCase().includes(item.toLowerCase()),
-          ),
-        );
-        if (!hasAvailability) return false;
-      }
-      if (f.region.length > 0) {
-        const hasRegion = f.region.some((item) =>
-          talent.tags?.some((tag) =>
-            tag.toLowerCase().includes(item.toLowerCase()),
-          ),
-        );
-        if (!hasRegion) return false;
-      }
-      if (talent.score < f.scoreMin || talent.score > f.scoreMax) return false;
-      return true;
-    });
-  }, [appliedFilters]);
-
-  const total = filteredTalents.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const paginatedTalents = filteredTalents.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE,
-  );
-
   const activeChips = [
     ...appliedFilters.experience.map((val) => ({
       key: "experience" as const,
       val,
+      label: getEmployerFilterLabel("experience", val),
     })),
     ...appliedFilters.roleTrack.map((val) => ({
       key: "roleTrack" as const,
       val,
+      label: getEmployerFilterLabel("roleTrack", val),
     })),
     ...appliedFilters.availability.map((val) => ({
       key: "availability" as const,
       val,
+      label: getEmployerFilterLabel("availability", val),
     })),
-    ...appliedFilters.region.map((val) => ({ key: "region" as const, val })),
+    ...appliedFilters.region.map((val) => ({
+      key: "region" as const,
+      val,
+      label: getEmployerFilterLabel("region", val),
+    })),
   ];
+
+  const emptyTitle = isError
+    ? "Unable to load talents"
+    : "No talents match your filters";
+  const emptyDescription = isError
+    ? "Something went wrong while loading candidates. Please try again."
+    : (data?.emptyStateMessage ??
+      "Try adjusting your filters or clear them to see more results.");
 
   return (
     <div className="mx-auto max-w-274 space-y-6 py-8">
@@ -129,6 +118,8 @@ export function EmployerTalentsPage() {
       <div className="flex items-start gap-10">
         <TalentsFilterSidebar
           filters={pendingFilters}
+          search={search}
+          onSearchChange={setSearch}
           onChange={setPendingFilters}
           onApply={handleApply}
           onClear={handleClear}
@@ -139,28 +130,37 @@ export function EmployerTalentsPage() {
               view === "grid" ? "grid grid-cols-2 gap-6" : "flex flex-col gap-6"
             }
           >
-            {filteredTalents.length === 0 ? (
+            {isLoading && candidates.length === 0 ? (
+              <div className="py-12 text-center text-base text-muted-foreground">
+                Loading talents…
+              </div>
+            ) : candidates.length === 0 ? (
               <DataEmptyState
                 icon="/assets/icons/icon-shortlisted-candidates.svg"
-                title="No talents match your filters"
-                description="Try adjusting your filters or clear them to see more results."
+                title={emptyTitle}
+                description={emptyDescription}
               />
             ) : (
-              paginatedTalents.map((talent) => (
-                <Link key={talent.id} href={`/e/talents/${talent.id}`}>
-                  <TalentCard {...talent} />
+              candidates.map((candidate) => (
+                <Link
+                  key={candidate.userId}
+                  href={`/e/talents/${candidate.userId}`}
+                >
+                  <TalentCard candidate={candidate} />
                 </Link>
               ))
             )}
           </div>
-          <DataPagination
-            page={page}
-            totalPages={totalPages}
-            total={total}
-            pageSize={PAGE_SIZE}
-            itemLabel="talents"
-            onPageChange={setPage}
-          />
+          {!isLoading && total > 0 ? (
+            <DataPagination
+              page={listPage}
+              totalPages={totalPages}
+              total={total}
+              pageSize={PAGE_SIZE}
+              itemLabel="talents"
+              onPageChange={setPage}
+            />
+          ) : null}
         </div>
       </div>
     </div>

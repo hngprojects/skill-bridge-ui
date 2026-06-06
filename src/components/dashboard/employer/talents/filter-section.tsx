@@ -15,7 +15,9 @@ export function FilterSection({
   const [search, setSearch] = useState("");
 
   const filtered = search
-    ? options.filter((o) => o.toLowerCase().includes(search.toLowerCase()))
+    ? options.filter((option) =>
+        option.label.toLowerCase().includes(search.toLowerCase()),
+      )
     : options;
 
   return (
@@ -50,12 +52,12 @@ export function FilterSection({
       {open && (
         <div className="flex flex-col gap-0.5">
           {filtered.map((option) => {
-            const checked = selected.includes(option);
+            const checked = selected.includes(option.value);
             return (
               <button
-                key={option}
+                key={option.value}
                 type="button"
-                onClick={() => onToggle(option)}
+                onClick={() => onToggle(option.value)}
                 aria-pressed={checked}
                 className="flex w-full cursor-pointer items-center gap-3 rounded-full px-0 py-2 text-left select-none focus:outline-none"
               >
@@ -79,7 +81,7 @@ export function FilterSection({
                   )}
                 </span>
                 <span className="text-base font-normal tracking-[0.017em] text-foreground">
-                  {option}
+                  {option.label}
                 </span>
               </button>
             );
