@@ -1,4 +1,5 @@
 import type {
+  EmployerCompanySize,
   EmployerHiringCountRange,
   EmployerJoiningRoleId,
   EmployerRegion,
@@ -52,20 +53,28 @@ export type CandidateOnboardingResponseData = {
 
 export type EmployerOnboardingInput = {
   joiningAs: EmployerJoiningRoleId;
-  desiredRoles: string[];
-  region: EmployerRegion;
-  hiringCountRange: EmployerHiringCountRange;
+  companyName: string;
   companyWebsite: string;
+  industry: string;
+  companySize: EmployerCompanySize;
+  region: EmployerRegion;
+  linkedinCompanyPageUrl?: string;
+  desiredRoles: string[];
+  hiringCountRange?: EmployerHiringCountRange;
 };
 
 export type EmployerProfile = {
   id: string;
   userId: string;
   joiningAs: EmployerJoiningRoleId;
-  desiredRoles: string[];
-  region: EmployerRegion;
-  hiringCountRange: EmployerHiringCountRange;
+  companyName: string;
   companyWebsite: string;
+  industry: string;
+  companySize: EmployerCompanySize;
+  region: EmployerRegion;
+  linkedinCompanyPageUrl?: string;
+  desiredRoles: string[];
+  hiringCountRange?: EmployerHiringCountRange;
 };
 
 export type EmployerOnboardingResponseData = {

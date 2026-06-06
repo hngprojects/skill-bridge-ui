@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  EMPLOYER_COMPANY_SIZE_VALUES,
   EMPLOYER_DESIRED_ROLE_IDS,
   EMPLOYER_HIRING_COUNT_VALUES,
   EMPLOYER_REGION_VALUES,
@@ -58,35 +59,48 @@ export type EmployerOnboardingFormValues = z.infer<
   typeof employerOnboardingFormSchema
 >;
 
+function isParsableUrl(value: string): boolean {
+  try {
+    const url = value.startsWith("http") ? value : `https://${value}`;
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export const employerOnboardingProfileSchema = z.object({
   joiningAs: z.enum(["recruiter", "founder", "agency"], {
     message: "Select how you are joining",
   }),
-  desiredRoles: z
-    .array(z.enum(EMPLOYER_DESIRED_ROLE_IDS))
-    .min(1, "Select at least one role"),
-  region: z.enum(EMPLOYER_REGION_VALUES, {
-    message: "Select your region",
-  }),
-  hiringCountRange: z.enum(EMPLOYER_HIRING_COUNT_VALUES, {
-    message: "Select hiring volume",
-  }),
+  companyName: z
+    .string()
+    .trim()
+    .min(1, "Company name is required")
+    .max(100, "Company name is too long"),
   companyWebsite: z
     .string()
     .trim()
     .min(1, "Company website is required")
-    .refine(
-      (value) => {
-        try {
-          const url = value.startsWith("http") ? value : `https://${value}`;
-          new URL(url);
-          return true;
-        } catch {
-          return false;
-        }
-      },
-      { message: "Enter a valid website URL" },
-    ),
+    .refine(isParsableUrl, { message: "Enter a valid website URL" }),
+  industry: z.string().trim().min(1, "Select an industry"),
+  companySize: z.enum(EMPLOYER_COMPANY_SIZE_VALUES, {
+    message: "Select your company size",
+  }),
+  region: z.enum(EMPLOYER_REGION_VALUES, {
+    message: "Select your region",
+  }),
+  linkedinCompanyPageUrl: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => !value || isParsableUrl(value), {
+      message: "Enter a valid LinkedIn URL",
+    }),
+  desiredRoles: z
+    .array(z.enum(EMPLOYER_DESIRED_ROLE_IDS))
+    .min(1, "Select at least one role"),
+  hiringCountRange: z.enum(EMPLOYER_HIRING_COUNT_VALUES).optional(),
 });
 
 export type EmployerOnboardingProfileValues = z.infer<
