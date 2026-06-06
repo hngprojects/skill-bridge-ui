@@ -19,10 +19,11 @@ import {
 import { SHORTLIST_EMPTY_STATE } from "@/constants/employer-shortlist";
 import type { EmployerSavedCandidate } from "@/types/api/employer-discovery";
 
-import { ScoreBadge } from "./score-badge";
-import { ShortlistEmptyState } from "./shortlist-empty-state";
+import { CandidateAvatar } from "../shared/candidate-avatar";
+import { DataEmptyState } from "../shared/data-empty-state";
+import { ScoreBadge } from "../shared/score-badge";
 import { ShortlistRowActions } from "./shortlist-row-actions";
-import { CandidateAvatar, formatTableDate } from "./shortlist-shared";
+import { formatTableDate } from "./shortlist-shared";
 
 type ShortlistTableProps = {
   candidates: EmployerSavedCandidate[];
@@ -107,7 +108,7 @@ export function ShortlistTable({ candidates, isLoading }: ShortlistTableProps) {
   }
 
   if (candidates.length === 0) {
-    return <ShortlistEmptyState {...SHORTLIST_EMPTY_STATE} />;
+    return <DataEmptyState {...SHORTLIST_EMPTY_STATE} />;
   }
 
   return (

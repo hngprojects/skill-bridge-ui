@@ -3,8 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 import { DashboardNavLink } from "@/components/dashboard/nav-link";
+import { NavbarMobileMenu } from "@/components/dashboard/navbar-mobile-menu";
 import { EmployerNavbarUserMenu } from "@/components/dashboard/employer/employer-navbar-user-menu";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
 import { EMPLOYER_NAV_LINKS } from "@/constants/employer-nav";
@@ -14,6 +16,7 @@ const LOGO = "/assets/logo/logo.svg";
 
 export function EmployerNavbar() {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
@@ -22,6 +25,14 @@ export function EmployerNavbar() {
           "mx-auto flex h-16 w-full max-w-360 items-center px-4 sm:px-6 lg:h-18",
         )}
       >
+        <NavbarMobileMenu
+          pathname={pathname}
+          open={mobileOpen}
+          onOpenChange={setMobileOpen}
+          links={EMPLOYER_NAV_LINKS}
+          navAriaLabel="Employer"
+          variant="employer"
+        />
         <Link
           href="/e/dashboard"
           className="inline-flex shrink-0 items-center gap-2"
@@ -51,6 +62,7 @@ export function EmployerNavbar() {
                 label={link.label}
                 href={link.href}
                 pathname={pathname}
+                variant="employer"
               />
             ))}
           </div>

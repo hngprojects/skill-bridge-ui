@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { DashboardNavLinks } from "@/components/dashboard/nav-links";
-import { DashboardNavbarMobileMenu } from "@/components/dashboard/navbar-mobile-menu";
+import { NavbarMobileMenu } from "@/components/dashboard/navbar-mobile-menu";
+import { DASHBOARD_NAV_LINKS } from "@/constants/dashboard-nav";
 import { DashboardNavbarUserMenu } from "@/components/dashboard/navbar-user-menu";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
 import { cn } from "@/lib/utils";
@@ -24,10 +25,13 @@ export default function DashboardNavbar() {
           "mx-auto flex h-16 w-full max-w-360 items-center px-4 sm:px-6 lg:h-18",
         )}
       >
-        <DashboardNavbarMobileMenu
+        <NavbarMobileMenu
           pathname={pathname}
           open={mobileOpen}
           onOpenChange={setMobileOpen}
+          links={DASHBOARD_NAV_LINKS}
+          navAriaLabel="Dashboard"
+          variant="talent"
         />
         <Link
           href="/t/dashboard"

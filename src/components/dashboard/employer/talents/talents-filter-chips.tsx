@@ -11,12 +11,12 @@ export function TalentsFilterChips({
   if (chips.length === 0) return null;
   return (
     <div className="flex flex-wrap gap-2">
-      {chips.map(({ key, val }) => (
+      {chips.map(({ key, val, label }) => (
         <span
           key={`${key}-${val}`}
           className="flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-sm text-foreground"
         >
-          {val}
+          {label}
           <button
             type="button"
             aria-label={`Remove ${val} filter`}

@@ -22,12 +22,16 @@ import { OFFERS_EMPTY_STATE } from "@/constants/employer-shortlist";
 import type { EmployerOfferListItem } from "@/types/api/employer-offers";
 
 import { OfferStatusBadge } from "./offer-status-badge";
-import { ScoreBadge } from "./score-badge";
-import { ShortlistEmptyState } from "./shortlist-empty-state";
-import { CandidateAvatar, formatTableDate } from "./shortlist-shared";
+import { CandidateAvatar } from "../shared/candidate-avatar";
+import { DataEmptyState } from "../shared/data-empty-state";
+import { ScoreBadge } from "../shared/score-badge";
+import { formatTableDate } from "./shortlist-shared";
 
 type OffersTableProps = {
   offers: EmployerOfferListItem[];
+  isLoading?: boolean;
+  isError?: boolean;
+  errorMessage?: string;
 };
 
 const columns: ColumnDef<EmployerOfferListItem>[] = [
@@ -103,15 +107,41 @@ const columns: ColumnDef<EmployerOfferListItem>[] = [
   },
 ];
 
-export function OffersTable({ offers }: OffersTableProps) {
+export function OffersTable({
+  offers,
+  isLoading = false,
+  isError = false,
+  errorMessage,
+}: OffersTableProps) {
   const table = useDataTable({
     data: offers,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
+  if (isError) {
+    return (
+      <DataEmptyState
+        icon={OFFERS_EMPTY_STATE.icon}
+        title="Unable to load offers"
+        description={
+          errorMessage ??
+          "Something went wrong while loading offers. Please try again."
+        }
+      />
+    );
+  }
+
+  if (isLoading && offers.length === 0) {
+    return (
+      <div className="flex min-h-70 items-center justify-center py-12 text-sm text-[#757575]">
+        Loading offers…
+      </div>
+    );
+  }
+
   if (offers.length === 0) {
-    return <ShortlistEmptyState {...OFFERS_EMPTY_STATE} />;
+    return <DataEmptyState {...OFFERS_EMPTY_STATE} />;
   }
 
   return (
