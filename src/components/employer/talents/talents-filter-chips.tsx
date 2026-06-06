@@ -19,17 +19,16 @@ export function TalentsFilterChips({
           {val}
           <button
             type="button"
+            aria-label={`Remove ${val} filter`}
             onClick={() => onRemove(key, val)}
             className="focus:outline-none"
           >
-            <X
-              className="size-3.5 text-muted-foreground"
-              aria-label={`Remove ${val} filter`}
-            />
+            <X className="size-3.5 text-muted-foreground" />
           </button>
         </span>
       ))}
       <button
+        type="button"
         onClick={onClear}
         className="text-sm font-medium text-muted-foreground underline"
       >

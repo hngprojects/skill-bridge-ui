@@ -1,6 +1,6 @@
 "use client";
-
 import { Search } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { EMPLOYER_FILTER_OPTIONS } from "@/constants/employer-talents";
 import { FilterSection } from "./filter-section";
@@ -16,6 +16,9 @@ export function TalentsFilterSidebar({
   onApply,
   onClear,
 }: TalentsFilterSidebarProps) {
+  // TODO: wire global search to API query param when endpoint is connected
+  const [search, setSearch] = useState("");
+
   function toggle(
     key: keyof Pick<
       TalentFilters,
@@ -34,9 +37,12 @@ export function TalentsFilterSidebar({
     <div className="flex w-65 shrink-0 flex-col gap-5 rounded-2xl bg-muted p-4">
       <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-2 py-2">
         <Search className="size-4.5 text-muted-foreground" />
-        <span className="text-base font-normal tracking-[0.017em] text-muted-foreground">
-          Search
-        </span>
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search"
+          className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground text-foreground"
+        />
       </div>
       <FilterSection
         title="Experience"
