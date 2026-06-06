@@ -3,16 +3,46 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  discoverCandidates,
+  getDiscoveryCandidateProfile,
   getSavedCandidates,
   removeCandidate,
   saveCandidate,
 } from "@/actions/employer-discovery";
+import { toDiscoveryCandidatesParams } from "@/lib/employer-discovery-params";
 import type {
-  EmployerSavedCandidatesListData,
+  DiscoveryCandidatesParams,
+  EmployerDiscoveryCandidatesListData,
   EmployerSavedCandidatesListParams,
 } from "@/types/api/employer-discovery";
+import type { TalentFilters } from "@/types/employer-talents";
 
 import { employerDiscoveryKeys } from "./keys";
+
+export function useDiscoveryCandidates(
+  filters: TalentFilters,
+  opts: { page: number; limit: number; search?: string },
+  options?: { enabled?: boolean },
+) {
+  const params = toDiscoveryCandidatesParams(filters, opts);
+
+  return useQuery({
+    queryKey: employerDiscoveryKeys.candidateList(params),
+    queryFn: () => discoverCandidates(params),
+    enabled: options?.enabled ?? true,
+  });
+}
+
+export function useDiscoveryCandidateProfile(
+  userId: string,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: employerDiscoveryKeys.profile(userId),
+    queryFn: () => getDiscoveryCandidateProfile(userId),
+    enabled: (options?.enabled ?? true) && Boolean(userId),
+  });
+}
 
 export function useSavedCandidates(
   params?: EmployerSavedCandidatesListParams,
@@ -25,9 +55,6 @@ export function useSavedCandidates(
   });
 }
 
-/**
- * Save a candidate to the employer's shortlist.
- */
 export function useSaveCandidate() {
   const qc = useQueryClient();
   return useMutation({
@@ -36,15 +63,16 @@ export function useSaveCandidate() {
       void qc.invalidateQueries({
         queryKey: employerDiscoveryKeys.savedLists(),
       });
+      void qc.invalidateQueries({
+        queryKey: employerDiscoveryKeys.candidateLists(),
+      });
+      void qc.invalidateQueries({
+        queryKey: employerDiscoveryKeys.profiles(),
+      });
     },
   });
 }
 
-/**
- * Remove a candidate from the shortlist. Optimistically filters them out of
- * every cached saved-list page (we know which `userId` to drop), then
- * invalidates on settle to reconcile pagination totals with the server.
- */
 export function useRemoveCandidate() {
   const qc = useQueryClient();
   return useMutation({
@@ -54,20 +82,15 @@ export function useRemoveCandidate() {
         queryKey: employerDiscoveryKeys.savedLists(),
       });
 
-      // Snapshot every cached saved-list page so a failed call can roll back.
       const previousSnapshots =
-        qc.getQueriesData<EmployerSavedCandidatesListData>({
+        qc.getQueriesData<EmployerDiscoveryCandidatesListData>({
           queryKey: employerDiscoveryKeys.savedLists(),
         });
 
-      qc.setQueriesData<EmployerSavedCandidatesListData>(
+      qc.setQueriesData<EmployerDiscoveryCandidatesListData>(
         { queryKey: employerDiscoveryKeys.savedLists() },
         (old) => {
           if (!old) return old;
-          // `total` is the global count, duplicated on every paginated
-          // response. Decrement it on every cached page — not just the one
-          // that contained the removed candidate — so the count stays
-          // consistent across pages until the invalidation refetches.
           return {
             ...old,
             candidates: old.candidates.filter((c) => c.userId !== userId),
@@ -85,10 +108,23 @@ export function useRemoveCandidate() {
         }
       }
     },
-    onSettled: () => {
+    onSettled: (_data, _error, userId) => {
       void qc.invalidateQueries({
         queryKey: employerDiscoveryKeys.savedLists(),
       });
+      void qc.invalidateQueries({
+        queryKey: employerDiscoveryKeys.candidateLists(),
+      });
+      void qc.invalidateQueries({
+        queryKey: employerDiscoveryKeys.profiles(),
+      });
+      if (userId) {
+        void qc.invalidateQueries({
+          queryKey: employerDiscoveryKeys.profile(userId),
+        });
+      }
     },
   });
 }
+
+export type { DiscoveryCandidatesParams };

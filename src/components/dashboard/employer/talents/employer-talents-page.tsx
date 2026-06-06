@@ -1,9 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
-import { EMPLOYER_TALENTS } from "@/constants/employer-talents";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { getEmployerFilterLabel } from "@/constants/employer-talents";
+import { useDiscoveryCandidates } from "@/hooks/api/use-employer-discovery";
+import { cn } from "@/lib/utils";
 import type { TalentFilters, TalentViewMode } from "@/types/employer-talents";
 import { DEFAULT_FILTERS } from "@/types/employer-talents";
 
@@ -20,19 +30,37 @@ const PAGE_SIZE = 20;
 export function EmployerTalentsPage() {
   const [view, setView] = useState<TalentViewMode>("list");
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [pendingFilters, setPendingFilters] =
     useState<TalentFilters>(DEFAULT_FILTERS);
   const [appliedFilters, setAppliedFilters] =
     useState<TalentFilters>(DEFAULT_FILTERS);
 
+  const { data, isLoading, isError } = useDiscoveryCandidates(appliedFilters, {
+    page,
+    limit: PAGE_SIZE,
+    search: appliedSearch,
+  });
+
+  const candidates = data?.candidates ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = data?.totalPages ?? 1;
+  const listPage = data?.page ?? page;
+
   const handleApply = () => {
     setAppliedFilters(pendingFilters);
+    setAppliedSearch(search.trim());
     setPage(1);
+    setFiltersOpen(false);
   };
 
   const handleClear = () => {
     setPendingFilters(DEFAULT_FILTERS);
     setAppliedFilters(DEFAULT_FILTERS);
+    setSearch("");
+    setAppliedSearch("");
     setPage(1);
   };
 
@@ -52,70 +80,53 @@ export function EmployerTalentsPage() {
     setPage(1);
   };
 
-  const filteredTalents = useMemo(() => {
-    return EMPLOYER_TALENTS.filter((talent) => {
-      const f = appliedFilters;
-      if (f.experience.length > 0) {
-        const match = f.experience.some((exp) =>
-          talent.level.toLowerCase().includes(exp.toLowerCase()),
-        );
-        if (!match) return false;
-      }
-      if (f.roleTrack.length > 0) {
-        const match = f.roleTrack.some((role) =>
-          talent.role.toLowerCase().includes(role.toLowerCase()),
-        );
-        if (!match) return false;
-      }
-      if (f.availability.length > 0) {
-        const hasAvailability = f.availability.some((item) =>
-          talent.tags?.some((tag) =>
-            tag.toLowerCase().includes(item.toLowerCase()),
-          ),
-        );
-        if (!hasAvailability) return false;
-      }
-      if (f.region.length > 0) {
-        const hasRegion = f.region.some((item) =>
-          talent.tags?.some((tag) =>
-            tag.toLowerCase().includes(item.toLowerCase()),
-          ),
-        );
-        if (!hasRegion) return false;
-      }
-      if (talent.score < f.scoreMin || talent.score > f.scoreMax) return false;
-      return true;
-    });
-  }, [appliedFilters]);
-
-  const total = filteredTalents.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const paginatedTalents = filteredTalents.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE,
-  );
-
   const activeChips = [
     ...appliedFilters.experience.map((val) => ({
       key: "experience" as const,
       val,
+      label: getEmployerFilterLabel("experience", val),
     })),
     ...appliedFilters.roleTrack.map((val) => ({
       key: "roleTrack" as const,
       val,
+      label: getEmployerFilterLabel("roleTrack", val),
     })),
     ...appliedFilters.availability.map((val) => ({
       key: "availability" as const,
       val,
+      label: getEmployerFilterLabel("availability", val),
     })),
-    ...appliedFilters.region.map((val) => ({ key: "region" as const, val })),
+    ...appliedFilters.region.map((val) => ({
+      key: "region" as const,
+      val,
+      label: getEmployerFilterLabel("region", val),
+    })),
   ];
 
+  const activeFilterCount = activeChips.length;
+
+  const sidebarProps = {
+    filters: pendingFilters,
+    search,
+    onSearchChange: setSearch,
+    onChange: setPendingFilters,
+    onApply: handleApply,
+    onClear: handleClear,
+  };
+
+  const emptyTitle = isError
+    ? "Unable to load talents"
+    : "No talents match your filters";
+  const emptyDescription = isError
+    ? "Something went wrong while loading candidates. Please try again."
+    : (data?.emptyStateMessage ??
+      "Try adjusting your filters or clear them to see more results.");
+
   return (
-    <div className="mx-auto max-w-274 space-y-6 py-8">
+    <div className="mx-auto max-w-274 space-y-6 py-6 sm:py-8">
       <TalentsHeroBanner />
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold text-foreground">Talent list</h1>
         <TalentsViewToggle view={view} onChange={setView} />
       </div>
@@ -126,41 +137,84 @@ export function EmployerTalentsPage() {
         onClear={handleClear}
       />
 
-      <div className="flex items-start gap-10">
-        <TalentsFilterSidebar
-          filters={pendingFilters}
-          onChange={setPendingFilters}
-          onApply={handleApply}
-          onClear={handleClear}
-        />
-        <div className="flex flex-1 flex-col gap-6">
-          <div
-            className={
-              view === "grid" ? "grid grid-cols-2 gap-6" : "flex flex-col gap-6"
-            }
+      <Collapsible
+        open={filtersOpen}
+        onOpenChange={setFiltersOpen}
+        className="lg:hidden"
+      >
+        <CollapsibleTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            className="flex w-full items-center justify-between gap-2"
           >
-            {filteredTalents.length === 0 ? (
+            <span className="flex items-center gap-2">
+              Filters
+              {activeFilterCount > 0 ? (
+                <Badge variant="secondary">{activeFilterCount}</Badge>
+              ) : null}
+            </span>
+            <ChevronDown
+              className={cn(
+                "size-4 shrink-0 transition-transform",
+                filtersOpen && "rotate-180",
+              )}
+              aria-hidden
+            />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="pt-4">
+          <TalentsFilterSidebar {...sidebarProps} />
+        </CollapsibleContent>
+      </Collapsible>
+
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-10">
+        <aside className="hidden lg:block">
+          <TalentsFilterSidebar
+            {...sidebarProps}
+            className="lg:sticky lg:top-24"
+          />
+        </aside>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-6">
+          <div
+            className={cn(
+              view === "grid"
+                ? "grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6"
+                : "flex flex-col gap-4 sm:gap-6",
+            )}
+          >
+            {isLoading && candidates.length === 0 ? (
+              <div className="py-12 text-center text-base text-muted-foreground">
+                Loading talents…
+              </div>
+            ) : candidates.length === 0 ? (
               <DataEmptyState
                 icon="/assets/icons/icon-shortlisted-candidates.svg"
-                title="No talents match your filters"
-                description="Try adjusting your filters or clear them to see more results."
+                title={emptyTitle}
+                description={emptyDescription}
               />
             ) : (
-              paginatedTalents.map((talent) => (
-                <Link key={talent.id} href={`/e/talents/${talent.id}`}>
-                  <TalentCard {...talent} />
+              candidates.map((candidate) => (
+                <Link
+                  key={candidate.userId}
+                  href={`/e/talents/${candidate.userId}`}
+                >
+                  <TalentCard candidate={candidate} view={view} />
                 </Link>
               ))
             )}
           </div>
-          <DataPagination
-            page={page}
-            totalPages={totalPages}
-            total={total}
-            pageSize={PAGE_SIZE}
-            itemLabel="talents"
-            onPageChange={setPage}
-          />
+          {!isLoading && total > 0 ? (
+            <DataPagination
+              page={listPage}
+              totalPages={totalPages}
+              total={total}
+              pageSize={PAGE_SIZE}
+              itemLabel="talents"
+              onPageChange={setPage}
+            />
+          ) : null}
         </div>
       </div>
     </div>
