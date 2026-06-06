@@ -307,6 +307,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (typeof token.email === "string") {
         sessionUser.email = token.email;
       }
+      if (typeof token.name === "string") {
+        sessionUser.name = token.name;
+      }
       sessionUser.role = tokenDetails.role;
       return session;
     },

@@ -93,7 +93,7 @@ export function EmployerCompanyProfile() {
     try {
       const payload =
         field === "companyName"
-          ? { companyName: value }
+          ? { companyName: value.trim() }
           : { [field]: normalizeUrl(value) };
       await updateProfile(payload);
       appToast.success("Saved.");
