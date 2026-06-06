@@ -36,10 +36,22 @@ export const employerDashboardKeys = {
 
 export const employerDiscoveryKeys = {
   all: ["employer-discovery"] as const,
+  candidateLists: () => [...employerDiscoveryKeys.all, "candidates"] as const,
+  candidateList: (params?: Record<string, unknown>) =>
+    [...employerDiscoveryKeys.candidateLists(), params ?? {}] as const,
+  profiles: () => [...employerDiscoveryKeys.all, "profile"] as const,
+  profile: (userId: string) =>
+    [...employerDiscoveryKeys.profiles(), userId] as const,
   savedLists: () => [...employerDiscoveryKeys.all, "saved"] as const,
-  // Page/limit folded into the key so paginated requests cache independently.
   savedList: (params?: { page?: number; limit?: number }) =>
     [...employerDiscoveryKeys.savedLists(), params ?? {}] as const,
+};
+
+export const employerOffersKeys = {
+  all: ["employer-offers"] as const,
+  lists: () => [...employerOffersKeys.all, "list"] as const,
+  list: (params?: { page?: number; limit?: number }) =>
+    [...employerOffersKeys.lists(), params ?? {}] as const,
 };
 
 export const resourcesKeys = {
