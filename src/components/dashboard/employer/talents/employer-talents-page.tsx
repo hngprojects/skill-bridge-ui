@@ -146,7 +146,7 @@ export function EmployerTalentsPage() {
                   key={candidate.userId}
                   href={`/e/talents/${candidate.userId}`}
                 >
-                  <TalentCard candidate={candidate} />
+                  <TalentCard candidate={candidate} view={view} />
                 </Link>
               ))
             )}

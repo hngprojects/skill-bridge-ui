@@ -51,6 +51,7 @@ export function EmployerNavbar() {
                 label={link.label}
                 href={link.href}
                 pathname={pathname}
+                variant="employer"
               />
             ))}
           </div>

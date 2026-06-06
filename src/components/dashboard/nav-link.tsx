@@ -13,7 +13,13 @@ type DashboardNavLinkProps = {
   badge?: "New";
   pathname: string;
   onNavigate?: () => void;
+  variant?: "talent" | "employer";
 };
+
+const ACTIVE_TEXT_CLASS = {
+  talent: "text-[#9B3048]",
+  employer: "text-[#05060F]",
+} as const;
 
 export function DashboardNavLink({
   label,
@@ -21,6 +27,7 @@ export function DashboardNavLink({
   badge,
   pathname,
   onNavigate,
+  variant = "talent",
 }: DashboardNavLinkProps) {
   const active = isNavLinkActive(pathname, href);
 
@@ -31,7 +38,7 @@ export function DashboardNavLink({
       className={cn(
         "inline-flex items-center gap-2 text-[15px] font-medium transition-colors",
         active
-          ? "text-[#9B3048]"
+          ? cn(ACTIVE_TEXT_CLASS[variant], "font-bold")
           : "text-foreground/55 hover:text-foreground/80",
       )}
     >
