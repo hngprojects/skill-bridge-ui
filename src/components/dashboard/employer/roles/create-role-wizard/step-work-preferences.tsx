@@ -40,7 +40,7 @@ type StepWorkPreferencesProps = {
 };
 
 const TRIGGER_CLASS =
-  "h-12 w-full rounded-lg border-[#D0D5DD] bg-white text-sm text-[#101828] data-placeholder:text-[#98A2B3]";
+  "!h-12 w-full rounded-lg border-[#D0D5DD] bg-white text-sm text-[#101828] data-placeholder:text-[#98A2B3]";
 
 export function StepWorkPreferences({
   values,
