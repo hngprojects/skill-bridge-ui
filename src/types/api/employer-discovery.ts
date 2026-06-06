@@ -1,12 +1,14 @@
 import type { AssessmentTier } from "./assessment";
+import type { VerifiedProfileResponseData } from "./verified-profile";
+
+/** Backend enforces a minimum composite score of 75 on discovery list. */
+export const DISCOVERY_MIN_SCORE = 75;
 
 /**
- * Saved / shortlisted candidate as the UI consumes it. Mapped from the
- * snake_case backend response. Fields we don't display on the shortlist
- * table today (e.g. `aboutTags`, `topSkills`) are kept on the type so the
- * candidate detail view can render them without another mapper update.
+ * Discovery / saved candidate card as the UI consumes it. Mapped from the
+ * snake_case backend response.
  */
-export type EmployerSavedCandidate = {
+export type EmployerDiscoveryCandidate = {
   userId: string;
   candidateId: string;
   firstName: string;
@@ -36,8 +38,11 @@ export type EmployerSavedCandidate = {
   offerStatus: string | null;
 };
 
-export type EmployerSavedCandidatesListData = {
-  candidates: EmployerSavedCandidate[];
+/** @deprecated Use {@link EmployerDiscoveryCandidate}. */
+export type EmployerSavedCandidate = EmployerDiscoveryCandidate;
+
+export type EmployerDiscoveryCandidatesListData = {
+  candidates: EmployerDiscoveryCandidate[];
   total: number;
   page: number;
   limit: number;
@@ -45,14 +50,37 @@ export type EmployerSavedCandidatesListData = {
   emptyStateMessage: string | null;
 };
 
+/** @deprecated Use {@link EmployerDiscoveryCandidatesListData}. */
+export type EmployerSavedCandidatesListData =
+  EmployerDiscoveryCandidatesListData;
+
+export type DiscoveryCandidatesParams = {
+  page?: number;
+  limit?: number;
+  roleTrack?: string[];
+  availability?: string[];
+  experienceLevel?: string[];
+  minScore?: number;
+  maxScore?: number;
+  region?: string;
+  search?: string;
+};
+
 export type EmployerSavedCandidatesListParams = {
   page?: number;
   limit?: number;
 };
 
+export type EmployerDiscoveryCandidateProfile = VerifiedProfileResponseData & {
+  userId: string;
+  isSaved: boolean;
+  offerSent: boolean;
+  offerStatus: "pending" | "accepted" | null;
+};
+
 // ─── Raw response (snake_case from the API) ──────────────────────────────────
 
-type RawEmployerSavedCandidate = {
+export type RawEmployerDiscoveryCandidate = {
   user_id: string;
   candidate_id?: string;
   first_name?: string;
@@ -60,30 +88,33 @@ type RawEmployerSavedCandidate = {
   full_name: string;
   avatar_url?: string | null;
   role?: string;
-  role_track: string;
+  role_track?: string | null;
   seniority_badge?: string;
-  validated_level?: string;
+  validated_level?: string | null;
   tier: AssessmentTier;
-  score: number;
+  score?: number;
   composite_score?: number;
   skills?: string[];
   top_skills?: string[];
   about_tags?: string[];
-  availability: string;
-  availability_status?: string;
-  availability_label?: string;
+  availability?: string;
+  availability_status?: string | null;
+  availability_label?: string | null;
   verified_at: string;
-  strong_competencies: string[];
-  share_token: string;
-  region?: string;
-  date_added?: string;
+  strong_competencies?: string[] | null;
+  share_token?: string | null;
+  region?: string | null;
+  date_added?: string | null;
   is_saved: boolean;
   offer_sent: boolean;
-  offer_status: string | null;
+  offer_status: "pending" | "accepted" | null;
 };
 
-export type RawEmployerSavedCandidatesListResponse = {
-  candidates: RawEmployerSavedCandidate[];
+/** @deprecated Use {@link RawEmployerDiscoveryCandidate}. */
+export type RawEmployerSavedCandidate = RawEmployerDiscoveryCandidate;
+
+export type RawEmployerDiscoveryCandidatesListResponse = {
+  candidates: RawEmployerDiscoveryCandidate[];
   total: number;
   page: number;
   limit: number;
@@ -91,4 +122,14 @@ export type RawEmployerSavedCandidatesListResponse = {
   empty_state_message: string | null;
 };
 
-export type { RawEmployerSavedCandidate };
+/** @deprecated Use {@link RawEmployerDiscoveryCandidatesListResponse}. */
+export type RawEmployerSavedCandidatesListResponse =
+  RawEmployerDiscoveryCandidatesListResponse;
+
+export type RawEmployerDiscoveryCandidateProfile =
+  VerifiedProfileResponseData & {
+    user_id: string;
+    is_saved: boolean;
+    offer_sent: boolean;
+    offer_status: "pending" | "accepted" | null;
+  };
