@@ -5,7 +5,6 @@ export interface Talent {
   level: string;
   score: number;
   avatar: string;
-  scoreBadge: string;
   tags: string[];
 }
 
@@ -68,11 +67,6 @@ export interface EmployerFilterOptions {
 }
 
 export type TalentSortOption = "score-desc" | "score-asc" | "name-asc";
-
-export type TalentsPaginationProps = {
-  showing: number;
-  total: number;
-};
 
 export type TalentsViewToggleProps = {
   view: TalentViewMode;

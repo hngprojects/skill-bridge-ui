@@ -1,17 +1,19 @@
 "use client";
 
-import Image from "next/image";
 import { PlusCircle } from "lucide-react";
-import { EMPLOYER_TALENTS } from "@/constants/employer-talents";
 
-type TalentCardProps = (typeof EMPLOYER_TALENTS)[number];
+import { CandidateAvatar } from "../shared/candidate-avatar";
+import { ScoreBadge } from "../shared/score-badge";
+import type { Talent } from "@/types/employer-talents";
+
+type TalentCardProps = Talent;
 
 export function TalentCard({
   name,
   role,
   level,
   avatar,
-  scoreBadge,
+  score,
   tags,
 }: TalentCardProps) {
   return (
@@ -25,25 +27,16 @@ export function TalentCard({
       </button>
 
       <div className="flex items-center gap-4">
-        <div className="relative size-20 shrink-0">
-          <Image
-            src={scoreBadge}
-            alt="Score Hexagon"
-            width={80}
-            height={80}
-            className="h-full w-full object-contain"
-          />
-        </div>
+        <ScoreBadge
+          value={score}
+          className="size-20 shrink-0 text-2xl font-bold"
+        />
 
-        <div className="size-20 shrink-0 overflow-hidden rounded-full border-3 border-white">
-          <Image
-            src={avatar || "/avatars/default.png"}
-            alt={name}
-            width={80}
-            height={80}
-            className="h-full w-full object-cover"
-          />
-        </div>
+        <CandidateAvatar
+          avatarUrl={avatar || null}
+          fullName={name}
+          className="size-20 shrink-0 border-3 border-white text-xl"
+        />
 
         <div className="flex flex-col gap-1 pl-0.5">
           <p className="text-2xl font-bold leading-normal text-[#151515]">

@@ -12,7 +12,6 @@ export const EMPLOYER_TALENTS: Talent[] = [
     level: "MID-LEVEL",
     score: 85,
     avatar: "/avatars/adebayo.png",
-    scoreBadge: "/avatars/score-adebayo.svg",
     tags: ["React.Js", "TypeScript", "Remote", "Hybrid", "4 years exp."],
   },
   {
@@ -22,7 +21,6 @@ export const EMPLOYER_TALENTS: Talent[] = [
     level: "MID-LEVEL",
     score: 87,
     avatar: "/avatars/chiamaka.png",
-    scoreBadge: "/avatars/score-chiamaka.svg",
     tags: ["Mid Level", "Open to work", "Remote", "Hybrid", "5 years exp."],
   },
   {
@@ -32,7 +30,6 @@ export const EMPLOYER_TALENTS: Talent[] = [
     level: "MID-LEVEL",
     score: 91,
     avatar: "/avatars/david.png",
-    scoreBadge: "/avatars/score-david.svg",
     tags: ["Node.Js", "PostgreSQL", "Remote", "Hybrid", "3 years exp."],
   },
   {
@@ -42,7 +39,6 @@ export const EMPLOYER_TALENTS: Talent[] = [
     level: "Senior Level",
     score: 95,
     avatar: "/avatars/tolani.png",
-    scoreBadge: "/avatars/score-tolani.svg",
     tags: ["AWS", "Kubernetes", "Remote", "DevOps", "6 years exp."],
   },
 ];

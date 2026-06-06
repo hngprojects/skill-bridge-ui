@@ -22,9 +22,10 @@ import { OFFERS_EMPTY_STATE } from "@/constants/employer-shortlist";
 import type { EmployerOfferListItem } from "@/types/api/employer-offers";
 
 import { OfferStatusBadge } from "./offer-status-badge";
-import { ScoreBadge } from "./score-badge";
-import { ShortlistEmptyState } from "./shortlist-empty-state";
-import { CandidateAvatar, formatTableDate } from "./shortlist-shared";
+import { CandidateAvatar } from "../shared/candidate-avatar";
+import { DataEmptyState } from "../shared/data-empty-state";
+import { ScoreBadge } from "../shared/score-badge";
+import { formatTableDate } from "./shortlist-shared";
 
 type OffersTableProps = {
   offers: EmployerOfferListItem[];
@@ -111,7 +112,7 @@ export function OffersTable({ offers }: OffersTableProps) {
   });
 
   if (offers.length === 0) {
-    return <ShortlistEmptyState {...OFFERS_EMPTY_STATE} />;
+    return <DataEmptyState {...OFFERS_EMPTY_STATE} />;
   }
 
   return (
