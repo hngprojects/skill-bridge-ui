@@ -33,6 +33,7 @@ export type RawEmployerRole = {
   salary_max: number | null;
   currency: string | null;
   assessment_id: string | null;
+  assessment: unknown | null;
   status: EmployerRoleStatus;
   offers_sent_count: number;
   created_at: string;

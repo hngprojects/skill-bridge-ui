@@ -3,10 +3,51 @@ import type { ApiEnvelope } from "@/types/api/common";
 import type {
   CatalogueResponse,
   CreateRoleInput,
+  EmployerRoleItem,
+  EmployerRoleStatus,
   RawEmployerRole,
 } from "@/types/api/employer-roles";
 
 import { unwrapData } from "./utils";
+
+type RolesListEnvelope = {
+  status: string;
+  data: RawEmployerRole[];
+};
+
+function normalizeRole(raw: RawEmployerRole): EmployerRoleItem {
+  const parts = [
+    raw.employment_type,
+    raw.work_arrangement,
+    raw.education,
+  ].filter(Boolean);
+  return {
+    id: raw.id,
+    title: raw.title,
+    status: raw.status,
+    offersSent: raw.offers_sent_count,
+    requirements: parts.length > 0 ? parts.join(" · ") : raw.category,
+    createdAt: raw.created_at,
+  };
+}
+
+export async function getRoles(params?: {
+  status?: EmployerRoleStatus;
+}): Promise<EmployerRoleItem[]> {
+  const res = await authApi.get<ApiEnvelope<RolesListEnvelope>>(
+    "/employer/roles",
+    { params },
+  );
+  return unwrapData(res).data.map(normalizeRole);
+}
+
+export async function closeRole(roleId: string): Promise<void> {
+  await authApi.patch(`/employer/roles/${roleId}/close`);
+}
+
+export async function reopenRole(roleId: string): Promise<void> {
+  await authApi.patch(`/employer/roles/${roleId}/reopen`);
+}
 
 function parseSalary(value: string): number | undefined {
   const n = Math.floor(Number(value));

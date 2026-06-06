@@ -44,7 +44,7 @@ export function EmployerHiringPreferences() {
   const [draft, setDraft] = useState<HiringDraft>({});
 
   const joiningAs: EmployerJoiningRoleId =
-    draft.joiningAs ?? profile?.joiningAs ?? "recruiter";
+    draft.joiningAs ?? profile?.joiningAs ?? "Recruiter";
   const hiringRoles: EmployerRoleTrackId[] =
     draft.hiringRoles ?? profile?.hiringRoles ?? [];
   const experienceLevels: EmployerExperienceLevel[] =

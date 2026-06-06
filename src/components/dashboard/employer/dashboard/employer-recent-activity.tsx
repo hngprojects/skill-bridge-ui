@@ -79,7 +79,7 @@ export function EmployerRecentActivity({ items }: EmployerRecentActivityProps) {
           Recent activity
         </h2>
         <Link
-          href="/e/activity"
+          href="/e/notifications"
           className="flex items-center gap-0.5 font-sans text-base font-semibold leading-[150%] tracking-[0.016em] text-[#05060F] underline"
         >
           See all

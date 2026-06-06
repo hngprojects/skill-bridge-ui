@@ -9,7 +9,7 @@ export const EMPLOYER_ACTION_ITEMS = [
     description:
       "Browse talents who have completed assessments and are ready for hiring.",
     actionLabel: "Browse talents",
-    href: "/e/dashboard",
+    href: "/e/talents",
     iconSrc: "/assets/employer-dashboard/search.svg",
     iconBg: "#fe9667",
   },
@@ -18,7 +18,7 @@ export const EMPLOYER_ACTION_ITEMS = [
     description:
       "Send role-based assessments to talents and review results inside your dashboard.",
     actionLabel: "Create assessments",
-    href: "/e/dashboard",
+    href: "/e/assessments",
     iconSrc: "/assets/employer-dashboard/read-cv.svg",
     iconBg: "#f9e796",
   },
@@ -27,7 +27,7 @@ export const EMPLOYER_ACTION_ITEMS = [
     description:
       "Save top talents and compare them before scheduling interviews.",
     actionLabel: "Open shortlist",
-    href: "/e/dashboard",
+    href: "/e/shortlist",
     iconSrc: "/assets/employer-dashboard/user-multiple.svg",
     iconBg: "#cbb0eb",
   },
@@ -35,19 +35,22 @@ export const EMPLOYER_ACTION_ITEMS = [
 
 export const EMPLOYER_TESTIMONIALS = [
   {
-    name: "Sandra Lindberg, Founder",
+    name: "Chioma Osei, Co-Founder — Verdant Labs",
+    rating: 5,
     quote:
-      "Placeholder text for the description text of what the user in focus says about their experience with product.",
+      "We had an open role for two months. What was delaying the hire was the number of CVs we had to sieve through. Went on CredLane and got already evaluated and shortlisted candidates. Our hiring time reduced by more than half.",
   },
   {
-    name: "Sandra Lindberg, Founder",
+    name: "Tunde Adeyemi, Head of Engineering — Pivo Africa",
+    rating: 5,
     quote:
-      "Placeholder text for the description text of what the user in focus says about their experience with product.",
+      "The assessment scores are accurate. Our guy's assessment report showed strong on system design and that's exactly what he demonstrated on the job. I highly recommend.",
   },
   {
-    name: "Sandra Lindberg, Founder",
+    name: "Amara Nwosu, People Lead — Kuda",
+    rating: 4,
     quote:
-      "Placeholder text for the description text of what the user in focus says about their experience with product.",
+      "Hiring for a role used to take us months. Now we just shortlist candidates based on their assessments results then probe a bit to make the final choice. It's way faster.",
   },
 ] as const;
 
