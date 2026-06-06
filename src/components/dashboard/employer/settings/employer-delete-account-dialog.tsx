@@ -23,15 +23,9 @@ import { clearPersistedSessionState } from "@/lib/client-session-cleanup";
 import { appToast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
-type EmployerDeleteAccountDialogProps = {
-  email?: string;
-};
-
 const DELETE_CONFIRMATION_PHRASE = "DELETE MY ACCOUNT";
 
-export function EmployerDeleteAccountDialog({
-  email,
-}: EmployerDeleteAccountDialogProps) {
+export function EmployerDeleteAccountDialog() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { mutateAsync: deleteAccount, isPending } = useDeleteEmployerAccount();
@@ -74,7 +68,7 @@ export function EmployerDeleteAccountDialog({
       }}
     >
       <DialogTrigger asChild>
-        <SettingsAccountActionLink destructive disabled={isPending || !email}>
+        <SettingsAccountActionLink destructive disabled={isPending}>
           Delete account
         </SettingsAccountActionLink>
       </DialogTrigger>
@@ -101,7 +95,7 @@ export function EmployerDeleteAccountDialog({
             onChange={(event) =>
               setConfirmation(event.target.value.toUpperCase())
             }
-            disabled={isPending || !email}
+            disabled={isPending}
             className={cn(
               "h-9 rounded-md border border-border bg-white px-3",
               "text-sm font-medium text-foreground outline-none",

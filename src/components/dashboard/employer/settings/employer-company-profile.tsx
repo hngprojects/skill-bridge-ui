@@ -42,7 +42,7 @@ function normalizeUrl(value: string): string {
 }
 
 export function EmployerCompanyProfile() {
-  const { data: profile, isLoading } = useEmployerProfile();
+  const { data: profile, isLoading, isError, refetch } = useEmployerProfile();
   const { mutateAsync: updateProfile, isPending } = useUpdateEmployerProfile();
 
   // Local "draft" sits on top of the server value — keys absent mean "use the
@@ -64,11 +64,24 @@ export function EmployerCompanyProfile() {
     );
   }, [profile, draft]);
 
-  if (isLoading || !profile) {
+  if (isLoading) {
     return (
       <div className="flex flex-col gap-6">
         <Skeleton className="h-40 w-full rounded-2xl" />
         <Skeleton className="h-64 w-full rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (isError || !profile) {
+    return (
+      <div className="flex flex-col items-start gap-3 rounded-2xl border border-border bg-white p-5">
+        <p className="text-sm text-muted-foreground">
+          We couldn&apos;t load your company profile. Please try again.
+        </p>
+        <Button type="button" variant="secondary" onClick={() => refetch()}>
+          Retry
+        </Button>
       </div>
     );
   }

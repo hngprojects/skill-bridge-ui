@@ -25,15 +25,13 @@ type RestrictedFieldProps = {
 
 function formatDate(iso: string | null): string {
   if (!iso) return "later";
-  try {
-    return new Date(iso).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  } catch {
-    return "later";
-  }
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "later";
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 export function RestrictedField({

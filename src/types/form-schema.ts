@@ -62,9 +62,20 @@ export type EmployerOnboardingFormValues = z.infer<
 
 function isParsableUrl(value: string): boolean {
   try {
-    const url = value.startsWith("http") ? value : `https://${value}`;
-    new URL(url);
-    return true;
+    const withScheme = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+    const url = new URL(withScheme);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    return url.hostname.includes(".");
+  } catch {
+    return false;
+  }
+}
+
+function isLinkedinCompanyUrl(value: string): boolean {
+  try {
+    const withScheme = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+    const url = new URL(withScheme);
+    return /(^|\.)linkedin\.com$/i.test(url.hostname);
   } catch {
     return false;
   }
@@ -95,8 +106,8 @@ export const employerOnboardingProfileSchema = z.object({
     .string()
     .trim()
     .optional()
-    .refine((value) => !value || isParsableUrl(value), {
-      message: "Enter a valid LinkedIn URL",
+    .refine((value) => !value || isLinkedinCompanyUrl(value), {
+      message: "Enter a valid LinkedIn company URL",
     }),
   desiredRoles: z
     .array(z.enum(EMPLOYER_DESIRED_ROLE_IDS))

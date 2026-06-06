@@ -3,6 +3,7 @@ import type {
   EmployerHiringCountRange,
   EmployerJoiningRoleId,
   EmployerRegion,
+  EmployerRoleTrackId,
 } from "@/constants/employer-onboarding";
 
 import type { AuthTokens, AuthUser } from "./auth";
@@ -59,7 +60,7 @@ export type EmployerOnboardingInput = {
   companySize: EmployerCompanySize;
   region: EmployerRegion;
   linkedinCompanyPageUrl?: string;
-  desiredRoles: string[];
+  desiredRoles: EmployerRoleTrackId[];
   hiringCountRange?: EmployerHiringCountRange;
 };
 
@@ -73,7 +74,7 @@ export type EmployerProfile = {
   companySize: EmployerCompanySize;
   region: EmployerRegion;
   linkedinCompanyPageUrl?: string;
-  desiredRoles: string[];
+  desiredRoles: EmployerRoleTrackId[];
   hiringCountRange?: EmployerHiringCountRange;
 };
 

@@ -1,5 +1,3 @@
-"use client";
-
 import { EmployerSettingsTabsCard } from "./employer-settings-tabs-card";
 import { EmployerVerificationBanner } from "./employer-verification-banner";
 

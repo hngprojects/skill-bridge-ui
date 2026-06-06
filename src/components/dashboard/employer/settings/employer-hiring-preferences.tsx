@@ -37,7 +37,7 @@ function sameArray<T extends string>(a: T[], b: T[]): boolean {
 }
 
 export function EmployerHiringPreferences() {
-  const { data: profile, isLoading } = useEmployerProfile();
+  const { data: profile, isLoading, isError, refetch } = useEmployerProfile();
   const { mutateAsync: updateProfile, isPending } = useUpdateEmployerProfile();
 
   // Same "draft over server" pattern as the company profile section.
@@ -69,8 +69,21 @@ export function EmployerHiringPreferences() {
     );
   }, [profile, draft]);
 
-  if (isLoading || !profile) {
+  if (isLoading) {
     return <Skeleton className="h-96 w-full rounded-2xl" />;
+  }
+
+  if (isError || !profile) {
+    return (
+      <div className="flex flex-col items-start gap-3 rounded-2xl border border-border bg-white p-5">
+        <p className="text-sm text-muted-foreground">
+          We couldn&apos;t load your hiring preferences. Please try again.
+        </p>
+        <Button type="button" variant="secondary" onClick={() => refetch()}>
+          Retry
+        </Button>
+      </div>
+    );
   }
 
   const handleSave = async () => {
