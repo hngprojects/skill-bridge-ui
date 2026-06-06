@@ -29,6 +29,7 @@ function EmployerVerifyEmailForm() {
   const clearEmployerLead = useSignupFlowStore((s) => s.clearEmployerLead);
   const [codeValue, setCodeValue] = useState("");
   const [isAuthNavigating, setIsAuthNavigating] = useState(false);
+  const [countdown, setCountdown] = useState(60);
   const autoResendTriggeredRef = useRef(false);
   const { mutateAsync: resendVerification, isPending: resending } =
     useResendVerification();
@@ -79,12 +80,19 @@ function EmployerVerifyEmailForm() {
     }
   };
 
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const id = window.setTimeout(() => setCountdown((s) => s - 1), 1000);
+    return () => window.clearTimeout(id);
+  }, [countdown]);
+
   const onResend = useCallback(async () => {
     const email = employerLead?.email;
     if (!email) return;
 
     try {
       await resendVerification({ email });
+      setCountdown(60);
       appToast.success("If that email is registered, a new code was sent.");
     } catch (e) {
       appToast.error(authFailureMessage(e));
@@ -157,14 +165,20 @@ function EmployerVerifyEmailForm() {
 
         <p className="body-2 mt-6 text-muted-foreground">
           Didn&apos;t receive a code?{" "}
-          <button
-            type="button"
-            disabled={resending}
-            className="font-semibold text-foreground underline underline-offset-4 hover:text-foreground disabled:opacity-50"
-            onClick={() => void onResend()}
-          >
-            {resending ? "Sending..." : "Send code again"}
-          </button>
+          {countdown > 0 ? (
+            <span className="font-semibold text-muted-foreground">
+              Resend in {countdown}s
+            </span>
+          ) : (
+            <button
+              type="button"
+              disabled={resending}
+              className="font-semibold text-foreground underline underline-offset-4 hover:text-foreground disabled:opacity-50"
+              onClick={() => void onResend()}
+            >
+              {resending ? "Sending..." : "Send code again"}
+            </button>
+          )}
         </p>
       </form>
     </>

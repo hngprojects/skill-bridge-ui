@@ -8,44 +8,58 @@ import {
   markAllAsRead,
 } from "@/actions/notifications";
 import type {
+  NotificationRole,
   NotificationsListResponseData,
   UnreadCountResponseData,
 } from "@/types/api/notifications";
 
 import { notificationsKeys } from "./keys";
 
-export function useNotifications() {
+export function useNotifications(role: NotificationRole) {
   return useQuery({
-    queryKey: notificationsKeys.list(),
-    queryFn: () => getNotifications(),
+    queryKey: notificationsKeys.list(role),
+    queryFn: () => getNotifications(role),
   });
 }
 
-export function useUnreadCount() {
-  return useQuery({
-    queryKey: notificationsKeys.unreadCount(),
-    queryFn: () => getUnreadCount(),
+export function useUnreadCount(role: NotificationRole) {
+  // Talent has a dedicated /unread-count endpoint we can hit cheaply.
+  const talentQuery = useQuery({
+    queryKey: notificationsKeys.unreadCount("talent"),
+    queryFn: () => getUnreadCount("talent"),
+    enabled: role === "talent",
   });
+  // Employer has no /unread-count endpoint
+  const employerListQuery = useQuery({
+    queryKey: notificationsKeys.list("employer"),
+    queryFn: () => getNotifications("employer"),
+    enabled: role === "employer",
+    select: (data) => ({
+      count: data.items.filter((n) => !n.isRead).length,
+    }),
+  });
+
+  return role === "employer" ? employerListQuery : talentQuery;
 }
 
-export function useMarkAsRead() {
+export function useMarkAsRead(role: NotificationRole) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => markAsRead(id),
+    mutationFn: (id: string) => markAsRead(role, id),
     onMutate: async (id: string) => {
-      await qc.cancelQueries({ queryKey: notificationsKeys.list() });
-      await qc.cancelQueries({ queryKey: notificationsKeys.unreadCount() });
+      await qc.cancelQueries({ queryKey: notificationsKeys.list(role) });
+      await qc.cancelQueries({ queryKey: notificationsKeys.unreadCount(role) });
 
       const previousNotifications =
         qc.getQueryData<NotificationsListResponseData>(
-          notificationsKeys.list(),
+          notificationsKeys.list(role),
         );
       const previousUnreadCount = qc.getQueryData<UnreadCountResponseData>(
-        notificationsKeys.unreadCount(),
+        notificationsKeys.unreadCount(role),
       );
 
       qc.setQueryData<NotificationsListResponseData>(
-        notificationsKeys.list(),
+        notificationsKeys.list(role),
         (old) => {
           if (!old) return old;
           return {
@@ -58,7 +72,7 @@ export function useMarkAsRead() {
       );
 
       qc.setQueryData<UnreadCountResponseData>(
-        notificationsKeys.unreadCount(),
+        notificationsKeys.unreadCount(role),
         (old) => {
           if (!old) return old;
           return { count: Math.max(0, old.count - 1) };
@@ -70,42 +84,44 @@ export function useMarkAsRead() {
     onError: (_err, _id, context) => {
       if (context?.previousNotifications) {
         qc.setQueryData(
-          notificationsKeys.list(),
+          notificationsKeys.list(role),
           context.previousNotifications,
         );
       }
       if (context?.previousUnreadCount) {
         qc.setQueryData(
-          notificationsKeys.unreadCount(),
+          notificationsKeys.unreadCount(role),
           context.previousUnreadCount,
         );
       }
     },
     onSettled: () => {
-      void qc.invalidateQueries({ queryKey: notificationsKeys.list() });
-      void qc.invalidateQueries({ queryKey: notificationsKeys.unreadCount() });
+      void qc.invalidateQueries({ queryKey: notificationsKeys.list(role) });
+      void qc.invalidateQueries({
+        queryKey: notificationsKeys.unreadCount(role),
+      });
     },
   });
 }
 
-export function useMarkAllAsRead() {
+export function useMarkAllAsRead(role: NotificationRole) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: () => markAllAsRead(),
+    mutationFn: () => markAllAsRead(role),
     onMutate: async () => {
-      await qc.cancelQueries({ queryKey: notificationsKeys.list() });
-      await qc.cancelQueries({ queryKey: notificationsKeys.unreadCount() });
+      await qc.cancelQueries({ queryKey: notificationsKeys.list(role) });
+      await qc.cancelQueries({ queryKey: notificationsKeys.unreadCount(role) });
 
       const previousNotifications =
         qc.getQueryData<NotificationsListResponseData>(
-          notificationsKeys.list(),
+          notificationsKeys.list(role),
         );
       const previousUnreadCount = qc.getQueryData<UnreadCountResponseData>(
-        notificationsKeys.unreadCount(),
+        notificationsKeys.unreadCount(role),
       );
 
       qc.setQueryData<NotificationsListResponseData>(
-        notificationsKeys.list(),
+        notificationsKeys.list(role),
         (old) => {
           if (!old) return old;
           return {
@@ -116,7 +132,7 @@ export function useMarkAllAsRead() {
       );
 
       qc.setQueryData<UnreadCountResponseData>(
-        notificationsKeys.unreadCount(),
+        notificationsKeys.unreadCount(role),
         () => ({ count: 0 }),
       );
 
@@ -125,20 +141,22 @@ export function useMarkAllAsRead() {
     onError: (_err, _variables, context) => {
       if (context?.previousNotifications) {
         qc.setQueryData(
-          notificationsKeys.list(),
+          notificationsKeys.list(role),
           context.previousNotifications,
         );
       }
       if (context?.previousUnreadCount) {
         qc.setQueryData(
-          notificationsKeys.unreadCount(),
+          notificationsKeys.unreadCount(role),
           context.previousUnreadCount,
         );
       }
     },
     onSettled: () => {
-      void qc.invalidateQueries({ queryKey: notificationsKeys.list() });
-      void qc.invalidateQueries({ queryKey: notificationsKeys.unreadCount() });
+      void qc.invalidateQueries({ queryKey: notificationsKeys.list(role) });
+      void qc.invalidateQueries({
+        queryKey: notificationsKeys.unreadCount(role),
+      });
     },
   });
 }

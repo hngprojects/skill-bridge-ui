@@ -13,19 +13,19 @@ const AVAILABILITY_ITEMS = [
     id: "actively_looking",
     label: "Actively Looking",
     description:
-      "You demonstrate strong visual thinking, interface structuring, and product intuition. Your growth opportunities currently lie in communication confidence, systems thinking, and decision-making under ambiguity.",
+      "You're visible to employers and actively seeking new roles. Your profile is prioritized in search results.",
   },
   {
     id: "open_to_opportunities",
     label: "Open to Opportunities",
     description:
-      "You demonstrate strong visual thinking, interface structuring, and product intuition. Your growth opportunities currently lie in communication confidence, systems thinking, and decision-making under ambiguity.",
+      "You're not job hunting, but you're open to the right offer. Employers can find you, but you won't appear as urgent.",
   },
   {
     id: "not_looking",
-    label: "Not Looking Profile Visibility",
+    label: "Not Looking",
     description:
-      "You demonstrate strong visual thinking, interface structuring, and product intuition. Your growth opportunities currently lie in communication confidence, systems thinking, and decision-making under ambiguity.",
+      "You're off the market. Your profile is hidden from employer searches and recommendations.",
   },
 ] as const;
 

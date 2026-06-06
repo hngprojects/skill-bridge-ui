@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const Page = () => {
-  return <NotificationsPage />;
+  return <NotificationsPage role="talent" settingsHref="/t/settings" />;
 };
 
 export default Page;

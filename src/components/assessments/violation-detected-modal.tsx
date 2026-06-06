@@ -13,6 +13,7 @@ interface ViolationDetectedModalProps {
   isOpen: boolean;
   onClose: () => void;
   violationCount?: number;
+  violationLimit?: number;
   onNeedHelp?: () => void;
   onContinue?: () => void;
 }
@@ -21,6 +22,7 @@ const ViolationDetectedModal = ({
   isOpen,
   onClose,
   violationCount = 1,
+  violationLimit = 3,
   onNeedHelp,
   onContinue,
 }: ViolationDetectedModalProps) => (
@@ -41,7 +43,7 @@ const ViolationDetectedModal = ({
 
       <div className="flex flex-col items-center gap-3.5 w-full">
         <h2 className="text-center font-bold text-2xl text-foreground">
-          Violation detected ({violationCount})
+          Violation detected ({violationCount}/{violationLimit})
         </h2>
 
         <div className="flex flex-col items-center gap-3.5 w-full">

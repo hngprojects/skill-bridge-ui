@@ -63,7 +63,11 @@ const NotificationItem = ({
       />
       <div className="flex flex-col gap-y-4 pt-1 flex-1">
         <p className="text-sm leading-5 font-normal text-foreground">
-          <span className="font-bold">{notification.boldText}</span>{" "}
+          {notification.boldText ? (
+            <>
+              <span className="font-bold">{notification.boldText}</span>{" "}
+            </>
+          ) : null}
           {notification.normalText}
         </p>
         <div className="flex items-center justify-between">
