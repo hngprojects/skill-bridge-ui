@@ -29,6 +29,7 @@ import { formatTableDate } from "./shortlist-shared";
 
 type OffersTableProps = {
   offers: EmployerOfferListItem[];
+  isLoading?: boolean;
 };
 
 const columns: ColumnDef<EmployerOfferListItem>[] = [
@@ -104,12 +105,20 @@ const columns: ColumnDef<EmployerOfferListItem>[] = [
   },
 ];
 
-export function OffersTable({ offers }: OffersTableProps) {
+export function OffersTable({ offers, isLoading = false }: OffersTableProps) {
   const table = useDataTable({
     data: offers,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (isLoading && offers.length === 0) {
+    return (
+      <div className="flex min-h-70 items-center justify-center py-12 text-sm text-[#757575]">
+        Loading offers…
+      </div>
+    );
+  }
 
   if (offers.length === 0) {
     return <DataEmptyState {...OFFERS_EMPTY_STATE} />;
