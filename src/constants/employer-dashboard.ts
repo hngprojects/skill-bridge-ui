@@ -9,7 +9,7 @@ export const EMPLOYER_ACTION_ITEMS = [
     description:
       "Browse talents who have completed assessments and are ready for hiring.",
     actionLabel: "Browse talents",
-    href: "/e/dashboard",
+    href: "/e/talents",
     iconSrc: "/assets/employer-dashboard/search.svg",
     iconBg: "#fe9667",
   },
@@ -18,7 +18,7 @@ export const EMPLOYER_ACTION_ITEMS = [
     description:
       "Send role-based assessments to talents and review results inside your dashboard.",
     actionLabel: "Create assessments",
-    href: "/e/dashboard",
+    href: "/e/assessments",
     iconSrc: "/assets/employer-dashboard/read-cv.svg",
     iconBg: "#f9e796",
   },
@@ -27,7 +27,7 @@ export const EMPLOYER_ACTION_ITEMS = [
     description:
       "Save top talents and compare them before scheduling interviews.",
     actionLabel: "Open shortlist",
-    href: "/e/dashboard",
+    href: "/e/shortlist",
     iconSrc: "/assets/employer-dashboard/user-multiple.svg",
     iconBg: "#cbb0eb",
   },
