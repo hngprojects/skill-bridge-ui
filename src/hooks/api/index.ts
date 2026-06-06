@@ -3,6 +3,7 @@ export * from "./use-avatar";
 export * from "./use-auth";
 export * from "./use-candidate";
 export * from "./use-employer";
+export * from "./use-employer-profile";
 export * from "./use-talent-onboarding";
 export * from "./use-health";
 export * from "./use-inquiries";

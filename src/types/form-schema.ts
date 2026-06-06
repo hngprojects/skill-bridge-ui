@@ -17,6 +17,7 @@ function nameField(label: string) {
     .trim()
     .min(1, `${label} is required.`)
     .min(2, `${label} must be at least 2 characters.`)
+    .max(50, `${label} must be at most 50 characters.`)
     .regex(NAME_REGEX, `${label} can only contain letters.`);
 }
 

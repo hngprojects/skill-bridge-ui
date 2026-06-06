@@ -105,6 +105,28 @@ export const EMPLOYER_COMPANY_SIZE_OPTIONS = EMPLOYER_COMPANY_SIZE_VALUES.map(
   (value) => ({ value, label: value }),
 );
 
+/** Experience levels accepted on PATCH `/employer/profile` `preferredExperienceLevels`. */
+export const EMPLOYER_EXPERIENCE_LEVELS = [
+  "junior",
+  "mid",
+  "senior",
+  "expert",
+] as const;
+
+const EXPERIENCE_LEVEL_LABELS: Record<
+  (typeof EMPLOYER_EXPERIENCE_LEVELS)[number],
+  string
+> = {
+  junior: "Junior",
+  mid: "Mid",
+  senior: "Senior",
+  expert: "Expert",
+};
+
+export const EMPLOYER_EXPERIENCE_LEVEL_OPTIONS = EMPLOYER_EXPERIENCE_LEVELS.map(
+  (value) => ({ value, label: EXPERIENCE_LEVEL_LABELS[value] }),
+);
+
 /**
  * Default industry options surfaced in the select. The schema validates a
  * free-form string (per product call), so backend can extend the canonical

@@ -2,6 +2,7 @@ export * from "./auth";
 export * from "./candidate";
 export * from "./talent-onboarding";
 export * from "./employer";
+export * from "./employer-profile";
 export * from "./health";
 export * from "./inquiries";
 export * from "./resources";
