@@ -69,6 +69,13 @@ export const talentSettingsKeys = {
   detail: () => [...talentSettingsKeys.all, "detail"] as const,
 };
 
+export const employerProfileKeys = {
+  all: ["employer-profile"] as const,
+  detail: () => [...employerProfileKeys.all, "detail"] as const,
+  verificationStatus: () =>
+    [...employerProfileKeys.all, "verification-status"] as const,
+};
+
 export const aiGuidanceReport = {
   all: ["ai-guidance-report"] as const,
 };
