@@ -9,8 +9,9 @@ type OverviewHeaderProps = {
 };
 
 export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
-  const { fullName, isLoading } = useSessionUserProfile();
+  const { fullName, role, isLoading } = useSessionUserProfile();
   const displayName = !isLoading && fullName ? fullName : "";
+  const settingsHref = role === "employer" ? "/e/settings" : "/t/settings";
 
   const showCta = profileCompletion == null || profileCompletion < 100;
 
@@ -29,7 +30,7 @@ export function OverviewHeader({ profileCompletion }: OverviewHeaderProps) {
       {showCta ? (
         <div className="w-full self-start lg:max-w-55 lg:text-right">
           <Link
-            href="/t/settings"
+            href={settingsHref}
             className={cn(
               "label text-foreground underline underline-offset-2",
               "hover:opacity-70 transition-opacity",
