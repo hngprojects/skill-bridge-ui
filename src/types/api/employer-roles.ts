@@ -1,10 +1,3 @@
-/**
- * Employer roles domain types. Currently only the local zustand store and
- * the roles UI consume these; once a backend roles endpoint lands, the same
- * types can back the API contract (snake_case raw responses → these shapes
- * via a mapper in `actions/`).
- */
-
 export type EmployerRoleStatus = "active" | "closed";
 
 export type EmployerRoleItem = {
@@ -22,4 +15,60 @@ export type CreateRoleValues = {
   roleTitle: string;
   category: string;
   companyUrl: string;
+};
+
+/** Raw API response from POST /employer/roles (snake_case). */
+export type RawEmployerRole = {
+  id: string;
+  employer_user_id: string;
+  title: string;
+  category: string;
+  description: string | null;
+  jd_file_url: string | null;
+  employment_type: string | null;
+  work_arrangement: string | null;
+  education: string | null;
+  keywords: string[] | null;
+  salary_min: number | null;
+  salary_max: number | null;
+  currency: string | null;
+  assessment_id: string | null;
+  status: EmployerRoleStatus;
+  offers_sent_count: number;
+  created_at: string;
+  updated_at: string;
+};
+
+/** Single item from GET /employer/assessments/credlane-catalogue */
+export type CatalogueAssessmentItem = {
+  id: string;
+  title: string;
+  description: unknown;
+  estimated_completion_time: string;
+  role_track: string;
+  experience_level: string;
+};
+
+export type CatalogueResponse = {
+  catalogue: CatalogueAssessmentItem[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
+/** Shape passed to the createRole action from the wizard. */
+export type CreateRoleInput = {
+  title: string;
+  category: string;
+  jdHtml: string;
+  jdFile: File | null;
+  employmentType: string;
+  workArrangement: string;
+  education: string;
+  keywords: string[];
+  salaryMin: string;
+  salaryMax: string;
+  currency: string;
+  assessmentId?: string;
 };

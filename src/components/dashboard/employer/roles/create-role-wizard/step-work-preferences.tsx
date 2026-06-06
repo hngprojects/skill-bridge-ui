@@ -11,24 +11,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import {
-  CURRENCY_OPTIONS,
   EDUCATION_OPTIONS,
   EMPLOYMENT_TYPE_OPTIONS,
-  EXPERIENCE_OPTIONS,
-  KEYWORD_OPTIONS,
+  WORK_ARRANGEMENT_OPTIONS,
 } from "@/constants/create-role-wizard";
 import {
   workPreferencesSchema,
   type WorkPreferencesValues,
 } from "@/types/create-role-schema";
+import { KeywordInput } from "./keyword-input";
+import { SalaryRangeField } from "./salary-range-field";
 
 export const INITIAL_WORK_PREFERENCES: WorkPreferencesValues = {
   employmentType: "",
-  experience: "",
+  workArrangement: "",
   education: "",
-  keyword: "",
+  keywords: [],
   salaryMin: "",
   salaryMax: "",
   currency: "",
@@ -69,7 +68,6 @@ export function StepWorkPreferences({
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Employment type */}
       <div className="flex flex-col gap-1.5">
         <p className="text-sm font-medium text-[#101828]">Employment type</p>
         <Controller
@@ -97,11 +95,10 @@ export function StepWorkPreferences({
         )}
       </div>
 
-      {/* Experience */}
       <div className="flex flex-col gap-1.5">
-        <p className="text-sm font-medium text-[#101828]">Experience</p>
+        <p className="text-sm font-medium text-[#101828]">Work arrangement</p>
         <Controller
-          name="experience"
+          name="workArrangement"
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
@@ -109,7 +106,7 @@ export function StepWorkPreferences({
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
               <SelectContent>
-                {EXPERIENCE_OPTIONS.map((opt) => (
+                {WORK_ARRANGEMENT_OPTIONS.map((opt) => (
                   <SelectItem key={opt} value={opt}>
                     {opt}
                   </SelectItem>
@@ -118,14 +115,13 @@ export function StepWorkPreferences({
             </Select>
           )}
         />
-        {errors.experience && (
+        {errors.workArrangement && (
           <p className="mt-0.5 text-xs text-error">
-            {errors.experience.message}
+            {errors.workArrangement.message}
           </p>
         )}
       </div>
 
-      {/* Education */}
       <div className="flex flex-col gap-1.5">
         <p className="text-sm font-medium text-[#101828]">Education</p>
         <Controller
@@ -153,72 +149,18 @@ export function StepWorkPreferences({
         )}
       </div>
 
-      {/* Keyword */}
       <div className="flex flex-col gap-1.5">
-        <p className="text-sm font-medium text-[#101828]">Keyword</p>
+        <p className="text-sm font-medium text-[#101828]">Keywords</p>
         <Controller
-          name="keyword"
+          name="keywords"
           control={control}
           render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className={TRIGGER_CLASS}>
-                <SelectValue placeholder="Select..." />
-              </SelectTrigger>
-              <SelectContent>
-                {KEYWORD_OPTIONS.map((opt) => (
-                  <SelectItem key={opt} value={opt}>
-                    {opt}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <KeywordInput value={field.value ?? []} onChange={field.onChange} />
           )}
         />
       </div>
 
-      {/* Salary range + Currency */}
-      <div className="flex items-end gap-3">
-        <div className="flex flex-3 flex-col gap-1.5">
-          <p className="text-sm font-medium text-[#101828]">Salary range</p>
-          <div className="flex items-center gap-2">
-            <Input
-              {...register("salaryMin")}
-              type="number"
-              min={0}
-              className="h-12 rounded-lg border-[#D0D5DD] bg-white text-sm [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            />
-            <span className="shrink-0 text-sm text-[#667085]">to</span>
-            <Input
-              {...register("salaryMax")}
-              type="number"
-              min={0}
-              className="h-12 rounded-lg border-[#D0D5DD] bg-white text-sm [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-2 flex-col gap-1.5">
-          <p className="text-sm font-medium text-[#101828]">Currency</p>
-          <Controller
-            name="currency"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className={TRIGGER_CLASS}>
-                  <SelectValue placeholder="Select..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {CURRENCY_OPTIONS.map((opt) => (
-                    <SelectItem key={opt} value={opt}>
-                      {opt}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </div>
-      </div>
+      <SalaryRangeField register={register} control={control} />
     </div>
   );
 }
