@@ -93,7 +93,7 @@ export function EmployerCompanyProfile() {
     try {
       const payload =
         field === "companyName"
-          ? { companyName: value }
+          ? { companyName: value.trim() }
           : { [field]: normalizeUrl(value) };
       await updateProfile(payload);
       appToast.success("Saved.");
@@ -141,7 +141,12 @@ export function EmployerCompanyProfile() {
             meta={profile.restrictedFields.companyName}
             placeholder="Acme Inc."
             isSaving={isPending}
-            validate={(next) => (next.length === 0 ? "Required" : null)}
+            validate={(next) => {
+              if (!next.trim()) return "Required";
+              if (!/[a-zA-Z]/.test(next))
+                return "Company name must contain at least one letter";
+              return null;
+            }}
             onSave={(next) => handleRestrictedSave("companyName", next)}
           />
           <RestrictedField
