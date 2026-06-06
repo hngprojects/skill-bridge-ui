@@ -90,7 +90,7 @@ export function JobReadyVerifiedProfile({
 
       {/* Footer */}
       <div className="flex flex-wrap items-center gap-3 text-[15px] text-[#4B5563]">
-        <span className="font-normal">Verified by CredLane</span>
+        <span className="font-normal">Verified by SkillBridge</span>
         <Separator
           orientation="vertical"
           className="h-4 bg-[#D1D5DB] hidden sm:block"
