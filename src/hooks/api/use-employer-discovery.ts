@@ -64,11 +64,13 @@ export function useRemoveCandidate() {
         { queryKey: employerDiscoveryKeys.savedLists() },
         (old) => {
           if (!old) return old;
-          const next = old.candidates.filter((c) => c.userId !== userId);
-          if (next.length === old.candidates.length) return old;
+          // `total` is the global count, duplicated on every paginated
+          // response. Decrement it on every cached page — not just the one
+          // that contained the removed candidate — so the count stays
+          // consistent across pages until the invalidation refetches.
           return {
             ...old,
-            candidates: next,
+            candidates: old.candidates.filter((c) => c.userId !== userId),
             total: Math.max(0, old.total - 1),
           };
         },
