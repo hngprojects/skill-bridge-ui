@@ -4,19 +4,26 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { CreateRoleDialog } from "@/components/dashboard/employer/roles/create-role-dialog";
 import { EmptyRolesState } from "@/components/dashboard/employer/roles/empty-roles-state";
 import { FilledRolesState } from "@/components/dashboard/employer/roles/filled-roles-state";
-import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
-import { useEmployerRolesStore } from "@/stores/employer-roles-store";
+import { useEmployerRoles } from "@/hooks/api";
 import type { CreateRoleValues } from "@/types/api/employer-roles";
+
+function RolesPageSkeleton() {
+  return (
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <Skeleton key={i} className="h-52 rounded-2xl" />
+      ))}
+    </div>
+  );
+}
 
 export function EmployerRolesPage() {
   const router = useRouter();
-  const { userId } = useSessionUserProfile();
-  const rolesByUser = useEmployerRolesStore((s) => s.rolesByUser);
-  const roles = rolesByUser[userId] ?? [];
-
+  const { data: roles = [], isLoading } = useEmployerRoles();
   const [isCreateRoleOpen, setIsCreateRoleOpen] = useState(false);
 
   const handleDialogContinue = (values: CreateRoleValues) => {
@@ -51,7 +58,9 @@ export function EmployerRolesPage() {
           </div>
         </div>
 
-        {roles.length > 0 ? (
+        {isLoading ? (
+          <RolesPageSkeleton />
+        ) : roles.length > 0 ? (
           <FilledRolesState
             roles={roles}
             onCreateRole={() => setIsCreateRoleOpen(true)}
