@@ -1,31 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
-
-import { TalentsHeroBanner } from "./talents-hero-banner";
-import { TalentsFilterSidebar } from "./talents-filter-sidebar";
-import { TalentCard } from "./talent-card";
-import { TalentsFilterChips } from "./talents-filter-chips";
-import { TalentsPagination } from "./talents-pagination";
-import { TalentsViewToggle } from "./talents-view-toggle";
+import { useMemo, useState } from "react";
 
 import { EMPLOYER_TALENTS } from "@/constants/employer-talents";
 import type { TalentFilters, TalentViewMode } from "@/types/employer-talents";
 import { DEFAULT_FILTERS } from "@/types/employer-talents";
 
+import { DataEmptyState } from "../shared/data-empty-state";
+import { DataPagination } from "../shared/data-pagination";
+import { TalentCard } from "./talent-card";
+import { TalentsFilterChips } from "./talents-filter-chips";
+import { TalentsFilterSidebar } from "./talents-filter-sidebar";
+import { TalentsHeroBanner } from "./talents-hero-banner";
+import { TalentsViewToggle } from "./talents-view-toggle";
+
+const PAGE_SIZE = 20;
+
 export function EmployerTalentsPage() {
   const [view, setView] = useState<TalentViewMode>("list");
+  const [page, setPage] = useState(1);
   const [pendingFilters, setPendingFilters] =
     useState<TalentFilters>(DEFAULT_FILTERS);
   const [appliedFilters, setAppliedFilters] =
     useState<TalentFilters>(DEFAULT_FILTERS);
 
-  const handleApply = () => setAppliedFilters(pendingFilters);
+  const handleApply = () => {
+    setAppliedFilters(pendingFilters);
+    setPage(1);
+  };
 
   const handleClear = () => {
     setPendingFilters(DEFAULT_FILTERS);
     setAppliedFilters(DEFAULT_FILTERS);
+    setPage(1);
   };
 
   const removeChip = (
@@ -41,6 +49,7 @@ export function EmployerTalentsPage() {
     };
     setAppliedFilters(updated);
     setPendingFilters(updated);
+    setPage(1);
   };
 
   const filteredTalents = useMemo(() => {
@@ -78,6 +87,9 @@ export function EmployerTalentsPage() {
       return true;
     });
   }, [appliedFilters]);
+
+  const total = filteredTalents.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const activeChips = [
     ...appliedFilters.experience.map((val) => ({
@@ -123,20 +135,27 @@ export function EmployerTalentsPage() {
               view === "grid" ? "grid grid-cols-2 gap-6" : "flex flex-col gap-6"
             }
           >
-            {filteredTalents.map((talent) => (
-              <Link key={talent.id} href={`/e/talents/${talent.id}`}>
-                <TalentCard {...talent} />
-              </Link>
-            ))}
-            {filteredTalents.length === 0 && (
-              <p className="py-12 text-center text-base text-muted-foreground">
-                No talents match the selected filters.
-              </p>
+            {filteredTalents.length === 0 ? (
+              <DataEmptyState
+                icon="/assets/icons/icon-shortlisted-candidates.svg"
+                title="No talents match your filters"
+                description="Try adjusting your filters or clear them to see more results."
+              />
+            ) : (
+              filteredTalents.map((talent) => (
+                <Link key={talent.id} href={`/e/talents/${talent.id}`}>
+                  <TalentCard {...talent} />
+                </Link>
+              ))
             )}
           </div>
-          <TalentsPagination
-            showing={filteredTalents.length}
-            total={EMPLOYER_TALENTS.length}
+          <DataPagination
+            page={page}
+            totalPages={totalPages}
+            total={total}
+            pageSize={PAGE_SIZE}
+            itemLabel="talents"
+            onPageChange={setPage}
           />
         </div>
       </div>
