@@ -1,13 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import { Box } from "lucide-react";
 
 import { Switch } from "@/components/ui/switch";
+import { useCloseRole, useReopenRole } from "@/hooks/api";
 import type { EmployerRoleItem } from "@/types/api/employer-roles";
 
 export function RoleCard({ role }: { role: EmployerRoleItem }) {
-  const [isEnabled, setIsEnabled] = useState(role.status === "active");
+  const { mutate: close, isPending: isClosing } = useCloseRole();
+  const { mutate: reopen, isPending: isReopening } = useReopenRole();
+  const isPending = isClosing || isReopening;
+
+  const handleToggle = (checked: boolean) => {
+    if (checked) {
+      reopen(role.id);
+    } else {
+      close(role.id);
+    }
+  };
 
   return (
     <article className="rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
@@ -16,8 +26,9 @@ export function RoleCard({ role }: { role: EmployerRoleItem }) {
           <Box className="size-4 stroke-[1.7]" />
         </div>
         <Switch
-          checked={isEnabled}
-          onCheckedChange={(checked) => setIsEnabled(checked === true)}
+          checked={role.status === "active"}
+          onCheckedChange={handleToggle}
+          disabled={isPending}
           aria-label={`Toggle ${role.title} status`}
           className="data-checked:bg-[#079455]"
         />
