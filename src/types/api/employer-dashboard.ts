@@ -1,5 +1,5 @@
 /**
- * Internal shape the UI consumes. Mapped from the bloated raw response in
+ * Internal shape the UI consumes. Mapped from the raw response in
  * `actions/employer-dashboard.ts` so the components stay decoupled from
  * whatever shape the backend currently emits.
  */
@@ -12,10 +12,17 @@ export type EmployerProfilePrompt = {
   missingItems: string[];
 };
 
+/** Activity event types the backend ships on `recent_activity[i].type`. */
+export type EmployerActivityType =
+  | "verified_talent"
+  | "shortlist"
+  | "offer_accepted"
+  | "role_created"
+  | "assessment_completed";
+
 export type EmployerRecentActivityItem = {
-  /** Stable React key. Derived FE-side because the backend payload omits it. */
   id: string;
-  type: string;
+  type: EmployerActivityType;
   title: string;
   description: string;
   occurredAt: string;
@@ -25,8 +32,6 @@ export type EmployerDashboardHomeData = {
   viewState: EmployerDashboardViewState;
   companyName: string;
   profilePrompt: EmployerProfilePrompt | null;
-  /** Count keyed by the backend's `overview_cards[].key`. Joined with
-   *  client-side metadata to render the stat cards. */
   overviewCounts: Record<string, number>;
   recentActivity: EmployerRecentActivityItem[];
 };
@@ -37,41 +42,24 @@ type RawProfilePrompt = {
   show_prompt: boolean;
   is_verified: boolean;
   completion_percentage: number;
-  title?: string;
-  description?: string;
-  cta_label?: string;
-  cta_route?: string;
   missing_items: string[];
 };
 
-type RawOverviewCard = {
-  key: string;
-  title?: string;
-  value: number;
-  description?: string;
-  cta_label?: string;
-  cta_route?: string;
-};
-
 type RawRecentActivityItem = {
-  type: string;
+  id: string;
+  type: EmployerActivityType;
   title: string;
   description: string;
   occurred_at: string;
-  route?: string;
+  link?: string;
 };
 
 export type RawEmployerDashboardHomeResponse = {
   company_name: string;
   view_state: string;
-  header?: string;
-  subheader?: string;
+  new_user_state?: boolean;
   profile_prompt?: RawProfilePrompt;
-  create_role_cta?: { label: string; route: string; variant?: string };
-  overview_cards?: RawOverviewCard[];
+  overview_counts?: Record<string, number>;
   recent_activity?: RawRecentActivityItem[];
-  hero?: unknown;
-  capabilities?: unknown;
-  social_proof?: unknown;
-  roles_empty_state_message?: string;
+  recent_roles?: unknown[];
 };

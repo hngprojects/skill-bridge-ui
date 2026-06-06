@@ -1,3 +1,5 @@
+import type { EmployerActivityType } from "@/types/api/employer-dashboard";
+
 export const EMPLOYER_DASHBOARD_GOAL =
   "Browse through job ready talents who have completed their assessments";
 
@@ -61,7 +63,7 @@ export const EMPLOYER_OVERVIEW_CARDS_META = [
     icon: "/assets/icons/icon-verified-talent.svg",
   },
   {
-    key: "created_assessments",
+    key: "assessments_shared_count",
     label: "Created Assessments",
     description:
       "Track candidate submissions and review performance in one place.",
@@ -92,10 +94,11 @@ export const EMPLOYER_OVERVIEW_CARDS_META = [
 
 /**
  * Icon + route lookup for `recent_activity` items, keyed by the backend's
- * `type`. Unknown types fall back to a neutral default.
+ * `type`. Typed against `EmployerActivityType` so adding a new event type
+ * upstream becomes a compile error here until we map it.
  */
 export const EMPLOYER_ACTIVITY_TYPE_META: Record<
-  string,
+  EmployerActivityType,
   { icon: string; iconBg: string; route: string }
 > = {
   verified_talent: {
@@ -103,20 +106,25 @@ export const EMPLOYER_ACTIVITY_TYPE_META: Record<
     iconBg: "#D3E6DF",
     route: "/e/talents",
   },
-  created_assessments: {
-    icon: "/assets/icons/icon-assessments-shared.svg",
-    iconBg: "#F9E796",
-    route: "/e/assessments",
-  },
-  shortlisted_candidates: {
+  shortlist: {
     icon: "/assets/icons/icon-shortlisted-candidates.svg",
     iconBg: "#CBB0EB",
     route: "/e/shortlist",
   },
-  my_roles: {
+  offer_accepted: {
+    icon: "/assets/icons/icon-verified-talent.svg",
+    iconBg: "#D3E6DF",
+    route: "/e/shortlist",
+  },
+  role_created: {
     icon: "/assets/icons/icon-my-roles.svg",
     iconBg: "#EDEEF2",
     route: "/e/roles",
+  },
+  assessment_completed: {
+    icon: "/assets/icons/icon-assessments-shared.svg",
+    iconBg: "#F9E796",
+    route: "/e/assessments",
   },
 };
 

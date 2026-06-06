@@ -26,22 +26,12 @@ function mapProfilePrompt(
   };
 }
 
-function mapOverviewCounts(
-  raw: RawEmployerDashboardHomeResponse["overview_cards"],
-): Record<string, number> {
-  if (!raw) return {};
-  return Object.fromEntries(raw.map((card) => [card.key, card.value]));
-}
-
 function mapRecentActivity(
   raw: RawEmployerDashboardHomeResponse["recent_activity"],
 ): EmployerRecentActivityItem[] {
   if (!raw) return [];
-  return raw.map((item, index) => ({
-    // Backend doesn't ship an id — synthesise one from type + timestamp +
-    // array index so React keys stay unique even if two events of the same
-    // type fire within the same millisecond.
-    id: `${item.type}-${item.occurred_at}-${index}`,
+  return raw.map((item) => ({
+    id: item.id,
     type: item.type,
     title: item.title,
     description: item.description,
@@ -58,7 +48,7 @@ export async function getEmployerDashboardHome(): Promise<EmployerDashboardHomeD
     viewState: normalizeViewState(raw.view_state),
     companyName: raw.company_name ?? "",
     profilePrompt: mapProfilePrompt(raw.profile_prompt),
-    overviewCounts: mapOverviewCounts(raw.overview_cards),
+    overviewCounts: raw.overview_counts ?? {},
     recentActivity: mapRecentActivity(raw.recent_activity),
   };
 }

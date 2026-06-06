@@ -23,23 +23,10 @@ export function useNotifications(role: NotificationRole) {
 }
 
 export function useUnreadCount(role: NotificationRole) {
-  // Talent has a dedicated /unread-count endpoint we can hit cheaply.
-  const talentQuery = useQuery({
-    queryKey: notificationsKeys.unreadCount("talent"),
-    queryFn: () => getUnreadCount("talent"),
-    enabled: role === "talent",
+  return useQuery({
+    queryKey: notificationsKeys.unreadCount(role),
+    queryFn: () => getUnreadCount(role),
   });
-  // Employer has no /unread-count endpoint
-  const employerListQuery = useQuery({
-    queryKey: notificationsKeys.list("employer"),
-    queryFn: () => getNotifications("employer"),
-    enabled: role === "employer",
-    select: (data) => ({
-      count: data.items.filter((n) => !n.isRead).length,
-    }),
-  });
-
-  return role === "employer" ? employerListQuery : talentQuery;
 }
 
 export function useMarkAsRead(role: NotificationRole) {
