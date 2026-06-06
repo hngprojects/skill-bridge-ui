@@ -91,10 +91,14 @@ export function TalentsFilterSidebar({
         onToggle={(v) => toggle("region", v)}
       />
       <div className="flex gap-2 pt-2">
-        <Button onClick={onApply} className="flex-1">
+        <Button onClick={onApply} className="flex-1 hover:bg-primary/70">
           Apply
         </Button>
-        <Button onClick={onClear} variant="outline" className="flex-1">
+        <Button
+          onClick={onClear}
+          variant="outline"
+          className="flex-1 hover:bg-muted/70"
+        >
           Clear All
         </Button>
       </div>
