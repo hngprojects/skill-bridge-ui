@@ -12,7 +12,10 @@ export function TalentsPagination({ showing, total }: TalentsPaginationProps) {
       </span>
       <div className="flex items-center gap-2">
         <Button variant="outline" size="icon-xs">
-          <ChevronLeft className="size-4 stroke-[1.5]" />
+          <ChevronLeft
+            className="size-4 stroke-[1.5]"
+            aria-label="Previous page"
+          />
         </Button>
         {[1, 2, 3, 4, 5].map((p) => (
           <Button
@@ -24,7 +27,10 @@ export function TalentsPagination({ showing, total }: TalentsPaginationProps) {
           </Button>
         ))}
         <Button variant="outline" size="icon-xs">
-          <ChevronRight className="size-4 stroke-[1.5]" />
+          <ChevronRight
+            className="size-4 stroke-[1.5]"
+            aria-label="Next page"
+          />
         </Button>
       </div>
     </div>

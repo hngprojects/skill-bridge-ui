@@ -22,7 +22,10 @@ export function TalentsFilterChips({
             onClick={() => onRemove(key, val)}
             className="focus:outline-none"
           >
-            <X className="size-3.5 text-muted-foreground" />
+            <X
+              className="size-3.5 text-muted-foreground"
+              aria-label={`Remove ${val} filter`}
+            />
           </button>
         </span>
       ))}

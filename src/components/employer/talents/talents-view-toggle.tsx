@@ -10,6 +10,7 @@ export function TalentsViewToggle({ view, onChange }: TalentsViewToggleProps) {
       <Button
         variant={view === "list" ? "secondary" : "ghost"}
         size="sm"
+        aria-pressed={view === "list"}
         onClick={() => onChange("list")}
       >
         <List className="size-5" />
@@ -18,6 +19,7 @@ export function TalentsViewToggle({ view, onChange }: TalentsViewToggleProps) {
       <Button
         variant={view === "grid" ? "secondary" : "ghost"}
         size="sm"
+        aria-pressed={view === "grid"}
         onClick={() => onChange("grid")}
       >
         <Grid2X2 className="size-5" />

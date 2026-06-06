@@ -41,7 +41,7 @@ export function FilterSection({
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search role"
+            placeholder={`Search ${title.toLowerCase()}`}
             className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
         </div>
