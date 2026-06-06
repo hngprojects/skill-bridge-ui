@@ -13,8 +13,13 @@ export const EMPLOYMENT_TYPE_OPTIONS = [
   "Full-time",
   "Part-time",
   "Contract",
-  "Freelance",
   "Internship",
+] as const;
+
+export const WORK_ARRANGEMENT_OPTIONS = [
+  "Remote",
+  "Hybrid",
+  "On-site",
 ] as const;
 
 export const EXPERIENCE_OPTIONS = [
@@ -55,6 +60,15 @@ export const CURRENCY_OPTIONS = [
   "CAD",
   "AUD",
 ] as const;
+
+export const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  NGN: "₦",
+  CAD: "CA$",
+  AUD: "A$",
+};
 
 export type AssessmentOption = {
   id: string;

@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Check } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   CREATE_ROLE_STEPS,
   CREATE_ROLE_STEP_META,
@@ -12,9 +10,13 @@ import {
 } from "@/constants/create-role-wizard";
 import { workPreferencesSchema } from "@/types/create-role-schema";
 import { useCreatedRoleStore } from "@/stores/created-role-store";
+import { useCreateRole } from "@/hooks/api/use-employer-roles";
+import { appToast } from "@/lib/toast";
 
 import { WizardRoleHeader } from "./wizard-role-header";
 import { WizardSidebar } from "./wizard-sidebar";
+import { WizardMobileProgress } from "./wizard-mobile-progress";
+import { WizardCardFooter } from "./wizard-card-footer";
 import { StepUploadJd, type UploadJdValues } from "./step-upload-jd";
 import {
   StepWorkPreferences,
@@ -35,10 +37,6 @@ const INITIAL_STATE: WizardState = {
   workPreferences: INITIAL_WORK_PREFERENCES,
   selectedAssessments: [],
 };
-
-function getStripWidth(index: number) {
-  return `${((index + 1) / CREATE_ROLE_STEPS.length) * 100}%`;
-}
 
 function isStepValid(stepId: CreateRoleStepId, state: WizardState): boolean {
   if (stepId === "upload-jd") {
@@ -64,24 +62,50 @@ export function CreateRoleWizard() {
     useState<CreateRoleStepId>("upload-jd");
   const [wizardState, setWizardState] = useState<WizardState>(INITIAL_STATE);
 
+  const { mutate: submitRole, isPending } = useCreateRole();
+
   const currentIndex = CREATE_ROLE_STEPS.findIndex(
     (s) => s.id === currentStepId,
   );
   const isLastStep = currentIndex === CREATE_ROLE_STEPS.length - 1;
   const meta = CREATE_ROLE_STEP_META[currentStepId];
-  const nextDisabled = !isStepValid(currentStepId, wizardState);
+  const nextDisabled = !isStepValid(currentStepId, wizardState) || isPending;
 
   const handleNext = () => {
     if (isLastStep) {
-      useCreatedRoleStore.getState().setRole({
-        title: roleTitle,
-        category,
-        companyUrl,
-        uploadJd: wizardState.uploadJd,
-        workPreferences: wizardState.workPreferences,
-        selectedAssessments: wizardState.selectedAssessments,
-      });
-      router.push("/e/roles/create/success");
+      const { uploadJd, workPreferences, selectedAssessments } = wizardState;
+      submitRole(
+        {
+          title: roleTitle,
+          category,
+          jdHtml: uploadJd.jdHtml,
+          jdFile: uploadJd.jdFile,
+          employmentType: workPreferences.employmentType,
+          workArrangement: workPreferences.workArrangement,
+          education: workPreferences.education,
+          keywords: workPreferences.keywords ?? [],
+          salaryMin: workPreferences.salaryMin ?? "",
+          salaryMax: workPreferences.salaryMax ?? "",
+          currency: workPreferences.currency ?? "",
+          assessmentId: selectedAssessments[0],
+        },
+        {
+          onSuccess: () => {
+            useCreatedRoleStore.getState().setRole({
+              title: roleTitle,
+              category,
+              companyUrl,
+              uploadJd,
+              workPreferences,
+              selectedAssessments,
+            });
+            router.push("/e/roles/create/success");
+          },
+          onError: () => {
+            appToast.error("Failed to create role. Please try again.");
+          },
+        },
+      );
       return;
     }
     setCurrentStepId(CREATE_ROLE_STEPS[currentIndex + 1].id);
@@ -101,44 +125,16 @@ export function CreateRoleWizard() {
         title={roleTitle}
         category={category}
         companyUrl={companyUrl}
-        onSaveAndExit={() => router.push("/e/roles")}
       />
 
-      {/* Mobile step indicator */}
-      <div className="lg:hidden">
-        <div className="mb-2 flex items-center gap-2">
-          <div className="flex size-5 items-center justify-center rounded-full bg-[#079455] text-white">
-            <Check className="size-3 stroke-[2.5]" />
-          </div>
-          <p className="text-sm font-semibold text-[#101828]">
-            Step {currentIndex + 1} of {CREATE_ROLE_STEPS.length} ·{" "}
-            {CREATE_ROLE_STEPS[currentIndex].title}
-          </p>
-        </div>
-        <div
-          role="progressbar"
-          aria-valuenow={currentIndex + 1}
-          aria-valuemin={1}
-          aria-valuemax={CREATE_ROLE_STEPS.length}
-          className="h-1 w-full overflow-hidden rounded-full bg-[#E5E7EB]"
-        >
-          <div
-            className="h-full rounded-full bg-[#EF4444] transition-[width] duration-300"
-            style={{ width: getStripWidth(currentIndex) }}
-          />
-        </div>
-      </div>
+      <WizardMobileProgress currentIndex={currentIndex} />
 
-      {/* Two-column layout */}
       <div className="flex items-start gap-5">
-        {/* Sidebar card */}
         <aside className="hidden w-56 shrink-0 rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm lg:block">
           <WizardSidebar currentStepId={currentStepId} />
         </aside>
 
-        {/* Main card */}
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
-          {/* Step header */}
           <div className="px-8 pt-8">
             <h1 className="text-xl font-bold leading-tight text-[#101828]">
               {meta.title}
@@ -148,7 +144,6 @@ export function CreateRoleWizard() {
             </p>
           </div>
 
-          {/* Step content */}
           <div className="flex-1 px-8 py-6">
             {currentStepId === "upload-jd" && (
               <StepUploadJd
@@ -183,37 +178,15 @@ export function CreateRoleWizard() {
             )}
           </div>
 
-          {/* Step progress strip */}
-          <div className="h-1 w-full overflow-hidden bg-[#F2F4F7]">
-            <div
-              className="h-full bg-[#EF4444] transition-[width] duration-300 ease-out"
-              style={{ width: getStripWidth(currentIndex) }}
-            />
-          </div>
-
-          {/* Footer */}
-          <div className="flex items-center justify-between px-8 py-5">
-            {currentIndex === 0 ? (
-              <p className="text-sm text-[#98A2B3]">{meta.tip}</p>
-            ) : (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={handleBack}
-                className="h-9 rounded-xl border border-[#E5E7EB] px-5 text-sm text-[#667085] hover:bg-[#F9FAFB]"
-              >
-                Back
-              </Button>
-            )}
-            <Button
-              type="button"
-              disabled={nextDisabled}
-              onClick={handleNext}
-              className="h-9 min-w-24 rounded-xl bg-[#111827] px-5 text-sm font-semibold text-white hover:bg-[#111827]/90 disabled:opacity-40"
-            >
-              {isLastStep ? "Create Role" : "Next"}
-            </Button>
-          </div>
+          <WizardCardFooter
+            currentIndex={currentIndex}
+            isLastStep={isLastStep}
+            isPending={isPending}
+            nextDisabled={nextDisabled}
+            tip={meta.tip}
+            onBack={handleBack}
+            onNext={handleNext}
+          />
         </div>
       </div>
     </div>
