@@ -1,16 +1,16 @@
 import Image from "next/image";
 
-type ShortlistEmptyStateProps = {
+type DataEmptyStateProps = {
   icon: string;
   title: string;
   description: string;
 };
 
-export function ShortlistEmptyState({
+export function DataEmptyState({
   icon,
   title,
   description,
-}: ShortlistEmptyStateProps) {
+}: DataEmptyStateProps) {
   return (
     <div className="flex min-h-70 flex-col items-center justify-center gap-3 px-4 py-12 text-center">
       <div className="flex size-12 items-center justify-center rounded-full bg-[#F2F2F2]">
