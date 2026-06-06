@@ -7,7 +7,7 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import type { EmployerRoleStatus } from "@/stores/employer-roles-store";
+import type { EmployerRoleStatus } from "@/types/api/employer-roles";
 
 const BIG_BRIEFCASE = "/assets/employer-roles/big-briefcase.svg";
 const SMALL_BRIEFCASE = "/assets/employer-roles/small-briefcase.svg";
@@ -43,7 +43,7 @@ export function EmptyRolesState(props: { onCreateRole: () => void }) {
                 alt="My roles illustration"
                 width={144}
                 height={144}
-                className="h-[144px] w-[144px] object-contain"
+                className="h-36 w-36 object-contain"
               />
             </div>
           </div>

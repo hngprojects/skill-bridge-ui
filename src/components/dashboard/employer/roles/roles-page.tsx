@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import {
-  CreateRoleDialog,
-  type CreateRoleValues,
-} from "@/components/dashboard/employer/roles/create-role-dialog";
+import { CreateRoleDialog } from "@/components/dashboard/employer/roles/create-role-dialog";
 import { EmptyRolesState } from "@/components/dashboard/employer/roles/empty-roles-state";
 import { FilledRolesState } from "@/components/dashboard/employer/roles/filled-roles-state";
-import type { EmployerRoleItem } from "@/stores/employer-roles-store";
+import type {
+  CreateRoleValues,
+  EmployerRoleItem,
+} from "@/types/api/employer-roles";
 
 function formatRequirement(values: CreateRoleValues) {
   return values.companyName.trim().length > 0

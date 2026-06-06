@@ -1,16 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type EmployerRoleStatus = "active" | "closed";
-
-export type EmployerRoleItem = {
-  id: string;
-  title: string;
-  status: EmployerRoleStatus;
-  offersSent: number;
-  requirements: string;
-  createdAt: string;
-};
+import type { EmployerRoleItem } from "@/types/api/employer-roles";
 
 type EmployerRolesState = {
   rolesByUser: Record<string, EmployerRoleItem[]>;

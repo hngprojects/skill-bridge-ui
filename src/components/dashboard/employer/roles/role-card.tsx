@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Box } from "lucide-react";
 
 import { Switch } from "@/components/ui/switch";
-import type { EmployerRoleItem } from "@/stores/employer-roles-store";
+import type { EmployerRoleItem } from "@/types/api/employer-roles";
 
 export function RoleCard({ role }: { role: EmployerRoleItem }) {
   const [isEnabled, setIsEnabled] = useState(role.status === "active");

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import type {
   EmployerRoleItem,
   EmployerRoleStatus,
-} from "@/stores/employer-roles-store";
+} from "@/types/api/employer-roles";
 import { RoleCard } from "@/components/dashboard/employer/roles/role-card";
 import { RolesSummaryCard } from "@/components/dashboard/employer/roles/roles-summary-card";
 

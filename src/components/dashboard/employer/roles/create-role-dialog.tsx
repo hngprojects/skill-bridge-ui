@@ -20,22 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export type CreateRoleValues = {
-  companyName: string;
-  roleTitle: string;
-  category: string;
-  companyUrl: string;
-};
-
-const CATEGORY_OPTIONS = [
-  "Mobile app development",
-  "Frontend development",
-  "Backend development",
-  "Product design",
-  "Data analysis",
-  "Project management",
-];
+import { ROLE_CATEGORY_OPTIONS } from "@/constants/employer-roles";
+import type { CreateRoleValues } from "@/types/api/employer-roles";
 
 const INITIAL_FORM_VALUES: CreateRoleValues = {
   companyName: "",
@@ -89,7 +75,7 @@ export function CreateRoleDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-[440px] gap-4 rounded-[24px] p-6">
+      <DialogContent className="max-w-110 gap-4 rounded-[24px] p-6">
         <DialogHeader className="gap-1 text-left">
           <DialogTitle className="text-base font-semibold text-[#101828]">
             Create a Role
@@ -152,7 +138,7 @@ export function CreateRoleDialog({
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
               <SelectContent className="rounded-2xl">
-                {CATEGORY_OPTIONS.map((category) => (
+                {ROLE_CATEGORY_OPTIONS.map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}
                   </SelectItem>
