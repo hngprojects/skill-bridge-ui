@@ -18,6 +18,11 @@ type TalentCardProps = {
   view?: TalentViewMode;
 };
 
+const shortlistButtonBase = cn(
+  "shrink-0 rounded-lg border-[0.5px] border-[#D9D9D9] bg-[#EBEBEB]",
+  "text-[#151515] disabled:cursor-not-allowed disabled:opacity-60",
+);
+
 export function TalentCard({ candidate, view = "list" }: TalentCardProps) {
   const { mutate: saveCandidate, isPending: isSaving } = useSaveCandidate();
 
@@ -97,7 +102,10 @@ export function TalentCard({ candidate, view = "list" }: TalentCardProps) {
             onClick={handleAddToShortlist}
             disabled={candidate.isSaved || isSaving}
             aria-label={candidate.isSaved ? "Shortlisted" : "Add to shortlist"}
-            className="flex size-8 shrink-0 items-center justify-center rounded-lg border-[0.5px] border-[#D9D9D9] bg-[#EBEBEB] text-[#151515] disabled:cursor-not-allowed disabled:opacity-60"
+            className={cn(
+              shortlistButtonBase,
+              "flex size-8 items-center justify-center",
+            )}
           >
             {shortlistIcon}
           </button>
@@ -110,7 +118,10 @@ export function TalentCard({ candidate, view = "list" }: TalentCardProps) {
               aria-label={
                 candidate.isSaved ? "Shortlisted" : "Add to shortlist"
               }
-              className="flex size-8 shrink-0 items-center justify-center rounded-lg border-[0.5px] border-[#D9D9D9] bg-[#EBEBEB] text-[#151515] disabled:cursor-not-allowed disabled:opacity-60 sm:hidden"
+              className={cn(
+                shortlistButtonBase,
+                "flex size-8 items-center justify-center sm:hidden",
+              )}
             >
               {shortlistIcon}
             </button>
@@ -121,7 +132,10 @@ export function TalentCard({ candidate, view = "list" }: TalentCardProps) {
               aria-label={
                 candidate.isSaved ? "Shortlisted" : "Add to shortlist"
               }
-              className="hidden shrink-0 items-center gap-1 rounded-lg border-[0.5px] border-[#D9D9D9] bg-[#EBEBEB] px-2 py-1.5 text-xs font-normal text-[#151515] disabled:cursor-not-allowed disabled:opacity-60 sm:flex"
+              className={cn(
+                shortlistButtonBase,
+                "hidden items-center gap-1 px-2 py-1.5 text-xs font-normal sm:flex",
+              )}
             >
               {candidate.isSaved ? "Shortlisted" : "Add to Shortlist"}
               <PlusCircle className="size-4" aria-hidden />

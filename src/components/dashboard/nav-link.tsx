@@ -14,6 +14,7 @@ type DashboardNavLinkProps = {
   pathname: string;
   onNavigate?: () => void;
   variant?: "talent" | "employer";
+  className?: string;
 };
 
 const ACTIVE_TEXT_CLASS = {
@@ -28,6 +29,7 @@ export function DashboardNavLink({
   pathname,
   onNavigate,
   variant = "talent",
+  className,
 }: DashboardNavLinkProps) {
   const active = isNavLinkActive(pathname, href);
 
@@ -40,6 +42,7 @@ export function DashboardNavLink({
         active
           ? cn(ACTIVE_TEXT_CLASS[variant], "font-bold")
           : "text-foreground/55 hover:text-foreground/80",
+        className,
       )}
     >
       {label}
