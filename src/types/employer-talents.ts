@@ -17,7 +17,7 @@ export interface TalentProfile {
   about_tags: string[];
   ai_summary: string;
   ai_report: string;
-  avatar_url: string;
+  avatar_url: string | null;
   verified: boolean;
   status: string;
   seniority_badge: string;
@@ -68,3 +68,53 @@ export interface EmployerFilterOptions {
 }
 
 export type TalentSortOption = "score-desc" | "score-asc" | "name-asc";
+
+export type TalentsPaginationProps = {
+  showing: number;
+  total: number;
+};
+
+export type TalentsViewToggleProps = {
+  view: TalentViewMode;
+  onChange: (view: TalentViewMode) => void;
+};
+
+export type TalentsFilterChipsProps = {
+  chips: {
+    key: keyof Pick<
+      TalentFilters,
+      "roleTrack" | "experience" | "availability" | "region"
+    >;
+    val: string;
+  }[];
+  onRemove: (
+    key: keyof Pick<
+      TalentFilters,
+      "roleTrack" | "experience" | "availability" | "region"
+    >,
+    val: string,
+  ) => void;
+  onClear: () => void;
+};
+export type TalentViewMode = "list" | "grid";
+
+export type TalentsFilterSidebarProps = {
+  filters: TalentFilters;
+  onChange: (filters: TalentFilters) => void;
+  onApply: () => void;
+  onClear: () => void;
+};
+
+export type FilterSectionProps = {
+  title: string;
+  options: readonly string[];
+  selected: string[];
+  onToggle: (val: string) => void;
+  searchable?: boolean;
+};
+
+export type ScoreSliderProps = {
+  min: number;
+  max: number;
+  onChange: (min: number, max: number) => void;
+};
