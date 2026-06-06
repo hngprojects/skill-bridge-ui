@@ -13,7 +13,7 @@ export function EmployerDashboardHero() {
             Hire with confidence, verify skills before interviews.
           </h2>
           <p className="text-base leading-normal tracking-[0.017em] text-[#081536]">
-            CredLane helps you discover pre-assisted talent, create custom
+            SkillBridge helps you discover pre-assisted talent, create custom
             assessments, and shortlist talents who are ready to contribute from
             day one
           </p>
@@ -21,16 +21,16 @@ export function EmployerDashboardHero() {
           <div className="flex flex-wrap gap-3 pt-4">
             <Button
               asChild
-              className="h-10 w-[200px] rounded-lg bg-[#05060f] px-2.5 text-base font-semibold tracking-[0.016em] text-white hover:bg-[#05060f]/90"
+              className="h-10 w-50 rounded-lg bg-primary px-2.5 text-base font-semibold tracking-[0.016em] text-white hover:bg-[#05060f]/90"
             >
-              <Link href="/e/dashboard">Explore verified talent</Link>
+              <Link href="/e/talents">Explore verified talent</Link>
             </Button>
             <Button
               asChild
               variant="outline"
-              className="h-10 w-[200px] rounded-lg border-[#05060f] bg-white px-2.5 text-base font-semibold tracking-[0.016em] text-[#151515] hover:bg-white/90"
+              className="h-10 w-50 rounded-lg border-[#05060f] bg-white px-2.5 text-base font-semibold tracking-[0.016em] text-[#151515] hover:bg-white/50"
             >
-              <Link href="/e/dashboard">Create a Role</Link>
+              <Link href="/e/roles">Create a Role</Link>
             </Button>
           </div>
         </div>

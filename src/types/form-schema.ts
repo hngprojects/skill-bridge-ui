@@ -206,13 +206,23 @@ export const linkedinUrlSchema = z.url("Enter a valid URL").refine(
   },
 );
 
-export const personalWebsiteSchema = z.url("Enter a valid website URL").refine(
-  (val) => {
-    const parts = new URL(val).hostname.split(".");
-    const tld = parts[parts.length - 1];
-    return (
-      parts.length >= 2 && parts.every((p) => p.length > 0) && tld.length >= 2
-    );
-  },
-  { message: "Enter a valid website URL" },
-);
+export const personalWebsiteSchema = z
+  .string({ message: "Enter a valid website URL" })
+  .refine(
+    (val) => {
+      try {
+        const url = new URL(val);
+        if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+        const parts = url.hostname.split(".");
+        const tld = parts[parts.length - 1];
+        return (
+          parts.length >= 2 &&
+          parts.every((p) => p.length > 0) &&
+          tld.length >= 2
+        );
+      } catch {
+        return false;
+      }
+    },
+    { message: "Enter a valid website URL (e.g. https://yoursite.com)" },
+  );

@@ -29,6 +29,19 @@ export const dashboardKeys = {
   home: () => [...dashboardKeys.all, "home"] as const,
 };
 
+export const employerDashboardKeys = {
+  all: ["employer-dashboard"] as const,
+  home: () => [...employerDashboardKeys.all, "home"] as const,
+};
+
+export const employerDiscoveryKeys = {
+  all: ["employer-discovery"] as const,
+  savedLists: () => [...employerDiscoveryKeys.all, "saved"] as const,
+  // Page/limit folded into the key so paginated requests cache independently.
+  savedList: (params?: { page?: number; limit?: number }) =>
+    [...employerDiscoveryKeys.savedLists(), params ?? {}] as const,
+};
+
 export const resourcesKeys = {
   all: ["resources"] as const,
   talent: () => [...resourcesKeys.all, "talent"] as const,
@@ -50,6 +63,9 @@ export const aiGuidanceReport = {
 
 export const notificationsKeys = {
   all: ["notifications"] as const,
-  list: () => [...notificationsKeys.all, "list"] as const,
-  unreadCount: () => [...notificationsKeys.all, "unread-count"] as const,
+  // Role-scoped so talent and employer caches stay isolated
+  list: (role: "talent" | "employer") =>
+    [...notificationsKeys.all, role, "list"] as const,
+  unreadCount: (role: "talent" | "employer") =>
+    [...notificationsKeys.all, role, "unread-count"] as const,
 };

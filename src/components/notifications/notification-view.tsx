@@ -9,8 +9,13 @@ import {
   useMarkAsRead,
   useMarkAllAsRead,
 } from "@/hooks/api";
+import type { NotificationRole } from "@/types/api/notifications";
 
-const NotificationView = () => {
+type NotificationViewProps = {
+  role: NotificationRole;
+};
+
+const NotificationView = ({ role }: NotificationViewProps) => {
   const [activeTab, setActiveTab] = useState<NotificationTab>("All");
 
   const {
@@ -18,10 +23,10 @@ const NotificationView = () => {
     isLoading,
     isError,
     refetch,
-  } = useNotifications();
-  const { data: unreadData } = useUnreadCount();
-  const { mutate: markAsRead } = useMarkAsRead();
-  const { mutate: markAllAsRead } = useMarkAllAsRead();
+  } = useNotifications(role);
+  const { data: unreadData } = useUnreadCount(role);
+  const { mutate: markAsRead } = useMarkAsRead(role);
+  const { mutate: markAllAsRead } = useMarkAllAsRead(role);
 
   const notifications = notificationsData?.items ?? [];
   const unreadCount = unreadData?.count ?? 0;
