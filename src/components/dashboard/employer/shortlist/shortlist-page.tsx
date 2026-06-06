@@ -10,7 +10,7 @@ import { useSavedCandidates } from "@/hooks/api/use-employer-discovery";
 
 import { OffersTable } from "./offers-table";
 import { ShortlistHeroBanner } from "./shortlist-hero-banner";
-import { ShortlistPagination } from "./shortlist-pagination";
+import { DataPagination } from "../shared/data-pagination";
 import { ShortlistTable } from "./shortlist-table";
 import { SHORTLIST_TAB_IDS, ShortlistToolbar } from "./shortlist-toolbar";
 
@@ -90,11 +90,12 @@ export function ShortlistPage() {
               isLoading={isSavedLoading}
             />
             {searchTerm ? null : (
-              <ShortlistPagination
+              <DataPagination
                 page={savedPage}
                 totalPages={savedTotalPages}
                 total={savedTotal}
                 pageSize={PAGE_SIZE}
+                itemLabel="talents"
                 onPageChange={setPage}
               />
             )}
