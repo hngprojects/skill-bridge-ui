@@ -45,6 +45,7 @@ const ViolationDetector = ({
         isOpen={warningOpen}
         onClose={dismissWarning}
         violationCount={count}
+        violationLimit={limit}
         onContinue={dismissWarning}
       />
       <AssessmentAutoSubmittedModal
