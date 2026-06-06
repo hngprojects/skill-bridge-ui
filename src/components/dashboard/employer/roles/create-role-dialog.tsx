@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,15 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useEmployerProfile } from "@/hooks/api";
 import type { CreateRoleValues } from "@/types/api/employer-roles";
+import { createRoleDialogSchema } from "@/types/create-role-schema";
 import { CreateRoleDialogFields } from "./create-role-dialog-fields";
-
-const INITIAL_FORM_VALUES: CreateRoleValues = {
-  companyName: "",
-  roleTitle: "",
-  category: "",
-  companyUrl: "",
-};
 
 type CreateRoleDialogProps = {
   open: boolean;
@@ -33,32 +29,34 @@ export function CreateRoleDialog({
   onOpenChange,
   onCreateRole,
 }: CreateRoleDialogProps) {
-  const [formValues, setFormValues] =
-    useState<CreateRoleValues>(INITIAL_FORM_VALUES);
+  const { data: profile } = useEmployerProfile();
 
-  const isContinueDisabled =
-    formValues.companyName.trim().length === 0 ||
-    formValues.roleTitle.trim().length === 0 ||
-    formValues.category.trim().length === 0;
-
-  const updateField = <K extends keyof CreateRoleValues>(
-    key: K,
-    value: CreateRoleValues[K],
-  ) => {
-    setFormValues((current) => ({ ...current, [key]: value }));
-  };
-
-  const resetForm = () => setFormValues(INITIAL_FORM_VALUES);
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm<CreateRoleValues>({
+    resolver: zodResolver(createRoleDialogSchema),
+    mode: "onChange",
+    values: {
+      companyName: profile?.companyName ?? "",
+      companyUrl: profile?.companyWebsite ?? "",
+      roleTitle: "",
+      category: "",
+    },
+    resetOptions: { keepDirtyValues: true },
+  });
 
   const handleOpenChange = (nextOpen: boolean) => {
-    if (!nextOpen) resetForm();
+    if (!nextOpen) reset();
     onOpenChange(nextOpen);
   };
 
-  const handleContinue = () => {
-    if (isContinueDisabled) return;
-    onCreateRole(formValues);
-    resetForm();
+  const onSubmit = (values: CreateRoleValues) => {
+    onCreateRole(values);
+    reset();
   };
 
   return (
@@ -74,8 +72,10 @@ export function CreateRoleDialog({
         </DialogHeader>
 
         <CreateRoleDialogFields
-          formValues={formValues}
-          updateField={updateField}
+          register={register}
+          control={control}
+          errors={errors}
+          profilePrefilled={!!profile}
         />
 
         <DialogFooter className="grid grid-cols-2 gap-3 sm:grid-cols-2">
@@ -91,8 +91,8 @@ export function CreateRoleDialog({
           <Button
             type="button"
             className="h-9 rounded-md bg-[#111827] text-xs text-white hover:bg-[#111827]/90"
-            disabled={isContinueDisabled}
-            onClick={handleContinue}
+            disabled={!isValid}
+            onClick={handleSubmit(onSubmit)}
           >
             Continue
           </Button>

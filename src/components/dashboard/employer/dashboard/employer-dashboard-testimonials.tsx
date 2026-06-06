@@ -18,7 +18,7 @@ function StarRating() {
           alt=""
           width={18}
           height={18}
-          className="size-[18px]"
+          className="size-4.5"
           aria-hidden
         />
       ))}

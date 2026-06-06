@@ -1,5 +1,12 @@
 "use client";
 
+import {
+  type Control,
+  Controller,
+  type FieldErrors,
+  type UseFormRegister,
+} from "react-hook-form";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -12,16 +19,17 @@ import { ROLE_CATEGORY_OPTIONS } from "@/constants/employer-roles";
 import type { CreateRoleValues } from "@/types/api/employer-roles";
 
 type CreateRoleDialogFieldsProps = {
-  formValues: CreateRoleValues;
-  updateField: <K extends keyof CreateRoleValues>(
-    key: K,
-    value: CreateRoleValues[K],
-  ) => void;
+  register: UseFormRegister<CreateRoleValues>;
+  control: Control<CreateRoleValues>;
+  errors: FieldErrors<CreateRoleValues>;
+  profilePrefilled?: boolean;
 };
 
 export function CreateRoleDialogFields({
-  formValues,
-  updateField,
+  register,
+  control,
+  errors,
+  profilePrefilled,
 }: CreateRoleDialogFieldsProps) {
   return (
     <div className="space-y-4">
@@ -34,10 +42,10 @@ export function CreateRoleDialogFields({
         </label>
         <Input
           id="company-name"
-          value={formValues.companyName}
-          onChange={(e) => updateField("companyName", e.target.value)}
+          {...register("companyName")}
           placeholder="Enter your company name"
-          className="h-10 rounded-lg border-[#D0D5DD] bg-white text-sm placeholder:text-[#98A2B3]"
+          disabled={profilePrefilled}
+          className="h-10 rounded-lg border-[#D0D5DD] bg-white text-sm placeholder:text-[#98A2B3] disabled:cursor-not-allowed disabled:opacity-60"
         />
         <p className="text-[11px] text-[#98A2B3]">Placeholder for more info</p>
       </div>
@@ -51,31 +59,35 @@ export function CreateRoleDialogFields({
         </label>
         <Input
           id="role-title"
-          value={formValues.roleTitle}
-          onChange={(e) => updateField("roleTitle", e.target.value)}
+          {...register("roleTitle")}
           placeholder="Enter your role title"
           className="h-10 rounded-lg border-[#D0D5DD] bg-white text-sm placeholder:text-[#98A2B3]"
         />
-        <p className="text-[11px] text-[#98A2B3]">Placeholder for more info</p>
+        {errors.roleTitle && (
+          <p className="text-[11px] text-red-500">{errors.roleTitle.message}</p>
+        )}
       </div>
 
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-[#344054]">Category</label>
-        <Select
-          value={formValues.category}
-          onValueChange={(value) => updateField("category", value)}
-        >
-          <SelectTrigger className="h-10 w-full rounded-lg border-[#D0D5DD] bg-white text-sm text-[#101828] data-placeholder:text-[#98A2B3]">
-            <SelectValue placeholder="Select..." />
-          </SelectTrigger>
-          <SelectContent className="rounded-2xl">
-            {ROLE_CATEGORY_OPTIONS.map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Controller
+          name="category"
+          control={control}
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="h-10 w-full rounded-lg border-[#D0D5DD] bg-white text-sm text-[#101828] data-placeholder:text-[#98A2B3]">
+                <SelectValue placeholder="Select..." />
+              </SelectTrigger>
+              <SelectContent className="rounded-2xl">
+                {ROLE_CATEGORY_OPTIONS.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
         <p className="text-[11px] text-[#98A2B3]">Placeholder for more info</p>
       </div>
 
@@ -88,10 +100,10 @@ export function CreateRoleDialogFields({
         </label>
         <Input
           id="company-url"
-          value={formValues.companyUrl}
-          onChange={(e) => updateField("companyUrl", e.target.value)}
+          {...register("companyUrl")}
           placeholder="Enter your website url"
-          className="h-10 rounded-lg border-[#D0D5DD] bg-white text-sm placeholder:text-[#98A2B3]"
+          disabled={profilePrefilled}
+          className="h-10 rounded-lg border-[#D0D5DD] bg-white text-sm placeholder:text-[#98A2B3] disabled:cursor-not-allowed disabled:opacity-60"
         />
         <p className="text-[11px] text-[#98A2B3]">Placeholder for more info</p>
       </div>
