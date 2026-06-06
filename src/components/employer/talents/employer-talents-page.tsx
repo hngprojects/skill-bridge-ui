@@ -118,7 +118,11 @@ export function EmployerTalentsPage() {
           onClear={handleClear}
         />
         <div className="flex flex-1 flex-col gap-6">
-          <div className="flex flex-col gap-6">
+          <div
+            className={
+              view === "grid" ? "grid grid-cols-2 gap-6" : "flex flex-col gap-6"
+            }
+          >
             {filteredTalents.map((talent) => (
               <Link key={talent.id} href={`/e/talents/${talent.id}`}>
                 <TalentCard {...talent} />

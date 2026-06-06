@@ -20,8 +20,10 @@ interface PageProps {
 
 export default async function EmployerTalentProfilePage({ params }: PageProps) {
   const { id } = await params;
-
   const matchedTalent = EMPLOYER_TALENTS.find((t) => t.id === id);
+
+  // TODO: Replace with API call to /employer/discovery/candidates/{userId}/profile
+  // When API is connected, return notFound() if no candidate is found for the given id
   const talentData = matchedTalent
     ? {
         ...EMPLOYER_TALENT_PROFILE,
@@ -36,10 +38,8 @@ export default async function EmployerTalentProfilePage({ params }: PageProps) {
   return (
     <div className="flex flex-col gap-y-6 my-8 px-4 md:px-8 max-w-7xl mx-auto w-full">
       <EmployerTalentProfileHeader />
-
       <div className="relative">
         <VerifiedReportSummary data={talentData} />
-
         {talentData.verified && (
           <div
             className={cn(
@@ -52,7 +52,6 @@ export default async function EmployerTalentProfilePage({ params }: PageProps) {
           </div>
         )}
       </div>
-
       <section className="flex flex-col gap-y-5">
         <VerifiedReportSkillsSection
           skills={getSkillBreakdownTabs(talentData)}
