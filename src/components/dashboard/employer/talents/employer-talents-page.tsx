@@ -90,6 +90,10 @@ export function EmployerTalentsPage() {
 
   const total = filteredTalents.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const paginatedTalents = filteredTalents.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
 
   const activeChips = [
     ...appliedFilters.experience.map((val) => ({
@@ -142,7 +146,7 @@ export function EmployerTalentsPage() {
                 description="Try adjusting your filters or clear them to see more results."
               />
             ) : (
-              filteredTalents.map((talent) => (
+              paginatedTalents.map((talent) => (
                 <Link key={talent.id} href={`/e/talents/${talent.id}`}>
                   <TalentCard {...talent} />
                 </Link>
