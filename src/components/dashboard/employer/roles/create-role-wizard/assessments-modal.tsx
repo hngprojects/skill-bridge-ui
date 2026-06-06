@@ -6,7 +6,7 @@ import { FlaskConical, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { ASSESSMENT_OPTIONS } from "@/constants/create-role-wizard";
+import type { CatalogueAssessmentItem } from "@/types/api/employer-roles";
 import { cn } from "@/lib/utils";
 
 type AssessmentsModalProps = {
@@ -14,6 +14,8 @@ type AssessmentsModalProps = {
   onOpenChange: (open: boolean) => void;
   selectedIds: string[];
   onConfirm: (selectedIds: string[]) => void;
+  items: CatalogueAssessmentItem[];
+  isLoading?: boolean;
 };
 
 export function AssessmentsModal({
@@ -21,6 +23,8 @@ export function AssessmentsModal({
   onOpenChange,
   selectedIds,
   onConfirm,
+  items,
+  isLoading,
 }: AssessmentsModalProps) {
   const [localSelected, setLocalSelected] = useState<string[]>(selectedIds);
 
@@ -61,43 +65,59 @@ export function AssessmentsModal({
 
         {/* Scrollable assessment list */}
         <div className="flex flex-col gap-3 overflow-y-auto px-6 py-4">
-          {ASSESSMENT_OPTIONS.map((assessment) => {
-            const isSelected = localSelected.includes(assessment.id);
-            return (
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, i) => (
               <div
-                key={assessment.id}
-                className={cn(
-                  "flex items-start gap-3 rounded-xl border p-4 transition-colors",
-                  isSelected ? "border-[#079455]" : "border-[#E5E7EB]",
-                )}
-              >
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#0D2025]">
-                  <FlaskConical
-                    className="size-5 text-[#4BB3C9]"
-                    strokeWidth={1.5}
+                key={i}
+                className="h-24 animate-pulse rounded-xl border border-[#E5E7EB] bg-[#F9FAFB]"
+              />
+            ))
+          ) : items.length === 0 ? (
+            <p className="py-8 text-center text-sm text-[#98A2B3]">
+              No assessments available.
+            </p>
+          ) : (
+            items.map((assessment) => {
+              const isSelected = localSelected.includes(assessment.id);
+              return (
+                <div
+                  key={assessment.id}
+                  className={cn(
+                    "flex items-start gap-3 rounded-xl border p-4 transition-colors",
+                    isSelected ? "border-[#079455]" : "border-[#E5E7EB]",
+                  )}
+                >
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#0D2025]">
+                    <FlaskConical
+                      className="size-5 text-[#4BB3C9]"
+                      strokeWidth={1.5}
+                    />
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-[#101828]">
+                      {assessment.title}
+                    </p>
+                    {typeof assessment.description === "string" &&
+                      assessment.description && (
+                        <p className="mt-1 text-xs leading-5 text-[#667085]">
+                          {assessment.description}
+                        </p>
+                      )}
+                    <p className="mt-2 text-xs text-[#98A2B3]">
+                      Estimated time: {assessment.estimated_completion_time}
+                    </p>
+                  </div>
+
+                  <Switch
+                    checked={isSelected}
+                    onCheckedChange={() => toggleAssessment(assessment.id)}
+                    className="mt-0.5 shrink-0 data-[state=checked]:bg-[#101828]"
                   />
                 </div>
-
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-[#101828]">
-                    {assessment.name}
-                  </p>
-                  <p className="mt-1 text-xs leading-5 text-[#667085]">
-                    {assessment.description}
-                  </p>
-                  <p className="mt-2 text-xs text-[#98A2B3]">
-                    Estimated time: {assessment.estimatedTime}
-                  </p>
-                </div>
-
-                <Switch
-                  checked={isSelected}
-                  onCheckedChange={() => toggleAssessment(assessment.id)}
-                  className="mt-0.5 shrink-0 data-[state=checked]:bg-[#101828]"
-                />
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
         {/* Footer */}

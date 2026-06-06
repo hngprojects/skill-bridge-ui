@@ -2,7 +2,10 @@
 
 import { FlaskConical } from "lucide-react";
 
-import { ASSESSMENT_OPTIONS } from "@/constants/create-role-wizard";
+import {
+  ASSESSMENT_OPTIONS,
+  CURRENCY_SYMBOLS,
+} from "@/constants/create-role-wizard";
 import type { WorkPreferencesValues } from "@/types/create-role-schema";
 import type { UploadJdValues } from "./step-upload-jd";
 
@@ -30,17 +33,18 @@ export function StepPreview({
 }: StepPreviewProps) {
   const {
     employmentType,
-    experience,
+    workArrangement,
     education,
-    keyword,
+    keywords,
     salaryMin,
     salaryMax,
     currency,
   } = workPreferences;
 
   const hasSalary = !!(salaryMin || salaryMax);
+  const symbol = currency ? (CURRENCY_SYMBOLS[currency] ?? currency) : "";
   const salaryDisplay = hasSalary
-    ? `${currency ? `${currency} ` : "$ "}${salaryMin ?? ""}${salaryMin && salaryMax ? " – " : ""}${salaryMax ?? ""}`
+    ? `${symbol}${symbol ? " " : ""}${salaryMin ?? ""}${salaryMin && salaryMax ? " – " : ""}${salaryMax ?? ""}`
     : "—";
 
   const selectedOptions = selectedAssessments
@@ -66,10 +70,15 @@ export function StepPreview({
       <div className="rounded-xl border border-[#E5E7EB] p-5">
         <div className="grid grid-cols-3 gap-x-6 gap-y-5">
           <PreviewField label="Employment type" value={employmentType} />
-          <PreviewField label="Experience" value={experience} />
+          <PreviewField label="Work arrangement" value={workArrangement} />
           <PreviewField label="Salary range" value={salaryDisplay} />
           <PreviewField label="Education" value={education} />
-          {keyword && <PreviewField label="Keyword" value={`#${keyword}`} />}
+          {keywords && keywords.length > 0 && (
+            <PreviewField
+              label="Keywords"
+              value={keywords.map((k) => `#${k}`).join(" ")}
+            />
+          )}
         </div>
       </div>
 

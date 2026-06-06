@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CheckCircle2, Plus } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { ASSESSMENT_OPTIONS } from "@/constants/create-role-wizard";
+import { useAssessmentCatalogue } from "@/hooks/api/use-employer-roles";
 import { AssessmentsModal } from "./assessments-modal";
 
 type StepTalentAssessmentProps = {
@@ -17,7 +17,9 @@ export function StepTalentAssessment({
   onSelectionChange,
 }: StepTalentAssessmentProps) {
   const [modalOpen, setModalOpen] = useState(false);
+  const { data, isLoading } = useAssessmentCatalogue();
 
+  const items = data?.catalogue ?? [];
   const hasSelections = selectedAssessments.length > 0;
 
   return (
@@ -47,15 +49,15 @@ export function StepTalentAssessment({
         {hasSelections ? (
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             {selectedAssessments.map((id) => {
-              const option = ASSESSMENT_OPTIONS.find((o) => o.id === id);
-              if (!option) return null;
+              const item = items.find((o) => o.id === id);
+              if (!item) return null;
               return (
                 <span
                   key={id}
                   className="flex items-center gap-1.5 rounded-full bg-[#ECFDF3] px-3 py-1 text-xs font-medium text-[#027A48]"
                 >
                   <CheckCircle2 className="size-3.5" strokeWidth={2} />
-                  {option.name}
+                  {item.title}
                 </span>
               );
             })}
@@ -66,7 +68,9 @@ export function StepTalentAssessment({
               C
             </div>
             <span className="text-sm font-semibold text-[#101828]">
-              5 recommended assessments for this role
+              {isLoading
+                ? "Loading assessments..."
+                : `${items.length} assessments available`}
             </span>
           </div>
         )}
@@ -78,6 +82,8 @@ export function StepTalentAssessment({
         onOpenChange={setModalOpen}
         selectedIds={selectedAssessments}
         onConfirm={onSelectionChange}
+        items={items}
+        isLoading={isLoading}
       />
     </>
   );

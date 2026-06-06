@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { ArrowUpRight, Box, FlaskConical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { ASSESSMENT_OPTIONS } from "@/constants/create-role-wizard";
+import {
+  ASSESSMENT_OPTIONS,
+  CURRENCY_SYMBOLS,
+} from "@/constants/create-role-wizard";
 import { useCreatedRoleStore } from "@/stores/created-role-store";
 
 function PreviewField({ label, value }: { label: string; value: string }) {
@@ -37,8 +40,15 @@ export function RoleCreatedPage() {
     workPreferences,
     selectedAssessments,
   } = role;
-  const { employmentType, experience, education, salaryMin, salaryMax } =
-    workPreferences;
+  const {
+    employmentType,
+    workArrangement,
+    education,
+    keywords,
+    salaryMin,
+    salaryMax,
+    currency,
+  } = workPreferences;
 
   const normalizedUrl =
     companyUrl && !companyUrl.startsWith("http")
@@ -46,8 +56,9 @@ export function RoleCreatedPage() {
       : companyUrl;
 
   const hasSalary = !!(salaryMin || salaryMax);
+  const symbol = currency ? (CURRENCY_SYMBOLS[currency] ?? currency) : "";
   const salaryDisplay = hasSalary
-    ? `$ ${salaryMin}${salaryMin && salaryMax ? " – " : ""}${salaryMax}`
+    ? `${symbol}${symbol ? " " : ""}${salaryMin ?? ""}${salaryMin && salaryMax ? " – " : ""}${salaryMax ?? ""}`
     : "—";
 
   const selectedOptions = selectedAssessments
@@ -113,9 +124,15 @@ export function RoleCreatedPage() {
             {/* Work preferences grid */}
             <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-6">
               <PreviewField label="Employment type" value={employmentType} />
-              <PreviewField label="Experience" value={experience} />
+              <PreviewField label="Work arrangement" value={workArrangement} />
               <PreviewField label="Education" value={education} />
               <PreviewField label="Salary range" value={salaryDisplay} />
+              {keywords && keywords.length > 0 && (
+                <PreviewField
+                  label="Keywords"
+                  value={keywords.map((k) => `#${k}`).join(" ")}
+                />
+              )}
             </div>
 
             <hr className="my-8 border-[#F2F4F7]" />
