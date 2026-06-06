@@ -274,6 +274,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const credentialUser = user as
         | ({
             accessToken?: string;
+            name?: string;
           } & Partial<AuthUser>)
         | undefined;
       if (account?.provider === "credentials" && credentialUser?.accessToken) {
@@ -281,6 +282,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       if (account?.provider === "credentials" && credentialUser) {
         token.role = credentialUser.role;
+        if (credentialUser.email) token.email = credentialUser.email;
+        if (credentialUser.name) token.name = credentialUser.name;
       }
       return token;
     },
@@ -291,6 +294,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const sessionUser = session.user as typeof session.user & {
         id?: string;
         role?: UserRole;
+        email?: string;
       };
       const tokenDetails = token as typeof token & {
         role?: UserRole;
@@ -299,6 +303,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         typeof token.accessToken === "string" ? token.accessToken : undefined;
       if (typeof token.sub === "string") {
         sessionUser.id = token.sub;
+      }
+      if (typeof token.email === "string") {
+        sessionUser.email = token.email;
       }
       sessionUser.role = tokenDetails.role;
       return session;
