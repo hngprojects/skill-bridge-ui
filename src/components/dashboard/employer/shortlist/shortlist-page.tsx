@@ -12,7 +12,7 @@ import { OffersTable } from "./offers-table";
 import { ShortlistHeroBanner } from "./shortlist-hero-banner";
 import { ShortlistPagination } from "./shortlist-pagination";
 import { ShortlistTable } from "./shortlist-table";
-import { ShortlistToolbar } from "./shortlist-toolbar";
+import { SHORTLIST_TAB_IDS, ShortlistToolbar } from "./shortlist-toolbar";
 
 const PAGE_SIZE = 20;
 
@@ -80,21 +80,33 @@ export function ShortlistPage() {
 
       <div className="rounded-2xl border border-[#E4E7EC] bg-white">
         {activeTab === "shortlist" ? (
-          <>
+          <div
+            role="tabpanel"
+            id={SHORTLIST_TAB_IDS.shortlist.panelId}
+            aria-labelledby={SHORTLIST_TAB_IDS.shortlist.tabId}
+          >
             <ShortlistTable
               candidates={filteredCandidates}
               isLoading={isSavedLoading}
             />
-            <ShortlistPagination
-              page={savedPage}
-              totalPages={savedTotalPages}
-              total={savedTotal}
-              pageSize={PAGE_SIZE}
-              onPageChange={setPage}
-            />
-          </>
+            {searchTerm ? null : (
+              <ShortlistPagination
+                page={savedPage}
+                totalPages={savedTotalPages}
+                total={savedTotal}
+                pageSize={PAGE_SIZE}
+                onPageChange={setPage}
+              />
+            )}
+          </div>
         ) : (
-          <OffersTable offers={filteredOffers} />
+          <div
+            role="tabpanel"
+            id={SHORTLIST_TAB_IDS.offers.panelId}
+            aria-labelledby={SHORTLIST_TAB_IDS.offers.tabId}
+          >
+            <OffersTable offers={filteredOffers} />
+          </div>
         )}
       </div>
     </div>

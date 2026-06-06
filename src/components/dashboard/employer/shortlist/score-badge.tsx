@@ -11,6 +11,7 @@ type ScoreBadgeProps = {
  * suits the shortlist table row).
  */
 export function ScoreBadge({ value, className }: ScoreBadgeProps) {
+  const clamped = Math.max(0, Math.min(100, Math.round(value)));
   return (
     <span
       className={cn(
@@ -21,9 +22,9 @@ export function ScoreBadge({ value, className }: ScoreBadgeProps) {
         clipPath:
           "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
       }}
-      aria-label={`Cred Score ${value}%`}
+      aria-label={`Cred Score ${clamped}%`}
     >
-      {value}%
+      {clamped}%
     </span>
   );
 }

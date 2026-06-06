@@ -26,7 +26,6 @@ export function CandidateAvatar({ avatarUrl, fullName }: CandidateAvatarProps) {
         width={36}
         height={36}
         className="size-9 rounded-full border border-[#E4E7EC] object-cover"
-        unoptimized
       />
     );
   }
