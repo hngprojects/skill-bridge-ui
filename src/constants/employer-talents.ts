@@ -57,6 +57,7 @@ export function buildDiscoveryCandidateTags(
     ...candidate.topSkills,
     candidate.availabilityLabel,
     candidate.region,
+    // Empty strings from seniorityBadge/validatedLevel are dropped by filter(Boolean).
     candidate.seniorityBadge || candidate.validatedLevel,
   ].filter(Boolean);
 

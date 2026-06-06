@@ -108,13 +108,21 @@ export function useRemoveCandidate() {
         }
       }
     },
-    onSettled: () => {
+    onSettled: (_data, _error, userId) => {
       void qc.invalidateQueries({
         queryKey: employerDiscoveryKeys.savedLists(),
       });
       void qc.invalidateQueries({
         queryKey: employerDiscoveryKeys.candidateLists(),
       });
+      void qc.invalidateQueries({
+        queryKey: employerDiscoveryKeys.profiles(),
+      });
+      if (userId) {
+        void qc.invalidateQueries({
+          queryKey: employerDiscoveryKeys.profile(userId),
+        });
+      }
     },
   });
 }

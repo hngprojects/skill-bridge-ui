@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 import { authApi } from "@/lib/api";
 import type { ApiEnvelope } from "@/types/api/common";
 import type {
@@ -43,7 +44,7 @@ export async function getEmployerOffers(
     offers: (raw.offers ?? []).map(mapOfferListItem),
     total: raw.total ?? 0,
     page: raw.page ?? 1,
-    limit: raw.limit ?? params?.limit ?? 20,
+    limit: raw.limit ?? params?.limit ?? DEFAULT_PAGE_SIZE,
     totalPages: raw.totalPages ?? raw.total_pages ?? 1,
     emptyStateMessage: raw.emptyStateMessage ?? raw.empty_state_message ?? null,
   };

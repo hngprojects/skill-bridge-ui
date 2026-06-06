@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 import { authApi } from "@/lib/api";
 import { buildDiscoveryQueryString } from "@/lib/employer-discovery-params";
 import type { ApiEnvelope } from "@/types/api/common";
@@ -36,8 +37,9 @@ function mapDiscoveryCandidate(
     skills: raw.skills ?? [],
     topSkills: raw.top_skills ?? [],
     aboutTags: raw.about_tags ?? [],
-    availability: raw.availability ?? raw.availability_status ?? "",
-    availabilityStatus: raw.availability_status ?? raw.availability ?? "",
+    // availability: API slug; availabilityStatus: separate status field (no cross-fallback).
+    availability: raw.availability ?? "",
+    availabilityStatus: raw.availability_status ?? "",
     availabilityLabel: raw.availability_label ?? "",
     verifiedAt: raw.verified_at,
     strongCompetencies: raw.strong_competencies ?? [],
@@ -90,7 +92,7 @@ export async function discoverCandidates(
       path,
     );
   const raw = unwrapData(res);
-  return mapDiscoveryList(raw, params.limit ?? 20);
+  return mapDiscoveryList(raw, params.limit ?? DEFAULT_PAGE_SIZE);
 }
 
 export async function getDiscoveryCandidateProfile(
@@ -109,7 +111,7 @@ export async function getSavedCandidates(
     ApiEnvelope<RawEmployerDiscoveryCandidatesListResponse>
   >("/employer/discovery/saved", { params });
   const raw = unwrapData(res);
-  return mapDiscoveryList(raw, params?.limit ?? 20);
+  return mapDiscoveryList(raw, params?.limit ?? DEFAULT_PAGE_SIZE);
 }
 
 export async function saveCandidate(userId: string): Promise<void> {

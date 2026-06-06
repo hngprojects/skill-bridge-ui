@@ -30,6 +30,8 @@ import { formatTableDate } from "./shortlist-shared";
 type OffersTableProps = {
   offers: EmployerOfferListItem[];
   isLoading?: boolean;
+  isError?: boolean;
+  errorMessage?: string;
 };
 
 const columns: ColumnDef<EmployerOfferListItem>[] = [
@@ -105,12 +107,30 @@ const columns: ColumnDef<EmployerOfferListItem>[] = [
   },
 ];
 
-export function OffersTable({ offers, isLoading = false }: OffersTableProps) {
+export function OffersTable({
+  offers,
+  isLoading = false,
+  isError = false,
+  errorMessage,
+}: OffersTableProps) {
   const table = useDataTable({
     data: offers,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (isError) {
+    return (
+      <DataEmptyState
+        icon={OFFERS_EMPTY_STATE.icon}
+        title="Unable to load offers"
+        description={
+          errorMessage ??
+          "Something went wrong while loading offers. Please try again."
+        }
+      />
+    );
+  }
 
   if (isLoading && offers.length === 0) {
     return (

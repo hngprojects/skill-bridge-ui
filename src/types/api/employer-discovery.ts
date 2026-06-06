@@ -62,7 +62,7 @@ export type DiscoveryCandidatesParams = {
   experienceLevel?: string[];
   minScore?: number;
   maxScore?: number;
-  region?: string;
+  region?: string[];
   search?: string;
 };
 

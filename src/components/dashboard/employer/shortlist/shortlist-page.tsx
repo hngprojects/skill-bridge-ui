@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { type ShortlistTabId } from "@/constants/employer-shortlist";
 import { useSavedCandidates } from "@/hooks/api/use-employer-discovery";
 import { useEmployerOffers } from "@/hooks/api/use-employer-offers";
+import { authFailureMessage } from "@/lib/api";
 
 import { DataPagination } from "../shared/data-pagination";
 import { OffersTable } from "./offers-table";
@@ -25,7 +26,12 @@ export function ShortlistPage() {
     limit: PAGE_SIZE,
   });
 
-  const { data: offersData, isLoading: isOffersLoading } = useEmployerOffers(
+  const {
+    data: offersData,
+    isLoading: isOffersLoading,
+    isError: isOffersError,
+    error: offersError,
+  } = useEmployerOffers(
     { page: offersPage, limit: PAGE_SIZE },
     { enabled: activeTab === "offers" },
   );
@@ -83,6 +89,13 @@ export function ShortlistPage() {
         onSearchChange={setSearchValue}
       />
 
+      {searchTerm ? (
+        <p className="text-sm text-[#757575]">
+          Search applies to the current page only. Browse pages or clear search
+          to see more results.
+        </p>
+      ) : null}
+
       <div className="rounded-2xl border border-[#E4E7EC] bg-white">
         {activeTab === "shortlist" ? (
           <div
@@ -94,16 +107,14 @@ export function ShortlistPage() {
               candidates={filteredCandidates}
               isLoading={isSavedLoading}
             />
-            {searchTerm ? null : (
-              <DataPagination
-                page={savedPage}
-                totalPages={savedTotalPages}
-                total={savedTotal}
-                pageSize={PAGE_SIZE}
-                itemLabel="talents"
-                onPageChange={setPage}
-              />
-            )}
+            <DataPagination
+              page={savedPage}
+              totalPages={savedTotalPages}
+              total={savedTotal}
+              pageSize={PAGE_SIZE}
+              itemLabel="talents"
+              onPageChange={setPage}
+            />
           </div>
         ) : (
           <div
@@ -111,17 +122,22 @@ export function ShortlistPage() {
             id={SHORTLIST_TAB_IDS.offers.panelId}
             aria-labelledby={SHORTLIST_TAB_IDS.offers.tabId}
           >
-            <OffersTable offers={filteredOffers} isLoading={isOffersLoading} />
-            {searchTerm ? null : (
-              <DataPagination
-                page={offersListPage}
-                totalPages={offersTotalPages}
-                total={offersTotal}
-                pageSize={PAGE_SIZE}
-                itemLabel="offers"
-                onPageChange={setOffersPage}
-              />
-            )}
+            <OffersTable
+              offers={filteredOffers}
+              isLoading={isOffersLoading}
+              isError={isOffersError}
+              errorMessage={
+                offersError ? authFailureMessage(offersError) : undefined
+              }
+            />
+            <DataPagination
+              page={offersListPage}
+              totalPages={offersTotalPages}
+              total={offersTotal}
+              pageSize={PAGE_SIZE}
+              itemLabel="offers"
+              onPageChange={setOffersPage}
+            />
           </div>
         )}
       </div>

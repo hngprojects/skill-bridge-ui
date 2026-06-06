@@ -14,7 +14,9 @@ export function buildDiscoveryQueryString(
     searchParams.set("minScore", String(params.minScore));
   if (params.maxScore != null)
     searchParams.set("maxScore", String(params.maxScore));
-  if (params.region) searchParams.set("region", params.region);
+  for (const value of params.region ?? []) {
+    searchParams.append("region", value);
+  }
   if (params.search) searchParams.set("search", params.search);
 
   for (const value of params.roleTrack ?? []) {
@@ -46,6 +48,6 @@ export function toDiscoveryCandidatesParams(
       ? filters.availability
       : undefined,
     minScore: minScore > DISCOVERY_MIN_SCORE ? minScore : undefined,
-    region: filters.region[0],
+    region: filters.region.length ? filters.region : undefined,
   };
 }
