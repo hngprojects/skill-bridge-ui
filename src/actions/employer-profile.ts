@@ -20,7 +20,7 @@ function normalizeEmployerProfile(
   raw: RawEmployerProfileResponseData,
 ): EmployerProfileDetail {
   const joiningAs =
-    raw.joiningAs ?? raw.employerType ?? raw.employer_type ?? "recruiter";
+    raw.joiningAs ?? raw.employerType ?? raw.employer_type ?? "Recruiter";
 
   const hiringRoles =
     raw.hiringRoles ?? raw.desiredRoles ?? raw.desired_roles ?? [];

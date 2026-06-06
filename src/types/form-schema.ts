@@ -82,7 +82,7 @@ function isLinkedinCompanyUrl(value: string): boolean {
 }
 
 export const employerOnboardingProfileSchema = z.object({
-  joiningAs: z.enum(["recruiter", "founder", "agency"], {
+  joiningAs: z.enum(["Recruiter", "Founder", "Agency"], {
     message: "Select how you are joining",
   }),
   companyName: z
