@@ -34,6 +34,14 @@ export const employerDashboardKeys = {
   home: () => [...employerDashboardKeys.all, "home"] as const,
 };
 
+export const employerDiscoveryKeys = {
+  all: ["employer-discovery"] as const,
+  savedLists: () => [...employerDiscoveryKeys.all, "saved"] as const,
+  // Page/limit folded into the key so paginated requests cache independently.
+  savedList: (params?: { page?: number; limit?: number }) =>
+    [...employerDiscoveryKeys.savedLists(), params ?? {}] as const,
+};
+
 export const resourcesKeys = {
   all: ["resources"] as const,
   talent: () => [...resourcesKeys.all, "talent"] as const,
