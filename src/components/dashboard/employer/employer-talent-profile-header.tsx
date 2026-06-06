@@ -2,22 +2,46 @@
 
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import { toast } from "sonner";
+
+import { useSaveCandidate } from "@/hooks/api/use-employer-discovery";
+import { authFailureMessage } from "@/lib/api";
+import { appToast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
-export function EmployerTalentProfileHeader() {
-  const handleAddToShortlist = () => {
-    alert("Added to Shortlist (Scaffolding)");
-  };
+type EmployerTalentProfileHeaderProps = {
+  userId: string;
+  isSaved: boolean;
+};
 
-  const handleSendOffer = () => {
-    alert("Initiating Offer Modal (Scaffolding)");
-  };
+export function EmployerTalentProfileHeader({
+  userId,
+  isSaved,
+}: EmployerTalentProfileHeaderProps) {
+  const { mutate: saveCandidate, isPending: isSaving } = useSaveCandidate();
+
+  function handleAddToShortlist() {
+    if (isSaved || isSaving) return;
+
+    saveCandidate(userId, {
+      onSuccess: () => {
+        appToast.success("Added to shortlist.");
+      },
+      onError: (error) => {
+        appToast.error(authFailureMessage(error));
+      },
+    });
+  }
+
+  function handleSendOffer() {
+    toast("Send offer is coming soon.");
+  }
 
   return (
-    <div className="flex flex-row justify-between items-center w-full pb-4 border-b border-[#EBEBEB]">
+    <div className="flex w-full flex-row items-center justify-between border-b border-[#EBEBEB] pb-4">
       <Link
         href="/e/talents"
-        className="flex items-center gap-x-2 text-[#757575] hover:text-[#151515] transition-colors font-medium"
+        className="flex items-center gap-x-2 font-medium text-[#757575] transition-colors hover:text-[#151515]"
       >
         <ChevronLeft size={20} />
         Back to Talents
@@ -25,21 +49,20 @@ export function EmployerTalentProfileHeader() {
 
       <div className="flex flex-row gap-x-3">
         <button
+          type="button"
           onClick={handleAddToShortlist}
+          disabled={isSaved || isSaving}
           className={cn(
-            "flex items-center justify-center rounded-lg font-semibold text-base",
-            "leading-5 tracking-[0.016em] text-[#151515] hover:bg-black/5",
-            "w-40 h-10 border border-[#05060F] transition-colors",
+            "flex h-10 w-40 items-center justify-center rounded-lg border border-[#05060F] text-base font-semibold leading-5 tracking-[0.016em] text-[#151515] transition-colors hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-60",
           )}
         >
-          Add to Shortlist
+          {isSaved ? "Shortlisted" : "Add to Shortlist"}
         </button>
         <button
+          type="button"
           onClick={handleSendOffer}
           className={cn(
-            "flex items-center justify-center rounded-lg font-semibold text-base",
-            "leading-5 tracking-[0.016em] text-white hover:bg-[#151515]/90",
-            "w-27 h-10 bg-[#05060F] transition-colors",
+            "flex h-10 w-27 items-center justify-center rounded-lg bg-[#05060F] text-base font-semibold leading-5 tracking-[0.016em] text-white transition-colors hover:bg-[#151515]/90",
           )}
         >
           Send Offer

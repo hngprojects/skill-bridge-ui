@@ -2,15 +2,13 @@
 
 import { useMemo, useState } from "react";
 
-import {
-  MOCK_EMPLOYER_OFFERS,
-  type ShortlistTabId,
-} from "@/constants/employer-shortlist";
+import { type ShortlistTabId } from "@/constants/employer-shortlist";
 import { useSavedCandidates } from "@/hooks/api/use-employer-discovery";
+import { useEmployerOffers } from "@/hooks/api/use-employer-offers";
 
+import { DataPagination } from "../shared/data-pagination";
 import { OffersTable } from "./offers-table";
 import { ShortlistHeroBanner } from "./shortlist-hero-banner";
-import { DataPagination } from "../shared/data-pagination";
 import { ShortlistTable } from "./shortlist-table";
 import { SHORTLIST_TAB_IDS, ShortlistToolbar } from "./shortlist-toolbar";
 
@@ -19,6 +17,7 @@ const PAGE_SIZE = 20;
 export function ShortlistPage() {
   const [activeTab, setActiveTab] = useState<ShortlistTabId>("shortlist");
   const [page, setPage] = useState(1);
+  const [offersPage, setOffersPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
 
   const { data: savedData, isLoading: isSavedLoading } = useSavedCandidates({
@@ -26,15 +25,19 @@ export function ShortlistPage() {
     limit: PAGE_SIZE,
   });
 
+  const { data: offersData, isLoading: isOffersLoading } = useEmployerOffers(
+    { page: offersPage, limit: PAGE_SIZE },
+    { enabled: activeTab === "offers" },
+  );
+
   const savedTotal = savedData?.total ?? 0;
   const savedTotalPages = savedData?.totalPages ?? 1;
   const savedPage = savedData?.page ?? page;
 
-  // Mock for now — replaced by real query when the offers endpoints exist.
-  const offers = MOCK_EMPLOYER_OFFERS;
+  const offersTotal = offersData?.total ?? 0;
+  const offersTotalPages = offersData?.totalPages ?? 1;
+  const offersListPage = offersData?.page ?? offersPage;
 
-  // Client-side filter on the current page only. Search across name +
-  // role/role track (shortlist) or name + job title (offers).
   const searchTerm = searchValue.trim().toLowerCase();
   const filteredCandidates = useMemo(() => {
     const candidates = savedData?.candidates ?? [];
@@ -47,13 +50,14 @@ export function ShortlistPage() {
   }, [savedData?.candidates, searchTerm]);
 
   const filteredOffers = useMemo(() => {
+    const offers = offersData?.offers ?? [];
     if (!searchTerm) return offers;
     return offers.filter((o) =>
       [o.candidateName, o.jobTitle, o.roleTrack ?? ""]
         .filter(Boolean)
         .some((field) => field.toLowerCase().includes(searchTerm)),
     );
-  }, [offers, searchTerm]);
+  }, [offersData?.offers, searchTerm]);
 
   const searchPlaceholder =
     activeTab === "shortlist"
@@ -67,13 +71,14 @@ export function ShortlistPage() {
       <ShortlistToolbar
         activeTab={activeTab}
         shortlistCount={savedTotal}
-        offersCount={offers.length}
+        offersCount={offersTotal}
         searchValue={searchValue}
         searchPlaceholder={searchPlaceholder}
         onTabChange={(tab) => {
           setActiveTab(tab);
           setSearchValue("");
           setPage(1);
+          setOffersPage(1);
         }}
         onSearchChange={setSearchValue}
       />
@@ -106,7 +111,17 @@ export function ShortlistPage() {
             id={SHORTLIST_TAB_IDS.offers.panelId}
             aria-labelledby={SHORTLIST_TAB_IDS.offers.tabId}
           >
-            <OffersTable offers={filteredOffers} />
+            <OffersTable offers={filteredOffers} isLoading={isOffersLoading} />
+            {searchTerm ? null : (
+              <DataPagination
+                page={offersListPage}
+                totalPages={offersTotalPages}
+                total={offersTotal}
+                pageSize={PAGE_SIZE}
+                itemLabel="offers"
+                onPageChange={setOffersPage}
+              />
+            )}
           </div>
         )}
       </div>
