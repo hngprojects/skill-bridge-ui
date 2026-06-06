@@ -1,41 +1,32 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { CreateRoleDialog } from "@/components/dashboard/employer/roles/create-role-dialog";
 import { EmptyRolesState } from "@/components/dashboard/employer/roles/empty-roles-state";
 import { FilledRolesState } from "@/components/dashboard/employer/roles/filled-roles-state";
-import type {
-  CreateRoleValues,
-  EmployerRoleItem,
-} from "@/types/api/employer-roles";
-
-function formatRequirement(values: CreateRoleValues) {
-  return values.companyName.trim().length > 0
-    ? `${values.category} • ${values.companyName}`
-    : values.category;
-}
+import { useSessionUserProfile } from "@/hooks/use-session-user-profile";
+import { useEmployerRolesStore } from "@/stores/employer-roles-store";
+import type { CreateRoleValues } from "@/types/api/employer-roles";
 
 export function EmployerRolesPage() {
+  const router = useRouter();
+  const { userId } = useSessionUserProfile();
+  const rolesByUser = useEmployerRolesStore((s) => s.rolesByUser);
+  const roles = rolesByUser[userId] ?? [];
+
   const [isCreateRoleOpen, setIsCreateRoleOpen] = useState(false);
-  const [roles, setRoles] = useState<EmployerRoleItem[]>([]);
 
-  const handleCreateRole = (values: CreateRoleValues) => {
-    const newRole: EmployerRoleItem = {
-      id: `${values.roleTitle}-${Date.now()}`,
+  const handleDialogContinue = (values: CreateRoleValues) => {
+    const params = new URLSearchParams({
       title: values.roleTitle.trim(),
-      status: "active",
-      offersSent: 0,
-      requirements: formatRequirement(values),
-      createdAt: "Created just now",
-    };
-
-    setRoles((currentRoles) => [newRole, ...currentRoles]);
-    setIsCreateRoleOpen(false);
+      category: values.category,
+      companyUrl: values.companyUrl.trim(),
+    });
+    router.push(`/e/roles/create?${params.toString()}`);
   };
-
-  const hasCreatedRoles = roles.length > 0;
 
   return (
     <>
@@ -46,8 +37,7 @@ export function EmployerRolesPage() {
               My Roles
             </h1>
             <p className="text-sm text-[#667085]">
-              Placeholder for the page that shows all roles employer has
-              created.
+              Manage your open roles and track candidate offers.
             </p>
           </div>
 
@@ -61,7 +51,7 @@ export function EmployerRolesPage() {
           </div>
         </div>
 
-        {hasCreatedRoles ? (
+        {roles.length > 0 ? (
           <FilledRolesState
             roles={roles}
             onCreateRole={() => setIsCreateRoleOpen(true)}
@@ -74,7 +64,7 @@ export function EmployerRolesPage() {
       <CreateRoleDialog
         open={isCreateRoleOpen}
         onOpenChange={setIsCreateRoleOpen}
-        onCreateRole={handleCreateRole}
+        onCreateRole={handleDialogContinue}
       />
     </>
   );
