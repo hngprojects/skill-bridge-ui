@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 
 import { SettingsAccountActionLink } from "@/components/settings/settings-account-action-link";
 import { SettingsChangePasswordForm } from "@/components/settings/settings-change-password-form";
+import { PasswordChangeLogoutWarning } from "@/components/settings/password-change-logout-warning";
 import {
   Dialog,
   DialogContent,
@@ -19,42 +20,54 @@ export function SettingsChangePasswordDialog() {
   const {
     isOpen,
     isUpdating,
+    showLogoutWarning,
     passwordForm,
     passwordError,
     passwordErrorId,
     handleOpenChange,
     handleChangePassword,
+    handleConfirmPasswordChange,
+    handleCancelLogoutWarning,
     updatePasswordField,
   } = useChangePasswordDialog();
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <SettingsAccountActionLink
-          disabled={isUpdating}
-          icon={<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />}
-        >
-          Change password
-        </SettingsAccountActionLink>
-      </DialogTrigger>
-      <DialogContent className="max-w-[390px] gap-5 rounded-2xl p-6">
-        <DialogHeader className="items-center text-center">
-          <DialogTitle className="text-base font-bold">
+    <>
+      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+        <DialogTrigger asChild>
+          <SettingsAccountActionLink
+            disabled={isUpdating}
+            icon={<HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />}
+          >
             Change password
-          </DialogTitle>
-          <DialogDescription className="max-w-67 text-xs leading-5">
-            Enter your current password and choose a new one.
-          </DialogDescription>
-        </DialogHeader>
-        <SettingsChangePasswordForm
-          passwordForm={passwordForm}
-          passwordError={passwordError}
-          passwordErrorId={passwordErrorId}
-          isUpdating={isUpdating}
-          onSubmit={handleChangePassword}
-          onFieldChange={updatePasswordField}
-        />
-      </DialogContent>
-    </Dialog>
+          </SettingsAccountActionLink>
+        </DialogTrigger>
+        <DialogContent className="max-w-[390px] gap-5 rounded-2xl p-6">
+          <DialogHeader className="items-center text-center">
+            <DialogTitle className="text-base font-bold">
+              Change password
+            </DialogTitle>
+            <DialogDescription className="max-w-67 text-xs leading-5">
+              Enter your current password and choose a new one.
+            </DialogDescription>
+          </DialogHeader>
+          <SettingsChangePasswordForm
+            passwordForm={passwordForm}
+            passwordError={passwordError}
+            passwordErrorId={passwordErrorId}
+            isUpdating={isUpdating}
+            onSubmit={handleChangePassword}
+            onFieldChange={updatePasswordField}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <PasswordChangeLogoutWarning
+        open={showLogoutWarning}
+        isUpdating={isUpdating}
+        onConfirm={handleConfirmPasswordChange}
+        onCancel={handleCancelLogoutWarning}
+      />
+    </>
   );
 }

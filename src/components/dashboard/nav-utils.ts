@@ -8,8 +8,13 @@ export function getInitials(name: string, email: string): string {
   return "U";
 }
 
+// Dashboard overview routes are exact-match only — without this, every
+// `/t/...` or `/e/...` sub-route would light up the "Overview" tab because
+// the dashboard route is a prefix of theirs.
+const EXACT_MATCH_HREFS = new Set(["/t/dashboard", "/e/dashboard"]);
+
 export function isNavLinkActive(pathname: string, href: string): boolean {
-  if (href === "/t/dashboard") return pathname === href;
+  if (EXACT_MATCH_HREFS.has(href)) return pathname === href;
 
   return pathname === href || pathname.startsWith(`${href}/`);
 }

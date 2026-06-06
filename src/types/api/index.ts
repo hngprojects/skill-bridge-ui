@@ -44,6 +44,19 @@ export type {
   UploadAvatarResponseData,
 } from "./onboarding";
 export type {
+  EmployerExperienceLevel,
+  EmployerHiringCount,
+  EmployerProfileDetail,
+  EmployerRestrictedFieldKey,
+  EmployerRestrictedFields,
+  EmployerVerificationCriterion,
+  EmployerVerificationStatus,
+  RawEmployerProfileResponseData,
+  RawEmployerVerificationStatusResponseData,
+  RestrictedFieldMeta,
+  UpdateEmployerProfileInput,
+} from "./employer-profile";
+export type {
   AdminCreateUserInput,
   AdminCreateUserResponseData,
   AdminUpdateUserInput,
@@ -68,8 +81,6 @@ export type {
 } from "./dashboard";
 export type {
   AdvancedAssessmentApiQuestion,
-  AdvancedAssessmentLt2SubmitInput,
-  AdvancedAssessmentLt2SubmitResponseData,
   AdvancedAssessmentQuestionBlock,
   AdvancedAssessmentQuestionMetadata,
   AdvancedAssessmentQuestionType,

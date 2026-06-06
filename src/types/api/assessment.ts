@@ -138,17 +138,13 @@ export type AdvancedAssessmentQuestionType =
   | "required_text"
   | "optional_text";
 
-export type AdvancedAssessmentSlotType =
-  | "work_task"
-  | "situational"
-  | "reflection";
+export type AdvancedAssessmentSlotType = "work_task" | "situational";
 
 export type AdvancedAssessmentQuestionMetadata = {
   difficulty: "easy" | "medium" | "hard";
   estimated_time_seconds: number;
   tags: string[];
   competency?: string | null;
-  lt3_reflection?: boolean;
 };
 
 /** Raw question shape returned by the advanced assessment API. */
@@ -196,25 +192,6 @@ export type AdvancedAssessmentSubmitAnswer = {
 export type AdvancedAssessmentSubmitInput = {
   sessionId: string;
   answers: AdvancedAssessmentSubmitAnswer[];
-};
-
-/** Body for POST /talent/assessment/session/:id/lt2-submit. */
-export type AdvancedAssessmentLt2SubmitInput = {
-  questionId: string;
-  answer: string;
-};
-
-/** Response when the server generates LT-3 after receiving the LT-2 answer. */
-export type AdvancedAssessmentLt2SubmitResponseData = {
-  status: string;
-  message: string;
-  session_id: string;
-  /** LT-3's own UUID. */
-  question_id: string;
-  question_number: number;
-  question_text: string;
-  /** Server-authoritative remaining seconds for the session. */
-  max_seconds_remaining: number;
 };
 
 export type AssessmentTier = "job_ready" | "emerging" | "not_ready";

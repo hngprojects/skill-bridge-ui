@@ -1,3 +1,10 @@
+/**
+ * Which notifications surface to talk to. Selects the base path
+ * ("/talent/notifications" vs "/employer/notifications") and the cache
+ * namespace so the two never cross-pollute.
+ */
+type NotificationRole = "talent" | "employer";
+
 type NotificationApiItem = {
   id: string;
   type: string;
@@ -19,6 +26,7 @@ type UnreadCountResponseData = {
 
 export type {
   NotificationApiItem,
+  NotificationRole,
   NotificationsListResponseData,
   UnreadCountResponseData,
 };

@@ -30,7 +30,7 @@ export function Navbar() {
   const { status, data: session } = useSession();
   const isAuthed = status === "authenticated";
   const dashboardHref =
-    session?.user?.role === "talent" ? "/t/dashboard" : "/dashboard";
+    session?.user?.role === "talent" ? "/t/dashboard" : "/e/dashboard";
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-[#EFEFEF] backdrop-blur">

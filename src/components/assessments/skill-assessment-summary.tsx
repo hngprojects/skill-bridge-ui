@@ -81,9 +81,9 @@ const SkillAssessementSummary = () => {
         <p className="text-base md:text-lg font-light max-w-208.75">
           {!skillPassed ? (
             <>
-              You completed the assessment, but you did not meet the required
-              cutoff to progress. Based on your evaluation, your result was
-              below your claimed level, and you can retake the assessment.
+              You completed the assessment, but your score didn&apos;t meet the
+              50% minimum required to move forward. You&apos;re welcome to
+              retake the assessment when you&apos;re ready.
             </>
           ) : (
             <>
@@ -149,7 +149,11 @@ const SkillAssessementSummary = () => {
           )}
           <Button
             asChild
-            className="bg-[#322B2B] text-white rounded-lg h-10 w-fit md:min-w-60 hover:bg-[#322B2B]/70 transition-all duration-300 cursor-pointer"
+            className={
+              skillPassed && canContinueToAdvanced
+                ? "bg-primary text-primary-foreground rounded-lg h-10 w-fit md:min-w-60 hover:bg-primary/90 transition-all duration-300 cursor-pointer"
+                : "bg-muted text-foreground rounded-lg h-10 w-fit md:min-w-60 hover:bg-muted/70 transition-all duration-300 cursor-pointer"
+            }
           >
             <Link
               href={

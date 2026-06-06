@@ -1,7 +1,9 @@
 import type {
+  EmployerCompanySize,
   EmployerHiringCountRange,
   EmployerJoiningRoleId,
   EmployerRegion,
+  EmployerRoleTrackId,
 } from "@/constants/employer-onboarding";
 
 import type { AuthTokens, AuthUser } from "./auth";
@@ -52,20 +54,28 @@ export type CandidateOnboardingResponseData = {
 
 export type EmployerOnboardingInput = {
   joiningAs: EmployerJoiningRoleId;
-  desiredRoles: string[];
-  region: EmployerRegion;
-  hiringCountRange: EmployerHiringCountRange;
+  companyName: string;
   companyWebsite: string;
+  industry: string;
+  companySize: EmployerCompanySize;
+  region: EmployerRegion;
+  linkedinCompanyPageUrl?: string;
+  desiredRoles: EmployerRoleTrackId[];
+  hiringCountRange?: EmployerHiringCountRange;
 };
 
 export type EmployerProfile = {
   id: string;
   userId: string;
   joiningAs: EmployerJoiningRoleId;
-  desiredRoles: string[];
-  region: EmployerRegion;
-  hiringCountRange: EmployerHiringCountRange;
+  companyName: string;
   companyWebsite: string;
+  industry: string;
+  companySize: EmployerCompanySize;
+  region: EmployerRegion;
+  linkedinCompanyPageUrl?: string;
+  desiredRoles: EmployerRoleTrackId[];
+  hiringCountRange?: EmployerHiringCountRange;
 };
 
 export type EmployerOnboardingResponseData = {

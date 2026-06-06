@@ -1,11 +1,17 @@
 import NotificationView from "@/components/notifications/notification-view";
 import NotificationsHeader from "@/components/notifications/notifications-header";
+import type { NotificationRole } from "@/types/api/notifications";
 
-const NotificationsPage = () => {
+type NotificationsPageProps = {
+  role: NotificationRole;
+  settingsHref: string;
+};
+
+const NotificationsPage = ({ role, settingsHref }: NotificationsPageProps) => {
   return (
-    <div className="mx-auto my-8 flex w-full max-w-[1400px] flex-col gap-y-6 px-4 sm:px-6 md:my-9 lg:px-8 2xl:px-0">
-      <NotificationsHeader />
-      <NotificationView />
+    <div className="mx-auto my-8 flex w-full max-w-350 flex-col gap-y-6 px-4 sm:px-6 md:my-9 lg:px-8 2xl:px-0">
+      <NotificationsHeader settingsHref={settingsHref} />
+      <NotificationView role={role} />
     </div>
   );
 };

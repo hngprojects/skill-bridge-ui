@@ -29,6 +29,31 @@ export const dashboardKeys = {
   home: () => [...dashboardKeys.all, "home"] as const,
 };
 
+export const employerDashboardKeys = {
+  all: ["employer-dashboard"] as const,
+  home: () => [...employerDashboardKeys.all, "home"] as const,
+};
+
+export const employerDiscoveryKeys = {
+  all: ["employer-discovery"] as const,
+  candidateLists: () => [...employerDiscoveryKeys.all, "candidates"] as const,
+  candidateList: (params?: Record<string, unknown>) =>
+    [...employerDiscoveryKeys.candidateLists(), params ?? {}] as const,
+  profiles: () => [...employerDiscoveryKeys.all, "profile"] as const,
+  profile: (userId: string) =>
+    [...employerDiscoveryKeys.profiles(), userId] as const,
+  savedLists: () => [...employerDiscoveryKeys.all, "saved"] as const,
+  savedList: (params?: { page?: number; limit?: number }) =>
+    [...employerDiscoveryKeys.savedLists(), params ?? {}] as const,
+};
+
+export const employerOffersKeys = {
+  all: ["employer-offers"] as const,
+  lists: () => [...employerOffersKeys.all, "list"] as const,
+  list: (params?: { page?: number; limit?: number }) =>
+    [...employerOffersKeys.lists(), params ?? {}] as const,
+};
+
 export const resourcesKeys = {
   all: ["resources"] as const,
   talent: () => [...resourcesKeys.all, "talent"] as const,
@@ -44,12 +69,29 @@ export const talentSettingsKeys = {
   detail: () => [...talentSettingsKeys.all, "detail"] as const,
 };
 
+export const employerProfileKeys = {
+  all: ["employer-profile"] as const,
+  detail: () => [...employerProfileKeys.all, "detail"] as const,
+  verificationStatus: () =>
+    [...employerProfileKeys.all, "verification-status"] as const,
+};
+
 export const aiGuidanceReport = {
   all: ["ai-guidance-report"] as const,
 };
 
+export const employerRolesKeys = {
+  all: ["employer-roles"] as const,
+  lists: () => [...employerRolesKeys.all, "list"] as const,
+  catalogue: (params?: { page?: number; limit?: number }) =>
+    [...employerRolesKeys.all, "catalogue", params ?? {}] as const,
+};
+
 export const notificationsKeys = {
   all: ["notifications"] as const,
-  list: () => [...notificationsKeys.all, "list"] as const,
-  unreadCount: () => [...notificationsKeys.all, "unread-count"] as const,
+  // Role-scoped so talent and employer caches stay isolated
+  list: (role: "talent" | "employer") =>
+    [...notificationsKeys.all, role, "list"] as const,
+  unreadCount: (role: "talent" | "employer") =>
+    [...notificationsKeys.all, role, "unread-count"] as const,
 };
