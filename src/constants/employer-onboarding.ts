@@ -1,7 +1,7 @@
 export const EMPLOYER_JOINING_ROLES = [
-  { id: "recruiter", label: "Recruiter" },
-  { id: "founder", label: "Founder" },
-  { id: "agency", label: "Agency" },
+  { id: "Recruiter", label: "Recruiter" },
+  { id: "Founder", label: "Founder" },
+  { id: "Agency", label: "Agency" },
 ] as const;
 
 export type EmployerJoiningRoleId =
@@ -106,12 +106,7 @@ export const EMPLOYER_COMPANY_SIZE_OPTIONS = EMPLOYER_COMPANY_SIZE_VALUES.map(
 );
 
 /** Experience levels accepted on PATCH `/employer/profile` `preferredExperienceLevels`. */
-export const EMPLOYER_EXPERIENCE_LEVELS = [
-  "junior",
-  "mid",
-  "senior",
-  "expert",
-] as const;
+export const EMPLOYER_EXPERIENCE_LEVELS = ["junior", "mid", "senior"] as const;
 
 const EXPERIENCE_LEVEL_LABELS: Record<
   (typeof EMPLOYER_EXPERIENCE_LEVELS)[number],
@@ -120,7 +115,6 @@ const EXPERIENCE_LEVEL_LABELS: Record<
   junior: "Junior",
   mid: "Mid",
   senior: "Senior",
-  expert: "Expert",
 };
 
 export const EMPLOYER_EXPERIENCE_LEVEL_OPTIONS = EMPLOYER_EXPERIENCE_LEVELS.map(
