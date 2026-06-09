@@ -1,7 +1,7 @@
 export const EMPLOYER_JOINING_ROLES = [
-  { id: "Recruiter", label: "Recruiter" },
-  { id: "Founder", label: "Founder" },
-  { id: "Agency", label: "Agency" },
+  { id: "recruiter", label: "Recruiter" },
+  { id: "founder", label: "Founder" },
+  { id: "agency", label: "Agency" },
 ] as const;
 
 export type EmployerJoiningRoleId =
