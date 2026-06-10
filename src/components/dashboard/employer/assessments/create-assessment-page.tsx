@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import { QuestionnaireMobileActions } from "@/components/assessments/questionnaire-mobile-actions";
@@ -14,10 +14,12 @@ import {
   type AssessmentQuestionOptionId,
   type CreateAssessmentStepId,
 } from "@/constants/create-assessment-wizard";
+import { DEFAULT_ASSESSMENT_PASS_RATE } from "@/constants/employer-assessments";
 import { buildAssessmentHeaderSubtitle } from "@/lib/create-assessment-utils";
 
 import { CreateAssessmentDetailsStep } from "./create-assessment-details-step";
 import { CreateAssessmentQuestionsStep } from "./create-assessment-questions-step";
+import { CreateAssessmentPreviewStep } from "./create-assessment-preview-step";
 import { CreateAssessmentHeader } from "./create-assessment-header";
 import { CreateAssessmentMobileProgress } from "./create-assessment-mobile-progress";
 import { CreateAssessmentSidebar } from "./create-assessment-sidebar";
@@ -43,12 +45,15 @@ const INITIAL_STATE: AssessmentWizardState = {
 
 export function CreateAssessmentPage() {
   const router = useRouter();
-  const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
 
   const title = searchParams.get("title") ?? "New assessment";
   const category = searchParams.get("category") ?? "";
   const deadlineParam = searchParams.get("deadline");
+  const passRateParam = searchParams.get("passRate");
+  const passRate = passRateParam
+    ? Number.parseInt(passRateParam, 10)
+    : DEFAULT_ASSESSMENT_PASS_RATE;
 
   const [currentStepId, setCurrentStepId] =
     useState<CreateAssessmentStepId>("details");
@@ -70,6 +75,11 @@ export function CreateAssessmentPage() {
     const deadline = deadlineParam ? new Date(deadlineParam) : undefined;
     return buildAssessmentHeaderSubtitle(category, deadline);
   }, [category, deadlineParam]);
+
+  const previewDeadline = useMemo(
+    () => (deadlineParam ? new Date(deadlineParam) : undefined),
+    [deadlineParam],
+  );
 
   const handleGuidelineChange = (
     guidelineId: AssessmentGuidelineId,
@@ -125,17 +135,21 @@ export function CreateAssessmentPage() {
     }
 
     return (
-      <p className="font-sans text-sm text-[#667085]">
-        Preview for assessment {id} is coming soon.
-      </p>
+      <CreateAssessmentPreviewStep
+        welcomeMessageHtml={wizardState.welcomeMessageHtml}
+        category={category}
+        passRate={
+          Number.isFinite(passRate) ? passRate : DEFAULT_ASSESSMENT_PASS_RATE
+        }
+        deadline={previewDeadline}
+        selectedQuestionIds={selectedQuestionIds}
+      />
     );
   })();
 
   return (
     <div className="pb-32 lg:pb-10">
-      <div className="hidden lg:block">
-        <CreateAssessmentHeader title={title} subtitle={headerSubtitle} />
-      </div>
+      <CreateAssessmentHeader title={title} subtitle={headerSubtitle} />
 
       <CreateAssessmentMobileProgress currentStepIndex={currentStepIndex} />
 
@@ -166,6 +180,7 @@ export function CreateAssessmentPage() {
         isLast={isLastStep}
         showBack={currentStepIndex > 0}
         nextDisabled={nextDisabled}
+        lastStepLabel="Send Offer"
         className="lg:hidden"
       />
     </div>

@@ -21,8 +21,8 @@ export const CREATE_ASSESSMENT_STEP_META: Record<
       "Personalize your assessment question based on your hire preference",
   },
   preview: {
-    title: "Preview",
-    description: "Review your assessment before publishing.",
+    title: "Review and send offer",
+    description: "Take a last look at your information before sending.",
   },
 };
 
@@ -96,3 +96,11 @@ export type AssessmentQuestionOptionId =
 export const DEFAULT_SELECTED_QUESTION_IDS: AssessmentQuestionOptionId[] = [
   "practical-assessment",
 ];
+
+export function getAssessmentQuestionOptionsByIds(
+  ids: AssessmentQuestionOptionId[],
+) {
+  return ASSESSMENT_QUESTION_OPTIONS.filter((option) =>
+    ids.includes(option.id),
+  );
+}

@@ -22,6 +22,24 @@ export function formatAssessmentDeadlineLabel(deadline: Date): string {
   return `In ${diffDays} days`;
 }
 
+/** Compact deadline label for preview summary (e.g. "7 days"). */
+export function formatAssessmentDeadlineSummary(deadline: Date): string {
+  const label = formatAssessmentDeadlineLabel(deadline);
+  if (label === "Today") return "Today";
+  if (label === "In 1 day") return "1 day";
+  return label.replace(/^In /, "");
+}
+
+export function htmlToPlainText(html: string): string {
+  return html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export function buildAssessmentHeaderSubtitle(
   category: string,
   deadline?: Date,

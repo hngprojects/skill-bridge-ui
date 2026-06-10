@@ -90,7 +90,7 @@ export function CreateAssessmentStepCard({
             disabled={nextDisabled || nextLoading}
             className="h-9 min-w-24 rounded-xl bg-[#111827] px-5 text-sm font-semibold text-white hover:bg-[#111827]/90 disabled:opacity-40"
           >
-            {nextLoading ? "Saving..." : isLastStep ? "Publish" : "Next"}
+            {nextLoading ? "Saving..." : isLastStep ? "Send Offer" : "Next"}
           </Button>
         </div>
       </CardFooter>
