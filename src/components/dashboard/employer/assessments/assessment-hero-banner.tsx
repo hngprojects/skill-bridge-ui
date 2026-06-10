@@ -1,14 +1,27 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import type { CreateAssessmentValues } from "@/types/create-assessment-schema";
 
 import { CreateAssessmentDialog } from "./create-assessment-dialog";
 
 export function AssessmentHeroBanner() {
+  const router = useRouter();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const handleContinue = (values: CreateAssessmentValues) => {
+    const params = new URLSearchParams({
+      title: values.title,
+      category: values.category,
+      passRate: String(values.passRate),
+      deadline: values.deadline.toISOString(),
+    });
+    router.push(`/e/assessments/draft?${params.toString()}`);
+  };
 
   return (
     <>
@@ -47,6 +60,7 @@ export function AssessmentHeroBanner() {
       <CreateAssessmentDialog
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
+        onContinue={handleContinue}
       />
     </>
   );
