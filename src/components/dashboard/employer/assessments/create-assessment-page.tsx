@@ -8,13 +8,16 @@ import { QuestionnaireMobileActions } from "@/components/assessments/questionnai
 import {
   CREATE_ASSESSMENT_STEP_META,
   CREATE_ASSESSMENT_STEPS,
+  DEFAULT_SELECTED_QUESTION_IDS,
   DEFAULT_WELCOME_MESSAGE_HTML,
   type AssessmentGuidelineId,
+  type AssessmentQuestionOptionId,
   type CreateAssessmentStepId,
 } from "@/constants/create-assessment-wizard";
 import { buildAssessmentHeaderSubtitle } from "@/lib/create-assessment-utils";
 
 import { CreateAssessmentDetailsStep } from "./create-assessment-details-step";
+import { CreateAssessmentQuestionsStep } from "./create-assessment-questions-step";
 import { CreateAssessmentHeader } from "./create-assessment-header";
 import { CreateAssessmentMobileProgress } from "./create-assessment-mobile-progress";
 import { CreateAssessmentSidebar } from "./create-assessment-sidebar";
@@ -23,6 +26,7 @@ import { CreateAssessmentStepCard } from "./create-assessment-step-card";
 type AssessmentWizardState = {
   welcomeMessageHtml: string;
   guidelines: Record<AssessmentGuidelineId, boolean>;
+  selectedQuestionIds: AssessmentQuestionOptionId[];
 };
 
 const INITIAL_GUIDELINES: Record<AssessmentGuidelineId, boolean> = {
@@ -34,6 +38,7 @@ const INITIAL_GUIDELINES: Record<AssessmentGuidelineId, boolean> = {
 const INITIAL_STATE: AssessmentWizardState = {
   welcomeMessageHtml: DEFAULT_WELCOME_MESSAGE_HTML,
   guidelines: INITIAL_GUIDELINES,
+  selectedQuestionIds: DEFAULT_SELECTED_QUESTION_IDS,
 };
 
 export function CreateAssessmentPage() {
@@ -50,11 +55,16 @@ export function CreateAssessmentPage() {
   const [wizardState, setWizardState] =
     useState<AssessmentWizardState>(INITIAL_STATE);
 
+  const selectedQuestionIds =
+    wizardState.selectedQuestionIds ?? DEFAULT_SELECTED_QUESTION_IDS;
+
   const currentStepIndex = CREATE_ASSESSMENT_STEPS.findIndex(
     (step) => step.id === currentStepId,
   );
   const isLastStep = currentStepIndex === CREATE_ASSESSMENT_STEPS.length - 1;
   const meta = CREATE_ASSESSMENT_STEP_META[currentStepId];
+  const nextDisabled =
+    currentStepId === "questions" && selectedQuestionIds.length === 0;
 
   const headerSubtitle = useMemo(() => {
     const deadline = deadlineParam ? new Date(deadlineParam) : undefined;
@@ -102,9 +112,15 @@ export function CreateAssessmentPage() {
 
     if (currentStepId === "questions") {
       return (
-        <p className="font-sans text-sm text-[#667085]">
-          Question selection is coming soon.
-        </p>
+        <CreateAssessmentQuestionsStep
+          selectedQuestionIds={selectedQuestionIds}
+          onSelectionChange={(nextSelectedQuestionIds) =>
+            setWizardState((state) => ({
+              ...state,
+              selectedQuestionIds: nextSelectedQuestionIds,
+            }))
+          }
+        />
       );
     }
 
@@ -136,6 +152,7 @@ export function CreateAssessmentPage() {
           showBack={currentStepIndex > 0}
           onBack={handleBack}
           onNext={handleNext}
+          nextDisabled={nextDisabled}
         >
           {stepContent}
         </CreateAssessmentStepCard>
@@ -148,6 +165,7 @@ export function CreateAssessmentPage() {
         onNext={handleNext}
         isLast={isLastStep}
         showBack={currentStepIndex > 0}
+        nextDisabled={nextDisabled}
         className="lg:hidden"
       />
     </div>

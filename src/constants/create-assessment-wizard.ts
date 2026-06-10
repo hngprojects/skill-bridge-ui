@@ -16,8 +16,9 @@ export const CREATE_ASSESSMENT_STEP_META: Record<
     description: "Onboard and set roles customized for your hire.",
   },
   questions: {
-    title: "Choose questions",
-    description: "Select questions from the bank for this assessment.",
+    title: "Select assessment question",
+    description:
+      "Personalize your assessment question based on your hire preference",
   },
   preview: {
     title: "Preview",
@@ -50,3 +51,48 @@ export const ASSESSMENT_GUIDELINE_OPTIONS = [
 
 export type AssessmentGuidelineId =
   (typeof ASSESSMENT_GUIDELINE_OPTIONS)[number]["id"];
+
+export const ASSESSMENT_QUESTION_ICON =
+  "/assets/recommend/practical-assessment.svg";
+
+export const ASSESSMENT_QUESTION_OPTIONS = [
+  {
+    id: "practical-assessment",
+    title: "Practical assessment",
+    description:
+      "To get verified score and become discoverable to top employers.",
+    estimatedTime: "30–45 minutes",
+    recommended: true,
+  },
+  {
+    id: "portfolio-review",
+    title: "Portfolio review",
+    description:
+      "Receive detailed feedback from industry experts to showcase your skills effectively.",
+    estimatedTime: "1 hour",
+    recommended: true,
+  },
+  {
+    id: "skill-building-workshop",
+    title: "Skill-building workshop",
+    description:
+      "Participate in hands-on sessions to improve key competencies relevant to your field.",
+    estimatedTime: "2 hours",
+    recommended: false,
+  },
+  {
+    id: "skill-building-workshop-advanced",
+    title: "Skill-building workshop",
+    description:
+      "Participate in hands-on sessions to improve key competencies relevant to your field.",
+    estimatedTime: "2 hours",
+    recommended: false,
+  },
+] as const;
+
+export type AssessmentQuestionOptionId =
+  (typeof ASSESSMENT_QUESTION_OPTIONS)[number]["id"];
+
+export const DEFAULT_SELECTED_QUESTION_IDS: AssessmentQuestionOptionId[] = [
+  "practical-assessment",
+];
