@@ -1,39 +1,102 @@
 "use client";
 
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { FlaskConical, Package, PencilLine } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { getSavedRoleById } from "@/constants/employer-saved-roles";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useEmployerRole, useSendOffer } from "@/hooks/api";
 import { useDiscoveryCandidateProfile } from "@/hooks/api/use-employer-discovery";
+import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
 
 import { CandidateAvatar } from "../shared/candidate-avatar";
+import { ConfirmSendOfferDialog } from "./edit-role-wizard/confirm-send-offer-dialog";
 
 type EmployerSendOfferPageProps = {
   userId: string;
   roleId: string;
 };
 
+/** Compact compensation summary. Returns `null` when there's nothing to show. */
+function formatCompensation(
+  min: number | null,
+  max: number | null,
+  currency: string | null,
+): string | null {
+  if (min == null && max == null) return null;
+  const prefix = currency ?? "";
+  if (min != null && max != null) {
+    return `${prefix} ${min.toLocaleString()} - ${max.toLocaleString()}`.trim();
+  }
+  return `${prefix} ${(min ?? max)?.toLocaleString()}`.trim();
+}
+
 export function EmployerSendOfferPage({
   userId,
   roleId,
 }: EmployerSendOfferPageProps) {
-  const { data: candidate, isPending } = useDiscoveryCandidateProfile(userId);
-  const role = getSavedRoleById(roleId);
+  const router = useRouter();
+  const { data: candidate, isPending: isCandidatePending } =
+    useDiscoveryCandidateProfile(userId);
+  const {
+    data: role,
+    isLoading: isRoleLoading,
+    isError: isRoleError,
+  } = useEmployerRole(roleId);
+  const { mutate: sendOffer, isPending: isSubmitting } = useSendOffer();
 
-  if (!role) {
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [sendScoreUpdates, setSendScoreUpdates] = useState(false);
+
+  if (isRoleLoading) {
+    return (
+      <div className="mx-auto max-w-274 space-y-6 py-6 sm:py-8">
+        <Skeleton className="h-20 w-full rounded-2xl" />
+        <Skeleton className="h-96 w-full rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (isRoleError || !role) {
     notFound();
   }
 
-  function handleSendOffer() {
-    appToast.success("Sending offer is coming soon.");
+  function handleSubmitOffer() {
+    sendOffer(
+      { candidateIds: [userId], roleId },
+      {
+        onSuccess: (result) => {
+          setIsConfirmOpen(false);
+          if (result.warnings.length > 0) {
+            appToast.success(
+              `Offer sent with ${result.warnings.length} warning${
+                result.warnings.length === 1 ? "" : "s"
+              }.`,
+            );
+          } else {
+            appToast.success("Offer sent successfully.");
+          }
+          router.push("/e/shortlist");
+        },
+        onError: (error) => {
+          appToast.error(authFailureMessage(error));
+        },
+      },
+    );
   }
 
   function handleViewAssessment() {
     appToast.success("Viewing assessments is coming soon.");
   }
+
+  const compensation = formatCompensation(
+    role.salary_min,
+    role.salary_max,
+    role.currency,
+  );
 
   return (
     <div className="mx-auto max-w-274 space-y-6 py-6 sm:py-8">
@@ -46,7 +109,7 @@ export function EmployerSendOfferPage({
           />
           <div className="flex flex-col gap-1">
             <p className="font-bold text-[#151515]">
-              {isPending ? "Loading…" : candidate?.full_name}
+              {isCandidatePending ? "Loading…" : candidate?.full_name}
             </p>
             <div className="flex items-center gap-2 text-sm font-light tracking-[0.017em] text-[#151515]">
               <span>{candidate?.role}</span>
@@ -64,7 +127,11 @@ export function EmployerSendOfferPage({
           <Button asChild variant="outline" className="h-10 rounded-lg">
             <Link href={`/e/talents/${userId}`}>Cancel</Link>
           </Button>
-          <Button onClick={handleSendOffer} className="h-10 rounded-lg">
+          <Button
+            onClick={() => setIsConfirmOpen(true)}
+            disabled={isSubmitting}
+            className="h-10 rounded-lg"
+          >
             Send Offer
           </Button>
         </div>
@@ -80,8 +147,6 @@ export function EmployerSendOfferPage({
               <p className="font-bold text-[#151515]">{role.title}</p>
               <div className="flex items-center gap-2 text-sm font-light tracking-[0.017em] text-[#151515]">
                 <span>{role.category}</span>
-                <span className="size-0.75 shrink-0 rounded-full bg-[#151515]" />
-                <span className="underline">{role.website}</span>
               </div>
             </div>
           </div>
@@ -101,96 +166,110 @@ export function EmployerSendOfferPage({
           </p>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <div className="flex flex-col gap-1">
-              <p className="text-base font-medium tracking-[0.017em] text-[#757575]">
-                Employment type
-              </p>
-              <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
-                {role.employmentType}
-              </p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className="text-base font-medium tracking-[0.017em] text-[#757575]">
-                Experience
-              </p>
-              <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
-                {role.experience}
-              </p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className="text-base font-medium tracking-[0.017em] text-[#757575]">
-                Education
-              </p>
-              <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
-                {role.education}
-              </p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className="text-base font-medium tracking-[0.017em] text-[#757575]">
-                Salary range
-              </p>
-              <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
-                {role.salaryRange}
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {role.sections.map((section) => (
-              <div key={section.heading} className="space-y-2">
-                <p className="font-semibold text-[#151515]">
-                  {section.heading}
+            {role.employment_type ? (
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-medium tracking-[0.017em] text-[#757575]">
+                  Employment type
                 </p>
-                {section.paragraph ? (
-                  <p className="text-base text-[#151515]">
-                    {section.paragraph}
-                  </p>
-                ) : null}
-                {section.items ? (
-                  <ul className="list-none space-y-1">
-                    {section.items.map((item) => (
-                      <li key={item} className="text-base text-[#151515]">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
+                <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
+                  {role.employment_type}
+                </p>
               </div>
-            ))}
+            ) : null}
+            {role.work_arrangement ? (
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-medium tracking-[0.017em] text-[#757575]">
+                  Work arrangement
+                </p>
+                <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
+                  {role.work_arrangement}
+                </p>
+              </div>
+            ) : null}
+            {role.education ? (
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-medium tracking-[0.017em] text-[#757575]">
+                  Education
+                </p>
+                <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
+                  {role.education}
+                </p>
+              </div>
+            ) : null}
+            {compensation ? (
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-medium tracking-[0.017em] text-[#757575]">
+                  Salary range
+                </p>
+                <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
+                  {compensation}
+                </p>
+              </div>
+            ) : null}
           </div>
 
-          <div className="space-y-2">
-            <p className="text-xl font-medium tracking-[0.02em] text-[#151515]">
-              Assessment attached
-            </p>
-            <div className="flex flex-col gap-4 rounded-lg border border-[#dbdbdb] bg-white p-4 sm:flex-row sm:items-start sm:justify-between">
-              <div className="flex flex-1 items-start gap-4">
-                <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-[#10242f]">
-                  <FlaskConical className="size-6 text-white" aria-hidden />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <p className="font-semibold text-[#151515]">
-                    {role.assessment.title}
-                  </p>
-                  <p className="text-base text-[#151515]">
-                    {role.assessment.description}
-                  </p>
-                  <p className="text-sm text-[#757575]">
-                    Estimated time: {role.assessment.estimatedTime}
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleViewAssessment}
-                className="shrink-0 font-semibold text-[#05060f] underline"
-              >
-                View assessment
-              </button>
+          {role.description ? (
+            <div
+              className="text-base text-[#151515]"
+              dangerouslySetInnerHTML={{ __html: role.description }}
+            />
+          ) : null}
+
+          {role.keywords && role.keywords.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {role.keywords.map((kw) => (
+                <span
+                  key={kw}
+                  className="rounded-full bg-[#f2f4f7] px-3 py-1 text-sm text-[#344054]"
+                >
+                  {kw}
+                </span>
+              ))}
             </div>
-          </div>
+          ) : null}
+
+          {role.assessment_id ? (
+            <div className="space-y-2">
+              <p className="text-xl font-medium tracking-[0.02em] text-[#151515]">
+                Assessment attached
+              </p>
+              <div className="flex flex-col gap-4 rounded-lg border border-[#dbdbdb] bg-white p-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-1 items-start gap-4">
+                  <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-[#10242f]">
+                    <FlaskConical className="size-6 text-white" aria-hidden />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <p className="font-semibold text-[#151515]">
+                      Practical assessment
+                    </p>
+                    <p className="text-base text-[#151515]">
+                      Sent automatically with this offer.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleViewAssessment}
+                  className="shrink-0 font-semibold text-[#05060f] underline"
+                >
+                  View assessment
+                </button>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
+
+      <ConfirmSendOfferDialog
+        open={isConfirmOpen}
+        onOpenChange={setIsConfirmOpen}
+        candidateName={candidate?.full_name}
+        scorePercentage={candidate?.score_percentage}
+        sendScoreUpdates={sendScoreUpdates}
+        onSendScoreUpdatesChange={setSendScoreUpdates}
+        onSubmit={handleSubmitOffer}
+        isSubmitting={isSubmitting}
+      />
     </div>
   );
 }

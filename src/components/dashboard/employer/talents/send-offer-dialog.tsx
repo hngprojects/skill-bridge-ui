@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { SAVED_ROLES } from "@/constants/employer-saved-roles";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useEmployerRoles } from "@/hooks/api";
 
 type SendOfferDialogProps = {
   open: boolean;
@@ -28,6 +29,7 @@ export function SendOfferDialog({
   userId,
 }: SendOfferDialogProps) {
   const router = useRouter();
+  const { data: roles, isLoading } = useEmployerRoles({ status: "active" });
   const [selectedRoleId, setSelectedRoleId] = useState<string | undefined>();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -45,22 +47,31 @@ export function SendOfferDialog({
     router.push(`/e/talents/${userId}/offer/${selectedRoleId}`);
   }
 
-  const query = searchQuery.trim().toLowerCase();
-  const filteredRoles = SAVED_ROLES.filter(
-    (role) =>
-      role.title.toLowerCase().includes(query) ||
-      role.category.toLowerCase().includes(query),
-  );
+  function handleCreateNewRole() {
+    onOpenChange(false);
+    router.push("/e/roles/create");
+  }
+
+  const filteredRoles = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    const list = roles ?? [];
+    if (!query) return list;
+    return list.filter(
+      (role) =>
+        role.title.toLowerCase().includes(query) ||
+        role.requirements.toLowerCase().includes(query),
+    );
+  }, [roles, searchQuery]);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-xl gap-6 rounded-3xl p-6">
         <DialogHeader className="gap-1 text-left">
           <DialogTitle className="text-lg font-bold text-[#151515]">
-            Select from saved roles
+            Select a role
           </DialogTitle>
           <DialogDescription className="text-base font-light tracking-[0.016em] text-[#151515]">
-            Role selected will be attached to talent&apos;s offer
+            The selected role will be attached to the talent&apos;s offer.
           </DialogDescription>
         </DialogHeader>
 
@@ -69,13 +80,19 @@ export function SendOfferDialog({
           <input
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search role title, category"
+            placeholder="Search role title or requirements"
             className="w-full bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
           />
         </div>
 
         <ScrollArea className="h-75 pr-3">
-          {filteredRoles.length > 0 ? (
+          {isLoading ? (
+            <div className="flex flex-col gap-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 w-full rounded-lg" />
+              ))}
+            </div>
+          ) : filteredRoles.length > 0 ? (
             <RadioGroup
               value={selectedRoleId}
               onValueChange={setSelectedRoleId}
@@ -96,19 +113,31 @@ export function SendOfferDialog({
                     <p className="text-base font-semibold tracking-[0.017em] text-[#151515]">
                       {role.title}
                     </p>
-                    <div className="flex items-center gap-2 text-sm font-light tracking-[0.017em] text-[#151515]">
-                      <span>{role.category}</span>
-                      <span className="size-0.75 shrink-0 rounded-full bg-[#151515]" />
-                      <span className="underline">{role.website}</span>
-                    </div>
+                    <p className="text-sm font-light tracking-[0.017em] text-[#151515]">
+                      {role.requirements}
+                    </p>
                   </div>
                 </label>
               ))}
             </RadioGroup>
           ) : (
-            <p className="py-8 text-center text-sm font-light tracking-[0.017em] text-[#757575]">
-              No roles match your search.
-            </p>
+            <div className="flex flex-col items-center gap-3 py-8">
+              <p className="text-center text-sm font-light tracking-[0.017em] text-[#757575]">
+                {searchQuery.trim()
+                  ? "No roles match your search."
+                  : "You don't have any active roles yet."}
+              </p>
+              {!searchQuery.trim() ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCreateNewRole}
+                  className="h-9 rounded-lg"
+                >
+                  Create a new role
+                </Button>
+              ) : null}
+            </div>
           )}
         </ScrollArea>
 

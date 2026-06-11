@@ -3,28 +3,32 @@
 import { FlaskConical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { ASSESSMENT_OPTIONS } from "@/constants/create-role-wizard";
-import type { SavedRole } from "@/constants/employer-saved-roles";
+import { useAssessmentCatalogue } from "@/hooks/api/use-employer-roles";
 
 import type { RoleDescriptionValues } from "./step-role-description";
 import type { RoleDetailsValues } from "./step-role-details";
 
 type StepPreviewProps = {
-  role: SavedRole;
   roleDescription: RoleDescriptionValues;
   roleDetails: RoleDetailsValues;
   selectedAssessmentId: string | undefined;
+  /** Pre-formatted salary range from the backend role record (e.g. "NGN
+   *  200000-250000"). Falls back to em-dash when nothing is set. */
+  salaryRangeLabel?: string;
+  educationLabel?: string;
   onViewAssessment: () => void;
 };
 
 export function StepPreview({
-  role,
   roleDescription,
   roleDetails,
   selectedAssessmentId,
+  salaryRangeLabel,
+  educationLabel,
   onViewAssessment,
 }: StepPreviewProps) {
-  const selectedAssessment = ASSESSMENT_OPTIONS.find(
+  const { data } = useAssessmentCatalogue();
+  const selectedAssessment = data?.catalogue.find(
     (option) => option.id === selectedAssessmentId,
   );
 
@@ -67,7 +71,7 @@ export function StepPreview({
             Salary range
           </p>
           <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
-            {role.salaryRange}
+            {salaryRangeLabel || "—"}
           </p>
         </div>
         <div className="flex flex-col gap-1">
@@ -75,7 +79,7 @@ export function StepPreview({
             Education
           </p>
           <p className="text-base font-medium tracking-[0.017em] text-[#151515]">
-            {role.education}
+            {educationLabel || "—"}
           </p>
         </div>
         <div className="flex flex-col gap-1">
@@ -99,15 +103,16 @@ export function StepPreview({
           </div>
           <div className="flex flex-col gap-1">
             <p className="font-semibold text-[#151515]">
-              {selectedAssessment?.name ?? "No assessment selected"}
+              {selectedAssessment?.title ?? "No assessment selected"}
             </p>
             {selectedAssessment ? (
               <>
                 <p className="text-base text-[#151515]">
-                  {selectedAssessment.description}
+                  {selectedAssessment.role_track} ·{" "}
+                  {selectedAssessment.experience_level}
                 </p>
                 <p className="text-sm text-[#757575]">
-                  Estimated time: {selectedAssessment.estimatedTime}
+                  Estimated time: {selectedAssessment.estimated_completion_time}
                 </p>
               </>
             ) : null}

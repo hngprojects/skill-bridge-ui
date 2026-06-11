@@ -171,7 +171,7 @@ const SkillAssessementSummary = () => {
       </div>
       <NextUpCard
         assessement="skill"
-        duration="30-45 minutes"
+        duration="30 minutes"
         title="Advanced assessment"
       />
     </AssessmentContainer>

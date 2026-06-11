@@ -2,10 +2,15 @@ import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 import { authApi } from "@/lib/api";
 import type { ApiEnvelope } from "@/types/api/common";
 import type {
+  EmployerOffer,
   EmployerOfferListItem,
   EmployerOffersListData,
+  RawEmployerOffer,
   RawEmployerOfferListItem,
   RawEmployerOffersListResponse,
+  RawSendOfferResponse,
+  SendOfferInput,
+  SendOfferResult,
 } from "@/types/api/employer-offers";
 
 import { unwrapData } from "./utils";
@@ -48,4 +53,68 @@ export async function getEmployerOffers(
     totalPages: raw.totalPages ?? raw.total_pages ?? 1,
     emptyStateMessage: raw.emptyStateMessage ?? raw.empty_state_message ?? null,
   };
+}
+
+function mapOffer(raw: RawEmployerOffer): EmployerOffer {
+  return {
+    id: raw.id,
+    employerUserId: raw.employer_user_id,
+    candidateUserId: raw.candidate_user_id,
+    roleId: raw.role_id,
+    roleTitle: raw.role_title,
+    roleDescription: raw.role_description,
+    message: raw.message,
+    compensation: raw.compensation,
+    employmentType: raw.employment_type,
+    workArrangement: raw.work_arrangement,
+    status: raw.status,
+    expiresAt: raw.expires_at,
+    assessmentUnlockedAt: raw.assessment_unlocked_at,
+    assessmentDeadline: raw.assessment_deadline,
+    extensionUsed: raw.extension_used,
+    respondedAt: raw.responded_at,
+    createdAt: raw.created_at,
+    updatedAt: raw.updated_at,
+  };
+}
+
+export async function sendOffer(
+  input: SendOfferInput,
+): Promise<SendOfferResult> {
+  const res = await authApi.post<ApiEnvelope<RawSendOfferResponse>>(
+    "/employer/offers",
+    input,
+  );
+  const raw = unwrapData(res);
+  return {
+    sentCount: raw.sent_count,
+    offers: (raw.offers ?? []).map(mapOffer),
+    warnings: raw.warnings ?? [],
+  };
+}
+
+/** Mark an accepted offer as hire complete. */
+export async function markOfferHireComplete(
+  offerId: string,
+): Promise<EmployerOffer> {
+  const res = await authApi.patch<ApiEnvelope<RawEmployerOffer>>(
+    `/employer/offers/${offerId}/hire-complete`,
+  );
+  return mapOffer(unwrapData(res));
+}
+
+/** Alias of `markOfferHireComplete`. */
+export async function markOfferHired(offerId: string): Promise<EmployerOffer> {
+  const res = await authApi.patch<ApiEnvelope<RawEmployerOffer>>(
+    `/employer/offers/${offerId}/mark-hired`,
+  );
+  return mapOffer(unwrapData(res));
+}
+
+/** Withdraw a pending offer. */
+export async function withdrawOffer(offerId: string): Promise<EmployerOffer> {
+  const res = await authApi.patch<ApiEnvelope<RawEmployerOffer>>(
+    `/employer/offers/${offerId}/withdraw`,
+  );
+  return mapOffer(unwrapData(res));
 }
