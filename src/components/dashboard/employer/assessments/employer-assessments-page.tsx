@@ -14,7 +14,9 @@ export function EmployerAssessmentsPage() {
   const { data, isLoading, isError } = useEmployerAssessments();
   const deactivate = useDeactivateEmployerAssessment();
 
-  const assessments = data?.assessments ?? [];
+  const assessments = (data?.assessments ?? []).filter(
+    (assessment) => assessment.status !== "inactive",
+  );
 
   const handleDeactivate = (id: string) => {
     deactivate.mutate(id, {
