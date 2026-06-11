@@ -13,6 +13,7 @@ interface DashboardWelcomeProps {
    *  employer dashboard where the line is a tagline, not a goal). */
   goalLabel?: string;
   profileCompletion?: number;
+  settingsHref?: string;
 }
 
 export function DashboardWelcome({
@@ -20,6 +21,7 @@ export function DashboardWelcome({
   goal = "Become a global talent",
   goalLabel = "Your Goal:",
   profileCompletion,
+  settingsHref = "/t/settings",
 }: DashboardWelcomeProps) {
   const { fullName } = useSessionUserProfile();
   const resolvedFirstName = firstName || fullName?.split(" ")[0] || "Alex";
@@ -41,7 +43,7 @@ export function DashboardWelcome({
       {showCta ? (
         <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
           <Link
-            href="/t/settings"
+            href={settingsHref}
             className={cn(
               "label text-foreground underline underline-offset-2",
               "hover:opacity-70 transition-opacity",
