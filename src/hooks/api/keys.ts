@@ -95,3 +95,14 @@ export const notificationsKeys = {
   unreadCount: (role: "talent" | "employer") =>
     [...notificationsKeys.all, role, "unread-count"] as const,
 };
+
+export const employerAssessmentsKeys = {
+  all: ["employer-assessments"] as const,
+  lists: () => [...employerAssessmentsKeys.all, "list"] as const,
+  list: (params?: { page?: number; limit?: number }) =>
+    [...employerAssessmentsKeys.lists(), params ?? {}] as const,
+  details: () => [...employerAssessmentsKeys.all, "detail"] as const,
+  detail: (id: string) => [...employerAssessmentsKeys.details(), id] as const,
+  results: (id: string) =>
+    [...employerAssessmentsKeys.all, "results", id] as const,
+};
