@@ -19,8 +19,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
 
+import { SendOfferDialog } from "@/components/dashboard/employer/talents/send-offer-dialog";
 import { useRemoveCandidate } from "@/hooks/api/use-employer-discovery";
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
@@ -35,12 +35,9 @@ export function ShortlistRowActions({
   candidateName,
 }: ShortlistRowActionsProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [sendOfferOpen, setSendOfferOpen] = useState(false);
   const { mutate: removeCandidate, isPending: isRemoving } =
     useRemoveCandidate();
-
-  function handleSendOffer() {
-    toast("Send offer is coming soon.");
-  }
 
   function handleRemove() {
     removeCandidate(candidateId, {
@@ -74,7 +71,10 @@ export function ShortlistRowActions({
           className="w-44 rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"
         >
           <DropdownMenuItem
-            onSelect={handleSendOffer}
+            onSelect={(e) => {
+              e.preventDefault();
+              setSendOfferOpen(true);
+            }}
             className="h-9 cursor-pointer rounded-md px-2 text-sm text-[#344054]"
           >
             Send offer
@@ -96,6 +96,12 @@ export function ShortlistRowActions({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <SendOfferDialog
+        open={sendOfferOpen}
+        onOpenChange={setSendOfferOpen}
+        userId={candidateId}
+      />
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent className="sm:max-w-md">

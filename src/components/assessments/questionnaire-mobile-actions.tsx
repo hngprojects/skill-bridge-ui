@@ -14,6 +14,7 @@ type QuestionnaireMobileActionsProps = {
   showBack?: boolean;
   nextDisabled?: boolean;
   nextLoading?: boolean;
+  lastStepLabel?: string;
   className?: string;
 };
 
@@ -31,6 +32,7 @@ export function QuestionnaireMobileActions({
   showBack = false,
   nextDisabled = false,
   nextLoading = false,
+  lastStepLabel = "Submit",
   className,
 }: QuestionnaireMobileActionsProps) {
   return (
@@ -61,7 +63,7 @@ export function QuestionnaireMobileActions({
           disabled={nextDisabled || nextLoading}
           className="h-12 flex-1 rounded-lg text-base disabled:bg-muted-foreground/25 disabled:text-foreground disabled:opacity-100"
         >
-          {nextLoading ? "Submitting..." : isLast ? "Submit" : "Next"}
+          {nextLoading ? "Submitting..." : isLast ? lastStepLabel : "Next"}
         </Button>
       </div>
     </div>
