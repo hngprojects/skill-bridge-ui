@@ -29,7 +29,7 @@ const RECOMMENDED_ITEMS: RecommendedItem[] = [
       "To get verified score and become discoverable to top employers.",
     actionLabel: "Continue to next",
     actionHref: "/t/assessments",
-    estimatedTime: "30–45 minutes",
+    estimatedTime: "30 minutes",
     thumbnailBg: "bg-[#7EFF3C]",
     thumbnail: (
       <Image
@@ -48,7 +48,7 @@ const RECOMMENDED_ITEMS: RecommendedItem[] = [
       "To get verified score and become discoverable to top employers.",
     actionLabel: "Continue to next",
     actionHref: "/t/assessments",
-    estimatedTime: "30–45 minutes",
+    estimatedTime: "30 minutes",
     thumbnailBg: "bg-slate-800",
     thumbnail: (
       <Image

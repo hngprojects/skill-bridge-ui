@@ -3,27 +3,27 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ChevronLeft } from "lucide-react";
-import { useState } from "react";
 
 import { useSaveCandidate } from "@/hooks/api/use-employer-discovery";
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
-import { SendOfferDialog } from "./talents/send-offer-dialog";
+import { SendOfferTrigger } from "./talents/send-offer-trigger";
 
 type EmployerTalentProfileHeaderProps = {
   userId: string;
   isSaved: boolean;
+  offerSent: boolean;
 };
 
 export function EmployerTalentProfileHeader({
   userId,
   isSaved,
+  offerSent,
 }: EmployerTalentProfileHeaderProps) {
   const router = useRouter();
   const { mutate: saveCandidate, isPending: isSaving } = useSaveCandidate();
-  const [isSendOfferOpen, setIsSendOfferOpen] = useState(false);
 
   function handleAddToShortlist() {
     if (isSaved || isSaving) return;
@@ -42,7 +42,7 @@ export function EmployerTalentProfileHeader({
     appToast.success("Reporting an issue is coming soon.");
   }
 
-  if (isSaved) {
+  if (offerSent) {
     return (
       <div className="flex w-full flex-row items-center justify-between border-b border-[#EBEBEB] pb-4">
         <button
@@ -97,22 +97,8 @@ export function EmployerTalentProfileHeader({
         >
           {isSaved ? "Shortlisted" : "Add to Shortlist"}
         </button>
-        <button
-          type="button"
-          onClick={() => setIsSendOfferOpen(true)}
-          className={cn(
-            "flex h-10 w-27 items-center justify-center rounded-lg bg-[#05060F] text-base font-semibold leading-5 tracking-[0.016em] text-white transition-colors hover:bg-[#151515]/90",
-          )}
-        >
-          Send Offer
-        </button>
+        <SendOfferTrigger userId={userId} />
       </div>
-
-      <SendOfferDialog
-        open={isSendOfferOpen}
-        onOpenChange={setIsSendOfferOpen}
-        userId={userId}
-      />
     </div>
   );
 }

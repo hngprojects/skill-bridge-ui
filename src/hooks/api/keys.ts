@@ -83,6 +83,8 @@ export const aiGuidanceReport = {
 export const employerRolesKeys = {
   all: ["employer-roles"] as const,
   lists: () => [...employerRolesKeys.all, "list"] as const,
+  details: () => [...employerRolesKeys.all, "detail"] as const,
+  detail: (roleId: string) => [...employerRolesKeys.details(), roleId] as const,
   catalogue: (params?: { page?: number; limit?: number }) =>
     [...employerRolesKeys.all, "catalogue", params ?? {}] as const,
 };

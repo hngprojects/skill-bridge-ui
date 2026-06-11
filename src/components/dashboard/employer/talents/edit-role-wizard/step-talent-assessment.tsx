@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ASSESSMENT_OPTIONS } from "@/constants/create-role-wizard";
+import { useAssessmentCatalogue } from "@/hooks/api/use-employer-roles";
 
 type StepTalentAssessmentProps = {
   selectedAssessmentId: string | undefined;
@@ -25,9 +25,19 @@ export function StepTalentAssessment({
   onSelect,
 }: StepTalentAssessmentProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedAssessment = ASSESSMENT_OPTIONS.find(
-    (option) => option.id === selectedAssessmentId,
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const { data, isLoading } = useAssessmentCatalogue();
+
+  const items = data?.catalogue ?? [];
+  const query = searchQuery.trim().toLowerCase();
+  const filtered = query
+    ? items.filter(
+        (i) =>
+          i.title.toLowerCase().includes(query) ||
+          i.role_track.toLowerCase().includes(query),
+      )
+    : items;
+  const selectedAssessment = items.find((i) => i.id === selectedAssessmentId);
 
   return (
     <div className="rounded-lg bg-[#fbfbfb] p-4">
@@ -45,11 +55,11 @@ export function StepTalentAssessment({
         />
         {selectedAssessment ? (
           <p className="text-lg font-medium tracking-[0.017em] text-[#151515]">
-            {selectedAssessment.name}
+            {selectedAssessment.title}
           </p>
         ) : (
           <p className="text-lg font-normal tracking-[0.017em] text-[#757575]">
-            Choose your assessments
+            {isLoading ? "Loading assessments…" : "Choose your assessments"}
           </p>
         )}
       </Button>
@@ -69,42 +79,56 @@ export function StepTalentAssessment({
           <div className="flex items-center gap-2 rounded-full border border-[#d9d9d9] bg-white px-3 py-2">
             <Search className="size-4.5 shrink-0 text-muted-foreground" />
             <input
-              placeholder="Search assessment title, category"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search assessment title, role track"
               className="w-full bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
             />
           </div>
 
           <ScrollArea className="h-75 pr-3">
-            <RadioGroup
-              value={selectedAssessmentId}
-              onValueChange={onSelect}
-              className="gap-4"
-            >
-              {ASSESSMENT_OPTIONS.map((option) => (
-                <label
-                  key={option.id}
-                  htmlFor={`assessment-${option.id}`}
-                  className="flex w-full cursor-pointer items-start gap-4 rounded-lg border border-[#dbdbdb] bg-white p-4"
-                >
-                  <RadioGroupItem
-                    value={option.id}
-                    id={`assessment-${option.id}`}
-                    className="mt-1"
-                  />
-                  <div className="flex flex-col gap-1">
-                    <p className="text-base font-semibold tracking-[0.017em] text-[#151515]">
-                      {option.name}
-                    </p>
-                    <p className="text-sm font-light tracking-[0.017em] text-[#757575]">
-                      {option.description}
-                    </p>
-                    <p className="text-sm font-light tracking-[0.017em] text-[#757575]">
-                      Estimated time: {option.estimatedTime}
-                    </p>
-                  </div>
-                </label>
-              ))}
-            </RadioGroup>
+            {isLoading ? (
+              <p className="py-8 text-center text-sm text-[#757575]">
+                Loading…
+              </p>
+            ) : filtered.length === 0 ? (
+              <p className="py-8 text-center text-sm text-[#757575]">
+                {query
+                  ? "No assessments match your search."
+                  : "No assessments available yet."}
+              </p>
+            ) : (
+              <RadioGroup
+                value={selectedAssessmentId}
+                onValueChange={onSelect}
+                className="gap-4"
+              >
+                {filtered.map((option) => (
+                  <label
+                    key={option.id}
+                    htmlFor={`edit-assessment-${option.id}`}
+                    className="flex w-full cursor-pointer items-start gap-4 rounded-lg border border-[#dbdbdb] bg-white p-4"
+                  >
+                    <RadioGroupItem
+                      value={option.id}
+                      id={`edit-assessment-${option.id}`}
+                      className="mt-1"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <p className="text-base font-semibold tracking-[0.017em] text-[#151515]">
+                        {option.title}
+                      </p>
+                      <p className="text-sm font-light tracking-[0.017em] text-[#757575]">
+                        {option.role_track} · {option.experience_level}
+                      </p>
+                      <p className="text-sm font-light tracking-[0.017em] text-[#757575]">
+                        Estimated time: {option.estimated_completion_time}
+                      </p>
+                    </div>
+                  </label>
+                ))}
+              </RadioGroup>
+            )}
           </ScrollArea>
 
           <Button

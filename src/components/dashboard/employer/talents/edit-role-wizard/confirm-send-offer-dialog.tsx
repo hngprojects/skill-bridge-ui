@@ -42,7 +42,7 @@ export function ConfirmSendOfferDialog({
             You are about to send an offer to{" "}
             <span className="font-bold">{candidateName}</span> with
             employability score{" "}
-            <span className="font-semibold text-[#34a853]">
+            <span className="font-semibold text-google-green">
               {scorePercentage}%
             </span>
           </DialogDescription>
@@ -56,7 +56,7 @@ export function ConfirmSendOfferDialog({
             }
           />
           <span className="text-sm font-normal tracking-[0.016em] text-[#757575]">
-            I would like CredLane to send email updates of job ready talents
+            I would like SkillBridge to send email updates of job ready talents
             that have similar score of this role.
           </span>
         </label>

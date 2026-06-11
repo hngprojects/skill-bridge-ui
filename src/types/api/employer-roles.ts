@@ -73,3 +73,21 @@ export type CreateRoleInput = {
   currency: string;
   assessmentId?: string;
 };
+
+/** PATCH /employer/roles/{roleId} body. Every field is optional — caller
+ *  sends only what changed. Backend accepts an optional `jdFile` upload via
+ *  multipart on the same route. */
+export type UpdateRoleInput = {
+  title?: string;
+  category?: string;
+  jdHtml?: string;
+  jdFile?: File | null;
+  employmentType?: string;
+  workArrangement?: string;
+  education?: string;
+  keywords?: string[];
+  salaryMin?: string;
+  salaryMax?: string;
+  currency?: string;
+  assessmentId?: string | null;
+};

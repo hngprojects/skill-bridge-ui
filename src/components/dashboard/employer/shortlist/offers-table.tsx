@@ -1,6 +1,5 @@
 "use client";
 
-import { MoreHorizontal } from "lucide-react";
 import {
   type ColumnDef,
   flexRender,
@@ -9,7 +8,6 @@ import {
 
 import { useDataTable } from "@/hooks/use-data-table";
 
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -22,6 +20,7 @@ import { OFFERS_EMPTY_STATE } from "@/constants/employer-shortlist";
 import type { EmployerOfferListItem } from "@/types/api/employer-offers";
 
 import { OfferStatusBadge } from "./offer-status-badge";
+import { OffersRowActions } from "./offers-row-actions";
 import { CandidateAvatar } from "../shared/candidate-avatar";
 import { DataEmptyState } from "../shared/data-empty-state";
 import { ScoreBadge } from "../shared/score-badge";
@@ -93,15 +92,7 @@ const columns: ColumnDef<EmployerOfferListItem>[] = [
     header: () => <div className="text-right">Actions</div>,
     cell: ({ row }) => (
       <div className="text-right">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="size-8 text-[#52525B]"
-          aria-label={`Actions for ${row.original.candidateName}`}
-        >
-          <MoreHorizontal className="size-4" />
-        </Button>
+        <OffersRowActions offer={row.original} />
       </div>
     ),
   },

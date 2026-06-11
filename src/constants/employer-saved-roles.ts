@@ -30,7 +30,7 @@ const DEFAULT_ASSESSMENT: SavedRoleAssessment = {
   title: "Practical assessment",
   description:
     "To get verified score and become discoverable to top employers.",
-  estimatedTime: "30-45 minutes",
+  estimatedTime: "30 minutes",
 };
 
 export const SAVED_ROLES: SavedRole[] = [

@@ -1,27 +1,25 @@
 "use client";
 
-import Link from "next/link";
-import { notFound, useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
-import { useState } from "react";
+import { notFound } from "next/navigation";
+import { useMemo, useState } from "react";
 
-import {
-  getSavedRoleById,
-  type SavedRole,
-} from "@/constants/employer-saved-roles";
-import {
-  useDiscoveryCandidateProfile,
-  useSaveCandidate,
-} from "@/hooks/api/use-employer-discovery";
-import { authFailureMessage } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useEmployerRole } from "@/hooks/api";
+import { useDiscoveryCandidateProfile } from "@/hooks/api/use-employer-discovery";
 import { appToast } from "@/lib/toast";
 
-import { CandidateAvatar } from "../shared/candidate-avatar";
 import { ConfirmSendOfferDialog } from "./edit-role-wizard/confirm-send-offer-dialog";
 import {
   EDIT_ROLE_STEP_META,
   EDIT_ROLE_STEPS,
 } from "./edit-role-wizard/constants";
+import {
+  buildRolePatch,
+  buildSalaryRangeLabel,
+  deriveInitialDescription,
+  deriveInitialDetails,
+} from "./edit-role-wizard/derive-state";
+import { EditRoleCandidateSummary } from "./edit-role-wizard/edit-role-candidate-summary";
 import { EditRoleFooter } from "./edit-role-wizard/edit-role-footer";
 import { EditRoleSidebar } from "./edit-role-wizard/edit-role-sidebar";
 import {
@@ -34,56 +32,82 @@ import {
 } from "./edit-role-wizard/step-role-details";
 import { StepPreview } from "./edit-role-wizard/step-preview";
 import { StepTalentAssessment } from "./edit-role-wizard/step-talent-assessment";
+import { usePatchAndSendOffer } from "./edit-role-wizard/use-patch-and-send-offer";
 
 type EmployerEditRolePageProps = {
   userId: string;
   roleId: string;
 };
 
-function buildJobDescriptionHtml(role: SavedRole): string {
-  return role.sections
-    .map((section) => {
-      const lines = [section.heading];
-      if (section.paragraph) lines.push("", section.paragraph);
-      if (section.items?.length) lines.push("", ...section.items);
-      return lines.join("<br>");
-    })
-    .join("<br><br>");
-}
-
 export function EmployerEditRolePage({
   userId,
   roleId,
 }: EmployerEditRolePageProps) {
-  const router = useRouter();
-  const { data: candidate, isPending } = useDiscoveryCandidateProfile(userId);
-  const { mutate: saveCandidate, isPending: isSubmittingOffer } =
-    useSaveCandidate();
-  const role = getSavedRoleById(roleId);
+  const { data: candidate, isPending: isCandidatePending } =
+    useDiscoveryCandidateProfile(userId);
+  const {
+    data: role,
+    isLoading: isRoleLoading,
+    isError: isRoleError,
+  } = useEmployerRole(roleId);
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [roleDescription, setRoleDescription] = useState<RoleDescriptionValues>(
-    {
-      roleTitle: role?.title ?? "",
-      jdHtml: role ? buildJobDescriptionHtml(role) : "",
-    },
+  const [descriptionDraft, setDescriptionDraft] =
+    useState<RoleDescriptionValues | null>(null);
+  const [detailsDraft, setDetailsDraft] = useState<RoleDetailsValues | null>(
+    null,
   );
-  const [roleDetails, setRoleDetails] = useState<RoleDetailsValues>({
-    employmentType: role?.employmentType ?? "",
-    experience: role?.experience ?? "",
-    location: role?.location ?? "",
-    skills: role?.skills ?? [],
-    acceptsRelocation: role?.acceptsRelocation ? "yes" : "no",
-  });
-  const [selectedAssessmentId, setSelectedAssessmentId] = useState<
-    string | undefined
-  >();
+  const [assessmentDraft, setAssessmentDraft] = useState<{
+    value: string | undefined;
+  } | null>(null);
   const [isSendOfferModalOpen, setIsSendOfferModalOpen] = useState(false);
   const [sendScoreUpdates, setSendScoreUpdates] = useState(false);
 
-  if (!role) {
+  const { submit, isSubmitting } = usePatchAndSendOffer({
+    roleId,
+    userId,
+    onSettled: () => setIsSendOfferModalOpen(false),
+  });
+
+  const roleDescription: RoleDescriptionValues =
+    descriptionDraft ??
+    (role ? deriveInitialDescription(role) : { roleTitle: "", jdHtml: "" });
+  const roleDetails: RoleDetailsValues =
+    detailsDraft ??
+    (role
+      ? deriveInitialDetails(role)
+      : {
+          employmentType: "",
+          experience: "",
+          location: "",
+          skills: [],
+          acceptsRelocation: "no",
+        });
+  const selectedAssessmentId: string | undefined = assessmentDraft
+    ? assessmentDraft.value
+    : (role?.assessment_id ?? undefined);
+
+  const salaryRangeLabel = useMemo(
+    () => (role ? buildSalaryRangeLabel(role) : undefined),
+    [role],
+  );
+
+  if (isRoleLoading) {
+    return (
+      <div className="mx-auto max-w-274 space-y-6 py-6 sm:py-8">
+        <Skeleton className="h-20 w-full rounded-2xl" />
+        <Skeleton className="h-112 w-full rounded-3xl" />
+      </div>
+    );
+  }
+
+  if (isRoleError || !role) {
     notFound();
   }
+
+  // `notFound()` returns `never`, but TS won't carry that narrowing into the
+  // function expressions below. Re-bind so the closures see the narrowed type.
+  const loadedRole = role;
 
   const isLastStep = currentStep === EDIT_ROLE_STEPS.length - 1;
   const meta = EDIT_ROLE_STEP_META[currentStep];
@@ -101,16 +125,14 @@ export function EmployerEditRolePage({
   }
 
   function handleSubmitOffer() {
-    saveCandidate(userId, {
-      onSuccess: () => {
-        setIsSendOfferModalOpen(false);
-        appToast.success("Offer sent successfully.");
-        router.push(`/e/talents/${userId}`);
-      },
-      onError: (error) => {
-        appToast.error(authFailureMessage(error));
-      },
-    });
+    void submit(
+      buildRolePatch({
+        role: loadedRole,
+        roleDescription,
+        roleDetails,
+        selectedAssessmentId,
+      }),
+    );
   }
 
   function handleViewAssessment() {
@@ -119,37 +141,14 @@ export function EmployerEditRolePage({
 
   return (
     <div className="mx-auto max-w-274 space-y-6 py-6 sm:py-8">
-      <div className="flex flex-col gap-4 border-b border-[#ebebeb] pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3.5">
-          <CandidateAvatar
-            avatarUrl={candidate?.avatar_url ?? null}
-            fullName={candidate?.full_name ?? ""}
-            className="size-14 text-base"
-          />
-          <div className="flex flex-col gap-1">
-            <p className="font-bold text-[#151515]">
-              {isPending ? "Loading…" : candidate?.full_name}
-            </p>
-            <div className="flex items-center gap-2 text-sm font-light tracking-[0.017em] text-[#151515]">
-              <span>{candidate?.role}</span>
-              {candidate?.seniority_badge ? (
-                <>
-                  <span className="size-0.75 shrink-0 rounded-full bg-[#151515]" />
-                  <span>{candidate.seniority_badge}</span>
-                </>
-              ) : null}
-            </div>
-          </div>
-        </div>
-
-        <Link
-          href={`/e/talents/${userId}/offer/${roleId}`}
-          className="flex items-center gap-2 text-base font-medium tracking-[0.017em] text-[#151515]"
-        >
-          Save and Exit
-          <LogOut className="size-5" aria-hidden />
-        </Link>
-      </div>
+      <EditRoleCandidateSummary
+        fullName={candidate?.full_name}
+        role={candidate?.role}
+        seniorityBadge={candidate?.seniority_badge}
+        avatarUrl={candidate?.avatar_url ?? null}
+        isLoading={isCandidatePending}
+        exitHref={`/e/talents/${userId}/offer/${roleId}`}
+      />
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         <EditRoleSidebar
@@ -170,21 +169,22 @@ export function EmployerEditRolePage({
           {currentStep === 0 ? (
             <StepRoleDescription
               values={roleDescription}
-              onChange={setRoleDescription}
+              onChange={setDescriptionDraft}
             />
           ) : currentStep === 1 ? (
-            <StepRoleDetails values={roleDetails} onChange={setRoleDetails} />
+            <StepRoleDetails values={roleDetails} onChange={setDetailsDraft} />
           ) : currentStep === 2 ? (
             <StepTalentAssessment
               selectedAssessmentId={selectedAssessmentId}
-              onSelect={setSelectedAssessmentId}
+              onSelect={(value) => setAssessmentDraft({ value })}
             />
           ) : (
             <StepPreview
-              role={role}
               roleDescription={roleDescription}
               roleDetails={roleDetails}
               selectedAssessmentId={selectedAssessmentId}
+              salaryRangeLabel={salaryRangeLabel}
+              educationLabel={loadedRole.education ?? undefined}
               onViewAssessment={handleViewAssessment}
             />
           )}
@@ -207,7 +207,7 @@ export function EmployerEditRolePage({
         sendScoreUpdates={sendScoreUpdates}
         onSendScoreUpdatesChange={setSendScoreUpdates}
         onSubmit={handleSubmitOffer}
-        isSubmitting={isSubmittingOffer}
+        isSubmitting={isSubmitting}
       />
     </div>
   );

@@ -1,27 +1,7 @@
 import { Notification } from "@/constants/notifications";
 import Image from "next/image";
 
-const RELATIVE_TIME_UNITS = [
-  { label: "year", seconds: 60 * 60 * 24 * 365 },
-  { label: "month", seconds: 60 * 60 * 24 * 30 },
-  { label: "day", seconds: 60 * 60 * 24 },
-  { label: "hour", seconds: 60 * 60 },
-  { label: "minute", seconds: 60 },
-] as const;
-
-function formatRelativeTime(value: string) {
-  const parsedDate = new Date(value);
-  if (Number.isNaN(parsedDate.getTime())) return "Just now";
-  const elapsedSeconds = Math.max(
-    0,
-    Math.floor((Date.now() - parsedDate.getTime()) / 1000),
-  );
-  for (const unit of RELATIVE_TIME_UNITS) {
-    const count = Math.floor(elapsedSeconds / unit.seconds);
-    if (count >= 1) return `${count} ${unit.label}${count > 1 ? "s" : ""} ago`;
-  }
-  return "Just now";
-}
+import { formatRelativeTime } from "@/lib/format-date";
 
 type NotificationItemProps = {
   notification: Notification;
