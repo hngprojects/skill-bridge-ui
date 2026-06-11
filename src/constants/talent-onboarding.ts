@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import type { SelectOption } from "@/types/form-input";
 
 export const ONBOARDING_NAV_BTN_SHAPE = "h-11 min-w-48 rounded-lg px-4";
 
@@ -98,6 +99,13 @@ export const TRACK_OPTIONS = [
 ] as const;
 
 export type TrackOptionId = (typeof TRACK_OPTIONS)[number]["id"];
+
+export const TRACK_SELECT_OPTIONS: SelectOption[] = TRACK_OPTIONS.map(
+  (track) => ({
+    value: trackIdToApiRoleTrack(track.id),
+    label: track.label,
+  }),
+);
 
 /** API track values (snake_case): POST `{ track }` per selection; PATCH `{ roleTracks: [...] }`. */
 export function trackIdToApiRoleTrack(id: TrackOptionId): string {
