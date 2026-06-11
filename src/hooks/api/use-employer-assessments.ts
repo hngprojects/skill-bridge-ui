@@ -33,7 +33,7 @@ export function useEmployerAssessmentResults(
   params?: { page?: number; limit?: number },
 ) {
   return useQuery({
-    queryKey: employerAssessmentsKeys.results(assessmentId),
+    queryKey: [...employerAssessmentsKeys.results(assessmentId), params ?? {}],
     queryFn: () => getEmployerAssessmentResults(assessmentId, params),
     enabled: !!assessmentId,
   });

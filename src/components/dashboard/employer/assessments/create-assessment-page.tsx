@@ -72,6 +72,14 @@ export function CreateAssessmentPage() {
   const nextDisabled =
     currentStepId === "questions" && selectedQuestionIds.length === 0;
 
+  const resolvedPassRate = useMemo(
+    () =>
+      Number.isFinite(passRate) && passRate >= 50 && passRate <= 90
+        ? Math.floor(passRate)
+        : 70,
+    [passRate],
+  );
+
   const headerSubtitle = useMemo(() => {
     const deadline = deadlineParam ? new Date(deadlineParam) : undefined;
     return buildAssessmentHeaderSubtitle(category, deadline);
@@ -93,10 +101,7 @@ export function CreateAssessmentPage() {
   };
 
   const handlePublish = () => {
-    const resolvedPassRate =
-      Number.isFinite(passRate) && passRate >= 50 && passRate <= 90
-        ? Math.floor(passRate)
-        : 70;
+    if (isPending) return;
 
     createAssessment(
       {
@@ -163,9 +168,7 @@ export function CreateAssessmentPage() {
       <CreateAssessmentPreviewStep
         welcomeMessageHtml={wizardState.welcomeMessageHtml}
         category={category}
-        passRate={
-          Number.isFinite(passRate) ? passRate : DEFAULT_ASSESSMENT_PASS_RATE
-        }
+        passRate={resolvedPassRate}
         deadline={previewDeadline}
         selectedQuestionIds={selectedQuestionIds}
       />
