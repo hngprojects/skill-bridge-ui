@@ -1,0 +1,1 @@
+export const DEFAULT_ASSESSMENT_PASS_RATE = 70;
