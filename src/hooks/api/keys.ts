@@ -54,6 +54,16 @@ export const employerOffersKeys = {
     [...employerOffersKeys.lists(), params ?? {}] as const,
 };
 
+export const talentOffersKeys = {
+  all: ["talent-offers"] as const,
+  lists: () => [...talentOffersKeys.all, "list"] as const,
+  list: (params?: { page?: number; limit?: number }) =>
+    [...talentOffersKeys.lists(), params ?? {}] as const,
+  details: () => [...talentOffersKeys.all, "detail"] as const,
+  detail: (offerId: string) =>
+    [...talentOffersKeys.details(), offerId] as const,
+};
+
 export const resourcesKeys = {
   all: ["resources"] as const,
   talent: () => [...resourcesKeys.all, "talent"] as const,
