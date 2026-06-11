@@ -46,6 +46,7 @@ export function useCreateEmployerAssessment() {
       createEmployerAssessment(input),
     onSettled: () => {
       void qc.invalidateQueries({ queryKey: employerAssessmentsKeys.lists() });
+      void qc.invalidateQueries({ queryKey: ["employer-metrics"] });
     },
   });
 }
@@ -55,8 +56,11 @@ export function useDeactivateEmployerAssessment() {
   return useMutation({
     mutationFn: (assessmentId: string) =>
       deactivateEmployerAssessment(assessmentId),
-    onSettled: () => {
-      void qc.invalidateQueries({ queryKey: employerAssessmentsKeys.lists() });
+    onSuccess: async () => {
+      await qc.invalidateQueries({
+        queryKey: employerAssessmentsKeys.lists(),
+        exact: false,
+      });
     },
   });
 }
