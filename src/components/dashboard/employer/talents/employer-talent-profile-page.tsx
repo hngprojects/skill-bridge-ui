@@ -33,7 +33,11 @@ export function EmployerTalentProfilePage({
   if (notFoundError) {
     return (
       <div className="mx-auto flex max-w-7xl flex-col gap-y-6 px-4 py-8 md:px-8">
-        <EmployerTalentProfileHeader userId={userId} isSaved={false} />
+        <EmployerTalentProfileHeader
+          userId={userId}
+          isSaved={false}
+          offerSent={false}
+        />
         <div className="rounded-xl border border-[#E4E7EC] bg-white px-6 py-12 text-center">
           <p className="text-base font-medium text-[#151515]">
             Candidate not found
@@ -53,6 +57,7 @@ export function EmployerTalentProfilePage({
       <EmployerTalentProfileHeader
         userId={data.userId}
         isSaved={data.isSaved}
+        offerSent={data.offerSent}
       />
       <div className="relative">
         <VerifiedReportSummary data={data} />

@@ -8,33 +8,12 @@ import {
   DEFAULT_EMPLOYER_ACTIVITY_META,
   EMPLOYER_ACTIVITY_TYPE_META,
 } from "@/constants/employer-dashboard";
+import { formatRelativeTime } from "@/lib/format-date";
 import type { EmployerRecentActivityItem } from "@/types/api/employer-dashboard";
 
 type EmployerRecentActivityProps = {
   items: EmployerRecentActivityItem[];
 };
-
-const RELATIVE_TIME_UNITS = [
-  { label: "year", seconds: 60 * 60 * 24 * 365 },
-  { label: "month", seconds: 60 * 60 * 24 * 30 },
-  { label: "day", seconds: 60 * 60 * 24 },
-  { label: "hour", seconds: 60 * 60 },
-  { label: "minute", seconds: 60 },
-] as const;
-
-function formatRelativeTime(value: string): string {
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return "Just now";
-  const elapsed = Math.max(
-    0,
-    Math.floor((Date.now() - parsed.getTime()) / 1000),
-  );
-  for (const unit of RELATIVE_TIME_UNITS) {
-    const count = Math.floor(elapsed / unit.seconds);
-    if (count >= 1) return `${count} ${unit.label}${count > 1 ? "s" : ""} ago`;
-  }
-  return "Just now";
-}
 
 function ActivityCard({ item }: { item: EmployerRecentActivityItem }) {
   const meta =

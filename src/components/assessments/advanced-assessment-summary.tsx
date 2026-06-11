@@ -45,7 +45,7 @@ const AdvancedAssessmentSummary = () => {
       </div>
       <NextUpCard
         assessement="advanced"
-        duration="30-45 minutes"
+        duration="30 minutes"
         title="AI mock interview"
       />
       <div className="mt-6 flex justify-center">

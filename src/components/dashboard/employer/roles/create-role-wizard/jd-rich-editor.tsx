@@ -17,7 +17,14 @@ type JdRichEditorProps = {
   initialHtml?: string;
   onChange: (html: string) => void;
   disabled?: boolean;
+  placeholder?: string;
+  maxChars?: number;
+  ariaLabel?: string;
 };
+
+type ToolbarFormatCommand = "bold" | "italic" | "underline";
+
+type ActiveFormats = Record<ToolbarFormatCommand | "link", boolean>;
 
 const TOOLBAR_BUTTONS = [
   { label: "Undo", icon: RotateCcw, command: "undo" },
@@ -28,14 +35,59 @@ const TOOLBAR_BUTTONS = [
   { label: "Underline", icon: Underline, command: "underline" },
 ] as const;
 
+const INITIAL_ACTIVE_FORMATS: ActiveFormats = {
+  bold: false,
+  italic: false,
+  underline: false,
+  link: false,
+};
+
+const toolbarButtonClass = (isActive: boolean) =>
+  cn(
+    "flex size-8 items-center justify-center rounded text-[#667085] transition-colors disabled:pointer-events-none",
+    isActive
+      ? "bg-[#101828] text-white hover:bg-[#101828]/90 hover:text-white"
+      : "hover:bg-[#F2F4F7] hover:text-[#101828]",
+  );
+
 export function JdRichEditor({
   initialHtml = "",
   onChange,
   disabled = false,
+  placeholder = "Paste or type your job description here…",
+  maxChars = JD_MAX_CHARS,
+  ariaLabel = "Job description content",
 }: JdRichEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const [charCount, setCharCount] = useState(0);
   const [isEmpty, setIsEmpty] = useState(true);
+  const [activeFormats, setActiveFormats] = useState<ActiveFormats>(
+    INITIAL_ACTIVE_FORMATS,
+  );
+
+  const updateActiveFormats = useCallback(() => {
+    const el = editorRef.current;
+    if (!el || disabled) {
+      setActiveFormats(INITIAL_ACTIVE_FORMATS);
+      return;
+    }
+
+    const selection = window.getSelection();
+    const anchorNode = selection?.anchorNode;
+    const isInsideEditor = anchorNode != null && el.contains(anchorNode);
+
+    if (!isInsideEditor) {
+      setActiveFormats(INITIAL_ACTIVE_FORMATS);
+      return;
+    }
+
+    setActiveFormats({
+      bold: document.queryCommandState("bold"),
+      italic: document.queryCommandState("italic"),
+      underline: document.queryCommandState("underline"),
+      link: document.queryCommandState("createLink"),
+    });
+  }, [disabled]);
 
   useEffect(() => {
     const el = editorRef.current;
@@ -61,8 +113,9 @@ export function JdRichEditor({
       document.execCommand(command, false);
       editorRef.current?.focus();
       handleInput();
+      updateActiveFormats();
     },
-    [handleInput],
+    [handleInput, updateActiveFormats],
   );
 
   const handleLinkInsert = useCallback(() => {
@@ -71,9 +124,10 @@ export function JdRichEditor({
     document.execCommand("createLink", false, url);
     editorRef.current?.focus();
     handleInput();
-  }, [handleInput]);
+    updateActiveFormats();
+  }, [handleInput, updateActiveFormats]);
 
-  const isOverLimit = charCount > JD_MAX_CHARS;
+  const isOverLimit = charCount > maxChars;
 
   return (
     <div
@@ -92,17 +146,24 @@ export function JdRichEditor({
             );
           }
           const Icon = btn.icon;
+          const isFormatCommand =
+            btn.command === "bold" ||
+            btn.command === "italic" ||
+            btn.command === "underline";
+          const isActive = isFormatCommand ? activeFormats[btn.command] : false;
+
           return (
             <button
               key={btn.command}
               type="button"
               disabled={disabled}
               aria-label={btn.label}
+              aria-pressed={isFormatCommand ? isActive : undefined}
               onMouseDown={(e) => {
                 e.preventDefault();
                 execFormat(btn.command);
               }}
-              className="flex size-8 items-center justify-center rounded text-[#667085] transition-colors hover:bg-[#F2F4F7] hover:text-[#101828] disabled:pointer-events-none"
+              className={toolbarButtonClass(isActive)}
             >
               <Icon className="size-4" />
             </button>
@@ -113,11 +174,12 @@ export function JdRichEditor({
           type="button"
           disabled={disabled}
           aria-label="Insert link"
+          aria-pressed={activeFormats.link}
           onMouseDown={(e) => {
             e.preventDefault();
             handleLinkInsert();
           }}
-          className="flex size-8 items-center justify-center rounded text-[#667085] transition-colors hover:bg-[#F2F4F7] hover:text-[#101828] disabled:pointer-events-none"
+          className={toolbarButtonClass(activeFormats.link)}
         >
           <Link2 className="size-4" />
         </button>
@@ -130,17 +192,21 @@ export function JdRichEditor({
             aria-hidden
             className="pointer-events-none absolute left-0 top-0 px-4 py-3 text-sm text-[#98A2B3]"
           >
-            Paste or type your job description here…
+            {placeholder}
           </p>
         )}
         <div
           ref={editorRef}
           role="textbox"
           aria-multiline="true"
-          aria-label="Job description content"
+          aria-label={ariaLabel}
           contentEditable={!disabled}
           suppressContentEditableWarning
           onInput={handleInput}
+          onKeyUp={updateActiveFormats}
+          onMouseUp={updateActiveFormats}
+          onFocus={updateActiveFormats}
+          onBlur={() => setActiveFormats(INITIAL_ACTIVE_FORMATS)}
           className="min-h-48 overflow-y-auto px-4 py-3 text-sm leading-relaxed text-[#101828] outline-none [&_a]:text-primary [&_a]:underline [&_b]:font-bold [&_i]:italic [&_u]:underline"
         />
       </div>
@@ -153,7 +219,7 @@ export function JdRichEditor({
             isOverLimit ? "font-medium text-error" : "text-[#98A2B3]",
           )}
         >
-          {charCount}/{JD_MAX_CHARS}
+          {charCount}/{maxChars}
         </span>
       </div>
     </div>

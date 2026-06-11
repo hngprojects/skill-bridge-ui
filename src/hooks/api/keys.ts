@@ -54,6 +54,16 @@ export const employerOffersKeys = {
     [...employerOffersKeys.lists(), params ?? {}] as const,
 };
 
+export const talentOffersKeys = {
+  all: ["talent-offers"] as const,
+  lists: () => [...talentOffersKeys.all, "list"] as const,
+  list: (params?: { page?: number; limit?: number }) =>
+    [...talentOffersKeys.lists(), params ?? {}] as const,
+  details: () => [...talentOffersKeys.all, "detail"] as const,
+  detail: (offerId: string) =>
+    [...talentOffersKeys.details(), offerId] as const,
+};
+
 export const resourcesKeys = {
   all: ["resources"] as const,
   talent: () => [...resourcesKeys.all, "talent"] as const,
@@ -83,6 +93,8 @@ export const aiGuidanceReport = {
 export const employerRolesKeys = {
   all: ["employer-roles"] as const,
   lists: () => [...employerRolesKeys.all, "list"] as const,
+  details: () => [...employerRolesKeys.all, "detail"] as const,
+  detail: (roleId: string) => [...employerRolesKeys.details(), roleId] as const,
   catalogue: (params?: { page?: number; limit?: number }) =>
     [...employerRolesKeys.all, "catalogue", params ?? {}] as const,
 };
@@ -94,4 +106,15 @@ export const notificationsKeys = {
     [...notificationsKeys.all, role, "list"] as const,
   unreadCount: (role: "talent" | "employer") =>
     [...notificationsKeys.all, role, "unread-count"] as const,
+};
+
+export const employerAssessmentsKeys = {
+  all: ["employer-assessments"] as const,
+  lists: () => [...employerAssessmentsKeys.all, "list"] as const,
+  list: (params?: { page?: number; limit?: number }) =>
+    [...employerAssessmentsKeys.lists(), params ?? {}] as const,
+  details: () => [...employerAssessmentsKeys.all, "detail"] as const,
+  detail: (id: string) => [...employerAssessmentsKeys.details(), id] as const,
+  results: (id: string) =>
+    [...employerAssessmentsKeys.all, "results", id] as const,
 };

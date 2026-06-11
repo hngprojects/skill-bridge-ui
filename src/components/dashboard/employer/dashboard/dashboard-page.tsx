@@ -32,6 +32,7 @@ const NewEmployerDashboardPage = () => {
         goal={EMPLOYER_DASHBOARD_GOAL}
         goalLabel=""
         profileCompletion={profileCompletion}
+        settingsHref="/e/settings"
       />
 
       {viewState === "new_user" ? (

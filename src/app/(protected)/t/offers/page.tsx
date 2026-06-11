@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/custom/coming-soon";
+import { TalentOffersPage } from "@/components/dashboard/talent/offers/talent-offers-page";
 
 export const metadata: Metadata = {
   title: "Offers",
 };
 
-export default function OffersPage() {
-  return (
-    <ComingSoon
-      title="Offers are coming soon"
-      description="Once you've completed your verified assessments, employer offers will land here."
-      backHref="/t/dashboard"
-    />
-  );
+export default function Page() {
+  return <TalentOffersPage />;
 }

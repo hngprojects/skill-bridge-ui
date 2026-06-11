@@ -42,6 +42,54 @@ export type EmployerOffer = {
   updatedAt: string;
 };
 
+/** POST /employer/offers — bulk-send request body. Accepts an array of
+ *  candidate IDs to support batch sends; today's UI only ever sends one
+ *  at a time. */
+export type SendOfferInput = {
+  candidateIds: string[];
+  roleId: string;
+};
+
+/** Backend leaves the `warnings` shape unspecified; surface as opaque
+ *  records so we can render them but not pretend to understand them. */
+export type SendOfferWarning = Record<string, unknown>;
+
+export type SendOfferResult = {
+  sentCount: number;
+  offers: EmployerOffer[];
+  warnings: SendOfferWarning[];
+};
+
+export type RawEmployerOffer = {
+  id: string;
+  employer_user_id: string;
+  candidate_user_id: string;
+  employer_pool_profile_id?: string | null;
+  role_id: string | null;
+  role_title: string;
+  role_description: string | null;
+  message: string;
+  compensation: string;
+  employment_type: string;
+  work_arrangement: string;
+  application_deadline?: string | null;
+  status: EmployerOfferStatus;
+  expires_at: string;
+  assessment_unlocked_at: string | null;
+  assessment_deadline: string | null;
+  expiry_warning_sent_at?: string | null;
+  extension_used: boolean;
+  responded_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type RawSendOfferResponse = {
+  sent_count: number;
+  offers: RawEmployerOffer[];
+  warnings: SendOfferWarning[];
+};
+
 /**
  * Slim row returned by the offers list endpoint. The avatar URL + score
  * aren't on the wire yet — they're typed as nullable so the UI renders
