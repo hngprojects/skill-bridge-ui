@@ -29,9 +29,13 @@ export function SendOfferDialog({
 }: SendOfferDialogProps) {
   const router = useRouter();
   const [selectedRoleId, setSelectedRoleId] = useState<string | undefined>();
+  const [searchQuery, setSearchQuery] = useState("");
 
   function handleOpenChange(nextOpen: boolean) {
-    if (!nextOpen) setSelectedRoleId(undefined);
+    if (!nextOpen) {
+      setSelectedRoleId(undefined);
+      setSearchQuery("");
+    }
     onOpenChange(nextOpen);
   }
 
@@ -40,6 +44,13 @@ export function SendOfferDialog({
     onOpenChange(false);
     router.push(`/e/talents/${userId}/offer/${selectedRoleId}`);
   }
+
+  const query = searchQuery.trim().toLowerCase();
+  const filteredRoles = SAVED_ROLES.filter(
+    (role) =>
+      role.title.toLowerCase().includes(query) ||
+      role.category.toLowerCase().includes(query),
+  );
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -56,41 +67,49 @@ export function SendOfferDialog({
         <div className="flex items-center gap-2 rounded-full border border-[#d9d9d9] bg-white px-3 py-2">
           <Search className="size-4.5 shrink-0 text-muted-foreground" />
           <input
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search role title, category"
             className="w-full bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
           />
         </div>
 
         <ScrollArea className="h-75 pr-3">
-          <RadioGroup
-            value={selectedRoleId}
-            onValueChange={setSelectedRoleId}
-            className="gap-4"
-          >
-            {SAVED_ROLES.map((role) => (
-              <label
-                key={role.id}
-                htmlFor={`send-offer-role-${role.id}`}
-                className="flex w-full cursor-pointer items-start gap-4 rounded-lg border border-[#dbdbdb] bg-white p-4"
-              >
-                <RadioGroupItem
-                  value={role.id}
-                  id={`send-offer-role-${role.id}`}
-                  className="mt-1"
-                />
-                <div className="flex flex-col gap-1">
-                  <p className="text-base font-semibold tracking-[0.017em] text-[#151515]">
-                    {role.title}
-                  </p>
-                  <div className="flex items-center gap-2 text-sm font-light tracking-[0.017em] text-[#151515]">
-                    <span>{role.category}</span>
-                    <span className="size-0.75 shrink-0 rounded-full bg-[#151515]" />
-                    <span className="underline">{role.website}</span>
+          {filteredRoles.length > 0 ? (
+            <RadioGroup
+              value={selectedRoleId}
+              onValueChange={setSelectedRoleId}
+              className="gap-4"
+            >
+              {filteredRoles.map((role) => (
+                <label
+                  key={role.id}
+                  htmlFor={`send-offer-role-${role.id}`}
+                  className="flex w-full cursor-pointer items-start gap-4 rounded-lg border border-[#dbdbdb] bg-white p-4"
+                >
+                  <RadioGroupItem
+                    value={role.id}
+                    id={`send-offer-role-${role.id}`}
+                    className="mt-1"
+                  />
+                  <div className="flex flex-col gap-1">
+                    <p className="text-base font-semibold tracking-[0.017em] text-[#151515]">
+                      {role.title}
+                    </p>
+                    <div className="flex items-center gap-2 text-sm font-light tracking-[0.017em] text-[#151515]">
+                      <span>{role.category}</span>
+                      <span className="size-0.75 shrink-0 rounded-full bg-[#151515]" />
+                      <span className="underline">{role.website}</span>
+                    </div>
                   </div>
-                </div>
-              </label>
-            ))}
-          </RadioGroup>
+                </label>
+              ))}
+            </RadioGroup>
+          ) : (
+            <p className="py-8 text-center text-sm font-light tracking-[0.017em] text-[#757575]">
+              No roles match your search.
+            </p>
+          )}
         </ScrollArea>
 
         <Button
