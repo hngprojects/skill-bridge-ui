@@ -1,9 +1,7 @@
 "use client";
-
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-
 import { QuestionnaireMobileActions } from "@/components/assessments/questionnaire-mobile-actions";
 import {
   CREATE_ASSESSMENT_STEP_META,
@@ -15,8 +13,8 @@ import {
   type CreateAssessmentStepId,
 } from "@/constants/create-assessment-wizard";
 import { DEFAULT_ASSESSMENT_PASS_RATE } from "@/constants/employer-assessments";
+import { useCreateEmployerAssessment } from "@/hooks/api/use-employer-assessments";
 import { buildAssessmentHeaderSubtitle } from "@/lib/create-assessment-utils";
-
 import { CreateAssessmentDetailsStep } from "./create-assessment-details-step";
 import { CreateAssessmentQuestionsStep } from "./create-assessment-questions-step";
 import { CreateAssessmentPreviewStep } from "./create-assessment-preview-step";
@@ -47,6 +45,10 @@ export function CreateAssessmentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const createAssessmentMutation = useCreateEmployerAssessment();
+  const createAssessment = createAssessmentMutation.mutate;
+  const isPending = createAssessmentMutation.isPending;
+
   const title = searchParams.get("title") ?? "New assessment";
   const category = searchParams.get("category") ?? "";
   const deadlineParam = searchParams.get("deadline");
@@ -62,7 +64,6 @@ export function CreateAssessmentPage() {
 
   const selectedQuestionIds =
     wizardState.selectedQuestionIds ?? DEFAULT_SELECTED_QUESTION_IDS;
-
   const currentStepIndex = CREATE_ASSESSMENT_STEPS.findIndex(
     (step) => step.id === currentStepId,
   );
@@ -91,13 +92,42 @@ export function CreateAssessmentPage() {
     }));
   };
 
+  const handlePublish = () => {
+    const resolvedPassRate =
+      Number.isFinite(passRate) && passRate >= 50 && passRate <= 90
+        ? Math.floor(passRate)
+        : 70;
+
+    createAssessment(
+      {
+        title,
+        roleTrack: category.slice(0, 100) || "General Track",
+        experienceLevel: "mid",
+        timeLimitMinutes: 30,
+        passingThreshold: resolvedPassRate,
+        questionSource: "manual",
+        shareViaLink: true,
+        sendToCandidates: false,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Assessment published successfully.");
+          router.push("/e/assessments");
+        },
+        onError: (err: unknown) => {
+          const message =
+            err instanceof Error ? err.message : "Failed to publish assessment";
+          toast.error(message);
+        },
+      },
+    );
+  };
+
   const handleNext = () => {
     if (isLastStep) {
-      toast("Assessment publishing is coming soon.");
-      router.push("/e/assessments");
+      handlePublish();
       return;
     }
-
     setCurrentStepId(CREATE_ASSESSMENT_STEPS[currentStepIndex + 1].id);
   };
 
@@ -111,29 +141,24 @@ export function CreateAssessmentPage() {
       return (
         <CreateAssessmentDetailsStep
           welcomeMessageHtml={wizardState.welcomeMessageHtml}
-          onWelcomeMessageChange={(welcomeMessageHtml) =>
-            setWizardState((state) => ({ ...state, welcomeMessageHtml }))
+          onWelcomeMessageChange={(html) =>
+            setWizardState((s) => ({ ...s, welcomeMessageHtml: html }))
           }
           guidelines={wizardState.guidelines}
           onGuidelineChange={handleGuidelineChange}
         />
       );
     }
-
     if (currentStepId === "questions") {
       return (
         <CreateAssessmentQuestionsStep
           selectedQuestionIds={selectedQuestionIds}
-          onSelectionChange={(nextSelectedQuestionIds) =>
-            setWizardState((state) => ({
-              ...state,
-              selectedQuestionIds: nextSelectedQuestionIds,
-            }))
+          onSelectionChange={(ids) =>
+            setWizardState((s) => ({ ...s, selectedQuestionIds: ids }))
           }
         />
       );
     }
-
     return (
       <CreateAssessmentPreviewStep
         welcomeMessageHtml={wizardState.welcomeMessageHtml}
@@ -150,14 +175,11 @@ export function CreateAssessmentPage() {
   return (
     <div className="pb-32 lg:pb-10">
       <CreateAssessmentHeader title={title} subtitle={headerSubtitle} />
-
       <CreateAssessmentMobileProgress currentStepIndex={currentStepIndex} />
-
       <div className="mx-auto flex max-w-300 flex-col gap-6 pb-10 lg:flex-row lg:items-start lg:gap-10">
         <div className="hidden lg:block">
           <CreateAssessmentSidebar currentStepIndex={currentStepIndex} />
         </div>
-
         <CreateAssessmentStepCard
           title={meta.title}
           description={meta.description}
@@ -166,7 +188,8 @@ export function CreateAssessmentPage() {
           showBack={currentStepIndex > 0}
           onBack={handleBack}
           onNext={handleNext}
-          nextDisabled={nextDisabled}
+          nextDisabled={nextDisabled || isPending}
+          nextLoading={isPending}
         >
           {stepContent}
         </CreateAssessmentStepCard>
@@ -179,8 +202,9 @@ export function CreateAssessmentPage() {
         onNext={handleNext}
         isLast={isLastStep}
         showBack={currentStepIndex > 0}
-        nextDisabled={nextDisabled}
-        lastStepLabel="Send Offer"
+        nextDisabled={nextDisabled || isPending}
+        nextLoading={isPending}
+        lastStepLabel={isPending ? "Publishing..." : "Publish"}
         className="lg:hidden"
       />
     </div>
