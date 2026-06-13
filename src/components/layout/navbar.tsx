@@ -18,9 +18,9 @@ import {
 const logoWithText = "/assets/logo/logo-with-text-white.svg";
 
 const navLinks = [
-  { label: "Features", href: "/about" },
-  { label: "Pricing", href: "/contact" },
-  { label: "Resources", href: "/faq" },
+  { label: "About", href: "/about-us" },
+  { label: "How It Works", href: "/how-it-works" },
+  { label: "Contact Us", href: "/contact" },
 ] as const;
 
 const SCROLL_DELTA = 8;
@@ -142,6 +142,8 @@ export function Navbar() {
                 variant="ghost"
                 size="icon"
                 className="h-9 w-9 text-white hover:bg-white/10 hover:text-white"
+                aria-label={mobileOpen ? "Close main menu" : "Open main menu"}
+                aria-expanded={mobileOpen}
               >
                 <Menu className="h-6 w-6" />
               </Button>

@@ -6,6 +6,8 @@ export function TikTokIcon() {
       height="20"
       viewBox="0 0 20 20"
       fill="none"
+      aria-hidden="true"
+      focusable="false"
     >
       <path
         d="M7.78772 7.87492V7.09435C7.48455 7.05773 7.17683 7.03516 6.86287 7.03516C3.07887 7.03516 0 9.75562 0 13.0996C0 15.1514 1.1599 16.9669 2.93012 18.0645C1.78782 16.9809 1.08723 15.5297 1.08723 13.9354C1.08723 10.6395 4.07866 7.95168 7.78829 7.87492H7.78772Z"
@@ -47,6 +49,8 @@ export function XIcon() {
       height="20"
       viewBox="0 0 20 20"
       fill="none"
+      aria-hidden="true"
+      focusable="false"
     >
       <path
         d="M15.743 0H18.7952L12.1285 8.48889L20 20H13.8153L8.99598 13.0222L3.45382 20H0.401606L7.5502 10.9333L0 0H6.34538L10.7229 6.4L15.743 0ZM14.6586 17.9556H16.3454L5.42169 1.91111H3.5743L14.6586 17.9556Z"
@@ -64,6 +68,8 @@ export function InstagramIcon() {
       height="20"
       viewBox="0 0 20 20"
       fill="none"
+      aria-hidden="true"
+      focusable="false"
     >
       <g clipPath="url(#clip0_15017_18756)">
         <path
@@ -90,7 +96,12 @@ export function InstagramIcon() {
 
 export function FacebookIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      aria-hidden="true"
+      focusable="false"
+    >
       <path
         fill="#1877F2"
         d={
@@ -112,6 +123,8 @@ export function LinkedInIcon() {
       height="20"
       viewBox="0 0 20 20"
       fill="none"
+      aria-hidden="true"
+      focusable="false"
     >
       <g clipPath="url(#clip0_15017_18761)">
         <path
@@ -144,6 +157,8 @@ export function YouTubeIcon() {
       height="20"
       viewBox="0 0 24 20"
       fill="none"
+      aria-hidden="true"
+      focusable="false"
     >
       <g clipPath="url(#clip0_15017_18766)">
         <path

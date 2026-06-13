@@ -1,4 +1,5 @@
 export type ProcessCardStep = {
+  id: string;
   title: string;
   description: string;
   img: string;

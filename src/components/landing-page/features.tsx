@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import { featureCards } from "@/constants/landing-page";
@@ -17,6 +17,15 @@ const logos = [
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-80px" } as const;
+
+function getBrandNameFromSrc(src: string): string {
+  const filename =
+    src
+      .split("/")
+      .pop()
+      ?.replace(/\.svg$/i, "") ?? "Company";
+  return filename.charAt(0).toUpperCase() + filename.slice(1);
+}
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -52,8 +61,10 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function FeaturesSection() {
+  const reducedMotion = useReducedMotion();
+
   return (
-    <section id="about" className="bg-background">
+    <section id="features" className="bg-background">
       <div className="mx-auto w-full max-w-340 px-6">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
@@ -78,14 +89,18 @@ export function FeaturesSection() {
         >
           <motion.div
             className="flex min-w-max items-center gap-x-9 sm:gap-x-12 lg:gap-x-16"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+            animate={reducedMotion ? { x: "0%" } : { x: ["0%", "-50%"] }}
+            transition={
+              reducedMotion
+                ? { duration: 0 }
+                : { duration: 25, repeat: Infinity, ease: "linear" }
+            }
           >
             {[...logos, ...logos].map((logo, index) => (
               <Image
                 key={`${logo}-${index}`}
                 src={logo}
-                alt="Company Logo"
+                alt={`${getBrandNameFromSrc(logo)} logo`}
                 width={130}
                 height={50}
                 className="h-auto w-18.5 sm:w-24 md:w-28 lg:w-32.5"

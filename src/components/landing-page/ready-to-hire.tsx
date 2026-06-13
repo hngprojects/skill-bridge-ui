@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,7 @@ export function ReadyForHireSection() {
               variant="secondary"
               className="rounded-lg bg-secondary px-6 py-5 text-sm font-semibold text-[#334155]"
             >
-              <a href="/signup">Try it for free</a>
+              <Link href="/signup">Try it for free</Link>
             </Button>
           </motion.div>
 

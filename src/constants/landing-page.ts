@@ -1,3 +1,5 @@
+import type { ProcessCardStep } from "@/types/process-card";
+
 export const processSteps = [
   {
     id: "assessments",
@@ -26,7 +28,7 @@ export const processSteps = [
     accent: "#E29A4D",
     featured: false,
   },
-];
+] as const satisfies readonly ProcessCardStep[];
 
 export const featureCards = [
   {
@@ -34,7 +36,7 @@ export const featureCards = [
     role: "Frontend",
     rating: 4.7,
     description:
-      "The hiring process feel transparent and merit-based. The assessments allowed me to showcase my actual skills, and I received interview opportunities that matched my experience level.",
+      "The hiring process feels transparent and merit-based. The assessments allowed me to showcase my actual skills, and I received interview opportunities that matched my experience level.",
     accent: "#A5C8D8",
     img: "/assets/skill_assessments.svg",
   },
@@ -113,7 +115,7 @@ export const hiringSteps = [
     id: "access-talent",
     title: "Access Verified Talent",
     description:
-      "Browse candidates who have already completed Travecs's assessment and verification process.",
+      "Browse candidates who have already completed SkillBridge's assessment and verification process.",
     img: "/assets/hiring-preview-1.svg",
     accent: "#CBEAFE",
     featured: false,
@@ -136,4 +138,4 @@ export const hiringSteps = [
     accent: "#CBEAFE",
     featured: true,
   },
-];
+] as const satisfies readonly ProcessCardStep[];

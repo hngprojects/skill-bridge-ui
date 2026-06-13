@@ -8,7 +8,11 @@ const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-100px" } as const;
 
 export function HowItWorks() {
-  const [featuredStep, ...secondarySteps] = processSteps;
+  const steps = processSteps ?? [];
+  const featuredStep = steps.find((step) => step.featured);
+  const secondarySteps = featuredStep
+    ? steps.filter((step) => step.id !== featuredStep.id)
+    : steps;
 
   return (
     <section
@@ -27,7 +31,7 @@ export function HowItWorks() {
         </motion.h2>
 
         <div className="mt-10 flex flex-col gap-5 md:mt-12 md:gap-6">
-          <ProcessCard step={featuredStep} index={0} />
+          {featuredStep && <ProcessCard step={featuredStep} index={0} />}
 
           <div className="grid gap-5 md:grid-cols-2 md:gap-6">
             {secondarySteps.map((step, index) => (

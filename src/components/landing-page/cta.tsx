@@ -18,12 +18,12 @@ export function CTAAndLogos() {
             transition={{ duration: 0.6, ease }}
             viewport={viewport}
           >
-            <h2 className="mx-auto max-w-sm text-xl font-bold leading-tight text-slate-900 sm:text-2xl lg:mx-0 lg:max-w-none lg:text-4xl">
+            <p className="mx-auto max-w-sm text-xl font-bold leading-tight text-slate-900 sm:text-2xl lg:mx-0 lg:max-w-none lg:text-4xl">
               The Employability Score is a standardized indicator of candidate
               readiness based on assessment performance. It helps talent
               understand where they stand and helps employers make faster, more
               informed hiring decisions.
-            </h2>
+            </p>
           </motion.div>
 
           {/* SVG graphic */}

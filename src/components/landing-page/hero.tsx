@@ -205,7 +205,7 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1, ease }}
         >
-          Travecs verifies talents’ skills through structured assessments so
+          SkillBridge verifies talents’ skills through structured assessments so
           employers can confidently discover and hire qualified talent faster.
         </motion.p>
         <motion.div
