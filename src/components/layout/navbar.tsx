@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Menu } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetContent,
@@ -22,15 +23,55 @@ const navLinks = [
   { label: "Resources", href: "/faq" },
 ] as const;
 
+const SCROLL_DELTA = 8;
+
+function getHeroMidpoint() {
+  const hero = document.getElementById("home");
+  if (!hero) return window.innerHeight / 2;
+  return hero.offsetTop + hero.offsetHeight / 2;
+}
+
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const { status, data: session } = useSession();
   const isAuthed = status === "authenticated";
   const dashboardHref =
     session?.user?.role === "talent" ? "/t/dashboard" : "/e/dashboard";
 
+  useEffect(() => {
+    lastScrollY.current = window.scrollY;
+
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      const heroMidpoint = getHeroMidpoint();
+
+      if (currentScrollY < heroMidpoint) {
+        setIsVisible(true);
+      } else {
+        const delta = currentScrollY - lastScrollY.current;
+        if (delta > SCROLL_DELTA) {
+          setIsVisible(false);
+        } else if (delta < -SCROLL_DELTA) {
+          setIsVisible(true);
+        }
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 bg-[#05060F] backdrop-blur">
+    <header
+      className={cn(
+        "sticky top-0 z-50 bg-[#05060F] backdrop-blur transition-transform duration-300 ease-in-out",
+        !isVisible && !mobileOpen && "-translate-y-full",
+      )}
+    >
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-4">
         <Link href="/" className="relative h-9 w-32 shrink-0 md:h-10 md:w-40">
           <Image
