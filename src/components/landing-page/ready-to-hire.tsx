@@ -26,7 +26,7 @@ export function ReadyForHireSection() {
   return (
     <section
       id="contact"
-      className="bg-[#05060F]"
+      className="bg-[#05060F] "
       aria-labelledby="ready-for-hire-heading"
     >
       <div className="relative w-full bg-[#05060F] items-center justify-center">
@@ -59,7 +59,7 @@ export function ReadyForHireSection() {
           </motion.div>
 
           <motion.div
-            className="grid w-full max-w-4xl grid-cols-1 gap-8 px-2 sm:grid-cols-3 sm:gap-6 py-[150px]"
+            className="grid w-full mx-auto max-w-7xl px-6 py-12 md:py-16 grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-6  border-b border-white/10"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.1, ease }}
