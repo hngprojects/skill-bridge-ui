@@ -108,28 +108,32 @@ export const avatarColors = [
   "bg-teal-500",
 ];
 
-export const hiringFeatures = [
+export const hiringSteps = [
   {
-    title: "Verified Talent Pool",
+    id: "access-talent",
+    title: "Access Verified Talent",
     description:
-      "View candidates who have already been assessed, scored, and verified.",
-    isSlider: true,
+      "Browse candidates who have already completed Travecs's assessment and verification process.",
+    img: "/assets/hiring-preview-1.svg",
+    accent: "#CBEAFE",
+    featured: false,
   },
   {
-    title: "Standardized Scoring",
-    description: "Compare candidates based on performance description text.",
-    img: "/assets/scoring.svg",
+    id: "screen-faster",
+    title: "Screen Faster",
+    description:
+      "Use standardized employability scores to compare candidates and shortlist more efficiently.",
+    img: "/assets/hiring-preview-2.svg",
+    accent: "#CBEAFE",
+    featured: false,
   },
   {
-    title: "Faster Screening",
+    id: "assess-further",
+    title: "Assess Further",
     description:
-      "Reduce screening time and focus only on qualified job-ready talent.",
-    img: "/assets/screening.svg",
-  },
-  {
-    title: "Direct Candidate Access",
-    description:
-      "Connect directly with job-ready candidates from a single, unified dashboard.",
-    img: "/assets/access.svg",
+      "Create optional additional assessments for shortlisted candidates before making a final hiring decision.",
+    img: "/assets/hiring-preview-3.svg",
+    accent: "#CBEAFE",
+    featured: true,
   },
 ];
