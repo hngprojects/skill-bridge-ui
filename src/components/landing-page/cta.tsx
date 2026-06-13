@@ -19,10 +19,10 @@ export function CTAAndLogos() {
             viewport={viewport}
           >
             <h2 className="mx-auto max-w-sm text-xl font-bold leading-tight text-slate-900 sm:text-2xl lg:mx-0 lg:max-w-none lg:text-4xl">
-              SkillBridge&apos;s employability score combines assessments,
-              practical tasks, and interviews into one clear measure of job
-              readiness. Employers can evaluate candidates based on verified
-              ability instead of relying on self-reported CVs or assumptions.
+              The Employability Score is a standardized indicator of candidate
+              readiness based on assessment performance. It helps talent
+              understand where they stand and helps employers make faster, more
+              informed hiring decisions.
             </h2>
           </motion.div>
 
