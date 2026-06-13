@@ -1,17 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-import Image from "next/image";
-
-const logos = [
-  "/assets/company/hotjar.svg",
-  "/assets/company/asana.svg",
-  "/assets/company/framer.svg",
-  "/assets/company/pendo.svg",
-  "/assets/company/attentive.svg",
-  "/assets/company/github.svg",
-  "/assets/company/hellosign.svg",
-];
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-80px" } as const;
@@ -89,32 +78,6 @@ export function CTAAndLogos() {
             </svg>
           </motion.div>
         </div>
-
-        {/* Logo marquee */}
-        <motion.div
-          className="mt-18 overflow-hidden opacity-40 grayscale sm:mt-24"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 0.4 }}
-          transition={{ duration: 0.8, delay: 0.2, ease }}
-          viewport={viewport}
-        >
-          <motion.div
-            className="flex min-w-max items-center gap-x-9 sm:gap-x-12 lg:gap-x-16"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          >
-            {[...logos, ...logos].map((logo, index) => (
-              <Image
-                key={`${logo}-${index}`}
-                src={logo}
-                alt="Company Logo"
-                width={130}
-                height={50}
-                className="h-auto w-18.5 sm:w-24 md:w-28 lg:w-32.5"
-              />
-            ))}
-          </motion.div>
-        </motion.div>
       </div>
     </section>
   );

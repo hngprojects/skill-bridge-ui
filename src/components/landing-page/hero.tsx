@@ -190,14 +190,14 @@ export function HeroSection() {
       id="home"
       className="relative overflow-hidden min-h-[calc(100svh-73px)] md:min-h-[calc(100vh-73px)] bg-[#EFEFEF]"
     >
-      <div className="relative z-10 mx-auto max-w-[700px] px-2 pt-16 pb-10 text-center sm:px-6 md:pt-25 md:pb-16 space-y-10">
+      <div className="relative z-10 mx-auto max-w-3xl px-2 pt-16 pb-10 text-center sm:px-6 md:pt-25 md:pb-16 space-y-10">
         <motion.h1
           className="text-[27px] leading-[1.08] font-bold tracking-tight text-[#151515] sm:text-3xl md:text-5xl"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease }}
         >
-          Discover and hire talents that are verified job-ready!
+          Helping Talent Prove Their Skills, Helping Employers Hire Faster
         </motion.h1>
         <motion.p
           className="mx-auto max-w-76 text-base leading-relaxed text-[#151515] sm:max-w-none md:text-lg font-light"
@@ -205,8 +205,8 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1, ease }}
         >
-          Take assessments as emerging talents to be Job-ready, as an employer,
-          you can hire skilled talents that vetted and trusted.
+          Travecs verifies talents’ skills through structured assessments so
+          employers can confidently discover and hire qualified talent faster.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 24 }}

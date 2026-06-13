@@ -35,29 +35,29 @@ export const featureCards = [
   {
     title: "Skill Assessments",
     description:
-      "Complete role-specific assessments designed to evaluate real-world skills and job readiness accurately.",
-    accent: "bg-emerald-100",
+      "“The hiring process feel transparent and merit-based. The assessments allowed me to showcase my actual skills, and I received interview opportunities that matched my experience level.”",
+    accent: "#A5C8D8",
     img: "/assets/skill_assessments.svg",
   },
   {
     title: "Verified Scoring",
     description:
-      "Receive a standardized employability score based on actual performance across all assessment stages.",
-    accent: "bg-rose-100",
+      "“This platform significantly reduced the time we spent screening candidates. The assessment results helped us quickly identify qualified applicants and focus on meaningful interviews.”",
+    accent: "#CBB0EB",
     img: "/assets/verified_scoring.svg",
   },
   {
     title: "Personalized Guidance",
     description:
-      "Get targeted feedback and curated resources to help you improve faster and close skill gaps.",
-    accent: "bg-sky-100",
+      "“I've used several job platforms before, but Travecs stood out because employers could see my verified skills rather than just my resume. I landed a role within a few weeks of joining.”",
+    accent: "#A5C8D8",
     img: "/assets/personalized_guidance.svg",
   },
   {
     title: "Verified Profile",
     description:
-      "Build a verified profile employers can trust and make it discoverable for hiring opportunities.",
-    accent: "bg-yellow-100",
+      "“The quality of candidates we received through Travecs exceeded our expectations. Having access to skill-based evaluations gave us more confidence in our hiring decisions.”",
+    accent: "#CBB0EB",
     img: "/assets/verified_profile.svg",
   },
 ];
