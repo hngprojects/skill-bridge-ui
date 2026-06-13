@@ -53,7 +53,7 @@ function StarRating({ rating }: { rating: number }) {
 
 export function FeaturesSection() {
   return (
-    <section id="about" className="bg-background pb-12 md:pb-24">
+    <section id="about" className="bg-background">
       <div className="mx-auto w-full max-w-340 px-6">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
@@ -68,6 +68,7 @@ export function FeaturesSection() {
           </motion.p>
         </div>
         {/* Logo marquee */}
+
         <motion.div
           className="mt-10 overflow-hidden opacity-40 grayscale"
           initial={{ opacity: 0 }}
@@ -92,41 +93,56 @@ export function FeaturesSection() {
             ))}
           </motion.div>
         </motion.div>
-        {/* Cards Grid */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {featureCards.map((feature, i) => (
-            <motion.article
-              key={feature.name}
-              className="flex flex-col overflow-hidden rounded-3xl bg-[#EFEFEF]"
-              initial={{ opacity: 0, y: 36 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1, ease }}
-              viewport={viewport}
-              whileHover={{ y: -4, transition: { duration: 0.2, ease } }}
-            >
-              <div className="relative aspect-square w-full overflow-hidden">
-                <Image
-                  src={feature.img}
-                  alt={feature.name}
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                />
-              </div>
+        <div className="my-20">
+          <div className="flex justify-center items-center flex-col mb-10.5 gap-7">
+            <div className="flex items-center gap-2 ">
+              <Image
+                src="/assets/employer-dashboard/checkmark-circle.svg"
+                alt="checkmark"
+                width={24}
+                height={24}
+              />
+              2000+ Verified Talents <span className="px-6">|</span> 200+
+              employers reviews
+            </div>
+            <h1 className="text-2xl font-bold">What our users say about us</h1>
+          </div>
+          {/* Cards Grid */}
+          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featureCards.map((feature, i) => (
+              <motion.article
+                key={feature.name}
+                className="flex flex-col overflow-hidden rounded-3xl bg-[#EFEFEF]"
+                initial={{ opacity: 0, y: 36 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease }}
+                viewport={viewport}
+                whileHover={{ y: -4, transition: { duration: 0.2, ease } }}
+              >
+                <div className="relative aspect-square w-full overflow-hidden">
+                  <Image
+                    src={feature.img}
+                    alt={feature.name}
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
 
-              <div className="flex flex-1 flex-col gap-3 px-5 py-6 sm:px-6 sm:py-7">
-                <StarRating rating={feature.rating} />
-                <p className="text-base text-[#151515]">
-                  <span className="font-bold">{feature.name}</span>
-                  {", "}
-                  <span className="font-normal italic">{feature.role}</span>
-                </p>
-                <p className="text-sm leading-relaxed text-[#151515]/80">
-                  &ldquo;{feature.description}&rdquo;
-                </p>
-              </div>
-            </motion.article>
-          ))}
+                <div className="flex flex-1 flex-col gap-3 px-5 py-6 sm:px-6 sm:py-7">
+                  <StarRating rating={feature.rating} />
+                  <p className="text-base text-[#151515]">
+                    <span className="font-bold">{feature.name}</span>
+                    {", "}
+                    <span className="font-normal italic">{feature.role}</span>
+                  </p>
+                  <p className="text-sm leading-relaxed text-[#151515]/80">
+                    &ldquo;{feature.description}&rdquo;
+                  </p>
+                </div>
+              </motion.article>
+            ))}
+          </div>
         </div>
       </div>
     </section>

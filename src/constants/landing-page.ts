@@ -1,33 +1,30 @@
 export const processSteps = [
   {
     id: "assessments",
-    eyebrow: "Assessments",
     title: "Complete Assessments",
     description:
-      "Candidates complete structured assessments, practical tasks, and interviews designed to measure real-world ability and target-role readiness.",
-    img: "/assets/step-assessments.svg",
-    accent: "bg-sky-200",
-    reverse: false,
+      "Complete role-specific assessments designed to evaluate real world skills and job readiness accurately.",
+    img: "/assets/skill-assessments-preview-1.svg",
+    accent: "#A5C8D8",
+    featured: true,
   },
   {
     id: "verification",
-    eyebrow: "Verification",
     title: "Get Verified",
     description:
-      "SkillBridge evaluates overall performance and assigns a standardized employability score employers can trust and compare easily.",
-    img: "/assets/step-verification.svg",
-    accent: "bg-violet-200",
-    reverse: true,
+      "Receive an employability score that reflects your actual performance across all assessment stages.",
+    img: "/assets/skill-assessments-preview-2.svg",
+    accent: "#CBB0EB",
+    featured: false,
   },
   {
-    id: "connect",
-    eyebrow: "Connect",
-    title: "Connect Directly",
+    id: "discovered",
+    title: "Get Discovered",
     description:
-      "Job-ready candidates become discoverable to employers actively hiring verified talent for real opportunities and open roles.",
-    img: "/assets/step-connect.svg",
-    accent: "bg-orange-300",
-    reverse: false,
+      "Become visible to employers actively looking for verified talent for relevant roles and opportunities.",
+    img: "/assets/skill-assessments-preview-3.svg",
+    accent: "#E29A4D",
+    featured: false,
   },
 ];
 
