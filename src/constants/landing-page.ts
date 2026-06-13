@@ -33,30 +33,38 @@ export const processSteps = [
 
 export const featureCards = [
   {
-    title: "Skill Assessments",
+    name: "Clement Bassey",
+    role: "Frontend",
+    rating: 4.7,
     description:
-      "“The hiring process feel transparent and merit-based. The assessments allowed me to showcase my actual skills, and I received interview opportunities that matched my experience level.”",
+      "The hiring process feel transparent and merit-based. The assessments allowed me to showcase my actual skills, and I received interview opportunities that matched my experience level.",
     accent: "#A5C8D8",
     img: "/assets/skill_assessments.svg",
   },
   {
-    title: "Verified Scoring",
+    name: "Lisa Davis",
+    role: "Recruiter",
+    rating: 4.9,
     description:
-      "“This platform significantly reduced the time we spent screening candidates. The assessment results helped us quickly identify qualified applicants and focus on meaningful interviews.”",
+      "This platform significantly reduced the time we spent screening candidates. The assessment results helped us quickly identify qualified applicants and focus on meaningful interviews.",
     accent: "#CBB0EB",
     img: "/assets/verified_scoring.svg",
   },
   {
-    title: "Personalized Guidance",
+    name: "Amaka Charles",
+    role: "Product Designer",
+    rating: 4.8,
     description:
-      "“I've used several job platforms before, but Travecs stood out because employers could see my verified skills rather than just my resume. I landed a role within a few weeks of joining.”",
+      "I've used several job platforms before, but SkillBridge stood out because employers could see my verified skills rather than just my resume. I landed a role within a few weeks of joining.",
     accent: "#A5C8D8",
     img: "/assets/personalized_guidance.svg",
   },
   {
-    title: "Verified Profile",
+    name: "Micheal Bubble",
+    role: "Founder",
+    rating: 4.7,
     description:
-      "“The quality of candidates we received through Travecs exceeded our expectations. Having access to skill-based evaluations gave us more confidence in our hiring decisions.”",
+      "The quality of candidates we received through SkillBridge exceeded our expectations. Having access to skill-based evaluations gave us more confidence in our hiring decisions.",
     accent: "#CBB0EB",
     img: "/assets/verified_profile.svg",
   },
