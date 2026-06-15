@@ -72,10 +72,9 @@ export type EmployerProfileDetail = {
   restrictedFields: EmployerRestrictedFields;
 };
 
-/** PATCH /employer/profile body. All fields optional — caller sends only
- *  what changed. Restricted fields trigger a 180-day cooldown server-side. */
 export type UpdateEmployerProfileInput = {
   employerType?: EmployerJoiningRoleId;
+  joiningAs?: EmployerJoiningRoleId;
   companyName?: string;
   companyWebsite?: string;
   industry?: string;
