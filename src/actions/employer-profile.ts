@@ -19,8 +19,10 @@ import { unwrapData } from "./utils";
 function normalizeEmployerProfile(
   raw: RawEmployerProfileResponseData,
 ): EmployerProfileDetail {
-  const joiningAs =
-    raw.joiningAs ?? raw.employerType ?? raw.employer_type ?? "Recruiter";
+  const joiningAsRaw =
+    raw.joiningAs ?? raw.employerType ?? raw.employer_type ?? "recruiter";
+
+  const joiningAs = joiningAsRaw.toLowerCase() as typeof joiningAsRaw;
 
   const hiringRoles =
     raw.hiringRoles ?? raw.desiredRoles ?? raw.desired_roles ?? [];
