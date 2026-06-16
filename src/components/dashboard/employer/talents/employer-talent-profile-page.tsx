@@ -12,6 +12,7 @@ import { ApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 import { EmployerTalentProfileHeader } from "../employer-talent-profile-header";
+import { EmployerTalentContactPanel } from "./employer-talent-contact-panel";
 
 type EmployerTalentProfilePageProps = {
   userId: string;
@@ -59,6 +60,14 @@ export function EmployerTalentProfilePage({
         isSaved={data.isSaved}
         offerSent={data.offerSent}
       />
+      {/* Post-acceptance the employer is here to coordinate, not re-evaluate
+          — surface contact details up front, above the profile content. */}
+      {data.offerStatus === "accepted" ? (
+        <EmployerTalentContactPanel
+          candidateName={data.full_name}
+          email={data.email}
+        />
+      ) : null}
       <div className="relative">
         <VerifiedReportSummary data={data} />
         {data.verified ? (

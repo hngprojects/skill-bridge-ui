@@ -24,7 +24,7 @@ const TRACK_ICONS: Record<TrackOptionId, React.ElementType> = {
   "product-manager": Briefcase,
   "backend-developer": Wrench,
   "mobile-developer": Smartphone,
-  "social-media-marketing": Megaphone,
+  marketing: Megaphone,
   "data-scientist": BrainCircuit,
 };
 

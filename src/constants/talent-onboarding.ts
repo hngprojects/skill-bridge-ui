@@ -87,8 +87,8 @@ export const TRACK_OPTIONS = [
     tags: "Flutter · Swift · Kotlin",
   },
   {
-    id: "social-media-marketing",
-    label: "Social media marketing",
+    id: "marketing",
+    label: "Marketing",
     tags: "Content · Strategy · Analytics",
   },
   {
