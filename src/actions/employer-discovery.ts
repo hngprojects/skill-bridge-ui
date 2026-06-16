@@ -69,11 +69,13 @@ function mapDiscoveryList(
 function mapDiscoveryProfile(
   raw: RawEmployerDiscoveryCandidateProfile,
 ): EmployerDiscoveryCandidateProfile {
-  const { user_id, is_saved, offer_sent, offer_status, ...profile } = raw;
+  const { user_id, email, is_saved, offer_sent, offer_status, ...profile } =
+    raw;
 
   return {
     ...profile,
     userId: user_id,
+    email: email ?? null,
     isSaved: is_saved,
     offerSent: offer_sent,
     offerStatus: offer_status,

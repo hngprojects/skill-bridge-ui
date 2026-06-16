@@ -73,6 +73,7 @@ export type EmployerSavedCandidatesListParams = {
 
 export type EmployerDiscoveryCandidateProfile = VerifiedProfileResponseData & {
   userId: string;
+  email: string | null;
   isSaved: boolean;
   offerSent: boolean;
   offerStatus: "pending" | "accepted" | null;
@@ -129,6 +130,7 @@ export type RawEmployerSavedCandidatesListResponse =
 export type RawEmployerDiscoveryCandidateProfile =
   VerifiedProfileResponseData & {
     user_id: string;
+    email?: string | null;
     is_saved: boolean;
     offer_sent: boolean;
     offer_status: "pending" | "accepted" | null;
