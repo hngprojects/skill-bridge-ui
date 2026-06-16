@@ -144,19 +144,21 @@ export function RestrictedField({
               Save
             </Button>
           </div>
-        ) : (
+        ) : !locked ? (
+          // Hide the Edit button entirely while the 180-day lock is active.
+
           <Button
             type="button"
             variant="ghost"
             size="sm"
             onClick={beginEdit}
-            disabled={locked || isSaving}
+            disabled={isSaving}
             className="gap-1.5"
           >
             <Pencil className="size-3.5" aria-hidden />
             Edit
           </Button>
-        )}
+        ) : null}
       </div>
 
       {error ? (

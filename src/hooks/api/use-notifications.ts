@@ -82,7 +82,8 @@ export function useMarkAsRead(role: NotificationRole) {
         );
       }
     },
-    onSettled: () => {
+
+    onSuccess: () => {
       void qc.invalidateQueries({ queryKey: notificationsKeys.list(role) });
       void qc.invalidateQueries({
         queryKey: notificationsKeys.unreadCount(role),
@@ -139,7 +140,8 @@ export function useMarkAllAsRead(role: NotificationRole) {
         );
       }
     },
-    onSettled: () => {
+
+    onSuccess: () => {
       void qc.invalidateQueries({ queryKey: notificationsKeys.list(role) });
       void qc.invalidateQueries({
         queryKey: notificationsKeys.unreadCount(role),

@@ -34,7 +34,16 @@ const NotificationView = ({ role }: NotificationViewProps) => {
   const filtered =
     activeTab === "Unread"
       ? notifications.filter((n) => !n.isRead)
-      : notifications;
+      : activeTab === "Read"
+        ? notifications.filter((n) => n.isRead)
+        : notifications;
+
+  const emptyMessage =
+    activeTab === "Unread"
+      ? "You're all caught up — no unread notifications."
+      : activeTab === "Read"
+        ? "No read notifications yet."
+        : "No notifications yet.";
 
   return (
     <div className="flex flex-col gap-y-8 rounded-xl border border-[#D9D9D9] bg-[#FAFAFA] p-4 md:rounded-2xl md:p-6">
@@ -74,7 +83,7 @@ const NotificationView = ({ role }: NotificationViewProps) => {
           </button>
         </div>
       ) : filtered.length === 0 ? (
-        <p className="body text-muted-foreground">No notifications yet.</p>
+        <p className="body text-muted-foreground">{emptyMessage}</p>
       ) : (
         <ul className="mb-4 flex flex-col gap-y-3">
           {filtered.map((notification) => (
