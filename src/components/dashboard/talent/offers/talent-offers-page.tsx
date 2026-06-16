@@ -3,11 +3,21 @@
 import { useMemo, useState } from "react";
 
 import { DataPagination } from "@/components/dashboard/employer/shared/data-pagination";
+import { pickDashboardVariant } from "@/components/dashboard/dashboard-variant";
 import { useTalentOffers } from "@/hooks/api";
+import { useDashboardHome } from "@/hooks/api/use-dashboard";
 import { authFailureMessage } from "@/lib/api";
-import type { EmployerOfferStatus } from "@/types/api/employer-offers";
-import type { TalentOffer } from "@/types/api/talent-offers";
 
+import {
+  emptyCopyFor,
+  matchesTab,
+  TAB_STATUS_FILTER,
+} from "./talent-offers-filters";
+import {
+  GateError,
+  GatePending,
+  NotJobReadyState,
+} from "./talent-offers-gates";
 import { TalentOffersTable } from "./talent-offers-table";
 import {
   TalentOffersToolbar,
@@ -16,78 +26,26 @@ import {
 
 const PAGE_SIZE = 20;
 
-/** Maps the toolbar tab id to the set of offer statuses it covers.
- *  Accepted bucket folds in the post-accept progression states so the
- *  talent sees a single "Accepted" tab rather than splitting hairs. */
-const TAB_STATUS_FILTER: Record<
-  Exclude<TalentOffersTabId, "all">,
-  ReadonlyArray<EmployerOfferStatus>
-> = {
-  pending: ["pending"],
-  accepted: [
-    "accepted",
-    "assessment_unlocked",
-    "assessment_completed",
-    "passed",
-    "hired",
-  ],
-  declined: ["declined", "failed"],
-  expired: ["expired", "withdrawn"],
-};
-
-function matchesTab(offer: TalentOffer, tab: TalentOffersTabId): boolean {
-  if (tab === "all") return true;
-  return TAB_STATUS_FILTER[tab].includes(offer.status);
-}
-
-function emptyCopyFor(tab: TalentOffersTabId): {
-  title: string;
-  description: string;
-} {
-  switch (tab) {
-    case "pending":
-      return {
-        title: "No pending offers",
-        description: "You'll see new offers from employers here.",
-      };
-    case "accepted":
-      return {
-        title: "No accepted offers yet",
-        description: "Offers you accept will appear here.",
-      };
-    case "declined":
-      return {
-        title: "No declined offers",
-        description: "Offers you decline or fail will appear here.",
-      };
-    case "expired":
-      return {
-        title: "No expired or withdrawn offers",
-        description: "Old offers that lapsed will show up here.",
-      };
-    case "all":
-    default:
-      return {
-        title: "No offers yet",
-        description: "Once an employer sends you an offer, it'll show up here.",
-      };
-  }
-}
-
 export function TalentOffersPage() {
   const [activeTab, setActiveTab] = useState<TalentOffersTabId>("all");
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError, error } = useTalentOffers({
-    page,
-    limit: PAGE_SIZE,
-  });
+  const {
+    data: dashboardHome,
+    isLoading: isDashboardLoading,
+    isError: isDashboardError,
+    refetch: refetchDashboard,
+  } = useDashboardHome();
+  const isJobReady = pickDashboardVariant(dashboardHome) === "job-ready";
+
+  const { data, isLoading, isError, error } = useTalentOffers(
+    { page, limit: PAGE_SIZE },
+    { enabled: isJobReady },
+  );
 
   const total = data?.total ?? 0;
   const totalPages = data?.totalPages ?? 1;
   const currentPage = data?.page ?? page;
-  // Memoised so the `offers` reference stays stable across renders when
-  // `data` hasn't changed — keeps the dependent useMemo hooks below honest.
   const offers = useMemo(() => data?.offers ?? [], [data?.offers]);
 
   const counts = useMemo(() => {
@@ -114,6 +72,16 @@ export function TalentOffersPage() {
   );
 
   const emptyCopy = emptyCopyFor(activeTab);
+
+  if (isDashboardLoading) {
+    return <GatePending />;
+  }
+  if (isDashboardError || !dashboardHome) {
+    return <GateError onRetry={() => void refetchDashboard()} />;
+  }
+  if (!isJobReady) {
+    return <NotJobReadyState />;
+  }
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6 py-8">

@@ -1,17 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-import Image from "next/image";
-
-const logos = [
-  "/assets/company/hotjar.svg",
-  "/assets/company/asana.svg",
-  "/assets/company/framer.svg",
-  "/assets/company/pendo.svg",
-  "/assets/company/attentive.svg",
-  "/assets/company/github.svg",
-  "/assets/company/hellosign.svg",
-];
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-80px" } as const;
@@ -29,12 +18,12 @@ export function CTAAndLogos() {
             transition={{ duration: 0.6, ease }}
             viewport={viewport}
           >
-            <h2 className="mx-auto max-w-sm text-xl font-bold leading-tight text-slate-900 sm:text-2xl lg:mx-0 lg:max-w-none lg:text-4xl">
-              SkillBridge&apos;s employability score combines assessments,
-              practical tasks, and interviews into one clear measure of job
-              readiness. Employers can evaluate candidates based on verified
-              ability instead of relying on self-reported CVs or assumptions.
-            </h2>
+            <p className="mx-auto max-w-sm text-xl font-bold leading-tight text-slate-900 sm:text-2xl lg:mx-0 lg:max-w-none lg:text-4xl">
+              The Employability Score is a standardized indicator of candidate
+              readiness based on assessment performance. It helps talent
+              understand where they stand and helps employers make faster, more
+              informed hiring decisions.
+            </p>
           </motion.div>
 
           {/* SVG graphic */}
@@ -89,32 +78,6 @@ export function CTAAndLogos() {
             </svg>
           </motion.div>
         </div>
-
-        {/* Logo marquee */}
-        <motion.div
-          className="mt-18 overflow-hidden opacity-40 grayscale sm:mt-24"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 0.4 }}
-          transition={{ duration: 0.8, delay: 0.2, ease }}
-          viewport={viewport}
-        >
-          <motion.div
-            className="flex min-w-max items-center gap-x-9 sm:gap-x-12 lg:gap-x-16"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          >
-            {[...logos, ...logos].map((logo, index) => (
-              <Image
-                key={`${logo}-${index}`}
-                src={logo}
-                alt="Company Logo"
-                width={130}
-                height={50}
-                className="h-auto w-18.5 sm:w-24 md:w-28 lg:w-32.5"
-              />
-            ))}
-          </motion.div>
-        </motion.div>
       </div>
     </section>
   );

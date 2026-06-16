@@ -13,12 +13,30 @@ import type {
 
 import { unwrapData } from "./utils";
 
-function mapEmployer(raw: RawTalentOfferEmployer): TalentOfferEmployer {
+/** Tolerates a missing or partial employer block. The PATCH `/respond`
+ *  endpoint returns the updated offer without the joined employer, so we
+ *  fall back to a placeholder; the subsequent invalidation refetches the
+ *  full detail with the real employer block. */
+function mapEmployer(
+  raw: RawTalentOfferEmployer | null | undefined,
+  fallbackId?: string,
+): TalentOfferEmployer {
+  if (!raw) {
+    return {
+      id: fallbackId ?? "",
+      fullName: "Employer",
+      email: null,
+      avatarUrl: null,
+      country: null,
+      isVerified: false,
+    };
+  }
+
   const name =
     raw.fullname?.trim() ||
     [raw.first_name, raw.last_name].filter(Boolean).join(" ").trim() ||
     raw.email ||
-    "Unknown employer";
+    "Employer";
 
   return {
     id: raw.id,
@@ -33,7 +51,7 @@ function mapEmployer(raw: RawTalentOfferEmployer): TalentOfferEmployer {
 function mapOffer(raw: RawTalentOffer): TalentOffer {
   return {
     id: raw.id,
-    employer: mapEmployer(raw.employer),
+    employer: mapEmployer(raw.employer, raw.employer_user_id),
     roleId: raw.role_id,
     roleTitle: raw.role_title,
     roleDescription: raw.role_description,

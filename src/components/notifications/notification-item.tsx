@@ -7,31 +7,48 @@ type NotificationItemProps = {
   notification: Notification;
   isRead?: boolean;
   onMarkRead?: () => void;
+  /** Optional follow-up the parent runs after the item is clicked — typically
+   *  a navigation. Item-level handler decides whether to mark-read first. */
+  onActivate?: () => void;
 };
 
 const NotificationItem = ({
   notification,
   isRead = false,
   onMarkRead,
+  onActivate,
 }: NotificationItemProps) => {
+  const isInteractive = Boolean(onActivate) || (!isRead && onMarkRead);
+
+  const handleActivate = () => {
+    if (!isRead && onMarkRead) onMarkRead();
+    onActivate?.();
+  };
+
   return (
     <li
       onClick={() => {
-        if (!isRead && onMarkRead) onMarkRead();
+        if (isInteractive) handleActivate();
       }}
       onKeyDown={(e) => {
-        if ((e.key === "Enter" || e.key === " ") && !isRead && onMarkRead) {
+        if ((e.key === "Enter" || e.key === " ") && isInteractive) {
           if (e.key === " ") e.preventDefault();
-          onMarkRead();
+          handleActivate();
         }
       }}
-      role={!isRead ? "button" : undefined}
-      tabIndex={!isRead ? 0 : undefined}
-      aria-label={!isRead ? "Mark notification as read" : undefined}
+      role={isInteractive ? "button" : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      aria-label={
+        isInteractive
+          ? !isRead
+            ? "Open notification and mark as read"
+            : "Open notification"
+          : undefined
+      }
       className={`flex flex-row items-start gap-x-4 rounded-xl border px-4 py-4 md:rounded-xl md:px-5 md:py-5 transition-colors ${
-        isRead
-          ? "border-[#D9D9D9] bg-[#FAFAFA] cursor-default"
-          : "border-[#34A853] bg-white cursor-pointer hover:bg-green-50"
+        isRead ? "border-[#D9D9D9] bg-[#FAFAFA]" : "border-[#34A853] bg-white"
+      } ${
+        isInteractive ? "cursor-pointer hover:bg-green-50" : "cursor-default"
       }`}
     >
       <Image

@@ -14,15 +14,6 @@ export const EMPLOYER_ACTION_ITEMS = [
     iconBg: "#fe9667",
   },
   {
-    title: "Create & Share assessments",
-    description:
-      "Send role-based assessments to talents and review results inside your dashboard.",
-    actionLabel: "Create assessments",
-    href: "/e/assessments",
-    iconSrc: "/assets/employer-dashboard/read-cv.svg",
-    iconBg: "#f9e796",
-  },
-  {
     title: "Manage your shortlist",
     description:
       "Save top talents and compare them before scheduling interviews.",
@@ -30,6 +21,15 @@ export const EMPLOYER_ACTION_ITEMS = [
     href: "/e/shortlist",
     iconSrc: "/assets/employer-dashboard/user-multiple.svg",
     iconBg: "#cbb0eb",
+  },
+  {
+    title: "Create & Send offers",
+    description:
+      "Define the roles you're hiring for, attach assessments, and start sending to verified talents.",
+    actionLabel: "View my roles",
+    href: "/e/roles",
+    iconSrc: "/assets/icons/icon-my-roles.svg",
+    iconBg: "#EDEEF2",
   },
 ] as const;
 

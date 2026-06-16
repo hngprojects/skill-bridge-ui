@@ -17,7 +17,18 @@ import type {
 } from "@/types/api/talent-offers";
 
 import { TalentOfferActionBar } from "./talent-offer-action-bar";
+import { TalentOfferContactPanel } from "./talent-offer-contact-panel";
 import { TalentOfferRespondDialog } from "./talent-offer-respond-dialog";
+
+/** Statuses where contact is unlocked — anything from accept onward, since
+ *  by that point both parties have committed to talking. */
+const CONTACT_UNLOCKED_STATUSES = new Set([
+  "accepted",
+  "assessment_unlocked",
+  "assessment_completed",
+  "passed",
+  "hired",
+]);
 
 type TalentOfferDetailPageProps = {
   offerId: string;
@@ -199,6 +210,13 @@ export function TalentOfferDetailPage({ offerId }: TalentOfferDetailPageProps) {
               </div>
             </div>
           </div>
+        ) : null}
+
+        {CONTACT_UNLOCKED_STATUSES.has(offer.status) ? (
+          <TalentOfferContactPanel
+            employer={offer.employer}
+            roleTitle={offer.roleTitle}
+          />
         ) : null}
 
         <TalentOfferActionBar

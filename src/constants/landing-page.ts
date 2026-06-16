@@ -1,63 +1,70 @@
+import type { ProcessCardStep } from "@/types/process-card";
+
 export const processSteps = [
   {
     id: "assessments",
-    eyebrow: "Assessments",
     title: "Complete Assessments",
     description:
-      "Candidates complete structured assessments, practical tasks, and interviews designed to measure real-world ability and target-role readiness.",
-    img: "/assets/step-assessments.svg",
-    accent: "bg-sky-200",
-    reverse: false,
+      "Complete role-specific assessments designed to evaluate real world skills and job readiness accurately.",
+    img: "/assets/skill-assessments-preview-1.svg",
+    accent: "#A5C8D8",
+    featured: true,
   },
   {
     id: "verification",
-    eyebrow: "Verification",
     title: "Get Verified",
     description:
-      "SkillBridge evaluates overall performance and assigns a standardized employability score employers can trust and compare easily.",
-    img: "/assets/step-verification.svg",
-    accent: "bg-violet-200",
-    reverse: true,
+      "Receive an employability score that reflects your actual performance across all assessment stages.",
+    img: "/assets/skill-assessments-preview-2.svg",
+    accent: "#CBB0EB",
+    featured: false,
   },
   {
-    id: "connect",
-    eyebrow: "Connect",
-    title: "Connect Directly",
+    id: "discovered",
+    title: "Get Discovered",
     description:
-      "Job-ready candidates become discoverable to employers actively hiring verified talent for real opportunities and open roles.",
-    img: "/assets/step-connect.svg",
-    accent: "bg-orange-300",
-    reverse: false,
+      "Become visible to employers actively looking for verified talent for relevant roles and opportunities.",
+    img: "/assets/skill-assessments-preview-3.svg",
+    accent: "#E29A4D",
+    featured: false,
   },
-];
+] as const satisfies readonly ProcessCardStep[];
 
 export const featureCards = [
   {
-    title: "Skill Assessments",
+    name: "Clement Bassey",
+    role: "Frontend",
+    rating: 4.7,
     description:
-      "Complete role-specific assessments designed to evaluate real-world skills and job readiness accurately.",
-    accent: "bg-emerald-100",
+      "The hiring process feels transparent and merit-based. The assessments allowed me to showcase my actual skills, and I received interview opportunities that matched my experience level.",
+    accent: "#A5C8D8",
     img: "/assets/skill_assessments.svg",
   },
   {
-    title: "Verified Scoring",
+    name: "Lisa Davis",
+    role: "Recruiter",
+    rating: 4.9,
     description:
-      "Receive a standardized employability score based on actual performance across all assessment stages.",
-    accent: "bg-rose-100",
+      "This platform significantly reduced the time we spent screening candidates. The assessment results helped us quickly identify qualified applicants and focus on meaningful interviews.",
+    accent: "#CBB0EB",
     img: "/assets/verified_scoring.svg",
   },
   {
-    title: "Personalized Guidance",
+    name: "Amaka Charles",
+    role: "Product Designer",
+    rating: 4.8,
     description:
-      "Get targeted feedback and curated resources to help you improve faster and close skill gaps.",
-    accent: "bg-sky-100",
+      "I've used several job platforms before, but SkillBridge stood out because employers could see my verified skills rather than just my resume. I landed a role within a few weeks of joining.",
+    accent: "#A5C8D8",
     img: "/assets/personalized_guidance.svg",
   },
   {
-    title: "Verified Profile",
+    name: "Micheal Bubble",
+    role: "Founder",
+    rating: 4.7,
     description:
-      "Build a verified profile employers can trust and make it discoverable for hiring opportunities.",
-    accent: "bg-yellow-100",
+      "The quality of candidates we received through SkillBridge exceeded our expectations. Having access to skill-based evaluations gave us more confidence in our hiring decisions.",
+    accent: "#CBB0EB",
     img: "/assets/verified_profile.svg",
   },
 ];
@@ -103,28 +110,32 @@ export const avatarColors = [
   "bg-teal-500",
 ];
 
-export const hiringFeatures = [
+export const hiringSteps = [
   {
-    title: "Verified Talent Pool",
+    id: "access-talent",
+    title: "Access Verified Talent",
     description:
-      "View candidates who have already been assessed, scored, and verified.",
-    isSlider: true,
+      "Browse candidates who have already completed SkillBridge's assessment and verification process.",
+    img: "/assets/hiring-preview-1.svg",
+    accent: "#CBEAFE",
+    featured: false,
   },
   {
-    title: "Standardized Scoring",
-    description: "Compare candidates based on performance description text.",
-    img: "/assets/scoring.svg",
-  },
-  {
-    title: "Faster Screening",
+    id: "screen-faster",
+    title: "Screen Faster",
     description:
-      "Reduce screening time and focus only on qualified job-ready talent.",
-    img: "/assets/screening.svg",
+      "Use standardized employability scores to compare candidates and shortlist more efficiently.",
+    img: "/assets/hiring-preview-2.svg",
+    accent: "#CBEAFE",
+    featured: false,
   },
   {
-    title: "Direct Candidate Access",
+    id: "assess-further",
+    title: "Assess Further",
     description:
-      "Connect directly with job-ready candidates from a single, unified dashboard.",
-    img: "/assets/access.svg",
+      "Create optional additional assessments for shortlisted candidates before making a final hiring decision.",
+    img: "/assets/hiring-preview-3.svg",
+    accent: "#CBEAFE",
+    featured: true,
   },
-];
+] as const satisfies readonly ProcessCardStep[];

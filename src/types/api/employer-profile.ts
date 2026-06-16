@@ -25,10 +25,12 @@ export type EmployerRestrictedFields = Partial<
   Record<EmployerRestrictedFieldKey, RestrictedFieldMeta>
 >;
 
-/** GET /employer/profile — raw response shape. Backend duplicates several
- *  fields under legacy snake_case keys (`employer_type`, `desired_roles`, ...);
- *  we keep them on the raw type so the mapper can ignore them safely without
- *  drifting from the wire shape, but they never reach UI code. */
+export type RawEmployerRestrictedFields = Partial<{
+  company_name: RestrictedFieldMeta;
+  company_website: RestrictedFieldMeta;
+  linkedin_url: RestrictedFieldMeta;
+}>;
+
 export type RawEmployerProfileResponseData = {
   id: string;
   userId: string;
@@ -52,7 +54,7 @@ export type RawEmployerProfileResponseData = {
   preferred_experience_levels?: EmployerExperienceLevel[];
   hiringCount?: EmployerHiringCount;
   hiring_count_range?: EmployerHiringCount;
-  restricted_fields?: EmployerRestrictedFields;
+  restricted_fields?: RawEmployerRestrictedFields;
 };
 
 /** Slim profile passed to UI. Field names mirror PATCH body. */
@@ -72,10 +74,10 @@ export type EmployerProfileDetail = {
   restrictedFields: EmployerRestrictedFields;
 };
 
-/** PATCH /employer/profile body. All fields optional — caller sends only
- *  what changed. Restricted fields trigger a 180-day cooldown server-side. */
+export type EmployerTypePayload = "Recruiter" | "Founder" | "Agency";
+
 export type UpdateEmployerProfileInput = {
-  employerType?: EmployerJoiningRoleId;
+  employerType?: EmployerTypePayload;
   companyName?: string;
   companyWebsite?: string;
   industry?: string;
