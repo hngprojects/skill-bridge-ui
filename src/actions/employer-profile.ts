@@ -13,9 +13,6 @@ import type {
 
 import { unwrapData } from "./utils";
 
-/** Normalize the GET /employer/profile response. Backend ships both PATCH-style
- *  camelCase names and legacy snake_case duplicates — we collapse to a single
- *  canonical shape using the PATCH names so the UI works against one schema. */
 function normalizeEmployerProfile(
   raw: RawEmployerProfileResponseData,
 ): EmployerProfileDetail {
@@ -34,6 +31,14 @@ function normalizeEmployerProfile(
     raw.hiringCount !== undefined ? raw.hiringCount : raw.hiring_count_range;
   const hiringCount = hiringCountRaw ?? null;
 
+  const rawRestrictedFields = raw.restricted_fields ?? {};
+  const restrictedFields: EmployerProfileDetail["restrictedFields"] = {
+    companyName: rawRestrictedFields.company_name,
+    companyWebsite: rawRestrictedFields.company_website,
+
+    linkedinCompanyPageUrl: rawRestrictedFields.linkedin_url,
+  };
+
   return {
     id: raw.id,
     userId: raw.userId,
@@ -48,7 +53,7 @@ function normalizeEmployerProfile(
     hiringRoles,
     preferredExperienceLevels,
     hiringCount,
-    restrictedFields: raw.restricted_fields ?? {},
+    restrictedFields,
   };
 }
 
