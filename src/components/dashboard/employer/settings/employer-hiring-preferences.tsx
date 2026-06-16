@@ -17,6 +17,7 @@ import {
   type EmployerRoleTrackId,
 } from "@/constants/employer-onboarding";
 import { useEmployerProfile, useUpdateEmployerProfile } from "@/hooks/api";
+import type { EmployerTypePayload } from "@/types/api/employer-profile";
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
@@ -88,10 +89,10 @@ export function EmployerHiringPreferences() {
   const handleSave = async () => {
     if (!dirty) return;
     try {
-      const employerTypeValue =
-        joiningAs.charAt(0).toUpperCase() + joiningAs.slice(1);
+      const employerTypeValue = (joiningAs.charAt(0).toUpperCase() +
+        joiningAs.slice(1)) as EmployerTypePayload;
       await updateProfile({
-        employerType: employerTypeValue as typeof joiningAs,
+        employerType: employerTypeValue,
         hiringRoles,
         preferredExperienceLevels: experienceLevels,
         hiringCount: hiringCount === "" ? null : hiringCount,
