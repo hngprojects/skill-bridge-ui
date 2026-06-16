@@ -21,12 +21,17 @@ function buildMailto(email: string, roleTitle: string): string {
   return `mailto:${email}?subject=${encodeURIComponent(subject)}`;
 }
 
-async function copyToClipboard(value: string) {
+/** Returns true on a successful clipboard write so callers can flip
+ *  optimistic UI (e.g. a "Copied" label) only when the write actually
+ *  landed. Toasts handle the user-facing feedback. */
+async function copyToClipboard(value: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(value);
     appToast.success("Email copied.");
+    return true;
   } catch {
     appToast.error("Couldn't copy. Select and copy manually.");
+    return false;
   }
 }
 
@@ -40,7 +45,8 @@ export function TalentOfferContactPanel({
 
   async function handleCopy() {
     if (!employer.email) return;
-    await copyToClipboard(employer.email);
+    const ok = await copyToClipboard(employer.email);
+    if (!ok) return;
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
   }
@@ -85,15 +91,13 @@ export function TalentOfferContactPanel({
             {employer.email ?? "—"}
           </dd>
         </div>
-        {employer.country ? (
-          <div className="flex flex-col gap-1">
-            <dt className="text-xs font-medium text-[#667085]">Country</dt>
-            <dd className="flex items-center gap-1 text-sm font-medium text-[#101828]">
-              <MapPin className="size-3.5 text-[#98A2B3]" aria-hidden />
-              {employer.country}
-            </dd>
-          </div>
-        ) : null}
+        <div className="flex flex-col gap-1">
+          <dt className="text-xs font-medium text-[#667085]">Country</dt>
+          <dd className="flex items-center gap-1 text-sm font-medium text-[#101828]">
+            <MapPin className="size-3.5 text-[#98A2B3]" aria-hidden />
+            {employer.country ?? "Unknown"}
+          </dd>
+        </div>
       </dl>
 
       <div className="flex flex-wrap gap-2">

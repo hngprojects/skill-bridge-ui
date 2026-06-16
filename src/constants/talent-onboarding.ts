@@ -121,9 +121,16 @@ const API_TRACK_TO_LABEL: Record<string, string> = Object.fromEntries(
   TRACK_OPTIONS.map(({ id, label }) => [trackIdToApiRoleTrack(id), label]),
 );
 
+/** Aliases for retired track ids that may still appear in legacy records
+ *  until backend data is migrated. Maps deprecated slug → current label so
+ *  historical talents don't render as raw enum strings. */
+const LEGACY_TRACK_ALIASES: Record<string, string> = {
+  social_media_marketing: "Marketing",
+};
+
 export function apiRoleTrackToLabel(
   apiTrack: string | undefined,
 ): string | undefined {
   if (!apiTrack) return undefined;
-  return API_TRACK_TO_LABEL[apiTrack];
+  return API_TRACK_TO_LABEL[apiTrack] ?? LEGACY_TRACK_ALIASES[apiTrack];
 }

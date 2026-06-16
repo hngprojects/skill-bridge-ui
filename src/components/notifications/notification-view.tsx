@@ -47,7 +47,9 @@ function notificationHref(
   if (!looksOfferRelated) return null;
 
   if (role === "talent") {
-    return offerId ? `/t/offers/${offerId}` : "/t/offers";
+    // Encode defensively — `offerId` is read from a freeform notification
+    // payload, so an unexpected value shouldn't reshape the route.
+    return offerId ? `/t/offers/${encodeURIComponent(offerId)}` : "/t/offers";
   }
   // Employer side has no per-offer detail page yet — drop into the offers
   // tab of /e/shortlist so the user can still find what changed.

@@ -46,10 +46,10 @@ const NotificationItem = ({
           : undefined
       }
       className={`flex flex-row items-start gap-x-4 rounded-xl border px-4 py-4 md:rounded-xl md:px-5 md:py-5 transition-colors ${
-        isRead
-          ? "border-[#D9D9D9] bg-[#FAFAFA] cursor-default"
-          : "border-[#34A853] bg-white cursor-pointer hover:bg-green-50"
-      } ${onActivate ? "cursor-pointer" : ""}`}
+        isRead ? "border-[#D9D9D9] bg-[#FAFAFA]" : "border-[#34A853] bg-white"
+      } ${
+        isInteractive ? "cursor-pointer hover:bg-green-50" : "cursor-default"
+      }`}
     >
       <Image
         src="/assets/icons/notification-bell-active.svg"

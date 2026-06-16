@@ -17,12 +17,17 @@ function buildMailto(email: string, roleTitle: string | undefined): string {
   return `mailto:${email}?subject=${encodeURIComponent(subject)}`;
 }
 
-async function copyToClipboard(value: string) {
+/** Returns true on a successful clipboard write so callers can flip
+ *  optimistic UI (e.g. a "Copied" label) only when the write actually
+ *  landed. Toasts handle the user-facing feedback. */
+async function copyToClipboard(value: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(value);
     appToast.success("Email copied.");
+    return true;
   } catch {
     appToast.error("Couldn't copy. Select and copy manually.");
+    return false;
   }
 }
 
@@ -35,7 +40,8 @@ export function EmployerTalentContactPanel({
 
   async function handleCopy() {
     if (!email) return;
-    await copyToClipboard(email);
+    const ok = await copyToClipboard(email);
+    if (!ok) return;
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
   }
