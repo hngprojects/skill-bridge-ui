@@ -22,37 +22,28 @@ export function RoleCard({ role }: { role: EmployerRoleItem }) {
   };
 
   return (
-    <article className="group relative rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors hover:border-[#D0D5DD]">
-      <Link
-        href={`/e/roles/${role.id}`}
-        aria-label={`View ${role.title}`}
-        className="absolute inset-0 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#05060F]"
-      />
-
-      <div className="relative flex items-start justify-between gap-3">
+    <article className="rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors has-[a:hover]:border-[#D0D5DD]">
+      <div className="flex items-start justify-between gap-3">
         <div className="flex size-8 items-center justify-center rounded-full bg-[#E4E7EC] text-[#667085]">
           <Box className="size-4 stroke-[1.7]" />
         </div>
-        {/* Stop the click from bubbling to the card-wide link so toggling
-            the role status doesn't navigate to the detail page. */}
-        <span
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-          className="relative"
-        >
-          <Switch
-            checked={role.status === "active"}
-            onCheckedChange={handleToggle}
-            disabled={isPending}
-            aria-label={`Toggle ${role.title} status`}
-            className="data-checked:bg-[#079455]"
-          />
-        </span>
+        <Switch
+          checked={role.status === "active"}
+          onCheckedChange={handleToggle}
+          disabled={isPending}
+          aria-label={`Toggle ${role.title} status`}
+          className="data-checked:bg-[#079455]"
+        />
       </div>
 
-      <div className="relative mt-6">
-        <h3 className="line-clamp-2 text-[15px] font-medium leading-6 text-[#101828]">
-          {role.title}
+      <div className="mt-6">
+        <h3 className="line-clamp-2 text-[15px] font-medium leading-6">
+          <Link
+            href={`/e/roles/${role.id}`}
+            className="text-[#101828] transition-colors hover:text-[#475467] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#05060F]"
+          >
+            {role.title}
+          </Link>
         </h3>
 
         <div className="mt-5 flex items-end gap-2">

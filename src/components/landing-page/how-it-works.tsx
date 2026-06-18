@@ -17,7 +17,12 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative mx-auto max-w-340 bg-white px-6 py-12 md:py-20"
+      // overflow-x-clip contains the decorative `w-screen` ellipse below,
+      // which bleeds past the document width on systems with a scrollbar
+      // gutter and was the source of the page-level horizontal scrollbar.
+      // Using `clip` over `hidden` so we don't create a containing block
+      // for unrelated descendants.
+      className="relative mx-auto max-w-340 overflow-x-clip bg-white px-6 py-12 md:py-20"
     >
       <div className="w-full pb-12 md:pb-20">
         <motion.h2

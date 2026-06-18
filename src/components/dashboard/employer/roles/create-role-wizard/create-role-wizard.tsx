@@ -90,8 +90,9 @@ export function CreateRoleWizard() {
           assessmentId: selectedAssessments[0],
         },
         {
-          onSuccess: () => {
+          onSuccess: (createdRole) => {
             useCreatedRoleStore.getState().setRole({
+              id: createdRole.id,
               title: roleTitle,
               category,
               companyUrl,

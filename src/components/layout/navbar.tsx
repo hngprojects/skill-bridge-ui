@@ -104,12 +104,12 @@ export function Navbar() {
               aria-hidden="true"
             />
 
-            <Link
+            {/* <Link
               href="/signup?user=employer"
               className="py-1 text-[15px] font-medium text-white transition-colors hover:text-white/90"
             >
               Hire a Talent
-            </Link>
+            </Link> */}
           </nav>
 
           {status === "loading" ? null : (
