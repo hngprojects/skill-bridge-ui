@@ -21,7 +21,7 @@ export function VerifiedReportSummary({ data }: VerifiedReportSummaryProps) {
             height={124}
             width={124}
             alt=""
-            className="rounded-full object-cover size-[124px]"
+            className="rounded-full object-cover size-31"
             unoptimized={Boolean(data.avatar_url)}
           />
           <div className="flex flex-col gap-y-1">
