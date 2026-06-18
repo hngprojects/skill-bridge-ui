@@ -26,7 +26,7 @@ export default function EmployerOnboardingPage() {
 
       <aside className="hidden min-w-0 w-full flex-col items-center justify-center gap-6 text-center lg:flex xl:gap-8">
         <div className="w-full max-w-full space-y-3 xl:space-y-4">
-          <p className="font-sans text-xl font-bold leading-snug tracking-[-0.01em] text-primary lg:text-2xl xl:text-[28px] xl:leading-[1.25]">
+          <p className="font-sans text-xl font-bold leading-snug tracking-[-0.01em] text-primary lg:text-2xl xl:text-[28px] xl:leading-tight">
             &ldquo;Focus your time on qualified candidates instead of sorting
             through endless applications.&rdquo;
           </p>

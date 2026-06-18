@@ -4,6 +4,8 @@ import type { WorkPreferencesValues } from "@/types/create-role-schema";
 import type { UploadJdValues } from "@/components/dashboard/employer/roles/create-role-wizard/step-upload-jd";
 
 export type CreatedRoleData = {
+  /** Backend-assigned id from `POST /employer/roles`. */
+  id?: string;
   title: string;
   category: string;
   companyUrl: string;

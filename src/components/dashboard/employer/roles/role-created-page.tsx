@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Box, FlaskConical } from "lucide-react";
 
@@ -116,6 +117,20 @@ export function RoleCreatedPage() {
           <p className="mt-1 text-sm text-[#667085]">
             You can now use this to send offer to job ready talents.
           </p>
+
+          {/* Primary follow-ups. "View role" deep-links to the role's
+              detail page when we have the backend id (newly-created roles
+              will, older drafts read from the store may not). */}
+          <div className="mt-6 flex flex-wrap gap-3">
+            {role.id ? (
+              <Button asChild className="h-10 rounded-lg">
+                <Link href={`/e/roles/${role.id}`}>View role</Link>
+              </Button>
+            ) : null}
+            <Button asChild variant="outline" className="h-10 rounded-lg">
+              <Link href="/e/roles">View all roles</Link>
+            </Button>
+          </div>
 
           {/* Inner role details card */}
           <div className="mt-6 rounded-2xl border border-[#E5E7EB] p-8">
