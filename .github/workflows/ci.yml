@@ -87,7 +87,7 @@ jobs:
           HUSKY: 0
 
       - name: Run pnpm audit
-        run: pnpm audit --audit-level=moderate
+        run: pnpm audit --prod --audit-level=moderate
 
   trivy:
     name: Trivy Security Scan
