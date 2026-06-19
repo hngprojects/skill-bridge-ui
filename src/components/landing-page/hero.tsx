@@ -3,7 +3,6 @@
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { FloatingIcons } from "./floating-icons";
 
 const TEAL = "#A5C8D8";
 const PURPLE = "#CBB0EB";
@@ -39,7 +38,7 @@ const profileBars: { w: number; faded: boolean }[][] = [
 function CandidateCard() {
   return (
     <div
-      className="rounded-[24px] md:rounded-[28px] p-5 md:p-6 rotate-1 md:rotate-3"
+      className="rounded-[24px] md:rounded-[28px] p-6 md:p-8 min-h-75 md:min-h-95 rotate-1 md:rotate-3"
       style={{ backgroundColor: TEAL }}
     >
       <h3 className="text-xl md:text-2xl font-bold text-gray-900">
@@ -50,10 +49,10 @@ function CandidateCard() {
       </p>
 
       <div
-        className="mt-4 md:mt-5 overflow-hidden rounded-[18px] md:rounded-[20px]"
+        className="mt-5 md:mt-6 overflow-hidden rounded-[18px] md:rounded-[20px]"
         style={{ backgroundColor: DARK }}
       >
-        <div className="flex items-center gap-3 md:gap-4 px-4 md:px-5 pt-4 md:pt-5 pb-3 md:pb-4">
+        <div className="flex items-center gap-3 md:gap-4 px-4 md:px-5 pt-5 md:pt-6 pb-4 md:pb-5">
           <span className="whitespace-nowrap text-[10px] md:text-xs text-gray-300">
             Online course (3/5)
           </span>
@@ -72,10 +71,10 @@ function CandidateCard() {
         </div>
 
         <div
-          className="mx-2 md:mx-3 mb-2 md:mb-3 rounded-[12px] md:rounded-[14px] p-3 md:p-4"
+          className="mx-2 md:mx-3 mb-3 md:mb-4 rounded-[12px] md:rounded-[14px] p-4 md:p-5"
           style={{ backgroundColor: TEAL }}
         >
-          <div className="space-y-2 md:space-y-3">
+          <div className="space-y-3 md:space-y-4">
             {checklistItems.map((item, i) => (
               <motion.div
                 key={i}
@@ -106,7 +105,7 @@ function CandidateCard() {
                   )}
                 </div>
                 <div
-                  className="h-2 md:h-2.5 rounded-full"
+                  className="h-2.5 md:h-3 rounded-full"
                   style={{
                     width: `${item.width}%`,
                     backgroundColor: item.checked ? DARK : "#8CAAB5",
@@ -129,7 +128,7 @@ function EmployerCard() {
 
   return (
     <div
-      className="rounded-[24px] md:rounded-[28px] p-5 md:p-6 -rotate-1 md:-rotate-3"
+      className="rounded-[24px] md:rounded-[28px] p-4 md:p-6 min-h-90 md:min-h-115 -rotate-1 md:-rotate-3"
       style={{ backgroundColor: PURPLE }}
     >
       <h3 className="text-xl md:text-2xl font-bold text-gray-900">
@@ -139,31 +138,31 @@ function EmployerCard() {
         Browse pre-screened candidates ranked by employability score.
       </p>
 
-      <div className="mt-4 md:mt-5 grid grid-cols-2 gap-2 md:gap-3">
+      <div className="mt-6 md:mt-8 grid grid-cols-2 gap-3 md:gap-4">
         {candidates.map((c, ci) => (
           <div
             key={c.name}
-            className="overflow-hidden rounded-[18px] md:rounded-[20px]"
+            className="flex min-h-45 md:min-h-55 flex-col overflow-hidden rounded-[18px] md:rounded-[20px]"
             style={{ backgroundColor: DARK }}
           >
-            <div className="px-3 md:px-4 pt-3 md:pt-4 pb-2 md:pb-3">
+            <div className="px-3 md:px-4 pt-5 md:pt-6 pb-4 md:pb-5">
               <p className="text-[11px] md:text-sm font-bold text-white truncate">
                 {c.name}
               </p>
-              <p className="mt-0.5 text-[9px] md:text-xs text-gray-400">
+              <p className="mt-1 text-[9px] md:text-xs text-gray-400">
                 Score: {c.score}%
               </p>
             </div>
 
             <div
-              className="mx-2 md:mx-3 mb-2 md:mb-3 rounded-[10px] md:rounded-[14px] p-2 md:p-3"
+              className="mx-2 md:mx-3 mb-4 md:mb-5 mt-auto rounded-[10px] md:rounded-[14px] p-4 md:p-6"
               style={{ backgroundColor: PURPLE }}
             >
-              <div className="space-y-1.5 md:space-y-2">
+              <div className="space-y-3 md:space-y-4">
                 {c.bars.map((bar, i) => (
                   <motion.div
                     key={i}
-                    className="h-1.5 md:h-2.5 rounded-full"
+                    className="h-2.5 md:h-3.5 rounded-full"
                     style={{
                       backgroundColor: bar.faded ? "#8B78A8" : DARK,
                     }}
@@ -189,40 +188,44 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden min-h-[calc(100svh-73px)] md:min-h-0 bg-[#EFEFEF]"
+      className="relative overflow-hidden min-h-[calc(100svh-73px)] md:min-h-[calc(100vh-73px)] bg-[#EFEFEF]"
     >
-      <FloatingIcons />
-
-      {/* Hero text */}
-      <div className="relative z-10 mx-auto max-w-2xl px-7 pt-16 pb-10 text-center sm:px-6 md:pt-32 md:pb-16">
+      <div className="relative z-10 mx-auto max-w-3xl px-2 pt-16 pb-10 text-center sm:px-6 md:pt-25 md:pb-16 space-y-10">
         <motion.h1
-          className="text-[27px] leading-[1.08] font-bold tracking-tight text-gray-900 sm:text-3xl md:text-5xl"
+          className="text-[27px] leading-[1.08] font-bold tracking-tight text-[#151515] sm:text-3xl md:text-5xl"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease }}
         >
-          Find Talent, Get Hired
+          Prove Your Skills. Make Better Hiring Decisions
         </motion.h1>
         <motion.p
-          className="mx-auto mt-4 max-w-76 text-sm leading-relaxed text-gray-600 sm:max-w-none md:mt-5 md:text-lg"
+          className="mx-auto max-w-76 text-base leading-relaxed text-[#151515] sm:max-w-none md:text-lg font-light"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1, ease }}
         >
-          SkillBridge verifies real ability and connects job-ready talents with
-          employers.
+          SkillBridge verifies talents’ skills through structured assessments so
+          employers can confidently discover and hire qualified talent faster.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.2, ease }}
+          className="flex flex-col md:flex-row gap-2 mt-6 w-full items-center justify-center "
         >
           <Button
-            className="mt-6 rounded-lg bg-primary-900 px-6 py-5 text-sm font-semibold text-white hover:bg-[#1B2935] md:mt-8"
+            className="rounded-[8px] bg-primary-900 px-4.5 py-3 text-base font-semibold text-white hover:bg-[#1B2935]"
             asChild
           >
-            <Link href="/signup">Get Started</Link>
+            <Link href="/signup">Get Started as a Talent</Link>
           </Button>
+          {/* <Button
+            className="rounded-[8px] bg-white px-4.5 py-3 text-base font-semibold text-[#05060F] hover:bg-white/80 border-[0.5px] border-[#05060F]"
+            asChild
+          >
+            <Link href="/signup?user=employer">Join as an employer</Link>
+          </Button> */}
         </motion.div>
       </div>
 
@@ -255,19 +258,19 @@ export function HeroSection() {
 
       {/* Background Curve */}
       <motion.div
-        className="absolute z-10 bottom-0 w-full pointer-events-none"
-        initial={{ opacity: 0, y: 12 }}
+        className="absolute z-10 bottom-0 left-1/2 w-[130%] -translate-x-1/2 pointer-events-none"
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.55, ease }}
       >
         <svg
-          className="w-full h-12 md:h-auto"
-          viewBox="0 0 1440 137"
+          className="w-full h-10 md:h-auto"
+          viewBox="0 0 1440 80"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
         >
-          <ellipse cx="720" cy="720" rx="1275" ry="720" fill="white" />
+          <ellipse cx="720" cy="720" rx="1200" ry="720" fill="white" />
         </svg>
       </motion.div>
     </section>

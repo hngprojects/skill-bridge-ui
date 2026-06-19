@@ -45,9 +45,11 @@ const NOTIFICATIONS_DUMMY_DATA: Record<NotificationTab, Notification[]> = {
       time: "4 hours",
     },
   ],
+
+  Read: [],
 };
 
-const notificationTabs = ["All", "Unread"] as const;
+const notificationTabs = ["All", "Unread", "Read"] as const;
 type NotificationTab = (typeof notificationTabs)[number];
 
 type Notification = {

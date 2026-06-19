@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { notificationTabs, NotificationTab } from "@/constants/notifications";
 import NotificationItem from "./notification-item";
@@ -9,13 +10,54 @@ import {
   useMarkAsRead,
   useMarkAllAsRead,
 } from "@/hooks/api";
-import type { NotificationRole } from "@/types/api/notifications";
+import type {
+  NotificationApiItem,
+  NotificationRole,
+} from "@/types/api/notifications";
 
 type NotificationViewProps = {
   role: NotificationRole;
 };
 
+/** Pulls an offer id off the notification's freeform `data` bag. Backend
+ *  hasn't committed to a key yet, so we read either `offerId` or `offer_id`
+ *  defensively. */
+function extractOfferId(data: NotificationApiItem["data"]): string | undefined {
+  const candidate = data?.offerId ?? data?.offer_id;
+  return typeof candidate === "string" && candidate.length > 0
+    ? candidate
+    : undefined;
+}
+
+/** Best-effort target route per notification. Returns null when there's
+ *  nothing useful to navigate to — the item then falls back to just
+ *  marking-read on click.
+ *
+ *  Today this only routes offer-related notifications; broader heuristics
+ *  (by `type`) can be added once the backend documents the type vocabulary. */
+function notificationHref(
+  notification: NotificationApiItem,
+  role: NotificationRole,
+): string | null {
+  const offerId = extractOfferId(notification.data);
+  const looksOfferRelated =
+    Boolean(offerId) ||
+    notification.type?.toLowerCase().includes("offer") === true;
+
+  if (!looksOfferRelated) return null;
+
+  if (role === "talent") {
+    // Encode defensively — `offerId` is read from a freeform notification
+    // payload, so an unexpected value shouldn't reshape the route.
+    return offerId ? `/t/offers/${encodeURIComponent(offerId)}` : "/t/offers";
+  }
+  // Employer side has no per-offer detail page yet — drop into the offers
+  // tab of /e/shortlist so the user can still find what changed.
+  return "/e/shortlist";
+}
+
 const NotificationView = ({ role }: NotificationViewProps) => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<NotificationTab>("All");
 
   const {
@@ -34,7 +76,16 @@ const NotificationView = ({ role }: NotificationViewProps) => {
   const filtered =
     activeTab === "Unread"
       ? notifications.filter((n) => !n.isRead)
-      : notifications;
+      : activeTab === "Read"
+        ? notifications.filter((n) => n.isRead)
+        : notifications;
+
+  const emptyMessage =
+    activeTab === "Unread"
+      ? "You're all caught up — no unread notifications."
+      : activeTab === "Read"
+        ? "No read notifications yet."
+        : "No notifications yet.";
 
   return (
     <div className="flex flex-col gap-y-8 rounded-xl border border-[#D9D9D9] bg-[#FAFAFA] p-4 md:rounded-2xl md:p-6">
@@ -74,21 +125,25 @@ const NotificationView = ({ role }: NotificationViewProps) => {
           </button>
         </div>
       ) : filtered.length === 0 ? (
-        <p className="body text-muted-foreground">No notifications yet.</p>
+        <p className="body text-muted-foreground">{emptyMessage}</p>
       ) : (
         <ul className="mb-4 flex flex-col gap-y-3">
-          {filtered.map((notification) => (
-            <NotificationItem
-              key={notification.id}
-              notification={{
-                boldText: notification.title,
-                normalText: notification.body,
-                time: notification.createdAt,
-              }}
-              isRead={notification.isRead}
-              onMarkRead={() => markAsRead(notification.id)}
-            />
-          ))}
+          {filtered.map((notification) => {
+            const href = notificationHref(notification, role);
+            return (
+              <NotificationItem
+                key={notification.id}
+                notification={{
+                  boldText: notification.title,
+                  normalText: notification.body,
+                  time: notification.createdAt,
+                }}
+                isRead={notification.isRead}
+                onMarkRead={() => markAsRead(notification.id)}
+                onActivate={href ? () => router.push(href) : undefined}
+              />
+            );
+          })}
         </ul>
       )}
     </div>

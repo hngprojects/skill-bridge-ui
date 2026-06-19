@@ -7,7 +7,6 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 import {
-  FacebookIcon,
   InstagramIcon,
   LinkedInIcon,
   TikTokIcon,
@@ -58,11 +57,6 @@ const socialLinks: SocialItem[] = [
     label: "Instagram",
     href: "https://www.instagram.com/credlanehq",
     icon: <InstagramIcon />,
-  },
-  {
-    label: "Facebook",
-    href: "https://www.facebook.com/credlanehq",
-    icon: <FacebookIcon />,
   },
   {
     label: "LinkedIn",
@@ -126,7 +120,7 @@ export function Footer({ className }: { className?: string }) {
 
   return (
     <footer className={cn("bg-[#05060F] text-white", className)}>
-      <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
+      <div className="mx-auto max-w-7xl px-6 py-12 md:py-16">
         <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between md:gap-12 lg:gap-16">
           <div className="flex max-w-xs flex-col gap-6">
             <Link href="/" className="relative block h-10 w-42 shrink-0">
@@ -146,7 +140,7 @@ export function Footer({ className }: { className?: string }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white shadow-sm transition-opacity hover:opacity-90"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full shadow-sm transition-opacity hover:opacity-90"
                 >
                   {icon}
                 </a>

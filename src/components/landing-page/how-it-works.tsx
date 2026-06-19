@@ -1,96 +1,67 @@
 "use client";
 
 import { motion } from "motion/react";
-import Image from "next/image";
+import { ProcessCard } from "@/components/landing-page/process-card";
 import { processSteps } from "@/constants/landing-page";
 
 const ease = [0.4, 0, 0.2, 1] as const;
 const viewport = { once: true, margin: "-100px" } as const;
 
 export function HowItWorks() {
+  const steps = processSteps ?? [];
+  const featuredStep = steps.find((step) => step.featured);
+  const secondarySteps = featuredStep
+    ? steps.filter((step) => step.id !== featuredStep.id)
+    : steps;
+
   return (
     <section
       id="how-it-works"
-      className="relative overflow-hidden bg-white py-12 sm:py-24 lg:py-40"
+      // overflow-x-clip contains the decorative `w-screen` ellipse below,
+      // which bleeds past the document width on systems with a scrollbar
+      // gutter and was the source of the page-level horizontal scrollbar.
+      // Using `clip` over `hidden` so we don't create a containing block
+      // for unrelated descendants.
+      className="relative mx-auto max-w-340 overflow-x-clip bg-white px-6 py-12 md:py-20"
     >
-      <div className="mx-auto w-full max-w-6xl px-6">
+      <div className="w-full pb-12 md:pb-20">
         <motion.h2
-          className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl text-center"
+          className="mx-auto max-w-3xl text-center text-2xl font-bold tracking-tight text-[#151515] sm:text-3xl md:text-4xl"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease }}
           viewport={viewport}
         >
-          How it Works
+          Everything You Need To Prove Your Skills
         </motion.h2>
 
-        <div className="flex flex-col gap-4">
-          {processSteps.map((step) => {
-            const imgX = step.reverse ? 60 : -60;
-            const textX = step.reverse ? -60 : 60;
+        <div className="mt-10 flex flex-col gap-5 md:mt-12 md:gap-6">
+          {featuredStep && <ProcessCard step={featuredStep} index={0} />}
 
-            return (
-              <div
-                key={step.id}
-                className={`flex flex-col items-center gap-6 sm:gap-10 lg:gap-24 ${
-                  step.reverse ? "lg:flex-row-reverse" : "lg:flex-row"
-                }`}
-              >
-                {/* Image */}
-                <motion.div
-                  className="w-full lg:w-1/2 flex justify-center"
-                  initial={{ opacity: 0, x: imgX }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, ease }}
-                  viewport={viewport}
-                >
-                  <div className="relative flex h-64 sm:h-80 lg:h-87.5 w-full max-w-xl items-center justify-center overflow-hidden">
-                    <div className="relative h-full w-full">
-                      <Image
-                        src={step.img}
-                        alt={step.title}
-                        fill
-                        className="object-contain"
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Text */}
-                <motion.div
-                  className="w-full lg:w-1/2 max-w-xl"
-                  initial={{ opacity: 0, x: textX }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1, ease }}
-                  viewport={viewport}
-                >
-                  <p className="mb-4 text-sm font-bold tracking-[0.15em] text-slate-500 uppercase">
-                    {step.eyebrow}
-                  </p>
-                  <h3 className="mb-6 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-                    {step.title}
-                  </h3>
-                  <p className="leading-relaxed text-slate-600">
-                    {step.description}
-                  </p>
-                </motion.div>
-              </div>
-            );
-          })}
+          <div className="grid gap-5 md:grid-cols-2 md:gap-6">
+            {secondarySteps.map((step, index) => (
+              <ProcessCard key={step.id} step={step} index={index + 1} />
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="absolute z-10 bottom-0 w-full">
+      <motion.div
+        className="pointer-events-none absolute bottom-0 left-1/2 z-10 w-screen -translate-x-1/2"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.15, ease }}
+      >
         <svg
-          className="w-full h-auto"
-          viewBox="0 0 1440 140"
+          className="h-10 w-full md:h-auto"
+          viewBox="0 0 1440 80"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
         >
-          <ellipse cx="720" cy="720" rx="1275" ry="720" fill="#EFF7FF" />
+          <ellipse cx="720" cy="720" rx="1500" ry="720" fill="#EFF7FF" />
         </svg>
-      </div>
+      </motion.div>
     </section>
   );
 }

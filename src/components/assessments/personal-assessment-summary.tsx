@@ -11,13 +11,18 @@ import { useMe } from "@/hooks/api";
 const TRACK_LABELS: Record<string, string> = {
   backend_developer: "Backend Development",
   cloud_devops: "Cloud / DevOps",
-  social_media_marketing: "Social media marketing",
+  marketing: "Marketing",
+  // Legacy alias — talents stored before the rename may still carry this id.
+  social_media_marketing: "Marketing",
   data_analyst: "Data Analysis",
   frontend_developer: "Frontend Development",
   fullstack_developer: "Fullstack Development",
   mobile_developer: "Mobile Development",
   product_designer: "Product Design",
   product_manager: "Product Management",
+  quality_assurance: "Quality Assurance",
+  // Retired from the onboarding pick list, kept here so older records still
+  // render a friendly label until backend data is migrated.
   data_scientist: "Data Science",
 };
 

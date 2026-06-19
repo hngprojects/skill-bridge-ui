@@ -10,6 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { CreateRoleDialog } from "@/components/dashboard/employer/roles/create-role-dialog";
+import type { CreateRoleValues } from "@/types/api/employer-roles";
 import { cn } from "@/lib/utils";
 
 import { SendOfferDialog } from "./send-offer-dialog";
@@ -22,17 +24,25 @@ type SendOfferTriggerProps = {
 
 /** Send-Offer split button: main button opens the role picker (the most
  *  common path), the chevron exposes "Create a new role" for first-time
- *  employers.*/
+ *  employers.
+ */
 export function SendOfferTrigger({
   userId,
   label = "Send Offer",
   className,
 }: SendOfferTriggerProps) {
   const router = useRouter();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSelectDialogOpen, setIsSelectDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
-  function handleCreateNewRole() {
-    router.push("/e/roles/create");
+  function handleCreateDialogContinue(values: CreateRoleValues) {
+    setIsCreateDialogOpen(false);
+    const params = new URLSearchParams({
+      title: values.roleTitle.trim(),
+      category: values.category,
+      companyUrl: values.companyUrl.trim(),
+    });
+    router.push(`/e/roles/create?${params.toString()}`);
   }
 
   return (
@@ -45,7 +55,7 @@ export function SendOfferTrigger({
       >
         <button
           type="button"
-          onClick={() => setIsDialogOpen(true)}
+          onClick={() => setIsSelectDialogOpen(true)}
           className="px-4 text-base font-semibold leading-5 tracking-[0.016em] transition-colors hover:bg-[#151515]/90"
         >
           {label}
@@ -67,13 +77,13 @@ export function SendOfferTrigger({
             className="w-52 rounded-xl border border-[#E4E7EC] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.14)]"
           >
             <DropdownMenuItem
-              onSelect={() => setIsDialogOpen(true)}
+              onSelect={() => setIsSelectDialogOpen(true)}
               className="h-9 cursor-pointer rounded-md px-2 text-sm text-[#344054]"
             >
               Select a role
             </DropdownMenuItem>
             <DropdownMenuItem
-              onSelect={handleCreateNewRole}
+              onSelect={() => setIsCreateDialogOpen(true)}
               className="h-9 cursor-pointer rounded-md px-2 text-sm text-[#344054]"
             >
               Create a new role
@@ -82,10 +92,17 @@ export function SendOfferTrigger({
         </DropdownMenu>
       </div>
 
+      {/* Role picker  */}
       <SendOfferDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
+        open={isSelectDialogOpen}
+        onOpenChange={setIsSelectDialogOpen}
         userId={userId}
+      />
+
+      <CreateRoleDialog
+        open={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
+        onCreateRole={handleCreateDialogContinue}
       />
     </>
   );

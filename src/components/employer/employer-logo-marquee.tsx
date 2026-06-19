@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 
 const logos = [
@@ -14,6 +14,8 @@ const logos = [
 ];
 
 export function EmployerLogoMarquee() {
+  const reducedMotion = useReducedMotion();
+
   return (
     <motion.div
       className="w-full max-w-full overflow-hidden opacity-40 grayscale"
@@ -24,8 +26,12 @@ export function EmployerLogoMarquee() {
     >
       <motion.div
         className="flex min-w-max items-center gap-x-3 lg:gap-x-4 xl:gap-x-5"
-        animate={{ x: ["0%", "-50%"] }}
-        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        animate={reducedMotion ? { x: "0%" } : { x: ["0%", "-50%"] }}
+        transition={
+          reducedMotion
+            ? { duration: 0 }
+            : { duration: 25, repeat: Infinity, ease: "linear" }
+        }
       >
         {[...logos, ...logos].map((logo, index) => (
           <Image

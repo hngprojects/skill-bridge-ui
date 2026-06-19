@@ -42,8 +42,8 @@ export function StepTalentAssessment({
         </p>
 
         <p className="mt-2 max-w-sm text-sm leading-6 text-[#667085]">
-          Create your custom assessment or you can select from the ones we have
-          recommended for you.
+          Select an assessment we&apos;ve curated for this role. Candidates will
+          complete it before the offer moves forward.
         </p>
 
         {hasSelections ? (

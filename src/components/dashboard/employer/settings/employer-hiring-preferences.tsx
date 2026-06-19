@@ -17,6 +17,7 @@ import {
   type EmployerRoleTrackId,
 } from "@/constants/employer-onboarding";
 import { useEmployerProfile, useUpdateEmployerProfile } from "@/hooks/api";
+import type { EmployerTypePayload } from "@/types/api/employer-profile";
 import { authFailureMessage } from "@/lib/api";
 import { appToast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
@@ -40,7 +41,6 @@ export function EmployerHiringPreferences() {
   const { data: profile, isLoading, isError, refetch } = useEmployerProfile();
   const { mutateAsync: updateProfile, isPending } = useUpdateEmployerProfile();
 
-  // Same "draft over server" pattern as the company profile section.
   const [draft, setDraft] = useState<HiringDraft>({});
 
   const joiningAs: EmployerJoiningRoleId =
@@ -89,8 +89,10 @@ export function EmployerHiringPreferences() {
   const handleSave = async () => {
     if (!dirty) return;
     try {
+      const employerTypeValue = (joiningAs.charAt(0).toUpperCase() +
+        joiningAs.slice(1)) as EmployerTypePayload;
       await updateProfile({
-        employerType: joiningAs,
+        employerType: employerTypeValue,
         hiringRoles,
         preferredExperienceLevels: experienceLevels,
         hiringCount: hiringCount === "" ? null : hiringCount,
