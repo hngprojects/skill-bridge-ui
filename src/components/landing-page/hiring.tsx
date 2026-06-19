@@ -41,7 +41,7 @@ export function HiringGrid() {
             <ProcessCard
               step={featuredStep}
               index={secondarySteps.length}
-              ctaHref="/signup?user=employer"
+              // ctaHref="/signup?user=employer"
               bgColor="#DFEDFD"
             />
           )}
