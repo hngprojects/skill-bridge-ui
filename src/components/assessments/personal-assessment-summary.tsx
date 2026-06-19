@@ -20,6 +20,9 @@ const TRACK_LABELS: Record<string, string> = {
   mobile_developer: "Mobile Development",
   product_designer: "Product Design",
   product_manager: "Product Management",
+  quality_assurance: "Quality Assurance",
+  // Retired from the onboarding pick list, kept here so older records still
+  // render a friendly label until backend data is migrated.
   data_scientist: "Data Science",
 };
 

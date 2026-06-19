@@ -31,7 +31,7 @@ export function HiringGrid() {
                 key={step.id}
                 step={step}
                 index={index}
-                ctaHref="/signup?user=employer"
+                // ctaHref="/signup?user=employer"
                 bgColor="#DFEDFD"
               />
             ))}
