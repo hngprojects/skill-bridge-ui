@@ -42,7 +42,7 @@ export function SettingsChangePasswordDialog() {
             Change password
           </SettingsAccountActionLink>
         </DialogTrigger>
-        <DialogContent className="max-w-[390px] gap-5 rounded-2xl p-6">
+        <DialogContent className="max-w-97.5 gap-5 rounded-2xl p-6">
           <DialogHeader className="items-center text-center">
             <DialogTitle className="text-base font-bold">
               Change password

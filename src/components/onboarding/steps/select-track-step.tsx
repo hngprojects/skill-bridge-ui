@@ -2,30 +2,32 @@
 
 import * as React from "react";
 import {
-  Palette,
-  Laptop,
   BarChart2,
-  Cloud,
   Briefcase,
-  Wrench,
-  Smartphone,
+  Cloud,
+  Laptop,
+  Layers,
   Megaphone,
-  BrainCircuit,
+  Palette,
+  ShieldCheck,
+  Smartphone,
+  Wrench,
 } from "lucide-react";
 import type { TrackOptionId } from "@/constants/talent-onboarding";
 import { TRACK_OPTIONS } from "@/constants/talent-onboarding";
 import { cn } from "@/lib/utils";
 
 const TRACK_ICONS: Record<TrackOptionId, React.ElementType> = {
-  "product-designer": Palette,
-  "frontend-developer": Laptop,
-  "data-analyst": BarChart2,
-  "cloud-devops": Cloud,
-  "product-manager": Briefcase,
   "backend-developer": Wrench,
+  "fullstack-developer": Layers,
+  "frontend-developer": Laptop,
+  "cloud-devops": Cloud,
   "mobile-developer": Smartphone,
+  "product-manager": Briefcase,
+  "product-designer": Palette,
   marketing: Megaphone,
-  "data-scientist": BrainCircuit,
+  "quality-assurance": ShieldCheck,
+  "data-analyst": BarChart2,
 };
 
 type SelectTrackStepProps = {

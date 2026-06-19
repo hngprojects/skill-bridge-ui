@@ -58,33 +58,41 @@ export function apiGoalToLabel(
   return API_GOAL_TO_LABEL[apiGoal];
 }
 
+/** Tracks talents can pick at onboarding. Order matches the product's
+ *  preferred display order. Ids are kebab-case here and snake-case at the
+ *  wire (see {@link trackIdToApiRoleTrack}) so they line up with the
+ *  backend's canonical role-track list. */
 export const TRACK_OPTIONS = [
-  {
-    id: "product-designer",
-    label: "Product Designer",
-    tags: "UX Research · Figma",
-  },
-  {
-    id: "frontend-developer",
-    label: "Frontend Developer",
-    tags: "React · CSS · JS",
-  },
-  { id: "data-analyst", label: "Data Analyst", tags: "SQL · Python · Viz" },
-  { id: "cloud-devops", label: "Cloud / DevOps", tags: "AWS · Docker · CI/CD" },
-  {
-    id: "product-manager",
-    label: "Product Manager",
-    tags: "Strategy · Roadmaps",
-  },
   {
     id: "backend-developer",
     label: "Backend Developer",
     tags: "Node · APIs · DBs",
   },
   {
+    id: "fullstack-developer",
+    label: "Fullstack Developer",
+    tags: "React · Node · DBs",
+  },
+  {
+    id: "frontend-developer",
+    label: "Frontend Developer",
+    tags: "React · CSS · JS",
+  },
+  { id: "cloud-devops", label: "Cloud / DevOps", tags: "AWS · Docker · CI/CD" },
+  {
     id: "mobile-developer",
     label: "Mobile Developer",
-    tags: "Flutter · Swift · Kotlin",
+    tags: "Flutter · React Native · Kotlin",
+  },
+  {
+    id: "product-manager",
+    label: "Product Manager",
+    tags: "Strategy · Roadmaps",
+  },
+  {
+    id: "product-designer",
+    label: "Product Designer",
+    tags: "UX Research · Figma",
   },
   {
     id: "marketing",
@@ -92,10 +100,11 @@ export const TRACK_OPTIONS = [
     tags: "Content · Strategy · Analytics",
   },
   {
-    id: "data-scientist",
-    label: "Data Scientist",
-    tags: "Python · ML · Statistics",
+    id: "quality-assurance",
+    label: "Quality Assurance",
+    tags: "Manual · Automation · CI",
   },
+  { id: "data-analyst", label: "Data Analyst", tags: "SQL · Python · Viz" },
 ] as const;
 
 export type TrackOptionId = (typeof TRACK_OPTIONS)[number]["id"];
@@ -126,6 +135,9 @@ const API_TRACK_TO_LABEL: Record<string, string> = Object.fromEntries(
  *  historical talents don't render as raw enum strings. */
 const LEGACY_TRACK_ALIASES: Record<string, string> = {
   social_media_marketing: "Marketing",
+  // Removed from the onboarding pick list, but pre-existing talents may
+  // still be stored with this value.
+  data_scientist: "Data Scientist",
 };
 
 export function apiRoleTrackToLabel(

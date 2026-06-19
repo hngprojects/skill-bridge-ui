@@ -38,7 +38,7 @@ const profileBars: { w: number; faded: boolean }[][] = [
 function CandidateCard() {
   return (
     <div
-      className="rounded-[24px] md:rounded-[28px] p-6 md:p-8 min-h-[300px] md:min-h-[380px] rotate-1 md:rotate-3"
+      className="rounded-[24px] md:rounded-[28px] p-6 md:p-8 min-h-75 md:min-h-95 rotate-1 md:rotate-3"
       style={{ backgroundColor: TEAL }}
     >
       <h3 className="text-xl md:text-2xl font-bold text-gray-900">
@@ -128,7 +128,7 @@ function EmployerCard() {
 
   return (
     <div
-      className="rounded-[24px] md:rounded-[28px] p-4 md:p-6 min-h-[360px] md:min-h-[460px] -rotate-1 md:-rotate-3"
+      className="rounded-[24px] md:rounded-[28px] p-4 md:p-6 min-h-90 md:min-h-115 -rotate-1 md:-rotate-3"
       style={{ backgroundColor: PURPLE }}
     >
       <h3 className="text-xl md:text-2xl font-bold text-gray-900">
@@ -142,7 +142,7 @@ function EmployerCard() {
         {candidates.map((c, ci) => (
           <div
             key={c.name}
-            className="flex min-h-[180px] md:min-h-[220px] flex-col overflow-hidden rounded-[18px] md:rounded-[20px]"
+            className="flex min-h-45 md:min-h-55 flex-col overflow-hidden rounded-[18px] md:rounded-[20px]"
             style={{ backgroundColor: DARK }}
           >
             <div className="px-3 md:px-4 pt-5 md:pt-6 pb-4 md:pb-5">
@@ -197,7 +197,7 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease }}
         >
-          Helping Talent Prove Their Skills, Helping Employers Hire Faster
+          Prove Your Skills. Make Better Hiring Decisions
         </motion.h1>
         <motion.p
           className="mx-auto max-w-76 text-base leading-relaxed text-[#151515] sm:max-w-none md:text-lg font-light"
@@ -218,14 +218,14 @@ export function HeroSection() {
             className="rounded-[8px] bg-primary-900 px-4.5 py-3 text-base font-semibold text-white hover:bg-[#1B2935]"
             asChild
           >
-            <Link href="/signup">Get Started as talent</Link>
+            <Link href="/signup">Get Started as a Talent</Link>
           </Button>
-          <Button
+          {/* <Button
             className="rounded-[8px] bg-white px-4.5 py-3 text-base font-semibold text-[#05060F] hover:bg-white/80 border-[0.5px] border-[#05060F]"
             asChild
           >
             <Link href="/signup?user=employer">Join as an employer</Link>
-          </Button>
+          </Button> */}
         </motion.div>
       </div>
 
