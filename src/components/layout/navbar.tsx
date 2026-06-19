@@ -165,13 +165,13 @@ export function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <Link
+                {/* <Link
                   href="/signup?user=employer"
                   onClick={() => setMobileOpen(false)}
                   className="text-lg font-medium text-white/80 hover:text-white"
                 >
                   Hire a Talent
-                </Link>
+                </Link> */}
               </nav>
             </SheetContent>
           </Sheet>

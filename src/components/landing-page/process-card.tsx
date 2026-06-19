@@ -54,8 +54,8 @@ export function ProcessCard({
       <div
         className={
           featured
-            ? "relative flex min-h-[220px] w-full items-center justify-center overflow-hidden p-4 sm:min-h-[280px] md:min-h-[320px] md:px-20 md:pt-10"
-            : "relative flex min-h-[200px] w-full items-center justify-center overflow-hidden p-4 sm:min-h-[240px]"
+            ? "relative flex min-h-55 w-full items-center justify-center overflow-hidden p-4 sm:min-h-70 md:min-h-80 md:px-20 md:pt-10"
+            : "relative flex min-h-50 w-full items-center justify-center overflow-hidden p-4 sm:min-h-60"
         }
         style={{ backgroundColor: step.accent }}
       >
