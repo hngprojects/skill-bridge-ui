@@ -21,7 +21,7 @@ const NOTIFICATIONS_DUMMY_DATA: Record<NotificationTab, Notification[]> = {
     {
       boldText: "You've unlocked your next assessment!",
       normalText:
-        "You can proceed to completing your Skill/career based assessment. This unlocks your next assessment on your job assessment roadmap.",
+        "You can proceed to completing your Skill Level Evaluation. This unlocks your next assessment on your job assessment roadmap.",
       time: "12 hours",
     },
   ],

@@ -76,7 +76,7 @@ const SkillAssessementSummary = () => {
       />
       <section className="flex flex-col gap-y-2 mt-4 mb-7 md:mb-12">
         <h2 className="font-bold text-xl md:text-3xl leading-[150%]">
-          Skill assessment summary
+          Skill Level Evaluation summary
         </h2>
         <p className="text-base md:text-lg font-light max-w-208.75">
           {!skillPassed ? (
@@ -172,7 +172,7 @@ const SkillAssessementSummary = () => {
       <NextUpCard
         assessement="skill"
         duration="30 minutes"
-        title="Advanced assessment"
+        title="Job Readiness Evaluation"
       />
     </AssessmentContainer>
   );

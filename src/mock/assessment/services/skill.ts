@@ -34,7 +34,7 @@ export async function mockSubmitSkillAssessment(
 
   return {
     status: "success",
-    message: "Demo skill assessment complete.",
+    message: "Demo Skill Level Evaluation complete.",
     session_id: body.attemptId,
     score: 78,
     total: 100,
