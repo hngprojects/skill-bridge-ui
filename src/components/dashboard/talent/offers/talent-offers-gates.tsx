@@ -76,8 +76,8 @@ export function NotJobReadyState() {
           </p>
           <p className="text-sm text-[#475467]">
             Employers can only send offers to talents who&apos;ve completed
-            their advanced assessment and been verified as job-ready. Head to
-            your dashboard to see your next step.
+            their Job Readiness Evaluation and been verified as job-ready. Head
+            to your dashboard to see your next step.
           </p>
         </div>
         <Button asChild className="h-10 rounded-lg">

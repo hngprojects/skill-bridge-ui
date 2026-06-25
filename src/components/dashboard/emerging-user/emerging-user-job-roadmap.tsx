@@ -73,14 +73,14 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
     id: "advance",
     journeyKey: "advanced",
     summarySlug: "advanced",
-    title: "Advanced assessment",
+    title: "Job Readiness Evaluation",
     description: "To get verified score and become discoverable to top e...",
     status: "pending",
     iconBg: "bg-purple-100",
     icon: (
       <Image
         src="/assets/assessments/advanced-assessment-icon.svg"
-        alt="Advance assessment"
+        alt="Job Readiness Evaluation"
         width={40}
         height={40}
         className="size/10"

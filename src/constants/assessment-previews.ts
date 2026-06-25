@@ -13,50 +13,86 @@ export type AssessmentPreview = {
   attempts: string;
   retakeText?: string;
   warning?: AssessmentPreviewWarning;
+  /** Heading shown above the bulleted expectations on the preview card. */
+  sectionTitle: string;
+  /** Per-assessment expectation/guideline bullets. */
+  points: string[];
+  /** Footer consent paragraph. Use the `{terms}` and `{helpCenter}` tokens
+   *  to embed the inline links — the footer renderer substitutes them with
+   *  the canonical hrefs (currently `/terms-of-use` and `/contact`). */
+  consent: string;
 };
 
-const sharedExpectations = [
-  "We are looking for your authentic self. Answer honestly to get the most accurate profile.",
-  "Your results directly influence the AI recommendations for courses and skill development.",
-  "By understanding your work style, we can surface opportunities that align with your natural preferences.",
-  "Your baseline data is encrypted and only used to enhance your personal SkillBridge experience.",
+const PERSONAL_POINTS = [
+  "There are no right or wrong answers—focus on providing accurate information.",
+  "Your responses help us customize assessments to match your specialization and experience.",
+  "A complete profile leads to a more relevant and personalized evaluation process.",
+  "Your data is securely stored and protected at all times.",
 ];
+
+const SKILL_POINTS = [
+  "This assessment measures your current knowledge and practical understanding of your chosen role.",
+  "Your performance helps determine whether your skills align with beginner, intermediate, or advanced expectations.",
+  "Once started, do not switch tabs, open other windows, or leave the assessment page.",
+  "Three violations will trigger automatic submission of your assessment.",
+];
+
+const ADVANCED_POINTS = [
+  "This assessment measures your ability to apply your skills in realistic professional scenarios.",
+  "Your results determine your final employability status on SkillBridge.",
+  "Leaving the assessment page, switching tabs, or taking screenshots will trigger warnings.",
+  "After three warnings, your assessment will automatically end and be submitted.",
+];
+
+const PERSONAL_CONSENT =
+  "By continuing, you confirm that you acknowledge and accept the {terms}. Kindly visit the {helpCenter} if you require any assistance.";
+
+// Skill + advanced share the same consent wording per the marketing copy.
+const ASSESSMENT_CONSENT =
+  "By starting this assessment, you agree to follow the assessment rules and the {terms}. Kindly visit the {helpCenter} if you require any assistance.";
 
 export const ASSESSMENT_PREVIEWS = {
   personal: {
     slug: "personal",
-    title: "Personal assessment",
+    title: "Personal Assessment",
     description:
-      "Tell us about your specialization, tools, experience level, and work preferences.",
+      "Help us understand your background, specialization, tools, and work preferences so we can personalize your assessment journey.",
     iconSrc: "/assets/assessments/personal-assessment-icon.svg",
     questionCount: "15 Questions",
     duration: "No duration",
     attempts: "1 attempt",
+    sectionTitle: "Before You Begin",
+    points: PERSONAL_POINTS,
+    consent: PERSONAL_CONSENT,
   },
   skill: {
     slug: "skill",
-    title: "Skill assessment",
+    title: "Skill Level Evaluation",
     description:
-      "This assessment is designed to evaluate your current skill level in your selected track.",
+      "Demonstrate your current ability and validate your professional skill level.",
     iconSrc: "/assets/assessments/skill-assessment-icon.svg",
     questionCount: "20 Questions",
     duration: "30 minutes",
     attempts: "3 attempts (allowed within time limit)",
+    sectionTitle: "Important Information",
+    points: SKILL_POINTS,
+    consent: ASSESSMENT_CONSENT,
   },
   advanced: {
     slug: "advanced",
-    title: "Advanced assessment",
+    title: "Job Readiness Evaluation",
     description:
-      "This assessment is designed to evaluate your current skill level at your selected tracks.",
+      "Demonstrate your ability to perform at the level expected by employers.",
     iconSrc: "/assets/assessments/advanced-assessment-icon.svg",
     questionCount: "15 Questions (8 MCQ · 7 Open-ended)",
     duration: "30 minutes",
     attempts: "1 attempt (allowed within time limit)",
     retakeText: "Retake valid after 14 days",
+    sectionTitle: "Assessment Guidelines",
+    points: ADVANCED_POINTS,
+    consent: ASSESSMENT_CONSENT,
   },
 } satisfies Record<string, AssessmentPreview>;
-
-export const ASSESSMENT_EXPECTATIONS = sharedExpectations;
 
 export type AssessmentSlug = keyof typeof ASSESSMENT_PREVIEWS;
 
@@ -66,8 +102,8 @@ export const ASSESSMENT_FALLBACK_SECTION_TITLES: Record<
   string
 > = {
   personal: "Personal Assessment",
-  skill: "Skill Assessment",
-  advanced: "Advanced Assessment",
+  skill: "Skill Level Evaluation",
+  advanced: "Job Readiness Evaluation",
 };
 
 export function isAssessmentSlug(slug: string): slug is AssessmentSlug {

@@ -92,12 +92,12 @@ export const ASSESSMENT_EXPECTATIONS: AssessmentExpectation[] = [
   },
   {
     id: "career",
-    title: "Skill/Career assessment to determine your level",
+    title: "Skill Level Evaluation to determine your level",
     icon: PaintBoardIcon,
   },
   {
     id: "advanced",
-    title: "Advanced Assessment to evaluate your core knowledge",
+    title: "Job Readiness Evaluation to evaluate your core knowledge",
     icon: LaptopIcon,
   },
   {
@@ -129,7 +129,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     id: "skill-career-assessment",
     slug: "skill",
     order: 2,
-    title: "Skill/career assessment",
+    title: "Skill Level Evaluation",
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     ctaLabel: "Start",
@@ -146,7 +146,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     id: "advanced-assessment",
     slug: "advanced",
     order: 3,
-    title: "Advanced assessment",
+    title: "Job Readiness Evaluation",
     description:
       "To get verified score and become discoverable to top employers.",
     ctaLabel: "Start",
@@ -211,7 +211,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     id: "skill-career-assessment",
     slug: "skill",
     order: 2,
-    title: "Skill/career assessment",
+    title: "Skill Level Evaluation",
     description:
       "This assessment is designed to evaluate your current skill level in your selected track.",
     panelTitle: "Choose a stack",
@@ -228,7 +228,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     id: "advanced-assessment",
     slug: "advanced",
     order: 3,
-    title: "Advanced assessment",
+    title: "Job Readiness Evaluation",
     description:
       "To get verified score and become discoverable to top employers.",
     panelTitle: "Get Job Ready!",

@@ -111,7 +111,7 @@ const PersonalAssessmentSummary = () => {
       <NextUpCard
         assessement="personal"
         duration="30 minutes"
-        title="Skill/career assessment"
+        title="Skill Level Evaluation"
       />
     </AssessmentContainer>
   );

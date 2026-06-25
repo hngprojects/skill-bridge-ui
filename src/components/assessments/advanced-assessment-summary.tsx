@@ -18,12 +18,12 @@ const AdvancedAssessmentSummary = () => {
       />
       <section className="mt-4 mb-7 flex flex-col gap-y-4 md:mb-12">
         <h2 className="text-xl leading-[150%] font-bold md:text-3xl">
-          Advanced assessment summary
+          Job Readiness Evaluation summary
         </h2>
         <div className="space-y-3 text-base font-light md:text-lg">
           <p>
             Congratulations! <span aria-hidden>🎉</span> You&apos;ve completed
-            the Advanced Skill Assessment.
+            the Job Readiness Evaluation.
           </p>
           <p>
             Your results are currently being reviewed and a detailed performance

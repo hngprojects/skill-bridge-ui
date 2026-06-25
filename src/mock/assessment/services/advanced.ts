@@ -16,7 +16,7 @@ function buildStartResponse(
   const now = new Date();
   return {
     status: "success",
-    message: "Advanced assessment session created",
+    message: "Job Readiness Evaluation session created",
     session_id: sessionId,
     started_at: now.toISOString(),
     expires_at: new Date(now.getTime() + remainingSeconds * 1000).toISOString(),
