@@ -26,6 +26,7 @@ import type {
 import { useSendAssessmentToCandidate } from "@/hooks/api/use-candidate-pipeline";
 import { useSendOffer } from "@/hooks/api/use-employer-offers";
 import { SendInterviewInviteDialog } from "./send-interview-invite-dialog";
+import { SelectAssessmentDialog } from "./select-assessment-dialog";
 
 type PipelineTableProps = {
   candidates: PipelineCandidate[];
@@ -88,6 +89,14 @@ export function PipelineTable({
 
   const [actionId, setActionId] = useState<string | null>(null);
 
+  // For assessment dialog
+  const [isAssessmentDialogOpen, setIsAssessmentDialogOpen] = useState(false);
+  const [selectedAssessmentCandidate, setSelectedAssessmentCandidate] =
+    useState<{
+      id: string;
+      name: string;
+    } | null>(null);
+
   // For interview invite dialog
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<{
@@ -95,14 +104,29 @@ export function PipelineTable({
     name: string;
   } | null>(null);
 
-  const handleSendAssessment = (candidateId: string) => {
-    setActionId(candidateId);
-    // Hardcoded dummy assessmentId for now
+  const openAssessmentDialog = (candidateId: string, candidateName: string) => {
+    setSelectedAssessmentCandidate({ id: candidateId, name: candidateName });
+    setIsAssessmentDialogOpen(true);
+  };
+
+  const handleSendAssessment = (assessmentId: string) => {
+    if (!selectedAssessmentCandidate) return;
+
+    setActionId(selectedAssessmentCandidate.id);
     sendAssessment(
-      { roleId, candidateId, assessmentId: "dummy-assessment-123" },
+      { roleId, candidateId: selectedAssessmentCandidate.id, assessmentId },
       {
-        onSuccess: () => toast.success("Assessment sent to candidate."),
-        onError: () => toast.error("Failed to send assessment."),
+        onSuccess: () => {
+          toast.success(
+            `Assessment sent to ${selectedAssessmentCandidate.name}.`,
+          );
+          setIsAssessmentDialogOpen(false);
+        },
+        onError: (err: unknown) => {
+          toast.error(
+            err instanceof Error ? err.message : "Failed to send assessment.",
+          );
+        },
         onSettled: () => setActionId(null),
       },
     );
@@ -235,7 +259,10 @@ export function PipelineTable({
                 <StatusBadge status={c.pipelineStatus} />
                 {c.isInterested && c.interestedAt && (
                   <p className="mt-1 text-[10px] text-muted-foreground">
-                    Interested {new Date(c.interestedAt).toLocaleDateString()}
+                    Interested{" "}
+                    {new Date(c.interestedAt).toLocaleDateString("en-US", {
+                      timeZone: "UTC",
+                    })}
                   </p>
                 )}
               </td>
@@ -258,7 +285,9 @@ export function PipelineTable({
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => handleSendAssessment(c.candidateId)}
+                      onClick={() =>
+                        openAssessmentDialog(c.candidateId, c.fullName)
+                      }
                       disabled={
                         isSendingAssessment && actionId === c.candidateId
                       }
@@ -291,6 +320,16 @@ export function PipelineTable({
           candidateName={selectedCandidate.name}
           isSubmitting={isSendingOffer}
           onSubmit={handleSubmitInterviewInvite}
+        />
+      )}
+
+      {selectedAssessmentCandidate && (
+        <SelectAssessmentDialog
+          open={isAssessmentDialogOpen}
+          onOpenChange={setIsAssessmentDialogOpen}
+          candidateName={selectedAssessmentCandidate.name}
+          isSubmitting={isSendingAssessment}
+          onSubmit={handleSendAssessment}
         />
       )}
     </div>

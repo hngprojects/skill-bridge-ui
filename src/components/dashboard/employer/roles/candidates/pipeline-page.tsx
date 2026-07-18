@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useCandidatePipeline } from "@/hooks/api/use-candidate-pipeline";
 import { PipelineTable } from "./pipeline-table";
@@ -36,14 +37,13 @@ export function CandidatePipelinePage({ roleId }: { roleId: string }) {
 
   return (
     <div className="mx-auto flex max-w-300 flex-col gap-6 py-8">
-      <button
-        type="button"
-        onClick={() => window.history.back()}
+      <Link
+        href={`/e/roles/${roleId}`}
         className="inline-flex w-fit items-center gap-2 text-sm font-medium text-[#475467] transition-colors hover:text-[#101828]"
       >
         <ChevronLeft className="size-4" />
         Back to role
-      </button>
+      </Link>
 
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold text-[#101828]">

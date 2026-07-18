@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,12 +30,18 @@ export function SendInterviewInviteDialog({
   const [schedulingLink, setSchedulingLink] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleOpenChange = (nextOpen: boolean) => {
-    if (!nextOpen) {
+  useEffect(() => {
+    if (!open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSchedulingLink("");
       setMessage("");
     }
-    onOpenChange(nextOpen);
+  }, [open]);
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!isSubmitting) {
+      onOpenChange(nextOpen);
+    }
   };
 
   const handleSubmit = () => {
@@ -64,10 +70,14 @@ export function SendInterviewInviteDialog({
           />
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-[#344054]">
+            <label
+              htmlFor="message"
+              className="text-sm font-medium text-[#344054]"
+            >
               Personalized Message (Optional)
             </label>
             <Textarea
+              id="message"
               placeholder="Hi there! We'd love to schedule a quick chat..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}

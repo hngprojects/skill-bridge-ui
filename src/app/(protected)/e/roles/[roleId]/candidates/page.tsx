@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: "Candidate Pipeline",
 };
 
-export default function Page({ params }: { params: { roleId: string } }) {
-  return <CandidatePipelinePage roleId={params.roleId} />;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ roleId: string }>;
+}) {
+  const resolvedParams = await params;
+  return <CandidatePipelinePage roleId={resolvedParams.roleId} />;
 }

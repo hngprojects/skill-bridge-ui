@@ -128,7 +128,7 @@ export function TalentOfferContactPanel({
         </Button>
         {interviewLink ? (
           <Button asChild className="h-10 rounded-lg">
-            <a href={interviewLink} target="_blank" rel="noreferrer">
+            <a href={interviewLink} target="_blank" rel="noopener noreferrer">
               Schedule Interview
             </a>
           </Button>

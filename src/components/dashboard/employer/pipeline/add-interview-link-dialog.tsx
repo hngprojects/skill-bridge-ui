@@ -29,18 +29,26 @@ export function AddInterviewLinkDialog({
   const [link, setLink] = useState("");
 
   const handleOpenChange = (nextOpen: boolean) => {
+    if (isSubmitting) return;
     if (!nextOpen) setLink("");
     onOpenChange(nextOpen);
   };
 
   const handleSubmit = () => {
-    if (!link.trim()) return;
-    onSubmit(link.trim());
+    const trimmed = link.trim();
+    if (!trimmed) return;
+    const normalizedLink = trimmed.replace(/^(?!https?:\/\/)/, "https://");
+    onSubmit(normalizedLink);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md gap-6 rounded-3xl p-6">
+      <DialogContent
+        className="max-w-md gap-6 rounded-3xl p-6"
+        onInteractOutside={(e) => {
+          if (isSubmitting) e.preventDefault();
+        }}
+      >
         <DialogHeader className="gap-2 text-left">
           <DialogTitle className="text-xl font-bold text-[#151515]">
             Add Interview Link
@@ -53,6 +61,7 @@ export function AddInterviewLinkDialog({
 
         <FormInput
           label="Scheduling Link"
+          type="url"
           placeholder="https://calendly.com/your-link"
           value={link}
           onChange={(e) => setLink(e.target.value)}

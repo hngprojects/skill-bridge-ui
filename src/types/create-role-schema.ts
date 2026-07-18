@@ -9,7 +9,12 @@ export const createRoleDialogSchema = z.object({
   category: z.string().min(1, "Category is required"),
   companyUrl: z.string(),
   showOnExploreJobs: z.boolean(),
-  applicantCap: z.number().nullable().optional(),
+  applicantCap: z
+    .number()
+    .min(1, "Minimum cap is 1")
+    .nullable()
+    .optional()
+    .or(z.nan().transform(() => null)),
 });
 
 export const workPreferencesSchema = z.object({

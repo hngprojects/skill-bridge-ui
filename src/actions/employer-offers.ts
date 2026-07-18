@@ -84,7 +84,12 @@ export async function sendOffer(
 ): Promise<SendOfferResult> {
   const res = await authApi.post<ApiEnvelope<RawSendOfferResponse>>(
     "/employer/offers",
-    input,
+    {
+      candidate_ids: input.candidateIds,
+      role_id: input.roleId,
+      scheduling_link: input.schedulingLink,
+      message: input.message,
+    },
   );
   const raw = unwrapData(res);
   return {

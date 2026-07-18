@@ -116,7 +116,7 @@ export function TalentOffersPage() {
             totalPages={totalPages}
             total={total}
             pageSize={PAGE_SIZE}
-            itemLabel="offers"
+            itemLabel="interview invites"
             onPageChange={setPage}
           />
         ) : null}
@@ -125,7 +125,7 @@ export function TalentOffersPage() {
       {activeTab !== "all" ? (
         <p className="text-xs text-[#98A2B3]">
           Tab filters apply to the current page. Use pagination to load older
-          offers.
+          interview invites.
         </p>
       ) : null}
     </div>

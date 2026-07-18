@@ -1,7 +1,8 @@
 "use client";
 
 import { PhoneCall } from "lucide-react";
-import { toast } from "sonner";
+import { appToast } from "@/lib/toast";
+import { authFailureMessage } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { useRequestCall } from "@/hooks/api/use-talent-offers";
 
@@ -15,12 +16,10 @@ export function RequestCallButton({ offerId }: RequestCallButtonProps) {
   const handleRequestCall = () => {
     requestCall(offerId, {
       onSuccess: () => {
-        toast.success("Call requested. The employer has been notified.");
+        appToast.success("Call requested. The employer has been notified.");
       },
       onError: (err: unknown) => {
-        toast.error(
-          err instanceof Error ? err.message : "Failed to request call.",
-        );
+        appToast.error(authFailureMessage(err));
       },
     });
   };
