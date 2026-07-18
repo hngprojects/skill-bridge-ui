@@ -28,6 +28,8 @@ function normalizeRole(raw: RawEmployerRole): EmployerRoleItem {
     status: raw.status,
     offersSent: raw.offers_sent_count,
     requirements: parts.length > 0 ? parts.join(" · ") : raw.category,
+    isFull:
+      raw.applicant_cap !== null && raw.interested_count >= raw.applicant_cap,
     createdAt: raw.created_at,
   };
 }
@@ -91,6 +93,8 @@ export async function createRole(
     salaryMin,
     salaryMax,
     currency,
+    visibility,
+    applicantCap,
     assessmentId,
   } = input;
 
@@ -109,6 +113,12 @@ export async function createRole(
     if (min !== undefined) formData.append("salaryMin", String(min));
     if (max !== undefined) formData.append("salaryMax", String(max));
     if (currency) formData.append("currency", currency);
+    if (visibility) formData.append("visibility", visibility);
+    if (applicantCap !== undefined)
+      formData.append(
+        "applicantCap",
+        applicantCap === null ? "" : String(applicantCap),
+      );
     if (assessmentId) formData.append("assessmentId", assessmentId);
     const res = await authApi.post<ApiEnvelope<RawEmployerRole>>(
       "/employer/roles",
@@ -126,6 +136,8 @@ export async function createRole(
   if (min !== undefined) payload.salaryMin = min;
   if (max !== undefined) payload.salaryMax = max;
   if (currency) payload.currency = currency;
+  if (visibility) payload.visibility = visibility;
+  if (applicantCap !== undefined) payload.applicantCap = applicantCap;
   if (assessmentId) payload.assessmentId = assessmentId;
 
   const res = await authApi.post<ApiEnvelope<RawEmployerRole>>(
@@ -154,6 +166,8 @@ export async function updateRole(
     salaryMin,
     salaryMax,
     currency,
+    visibility,
+    applicantCap,
     assessmentId,
   } = input;
 
@@ -174,6 +188,12 @@ export async function updateRole(
     if (min !== undefined) formData.append("salaryMin", String(min));
     if (max !== undefined) formData.append("salaryMax", String(max));
     if (currency !== undefined) formData.append("currency", currency);
+    if (visibility !== undefined) formData.append("visibility", visibility);
+    if (applicantCap !== undefined)
+      formData.append(
+        "applicantCap",
+        applicantCap === null ? "" : String(applicantCap),
+      );
     if (assessmentId !== undefined && assessmentId !== null)
       formData.append("assessmentId", assessmentId);
     const res = await authApi.patch<ApiEnvelope<RawEmployerRole>>(
@@ -194,6 +214,8 @@ export async function updateRole(
   if (min !== undefined) payload.salaryMin = min;
   if (max !== undefined) payload.salaryMax = max;
   if (currency !== undefined) payload.currency = currency;
+  if (visibility !== undefined) payload.visibility = visibility;
+  if (applicantCap !== undefined) payload.applicantCap = applicantCap;
   if (assessmentId !== undefined) payload.assessmentId = assessmentId;
 
   const res = await authApi.patch<ApiEnvelope<RawEmployerRole>>(

@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { useCloseRole, useReopenRole } from "@/hooks/api";
 import { formatRoleCardDate } from "@/lib/format-date";
 import type { EmployerRoleItem } from "@/types/api/employer-roles";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 export function RoleCard({ role }: { role: EmployerRoleItem }) {
   const { mutate: close, isPending: isClosing } = useCloseRole();
@@ -44,6 +45,7 @@ export function RoleCard({ role }: { role: EmployerRoleItem }) {
           >
             {role.title}
           </Link>
+          {role.isFull && <StatusBadge variant="full" className="ml-2" />}
         </h3>
 
         <div className="mt-5 flex items-end gap-2">

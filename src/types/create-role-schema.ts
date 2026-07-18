@@ -8,6 +8,8 @@ export const createRoleDialogSchema = z.object({
     .refine((val) => !/\d/.test(val), "Role title cannot contain numbers"),
   category: z.string().min(1, "Category is required"),
   companyUrl: z.string(),
+  showOnExploreJobs: z.boolean(),
+  applicantCap: z.number().nullable().optional(),
 });
 
 export const workPreferencesSchema = z.object({

@@ -8,6 +8,7 @@ import {
 } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -106,6 +107,52 @@ export function CreateRoleDialogFields({
           className="h-10 rounded-lg border-[#D0D5DD] bg-white text-sm placeholder:text-[#98A2B3] disabled:cursor-not-allowed disabled:opacity-60"
         />
         <p className="text-[11px] text-[#98A2B3]">Placeholder for more info</p>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="space-y-0.5">
+          <label
+            htmlFor="show-explore-jobs"
+            className="text-xs font-medium text-[#344054]"
+          >
+            Show on Explore Jobs
+          </label>
+          <p className="text-[11px] text-[#667085]">
+            Make this role visible to all matched talent.
+          </p>
+        </div>
+        <Controller
+          name="showOnExploreJobs"
+          control={control}
+          render={({ field }) => (
+            <Switch
+              id="show-explore-jobs"
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              className="data-checked:bg-[#079455]"
+            />
+          )}
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <label
+          htmlFor="applicant-cap"
+          className="text-xs font-medium text-[#344054]"
+        >
+          Applicant Cap (Optional)
+        </label>
+        <Input
+          id="applicant-cap"
+          type="number"
+          min={1}
+          {...register("applicantCap", { valueAsNumber: true })}
+          placeholder="e.g. 50"
+          className="h-10 rounded-lg border-[#D0D5DD] bg-white text-sm placeholder:text-[#98A2B3]"
+        />
+        <p className="text-[11px] text-[#667085]">
+          Maximum number of talent who can express interest.
+        </p>
       </div>
     </div>
   );
