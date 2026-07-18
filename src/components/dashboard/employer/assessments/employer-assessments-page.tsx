@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AssessmentHeroBanner } from "./assessment-hero-banner";
+import { AssessmentInviteModal } from "./assessment-invite-modal";
 import {
   useEmployerAssessments,
   useDeactivateEmployerAssessment,
@@ -18,6 +19,11 @@ export function EmployerAssessmentsPage() {
   const { data, isLoading, isError } = useEmployerAssessments({ page, limit });
   const deactivate = useDeactivateEmployerAssessment();
   const [deactivatingIds, setDeactivatingIds] = useState<string[]>([]);
+
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [inviteAssessmentId, setInviteAssessmentId] = useState<string | null>(
+    null,
+  );
 
   const total = data?.total ?? 0;
   const assessments = (data?.assessments ?? []).filter(
@@ -119,6 +125,17 @@ export function EmployerAssessmentsPage() {
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        setInviteAssessmentId(a.id);
+                        setInviteModalOpen(true);
+                      }}
+                      className="text-sm"
+                    >
+                      Share
+                    </Button>
                     <Link
                       href={`/e/assessments/${a.id}`}
                       className="text-sm text-[#101828] underline"
@@ -169,6 +186,17 @@ export function EmployerAssessmentsPage() {
           </>
         )}
       </div>
+
+      {inviteAssessmentId && (
+        <AssessmentInviteModal
+          open={inviteModalOpen}
+          onOpenChange={(open) => {
+            setInviteModalOpen(open);
+            if (!open) setTimeout(() => setInviteAssessmentId(null), 200);
+          }}
+          assessmentId={inviteAssessmentId}
+        />
+      )}
     </div>
   );
 }

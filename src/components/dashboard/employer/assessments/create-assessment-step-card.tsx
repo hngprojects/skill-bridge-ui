@@ -12,6 +12,7 @@ type CreateAssessmentStepCardProps = {
   description: string;
   currentStepIndex: number;
   isLastStep: boolean;
+  assessmentType?: "external" | "internal";
   showBack?: boolean;
   nextDisabled?: boolean;
   nextLoading?: boolean;
@@ -26,6 +27,7 @@ export function CreateAssessmentStepCard({
   description,
   currentStepIndex,
   isLastStep,
+  assessmentType,
   showBack = false,
   nextDisabled = false,
   nextLoading = false,
@@ -93,7 +95,9 @@ export function CreateAssessmentStepCard({
             {nextLoading
               ? "Saving..."
               : isLastStep
-                ? "Send Assessment"
+                ? assessmentType === "external"
+                  ? "Generate Link"
+                  : "Send Assessment"
                 : "Next"}
           </Button>
         </div>

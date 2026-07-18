@@ -1,16 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { useExpressInterest } from "@/hooks/api/use-talent-explore-jobs";
 import type { ExploreJobRole } from "@/types/api/talent-explore-jobs";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { formatDistanceToNow, parseISO, isValid } from "date-fns";
 import { Briefcase, MapPin, Building2 } from "lucide-react";
+import { AssessmentRequiredModal } from "./assessment-required-modal";
 
 export function ExploreJobCard({ role }: { role: ExploreJobRole }) {
   const { mutate: expressInterest, isPending } = useExpressInterest();
+  const [showModal, setShowModal] = useState(false);
+  const isEmergingTalent = true; // Mock
 
   const handleInterest = () => {
+    if (isEmergingTalent) {
+      setShowModal(true);
+      return;
+    }
+
     expressInterest(role.id, {
       onSuccess: () => toast.success(`Expressed interest in ${role.title}`),
       onError: (err: unknown) => {
@@ -99,10 +108,12 @@ export function ExploreJobCard({ role }: { role: ExploreJobRole }) {
             : role.alreadyInterested
               ? "Interested"
               : role.isFull
-                ? "Role Full"
+                ? "Full"
                 : "I'm interested"}
         </Button>
       </div>
+
+      <AssessmentRequiredModal open={showModal} onOpenChange={setShowModal} />
     </article>
   );
 }

@@ -9,6 +9,7 @@ import { ExploreJobCard } from "./explore-job-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, Target } from "lucide-react";
+import { WeeklyCapBanner } from "./weekly-cap-banner";
 
 export function ExploreJobsPage() {
   const [page, setPage] = useState(1);
@@ -21,6 +22,8 @@ export function ExploreJobsPage() {
     isError,
   } = useExploreJobs({ page, limit });
 
+  const hasHitWeeklyCap = true;
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 py-8">
       <div>
@@ -29,6 +32,8 @@ export function ExploreJobsPage() {
           Discover exclusive roles that match your verified profile and skills.
         </p>
       </div>
+
+      {hasHitWeeklyCap && <WeeklyCapBanner />}
 
       {!isCapLoading && capStatus && (
         <div className="flex items-start gap-4 rounded-xl border border-[#D0D5DD] bg-white p-4 shadow-sm">

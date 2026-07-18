@@ -22,6 +22,7 @@ import { CreateAssessmentHeader } from "./create-assessment-header";
 import { CreateAssessmentMobileProgress } from "./create-assessment-mobile-progress";
 import { CreateAssessmentSidebar } from "./create-assessment-sidebar";
 import { CreateAssessmentStepCard } from "./create-assessment-step-card";
+import { AssessmentShareLinkModal } from "./assessment-share-link-modal";
 
 type AssessmentWizardState = {
   welcomeMessageHtml: string;
@@ -63,6 +64,8 @@ export function CreateAssessmentPage() {
     useState<CreateAssessmentStepId>("details");
   const [wizardState, setWizardState] =
     useState<AssessmentWizardState>(INITIAL_STATE);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [mockShareLink, setMockShareLink] = useState("");
 
   const selectedQuestionIds =
     wizardState.selectedQuestionIds ?? DEFAULT_SELECTED_QUESTION_IDS;
@@ -120,7 +123,14 @@ export function CreateAssessmentPage() {
       {
         onSuccess: () => {
           toast.success("Assessment published successfully.");
-          router.push("/e/assessments");
+          if (type === "external") {
+            setMockShareLink(
+              "https://skillbridge.com/assessment/mock-external-link",
+            );
+            setShareModalOpen(true);
+          } else {
+            router.push("/e/assessments");
+          }
         },
         onError: (err: unknown) => {
           const message =
@@ -191,6 +201,7 @@ export function CreateAssessmentPage() {
           description={meta.description}
           currentStepIndex={currentStepIndex}
           isLastStep={isLastStep}
+          assessmentType={type}
           showBack={currentStepIndex > 0}
           onBack={handleBack}
           onNext={handleNext}
@@ -210,8 +221,25 @@ export function CreateAssessmentPage() {
         showBack={currentStepIndex > 0}
         nextDisabled={nextDisabled || isPending}
         nextLoading={isPending}
-        lastStepLabel={isPending ? "Publishing..." : "Send Assessment"}
+        lastStepLabel={
+          isPending
+            ? "Publishing..."
+            : type === "external"
+              ? "Generate Link"
+              : "Send Assessment"
+        }
         className="lg:hidden"
+      />
+
+      <AssessmentShareLinkModal
+        open={shareModalOpen}
+        onOpenChange={(open) => {
+          setShareModalOpen(open);
+          if (!open) {
+            router.push("/e/assessments");
+          }
+        }}
+        link={mockShareLink}
       />
     </div>
   );
