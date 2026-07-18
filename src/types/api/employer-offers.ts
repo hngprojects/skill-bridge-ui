@@ -15,7 +15,10 @@ export type EmployerOfferStatus =
   | "declined"
   | "expired"
   | "hired"
-  | "withdrawn";
+  | "withdrawn"
+  | "interview_invited"
+  | "interview_accepted"
+  | "interview_declined";
 
 /**
  * Bare offer entity (the full `Offer` row). Not what the list endpoint
@@ -32,6 +35,7 @@ export type EmployerOffer = {
   compensation: string;
   employmentType: string;
   workArrangement: string;
+  schedulingLink: string | null;
   status: EmployerOfferStatus;
   expiresAt: string;
   assessmentUnlockedAt: string | null;
@@ -48,6 +52,8 @@ export type EmployerOffer = {
 export type SendOfferInput = {
   candidateIds: string[];
   roleId: string;
+  schedulingLink?: string;
+  message?: string;
 };
 
 /** Backend leaves the `warnings` shape unspecified; surface as opaque
@@ -72,6 +78,7 @@ export type RawEmployerOffer = {
   compensation: string;
   employment_type: string;
   work_arrangement: string;
+  scheduling_link: string | null;
   application_deadline?: string | null;
   status: EmployerOfferStatus;
   expires_at: string;

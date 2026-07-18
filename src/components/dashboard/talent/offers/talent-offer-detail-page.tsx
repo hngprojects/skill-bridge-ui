@@ -213,10 +213,7 @@ export function TalentOfferDetailPage({ offerId }: TalentOfferDetailPageProps) {
         ) : null}
 
         {CONTACT_UNLOCKED_STATUSES.has(offer.status) ? (
-          <TalentOfferContactPanel
-            employer={offer.employer}
-            roleTitle={offer.roleTitle}
-          />
+          <TalentOfferContactPanel offer={offer} />
         ) : null}
 
         <TalentOfferActionBar

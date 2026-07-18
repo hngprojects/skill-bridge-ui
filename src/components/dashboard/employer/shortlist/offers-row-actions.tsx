@@ -26,6 +26,8 @@ import type {
   EmployerOfferListItem,
   EmployerOfferStatus,
 } from "@/types/api/employer-offers";
+import { useAddInterviewLink } from "@/hooks/api/use-employer-offers";
+import { AddInterviewLinkDialog } from "@/components/dashboard/employer/pipeline/add-interview-link-dialog";
 
 type OffersRowActionsProps = {
   offer: EmployerOfferListItem;
@@ -68,10 +70,12 @@ const CONFIRM_COPY: Record<
 function actionsForStatus(status: EmployerOfferStatus): {
   canMarkHired: boolean;
   canWithdraw: boolean;
+  canAddInterviewLink: boolean;
 } {
   return {
-    canMarkHired: status === "accepted",
-    canWithdraw: status === "pending",
+    canMarkHired: status === "accepted" || status === "interview_accepted",
+    canWithdraw: status === "pending" || status === "interview_invited",
+    canAddInterviewLink: status === "interview_accepted",
   };
 }
 
@@ -80,9 +84,15 @@ export function OffersRowActions({ offer }: OffersRowActionsProps) {
 
   const { mutate: markHired, isPending: isMarking } = useMarkOfferHired();
   const { mutate: withdraw, isPending: isWithdrawing } = useWithdrawOffer();
+  const { mutate: addInterviewLink, isPending: isAddingLink } =
+    useAddInterviewLink();
 
-  const { canMarkHired, canWithdraw } = actionsForStatus(offer.status);
-  const isSubmitting = isMarking || isWithdrawing;
+  const { canMarkHired, canWithdraw, canAddInterviewLink } = actionsForStatus(
+    offer.status,
+  );
+  const isSubmitting = isMarking || isWithdrawing || isAddingLink;
+
+  const [isAddLinkOpen, setIsAddLinkOpen] = useState(false);
 
   function handleConfirm() {
     if (!confirmKind) return;
@@ -139,6 +149,18 @@ export function OffersRowActions({ offer }: OffersRowActionsProps) {
               className="h-9 cursor-pointer rounded-md px-2 text-sm text-[#344054]"
             >
               Mark as hired
+            </DropdownMenuItem>
+          ) : null}
+
+          {canAddInterviewLink ? (
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setIsAddLinkOpen(true);
+              }}
+              className="h-9 cursor-pointer rounded-md px-2 text-sm text-[#344054]"
+            >
+              Add interview link
             </DropdownMenuItem>
           ) : null}
 
@@ -199,6 +221,27 @@ export function OffersRowActions({ offer }: OffersRowActionsProps) {
           ) : null}
         </DialogContent>
       </Dialog>
+
+      <AddInterviewLinkDialog
+        open={isAddLinkOpen}
+        onOpenChange={setIsAddLinkOpen}
+        candidateName={offer.candidateName}
+        isSubmitting={isAddingLink}
+        onSubmit={(link) => {
+          addInterviewLink(
+            { offerId: offer.offerId, link },
+            {
+              onSuccess: () => {
+                setIsAddLinkOpen(false);
+                appToast.success("Interview link added.");
+              },
+              onError: (error) => {
+                appToast.error(authFailureMessage(error));
+              },
+            },
+          );
+        }}
+      />
     </>
   );
 }

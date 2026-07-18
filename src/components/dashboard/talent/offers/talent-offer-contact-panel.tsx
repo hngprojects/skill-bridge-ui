@@ -6,14 +6,11 @@ import { useState } from "react";
 import { CandidateAvatar } from "@/components/dashboard/employer/shared/candidate-avatar";
 import { Button } from "@/components/ui/button";
 import { appToast } from "@/lib/toast";
-import type {
-  TalentOffer,
-  TalentOfferEmployer,
-} from "@/types/api/talent-offers";
+import type { TalentOffer } from "@/types/api/talent-offers";
+import { RequestCallButton } from "./request-call-button";
 
 type TalentOfferContactPanelProps = {
-  employer: TalentOfferEmployer;
-  roleTitle: TalentOffer["roleTitle"];
+  offer: TalentOffer;
 };
 
 function buildMailto(email: string, roleTitle: string): string {
@@ -36,9 +33,9 @@ async function copyToClipboard(value: string): Promise<boolean> {
 }
 
 export function TalentOfferContactPanel({
-  employer,
-  roleTitle,
+  offer,
 }: TalentOfferContactPanelProps) {
+  const { employer, roleTitle, interviewLink } = offer;
   // Reflect copy-button state for ~1.5s so the user sees confirmation.
   const [copied, setCopied] = useState(false);
   const hasEmail = Boolean(employer.email);
@@ -129,6 +126,15 @@ export function TalentOfferContactPanel({
           <Copy className="mr-2 size-4" aria-hidden />
           {copied ? "Copied" : "Copy email"}
         </Button>
+        {interviewLink ? (
+          <Button asChild className="h-10 rounded-lg">
+            <a href={interviewLink} target="_blank" rel="noreferrer">
+              Schedule Interview
+            </a>
+          </Button>
+        ) : (
+          <RequestCallButton offerId={offer.id} />
+        )}
       </div>
     </section>
   );

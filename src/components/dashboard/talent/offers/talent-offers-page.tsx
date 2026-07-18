@@ -86,12 +86,9 @@ export function TalentOffersPage() {
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6 py-8">
       <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold leading-tight text-[#101828]">
-          Offers
-        </h1>
+        <h1 className="text-2xl font-bold text-[#101828]">Interview Invites</h1>
         <p className="text-sm text-[#475467]">
-          Review the offers employers have sent you and respond when you&apos;re
-          ready.
+          Review and respond to your interview invitations.
         </p>
       </header>
 

@@ -6,6 +6,7 @@ import {
   getTalentOffer,
   getTalentOffers,
   respondToTalentOffer,
+  requestCall,
 } from "@/actions/talent-offers";
 import type {
   RespondTalentOfferInput,
@@ -47,6 +48,17 @@ export function useRespondToTalentOffer() {
       void qc.invalidateQueries({
         queryKey: talentOffersKeys.detail(variables.offerId),
       });
+    },
+  });
+}
+
+export function useRequestCall() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (offerId: string) => requestCall(offerId),
+    onSuccess: (_, offerId) => {
+      void qc.invalidateQueries({ queryKey: talentOffersKeys.lists() });
+      void qc.invalidateQueries({ queryKey: talentOffersKeys.detail(offerId) });
     },
   });
 }
