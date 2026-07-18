@@ -58,5 +58,15 @@ type Notification = {
   time: string;
 };
 
+export const NOTIFICATION_TYPES = {
+  EMPLOYER_VIEWED_PROFILE: "employer_viewed_profile",
+  INTERVIEW_INVITE_RECEIVED: "interview_invite_received",
+  ASSESSMENT_PASSED: "assessment_passed",
+  ASSESSMENT_FAILED: "assessment_failed",
+} as const;
+
+export type NotificationType =
+  (typeof NOTIFICATION_TYPES)[keyof typeof NOTIFICATION_TYPES];
+
 export { NOTIFICATIONS_DUMMY_DATA, notificationTabs };
 export type { Notification, NotificationTab };

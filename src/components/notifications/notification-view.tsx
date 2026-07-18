@@ -42,7 +42,14 @@ function notificationHref(
   const offerId = extractOfferId(notification.data);
   const looksOfferRelated =
     Boolean(offerId) ||
-    notification.type?.toLowerCase().includes("offer") === true;
+    notification.type?.toLowerCase().includes("offer") === true ||
+    notification.type === "interview_invite_received";
+
+  if (notification.type === "employer_viewed_profile") {
+    // If we have an employerId or just route them to somewhere
+    // For now no action for passive notifications
+    return null;
+  }
 
   if (!looksOfferRelated) return null;
 
