@@ -96,9 +96,24 @@ export function EmployerAssessmentsPage() {
                       {a.title}
                     </Link>
                     <p className="mt-1 text-sm text-[#667085]">
-                      {a.roleTrack || "—"} · {a.questionsCount} questions ·{" "}
-                      {a.submissionsCount} submissions
+                      {a.roleTrack || "—"} ·{" "}
+                      {a.type === "external" ? "External" : "Internal"} ·{" "}
+                      {a.questionsCount} questions · {a.submissionsCount}{" "}
+                      submissions
                     </p>
+                    {a.type === "external" && a.shareLink && (
+                      <div className="mt-2 text-sm text-[#079455]">
+                        <span className="font-medium">Share link:</span>{" "}
+                        <a
+                          href={a.shareLink}
+                          className="underline"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {a.shareLink}
+                        </a>
+                      </div>
+                    )}
                     <p className="mt-1 text-xs text-muted-foreground">
                       Created {renderDate(a.createdAt)}
                     </p>

@@ -20,6 +20,8 @@ function normalizeAssessment(
     timeLimitMinutes: raw.time_limit_minutes,
     passingThreshold: raw.passing_threshold,
     status: raw.status,
+    type: raw.type ?? "internal",
+    shareLink: raw.share_link ?? null,
     questionsCount: raw.questions?.length ?? 0,
     submissionsCount: raw.submissions_count ?? 0,
     createdAt: raw.created_at,
@@ -38,6 +40,7 @@ export async function createEmployerAssessment(
     questionSource: input.questionSource,
     shareViaLink: input.shareViaLink,
     sendToCandidates: input.sendToCandidates,
+    type: input.type,
   };
 
   if (input.questions && input.questions.length) {

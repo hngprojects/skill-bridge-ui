@@ -56,6 +56,8 @@ export function CreateAssessmentPage() {
   const passRate = passRateParam
     ? Number.parseInt(passRateParam, 10)
     : DEFAULT_ASSESSMENT_PASS_RATE;
+  const typeParam = searchParams.get("type");
+  const type = typeParam === "external" ? "external" : "internal";
 
   const [currentStepId, setCurrentStepId] =
     useState<CreateAssessmentStepId>("details");
@@ -111,8 +113,9 @@ export function CreateAssessmentPage() {
         timeLimitMinutes: 30,
         passingThreshold: resolvedPassRate,
         questionSource: "manual",
-        shareViaLink: true,
-        sendToCandidates: false,
+        shareViaLink: type === "external",
+        sendToCandidates: type === "internal",
+        type,
       },
       {
         onSuccess: () => {
@@ -207,7 +210,7 @@ export function CreateAssessmentPage() {
         showBack={currentStepIndex > 0}
         nextDisabled={nextDisabled || isPending}
         nextLoading={isPending}
-        lastStepLabel={isPending ? "Publishing..." : "Publish"}
+        lastStepLabel={isPending ? "Publishing..." : "Send Assessment"}
         className="lg:hidden"
       />
     </div>

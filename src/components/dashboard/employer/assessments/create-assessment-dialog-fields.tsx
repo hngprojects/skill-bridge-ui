@@ -11,6 +11,7 @@ import {
 import { FormInput } from "@/components/custom/form-input";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Popover,
   PopoverContent,
@@ -177,6 +178,31 @@ export function CreateAssessmentDialogFields({
         ) : (
           <p className={formFieldHintClass}>Placeholder for more info</p>
         )}
+      </div>
+
+      <div className="flex items-center justify-between pt-2">
+        <div className="space-y-0.5">
+          <Label htmlFor="assessment-type" className={formFieldLabelClass}>
+            External Assessment
+          </Label>
+          <p className={formFieldHintClass}>
+            Generate a shareable link for external applicants.
+          </p>
+        </div>
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <Switch
+              id="assessment-type"
+              checked={field.value === "external"}
+              onCheckedChange={(checked) =>
+                field.onChange(checked ? "external" : "internal")
+              }
+              className="data-checked:bg-[#079455]"
+            />
+          )}
+        />
       </div>
     </div>
   );

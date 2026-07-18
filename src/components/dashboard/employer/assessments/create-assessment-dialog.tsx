@@ -47,6 +47,7 @@ export function CreateAssessmentDialog({
       category: "",
       passRate: DEFAULT_ASSESSMENT_PASS_RATE,
       deadline: undefined,
+      type: "internal",
     },
   });
 

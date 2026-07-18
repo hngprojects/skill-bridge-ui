@@ -19,6 +19,7 @@ export function AssessmentHeroBanner() {
       category: values.category,
       passRate: String(values.passRate),
       deadline: values.deadline.toISOString(),
+      type: values.type,
     });
     router.push(`/e/assessments/draft?${params.toString()}`);
   };

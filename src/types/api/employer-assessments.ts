@@ -21,6 +21,7 @@ export type CreateEmployerAssessmentInput = {
     | "admin_upload";
   shareViaLink: boolean;
   sendToCandidates: boolean;
+  type: "internal" | "external";
   questions?: EmployerAssessmentQuestionInput[];
 };
 
@@ -44,6 +45,8 @@ export type RawEmployerAssessment = {
   share_via_link: boolean;
   send_to_candidates: boolean;
   status: EmployerAssessmentStatus;
+  type: "internal" | "external";
+  share_link: string | null;
   questions?: EmployerAssessmentQuestion[];
   submissions_count?: number;
   created_at: string;
@@ -58,6 +61,8 @@ export type EmployerAssessmentItem = {
   timeLimitMinutes: number;
   passingThreshold: number;
   status: EmployerAssessmentStatus;
+  type: "internal" | "external";
+  shareLink: string | null;
   questionsCount: number;
   submissionsCount: number;
   createdAt: string;
