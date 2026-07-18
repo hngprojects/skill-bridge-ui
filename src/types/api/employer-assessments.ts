@@ -46,7 +46,7 @@ export type RawEmployerAssessment = {
   send_to_candidates: boolean;
   status: EmployerAssessmentStatus;
   type: "internal" | "external";
-  share_link: string | null;
+  token: string | null;
   questions?: EmployerAssessmentQuestion[];
   submissions_count?: number;
   created_at: string;
@@ -62,7 +62,7 @@ export type EmployerAssessmentItem = {
   passingThreshold: number;
   status: EmployerAssessmentStatus;
   type: "internal" | "external";
-  shareLink: string | null;
+  token: string | null;
   questionsCount: number;
   submissionsCount: number;
   createdAt: string;

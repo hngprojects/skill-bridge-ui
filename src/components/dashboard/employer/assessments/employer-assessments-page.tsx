@@ -107,16 +107,22 @@ export function EmployerAssessmentsPage() {
                       {a.questionsCount} questions · {a.submissionsCount}{" "}
                       submissions
                     </p>
-                    {a.type === "external" && a.shareLink && (
+                    {a.type === "external" && a.token && (
                       <div className="mt-2 text-sm text-[#079455]">
                         <span className="font-medium">Share link:</span>{" "}
                         <a
-                          href={a.shareLink}
+                          href={
+                            typeof window !== "undefined"
+                              ? `${window.location.origin}/assessment/${a.token}`
+                              : ""
+                          }
                           className="underline"
                           target="_blank"
                           rel="noreferrer"
                         >
-                          {a.shareLink}
+                          {typeof window !== "undefined"
+                            ? `${window.location.origin}/assessment/${a.token}`
+                            : ""}
                         </a>
                       </div>
                     )}

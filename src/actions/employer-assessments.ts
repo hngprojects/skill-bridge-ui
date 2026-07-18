@@ -21,7 +21,7 @@ function normalizeAssessment(
     passingThreshold: raw.passing_threshold,
     status: raw.status,
     type: raw.type ?? "internal",
-    shareLink: raw.share_link ?? null,
+    token: raw.token ?? null,
     questionsCount: raw.questions?.length ?? 0,
     submissionsCount: raw.submissions_count ?? 0,
     createdAt: raw.created_at,
