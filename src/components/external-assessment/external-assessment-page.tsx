@@ -32,8 +32,13 @@ export function ExternalAssessmentPage({ token }: { token: string }) {
     register(
       { token, email, consentedMarketing: consented },
       {
-        onSuccess: (data) => {
-          setApplicantId(data.applicant.id);
+        onSuccess: (data: {
+          external_applicant_id?: string;
+          externalApplicantId?: string;
+        }) => {
+          setApplicantId(
+            data.external_applicant_id || data.externalApplicantId || null,
+          );
           setCurrentStep("assessment");
         },
         onError: () => {

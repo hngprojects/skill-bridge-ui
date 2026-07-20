@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Copy } from "lucide-react";
 import { AssessmentHeroBanner } from "./assessment-hero-banner";
 import { AssessmentInviteModal } from "./assessment-invite-modal";
 import {
@@ -46,6 +47,15 @@ export function EmployerAssessmentsPage() {
         setDeactivatingIds((prev) => prev.filter((itemId) => itemId !== id));
       },
     });
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Link copied to clipboard!");
+    } catch {
+      toast.error("Failed to copy link.");
+    }
   };
 
   const renderDate = (dateString: string) => {
@@ -108,7 +118,7 @@ export function EmployerAssessmentsPage() {
                       submissions
                     </p>
                     {a.type === "external" && a.token && (
-                      <div className="mt-2 text-sm text-[#079455]">
+                      <div className="mt-2 flex items-center gap-2 text-sm text-[#079455]">
                         <span className="font-medium">Share link:</span>{" "}
                         <a
                           href={
@@ -116,7 +126,7 @@ export function EmployerAssessmentsPage() {
                               ? `${window.location.origin}/assessment/${a.token}`
                               : ""
                           }
-                          className="underline"
+                          className="underline truncate max-w-[250px] sm:max-w-[400px]"
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -124,6 +134,20 @@ export function EmployerAssessmentsPage() {
                             ? `${window.location.origin}/assessment/${a.token}`
                             : ""}
                         </a>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            copyToClipboard(
+                              typeof window !== "undefined"
+                                ? `${window.location.origin}/assessment/${a.token}`
+                                : "",
+                            )
+                          }
+                          className="flex items-center justify-center rounded p-1 hover:bg-[#079455]/10 text-[#079455] transition-colors"
+                          title="Copy link"
+                        >
+                          <Copy className="size-4" />
+                        </button>
                       </div>
                     )}
                     <p className="mt-1 text-xs text-muted-foreground">

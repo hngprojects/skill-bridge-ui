@@ -30,12 +30,14 @@ export function ExternalSignupStep({ onContinue }: ExternalSignupStepProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Welcome to the Assessment</CardTitle>
+        <CardTitle className="text-2xl font-semibold">
+          Welcome to the Assessment
+        </CardTitle>
         <CardDescription>
           Please enter your email to get started.
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <CardContent>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -47,12 +49,13 @@ export function ExternalSignupStep({ onContinue }: ExternalSignupStepProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="rounded-lg"
               />
             </div>
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full rounded-lg">
             Continue
           </Button>
         </CardFooter>

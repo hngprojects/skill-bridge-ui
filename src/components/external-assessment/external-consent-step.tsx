@@ -46,7 +46,7 @@ export function ExternalConsentStep({ onNext, isSubmitting }: Props) {
 
       <Button
         onClick={() => onNext(agreed)}
-        disabled={!agreed || isSubmitting}
+        disabled={isSubmitting}
         className="w-full max-w-sm bg-[#111827] hover:bg-[#111827]/90 text-white"
       >
         {isSubmitting ? "Starting..." : "Start Assessment"}

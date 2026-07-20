@@ -121,11 +121,15 @@ export function CreateAssessmentPage() {
         type,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           toast.success("Assessment published successfully.");
           if (type === "external") {
+            const domain =
+              typeof window !== "undefined"
+                ? window.location.origin
+                : "https://skillbridge.com";
             setMockShareLink(
-              "https://skillbridge.com/assessment/mock-external-link",
+              `${domain}/assessment/${data.token || "mock-external-link"}`,
             );
             setShareModalOpen(true);
           } else {
