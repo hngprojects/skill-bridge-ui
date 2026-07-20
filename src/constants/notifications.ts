@@ -56,6 +56,7 @@ type Notification = {
   boldText: string;
   normalText: string;
   time: string;
+  type?: NotificationType | string;
 };
 
 export const NOTIFICATION_TYPES = {

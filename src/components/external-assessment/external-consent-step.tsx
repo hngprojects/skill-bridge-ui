@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 type Props = {
-  onNext: () => void;
+  onNext: (agreed: boolean) => void;
+  isSubmitting?: boolean;
 };
 
-export function ExternalConsentStep({ onNext }: Props) {
+export function ExternalConsentStep({ onNext, isSubmitting }: Props) {
   const [agreed, setAgreed] = useState(false);
 
   return (
@@ -44,11 +45,11 @@ export function ExternalConsentStep({ onNext }: Props) {
       </div>
 
       <Button
-        onClick={onNext}
-        disabled={!agreed}
+        onClick={() => onNext(agreed)}
+        disabled={!agreed || isSubmitting}
         className="w-full max-w-sm bg-[#111827] hover:bg-[#111827]/90 text-white"
       >
-        Start Assessment
+        {isSubmitting ? "Starting..." : "Start Assessment"}
       </Button>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useInviteToAssessment } from "@/hooks/api/use-employer-assessments";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,26 +26,31 @@ export function AssessmentInviteModal({
   assessmentId,
 }: AssessmentInviteModalProps) {
   const [email, setEmail] = useState("");
-  const [isSending, setIsSending] = useState(false);
+  const { mutate: inviteToAssessment, isPending } = useInviteToAssessment();
 
-  const handleInvite = async () => {
+  const handleInvite = () => {
     if (!email) {
       toast.error("Please enter an email or name to invite.");
       return;
     }
 
-    setIsSending(true);
-    try {
-      // Mock API call (can use assessmentId here)
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      toast.success(`Invite sent to ${email} for assessment ${assessmentId}`);
-      setEmail("");
-      onOpenChange(false);
-    } catch {
-      toast.error("Failed to send invite");
-    } finally {
-      setIsSending(false);
-    }
+    const payload = email.includes("@")
+      ? { emails: [email] }
+      : { talentIds: [email] };
+
+    inviteToAssessment(
+      { assessmentId, ...payload },
+      {
+        onSuccess: () => {
+          toast.success(`Invite sent to ${email} for assessment`);
+          setEmail("");
+          onOpenChange(false);
+        },
+        onError: () => {
+          toast.error("Failed to send invite");
+        },
+      },
+    );
   };
 
   return (
@@ -72,12 +78,12 @@ export function AssessmentInviteModal({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={isSending}
+            disabled={isPending}
           >
             Cancel
           </Button>
-          <Button onClick={handleInvite} disabled={isSending || !email}>
-            {isSending ? "Sending..." : "Send Invite"}
+          <Button onClick={handleInvite} disabled={isPending || !email}>
+            {isPending ? "Sending..." : "Send Invite"}
           </Button>
         </div>
       </DialogContent>

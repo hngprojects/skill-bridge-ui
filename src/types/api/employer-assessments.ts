@@ -25,6 +25,12 @@ export type CreateEmployerAssessmentInput = {
   questions?: EmployerAssessmentQuestionInput[];
 };
 
+export type InviteToAssessmentInput = {
+  assessmentId: string;
+  talentIds?: string[];
+  emails?: string[];
+};
+
 export type EmployerAssessmentQuestion = {
   id: string;
   questionText: string;

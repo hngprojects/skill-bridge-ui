@@ -144,6 +144,7 @@ const NotificationView = ({ role }: NotificationViewProps) => {
                   boldText: notification.title,
                   normalText: notification.body,
                   time: notification.createdAt,
+                  type: notification.type,
                 }}
                 isRead={notification.isRead}
                 onMarkRead={() => markAsRead(notification.id)}

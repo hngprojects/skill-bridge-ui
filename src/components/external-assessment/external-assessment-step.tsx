@@ -1,20 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
   onNext: () => void;
+  isSubmitting?: boolean;
 };
 
-export function ExternalAssessmentStep({ onNext }: Props) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
+export function ExternalAssessmentStep({ onNext, isSubmitting }: Props) {
   const handleSubmit = () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-      onNext();
-    }, 1500);
+    onNext();
   };
 
   return (

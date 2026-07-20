@@ -6,6 +6,7 @@ import type {
   ListEmployerAssessmentsResponse,
   ListEmployerAssessmentResultsResponse,
   RawEmployerAssessment,
+  InviteToAssessmentInput,
 } from "@/types/api/employer-assessments";
 import { unwrapData } from "./utils";
 
@@ -92,4 +93,24 @@ export async function getEmployerAssessmentResults(
     ApiEnvelope<ListEmployerAssessmentResultsResponse>
   >(`/employer/assessments/${assessmentId}/results`, { params });
   return unwrapData(res);
+}
+
+export async function getAssessmentToken(
+  assessmentId: string,
+): Promise<{ token: string }> {
+  const res = await authApi.get<ApiEnvelope<{ token: string }>>(
+    `/employer/assessments/${assessmentId}/token`,
+  );
+  return unwrapData(res);
+}
+
+export async function inviteToAssessment(
+  input: InviteToAssessmentInput,
+): Promise<void> {
+  const { assessmentId, talentIds, emails } = input;
+  const body: Record<string, unknown> = {};
+  if (talentIds && talentIds.length > 0) body.talent_ids = talentIds;
+  if (emails && emails.length > 0) body.emails = emails;
+
+  await authApi.post(`/employer/assessments/${assessmentId}/invite`, body);
 }

@@ -72,12 +72,12 @@ export function EmployerSendOfferPage({
           setIsConfirmOpen(false);
           if (result.warnings.length > 0) {
             appToast.success(
-              `Offer sent with ${result.warnings.length} warning${
+              `Interview invite sent with ${result.warnings.length} warning${
                 result.warnings.length === 1 ? "" : "s"
               }.`,
             );
           } else {
-            appToast.success("Offer sent successfully.");
+            appToast.success("Interview invite sent successfully.");
           }
           router.push("/e/shortlist");
         },
@@ -132,7 +132,7 @@ export function EmployerSendOfferPage({
             disabled={isSubmitting}
             className="h-10 rounded-lg"
           >
-            Send Offer
+            Send Interview Invite
           </Button>
         </div>
       </div>
