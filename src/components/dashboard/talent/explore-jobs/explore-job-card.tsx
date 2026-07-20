@@ -12,20 +12,22 @@ import { AssessmentRequiredModal } from "./assessment-required-modal";
 export function ExploreJobCard({ role }: { role: ExploreJobRole }) {
   const { mutate: expressInterest, isPending } = useExpressInterest();
   const [showModal, setShowModal] = useState(false);
-  const isEmergingTalent = true; // Mock
 
   const handleInterest = () => {
-    if (isEmergingTalent) {
-      setShowModal(true);
-      return;
-    }
-
     expressInterest(role.id, {
       onSuccess: () => toast.success(`Expressed interest in ${role.title}`),
       onError: (err: unknown) => {
-        toast.error(
-          err instanceof Error ? err.message : "Failed to express interest",
-        );
+        const errorObj = err as Record<string, unknown>;
+        const responseObj = errorObj?.response as
+          | Record<string, unknown>
+          | undefined;
+        if (errorObj?.status === 403 || responseObj?.status === 403) {
+          setShowModal(true);
+        } else {
+          toast.error(
+            err instanceof Error ? err.message : "Failed to express interest",
+          );
+        }
       },
     });
   };

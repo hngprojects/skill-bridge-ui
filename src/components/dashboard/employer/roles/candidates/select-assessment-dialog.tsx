@@ -70,7 +70,10 @@ export function SelectAssessmentDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          <label className="text-sm font-medium text-[#344054]">
+          <label
+            htmlFor="assessment-select"
+            className="text-sm font-medium text-[#344054]"
+          >
             Assessment
           </label>
           {isLoading ? (
@@ -86,7 +89,7 @@ export function SelectAssessmentDialog({
               value={selectedAssessmentId}
               onValueChange={setSelectedAssessmentId}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="assessment-select" className="w-full">
                 <SelectValue placeholder="Select an assessment..." />
               </SelectTrigger>
               <SelectContent>

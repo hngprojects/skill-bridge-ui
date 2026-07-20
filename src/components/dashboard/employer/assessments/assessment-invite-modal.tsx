@@ -28,6 +28,11 @@ export function AssessmentInviteModal({
   const [email, setEmail] = useState("");
   const { mutate: inviteToAssessment, isPending } = useInviteToAssessment();
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) setEmail("");
+    onOpenChange(nextOpen);
+  };
+
   const handleInvite = () => {
     if (!email) {
       toast.error("Please enter an email or name to invite.");
@@ -54,7 +59,7 @@ export function AssessmentInviteModal({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Invite to Assessment</DialogTitle>
@@ -77,7 +82,7 @@ export function AssessmentInviteModal({
         <div className="mt-6 flex justify-end space-x-2">
           <Button
             variant="outline"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
             disabled={isPending}
           >
             Cancel

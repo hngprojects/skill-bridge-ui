@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface AssessmentRequiredModalProps {
   open: boolean;
@@ -33,7 +34,9 @@ export function AssessmentRequiredModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={() => onOpenChange(false)}>Go to Assessment</Button>
+          <Button asChild onClick={() => onOpenChange(false)}>
+            <Link href="/t/assessments">Go to Assessment</Link>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

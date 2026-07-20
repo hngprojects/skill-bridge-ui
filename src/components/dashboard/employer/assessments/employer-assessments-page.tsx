@@ -121,18 +121,12 @@ export function EmployerAssessmentsPage() {
                       <div className="mt-2 flex items-center gap-2 text-sm text-[#079455]">
                         <span className="font-medium">Share link:</span>{" "}
                         <a
-                          href={
-                            typeof window !== "undefined"
-                              ? `${window.location.origin}/assessment/${a.token}`
-                              : ""
-                          }
+                          href={`/assessment/${a.token}`}
                           className="underline truncate max-w-[250px] sm:max-w-[400px]"
                           target="_blank"
                           rel="noreferrer"
                         >
-                          {typeof window !== "undefined"
-                            ? `${window.location.origin}/assessment/${a.token}`
-                            : ""}
+                          /assessment/{a.token}
                         </a>
                         <button
                           type="button"
@@ -144,6 +138,7 @@ export function EmployerAssessmentsPage() {
                             )
                           }
                           className="flex items-center justify-center rounded p-1 hover:bg-[#079455]/10 text-[#079455] transition-colors"
+                          aria-label={`Copy link for ${a.title}`}
                           title="Copy link"
                         >
                           <Copy className="size-4" />
