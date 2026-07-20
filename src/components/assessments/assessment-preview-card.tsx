@@ -27,10 +27,14 @@ function AssessmentPreviewCard({
       <CardContent className="px-4 py-4 sm:px-5 lg:px-6 2xl:p-8">
         <AssessmentPreviewHeader assessment={assessment} />
         <AssessmentPreviewMeta assessment={assessment} />
-        <AssessmentPreviewExpectations />
+        <AssessmentPreviewExpectations
+          sectionTitle={assessment.sectionTitle}
+          points={assessment.points}
+        />
         <AssessmentPreviewWarning warning={assessment.warning} />
         <AssessmentPreviewFooter
           assessmentSlug={assessment.slug}
+          consent={assessment.consent}
           startHref={startHref}
           startLabel={startLabel}
           startDisabled={startDisabled}

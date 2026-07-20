@@ -17,8 +17,8 @@ export function VerifiedReportUnavailableOverlay({
         </h2>
         <p className="text-sm text-[#344054]">{message}</p>
         <p className="text-xs text-muted-foreground">
-          Complete your advanced assessment and reach job-ready status to unlock
-          your verified profile.
+          Complete your Job Readiness Evaluation and reach job-ready status to
+          unlock your verified profile.
         </p>
         <div className="flex flex-wrap justify-center gap-3 pt-2">
           <Button asChild variant="outline" size="sm">

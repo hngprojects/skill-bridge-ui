@@ -42,6 +42,7 @@ export type RawTalentOffer = {
   compensation: string;
   employment_type: string;
   work_arrangement: string;
+  interview_link: string | null;
   application_deadline: string | null;
   status: EmployerOfferStatus;
   expires_at: string;
@@ -67,6 +68,7 @@ export type TalentOffer = {
   compensation: string;
   employmentType: string;
   workArrangement: string;
+  interviewLink: string | null;
   applicationDeadline: string | null;
   status: EmployerOfferStatus;
   expiresAt: string;

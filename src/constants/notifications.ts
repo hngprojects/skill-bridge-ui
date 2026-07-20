@@ -21,7 +21,7 @@ const NOTIFICATIONS_DUMMY_DATA: Record<NotificationTab, Notification[]> = {
     {
       boldText: "You've unlocked your next assessment!",
       normalText:
-        "You can proceed to completing your Skill/career based assessment. This unlocks your next assessment on your job assessment roadmap.",
+        "You can proceed to completing your Skill Level Evaluation. This unlocks your next assessment on your job assessment roadmap.",
       time: "12 hours",
     },
   ],
@@ -56,7 +56,18 @@ type Notification = {
   boldText: string;
   normalText: string;
   time: string;
+  type?: NotificationType | string;
 };
+
+export const NOTIFICATION_TYPES = {
+  EMPLOYER_VIEWED_PROFILE: "employer_viewed_profile",
+  INTERVIEW_INVITE_RECEIVED: "interview_invite_received",
+  ASSESSMENT_PASSED: "assessment_passed",
+  ASSESSMENT_FAILED: "assessment_failed",
+} as const;
+
+export type NotificationType =
+  (typeof NOTIFICATION_TYPES)[keyof typeof NOTIFICATION_TYPES];
 
 export { NOTIFICATIONS_DUMMY_DATA, notificationTabs };
 export type { Notification, NotificationTab };

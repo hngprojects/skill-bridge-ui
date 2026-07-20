@@ -104,12 +104,12 @@ export function Navbar() {
               aria-hidden="true"
             />
 
-            {/* <Link
+            <Link
               href="/signup?user=employer"
               className="py-1 text-[15px] font-medium text-white transition-colors hover:text-white/90"
             >
               Hire a Talent
-            </Link> */}
+            </Link>
           </nav>
 
           {status === "loading" ? null : (
@@ -165,13 +165,13 @@ export function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                {/* <Link
+                <Link
                   href="/signup?user=employer"
                   onClick={() => setMobileOpen(false)}
                   className="text-lg font-medium text-white/80 hover:text-white"
                 >
                   Hire a Talent
-                </Link> */}
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>

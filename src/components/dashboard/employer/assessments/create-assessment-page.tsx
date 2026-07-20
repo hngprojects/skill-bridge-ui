@@ -22,6 +22,7 @@ import { CreateAssessmentHeader } from "./create-assessment-header";
 import { CreateAssessmentMobileProgress } from "./create-assessment-mobile-progress";
 import { CreateAssessmentSidebar } from "./create-assessment-sidebar";
 import { CreateAssessmentStepCard } from "./create-assessment-step-card";
+import { AssessmentShareLinkModal } from "./assessment-share-link-modal";
 
 type AssessmentWizardState = {
   welcomeMessageHtml: string;
@@ -56,11 +57,15 @@ export function CreateAssessmentPage() {
   const passRate = passRateParam
     ? Number.parseInt(passRateParam, 10)
     : DEFAULT_ASSESSMENT_PASS_RATE;
+  const typeParam = searchParams.get("type");
+  const type = typeParam === "external" ? "external" : "internal";
 
   const [currentStepId, setCurrentStepId] =
     useState<CreateAssessmentStepId>("details");
   const [wizardState, setWizardState] =
     useState<AssessmentWizardState>(INITIAL_STATE);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [mockShareLink, setMockShareLink] = useState("");
 
   const selectedQuestionIds =
     wizardState.selectedQuestionIds ?? DEFAULT_SELECTED_QUESTION_IDS;
@@ -111,13 +116,25 @@ export function CreateAssessmentPage() {
         timeLimitMinutes: 30,
         passingThreshold: resolvedPassRate,
         questionSource: "manual",
-        shareViaLink: true,
-        sendToCandidates: false,
+        shareViaLink: type === "external",
+        sendToCandidates: type === "internal",
+        type,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           toast.success("Assessment published successfully.");
-          router.push("/e/assessments");
+          if (type === "external") {
+            const domain =
+              typeof window !== "undefined"
+                ? window.location.origin
+                : "https://skillbridge.com";
+            setMockShareLink(
+              `${domain}/assessment/${data.token || "mock-external-link"}`,
+            );
+            setShareModalOpen(true);
+          } else {
+            router.push("/e/assessments");
+          }
         },
         onError: (err: unknown) => {
           const message =
@@ -188,6 +205,7 @@ export function CreateAssessmentPage() {
           description={meta.description}
           currentStepIndex={currentStepIndex}
           isLastStep={isLastStep}
+          assessmentType={type}
           showBack={currentStepIndex > 0}
           onBack={handleBack}
           onNext={handleNext}
@@ -207,8 +225,25 @@ export function CreateAssessmentPage() {
         showBack={currentStepIndex > 0}
         nextDisabled={nextDisabled || isPending}
         nextLoading={isPending}
-        lastStepLabel={isPending ? "Publishing..." : "Publish"}
+        lastStepLabel={
+          isPending
+            ? "Publishing..."
+            : type === "external"
+              ? "Generate Link"
+              : "Send Assessment"
+        }
         className="lg:hidden"
+      />
+
+      <AssessmentShareLinkModal
+        open={shareModalOpen}
+        onOpenChange={(open) => {
+          setShareModalOpen(open);
+          if (!open) {
+            router.push("/e/assessments");
+          }
+        }}
+        link={mockShareLink}
       />
     </div>
   );

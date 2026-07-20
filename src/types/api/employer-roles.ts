@@ -6,16 +6,15 @@ export type EmployerRoleItem = {
   status: EmployerRoleStatus;
   offersSent: number;
   requirements: string;
+  isFull: boolean;
   createdAt: string;
 };
 
+import { z } from "zod";
+import { createRoleDialogSchema } from "@/types/create-role-schema";
+
 /** Values captured by the Create Role dialog form. */
-export type CreateRoleValues = {
-  companyName: string;
-  roleTitle: string;
-  category: string;
-  companyUrl: string;
-};
+export type CreateRoleValues = z.infer<typeof createRoleDialogSchema>;
 
 /** Raw API response from POST /employer/roles (snake_case). */
 export type RawEmployerRole = {
@@ -36,6 +35,9 @@ export type RawEmployerRole = {
   assessment: unknown | null;
   status: EmployerRoleStatus;
   offers_sent_count: number;
+  visibility: "public" | "private";
+  applicant_cap: number | null;
+  interested_count: number;
   created_at: string;
   updated_at: string;
 };
@@ -71,6 +73,8 @@ export type CreateRoleInput = {
   salaryMin: string;
   salaryMax: string;
   currency: string;
+  visibility?: "public" | "private";
+  applicantCap?: number | null;
   assessmentId?: string;
 };
 
@@ -89,5 +93,7 @@ export type UpdateRoleInput = {
   salaryMin?: string;
   salaryMax?: string;
   currency?: string;
+  visibility?: "public" | "private";
+  applicantCap?: number | null;
   assessmentId?: string | null;
 };

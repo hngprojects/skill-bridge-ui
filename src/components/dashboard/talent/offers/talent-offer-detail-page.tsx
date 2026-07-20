@@ -81,7 +81,9 @@ export function TalentOfferDetailPage({ offerId }: TalentOfferDetailPageProps) {
       {
         onSuccess: () => {
           appToast.success(
-            pendingAction === "accept" ? "Offer accepted." : "Offer declined.",
+            pendingAction === "accept"
+              ? "Interview invite accepted."
+              : "Interview invite declined.",
           );
           setPendingAction(null);
         },
@@ -104,7 +106,7 @@ export function TalentOfferDetailPage({ offerId }: TalentOfferDetailPageProps) {
         className="inline-flex w-fit items-center gap-2 text-sm font-medium text-[#475467] transition-colors hover:text-[#101828]"
       >
         <ChevronLeft className="size-4" />
-        Back to offers
+        Back to interview invites
       </button>
 
       <div className="flex flex-col gap-6 rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
@@ -165,7 +167,7 @@ export function TalentOfferDetailPage({ offerId }: TalentOfferDetailPageProps) {
             />
           ) : null}
           <DetailField
-            label="Offer expires"
+            label="Invite expires"
             value={formatAbsoluteDate(offer.expiresAt) || "—"}
           />
         </div>
@@ -213,10 +215,7 @@ export function TalentOfferDetailPage({ offerId }: TalentOfferDetailPageProps) {
         ) : null}
 
         {CONTACT_UNLOCKED_STATUSES.has(offer.status) ? (
-          <TalentOfferContactPanel
-            employer={offer.employer}
-            roleTitle={offer.roleTitle}
-          />
+          <TalentOfferContactPanel offer={offer} />
         ) : null}
 
         <TalentOfferActionBar

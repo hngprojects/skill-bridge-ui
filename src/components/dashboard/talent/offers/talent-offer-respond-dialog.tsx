@@ -22,18 +22,18 @@ type RespondCopy = {
 
 const COPY: Record<TalentOfferResponseAction, RespondCopy> = {
   accept: {
-    title: "Accept this offer?",
+    title: "Accept Interview Invite",
     description: (employerName, roleTitle) =>
-      `Accepting will let ${employerName} know you've taken the offer for ${roleTitle}. You may be asked to complete an assessment next.`,
-    actionLabel: "Accept offer",
+      `You are about to accept the interview invite from ${employerName} for ${roleTitle}.`,
+    actionLabel: "Accept interview invite",
     pendingLabel: "Accepting…",
     destructive: false,
   },
   decline: {
-    title: "Decline this offer?",
+    title: "Decline Interview Invite",
     description: (employerName, roleTitle) =>
-      `Declining the offer from ${employerName} for ${roleTitle} can't be undone. They'll be notified.`,
-    actionLabel: "Decline offer",
+      `You are about to decline the interview invite from ${employerName} for ${roleTitle}. This can't be undone. They'll be notified.`,
+    actionLabel: "Decline interview invite",
     pendingLabel: "Declining…",
     destructive: true,
   },

@@ -141,7 +141,7 @@ export function AdvancedAssessmentFlow() {
         title="Retake locked"
         message={
           dateLabel
-            ? `You can retake the advanced assessment on ${dateLabel}.`
+            ? `You can retake the Job Readiness Evaluation on ${dateLabel}.`
             : "You're currently in the 14-day retake cooldown period."
         }
         backHref={ADVANCED_PREVIEW_PATH}

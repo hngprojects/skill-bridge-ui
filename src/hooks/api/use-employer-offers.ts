@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  addInterviewLink,
   getEmployerOffers,
   markOfferHireComplete,
   markOfferHired,
@@ -76,5 +77,19 @@ export function useWithdrawOffer() {
   return useMutation({
     mutationFn: (offerId: string) => withdrawOffer(offerId),
     onSuccess: () => invalidateOffersList(qc),
+  });
+}
+
+export function useAddInterviewLink() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ offerId, link }: { offerId: string; link: string }) =>
+      addInterviewLink(offerId, link),
+    onSuccess: (_, { offerId }) => {
+      void qc.invalidateQueries({ queryKey: employerOffersKeys.lists() });
+      void qc.invalidateQueries({
+        queryKey: employerOffersKeys.detail(offerId),
+      });
+    },
   });
 }

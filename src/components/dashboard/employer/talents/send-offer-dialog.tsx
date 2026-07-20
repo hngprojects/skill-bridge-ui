@@ -68,10 +68,10 @@ export function SendOfferDialog({
       <DialogContent className="max-w-xl gap-6 rounded-3xl p-6">
         <DialogHeader className="gap-1 text-left">
           <DialogTitle className="text-lg font-bold text-[#151515]">
-            Select a role
+            Invite to Interview
           </DialogTitle>
           <DialogDescription className="text-base font-light tracking-[0.016em] text-[#151515]">
-            The selected role will be attached to the talent&apos;s offer.
+            Select the role you&apos;d like to interview this candidate for.
           </DialogDescription>
         </DialogHeader>
 

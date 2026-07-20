@@ -59,6 +59,7 @@ function mapOffer(raw: RawTalentOffer): TalentOffer {
     compensation: raw.compensation,
     employmentType: raw.employment_type,
     workArrangement: raw.work_arrangement,
+    interviewLink: raw.interview_link ?? null,
     applicationDeadline: raw.application_deadline,
     status: raw.status,
     expiresAt: raw.expires_at,
@@ -104,4 +105,8 @@ export async function respondToTalentOffer({
     { action },
   );
   return mapOffer(unwrapData(res));
+}
+
+export async function requestCall(offerId: string): Promise<void> {
+  await authApi.post(`/talent/offers/${offerId}/request-call`);
 }

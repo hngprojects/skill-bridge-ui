@@ -6,8 +6,12 @@ import {
   getEmployerAssessment,
   getEmployerAssessmentResults,
   getEmployerAssessments,
+  inviteToAssessment,
 } from "@/actions/employer-assessments";
-import type { CreateEmployerAssessmentInput } from "@/types/api/employer-assessments";
+import type {
+  CreateEmployerAssessmentInput,
+  InviteToAssessmentInput,
+} from "@/types/api/employer-assessments";
 import { employerAssessmentsKeys } from "./keys";
 
 export function useEmployerAssessments(params?: {
@@ -62,5 +66,11 @@ export function useDeactivateEmployerAssessment() {
         exact: false,
       });
     },
+  });
+}
+
+export function useInviteToAssessment() {
+  return useMutation({
+    mutationFn: (input: InviteToAssessmentInput) => inviteToAssessment(input),
   });
 }
