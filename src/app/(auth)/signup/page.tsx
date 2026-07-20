@@ -19,33 +19,33 @@ function SignupContent() {
   const talentSubtitle =
     "Prove your skills and get discovered by employers hiring verified talent.";
 
-  // const toggleHref = "/signup?user=employer";
+  const toggleHref = "/signup?user=employer";
 
   return (
     <AuthShell
       simpleFooter={isEmployer}
       headerTrailing={
-        // isEmployer ? (
-        <p className="text-right text-sm">
-          <Link
-            href="/"
-            className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-70"
-          >
-            Back to Homepage
-          </Link>
-        </p>
-        // ) : (
-        //   <div className="body-2 flex flex-col items-end text-right font-light text-muted-foreground sm:flex-row sm:items-center sm:gap-1">
-        //     <span>Are you looking for Talents?</span>
+        isEmployer ? (
+          <p className="text-right text-sm">
+            <Link
+              href="/"
+              className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-70"
+            >
+              Back to Homepage
+            </Link>
+          </p>
+        ) : (
+          <div className="body-2 flex flex-col items-end text-right font-light text-muted-foreground sm:flex-row sm:items-center sm:gap-1">
+            <span>Are you looking for Talents?</span>
 
-        //     <Link
-        //       href={toggleHref}
-        //       className="font-normal text-foreground underline decoration-foreground underline-offset-4 transition-all hover:opacity-80"
-        //     >
-        //       Click here
-        //     </Link>
-        //   </div>
-        // )
+            <Link
+              href={toggleHref}
+              className="font-normal text-foreground underline decoration-foreground underline-offset-4 transition-all hover:opacity-80"
+            >
+              Click here
+            </Link>
+          </div>
+        )
       }
     >
       {isEmployer ? (

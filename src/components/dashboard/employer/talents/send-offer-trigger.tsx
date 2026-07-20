@@ -28,7 +28,7 @@ type SendOfferTriggerProps = {
  */
 export function SendOfferTrigger({
   userId,
-  label = "Send Offer",
+  label = "Invite to Interview",
   className,
 }: SendOfferTriggerProps) {
   const router = useRouter();

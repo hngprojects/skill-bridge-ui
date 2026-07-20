@@ -45,6 +45,8 @@ export function CreateRoleDialog({
       companyUrl: profile?.companyWebsite ?? "",
       roleTitle: "",
       category: "",
+      showOnExploreJobs: true,
+      applicantCap: null,
     },
     resetOptions: { keepDirtyValues: true },
   });

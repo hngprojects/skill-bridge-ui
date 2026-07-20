@@ -12,6 +12,7 @@ type CreateAssessmentStepCardProps = {
   description: string;
   currentStepIndex: number;
   isLastStep: boolean;
+  assessmentType?: "external" | "internal";
   showBack?: boolean;
   nextDisabled?: boolean;
   nextLoading?: boolean;
@@ -26,6 +27,7 @@ export function CreateAssessmentStepCard({
   description,
   currentStepIndex,
   isLastStep,
+  assessmentType,
   showBack = false,
   nextDisabled = false,
   nextLoading = false,
@@ -90,7 +92,13 @@ export function CreateAssessmentStepCard({
             disabled={nextDisabled || nextLoading}
             className="h-9 min-w-24 rounded-xl bg-[#111827] px-5 text-sm font-semibold text-white hover:bg-[#111827]/90 disabled:opacity-40"
           >
-            {nextLoading ? "Saving..." : isLastStep ? "Send Offer" : "Next"}
+            {nextLoading
+              ? "Saving..."
+              : isLastStep
+                ? assessmentType === "external"
+                  ? "Generate Link"
+                  : "Send Assessment"
+                : "Next"}
           </Button>
         </div>
       </CardFooter>

@@ -67,6 +67,7 @@ function mapOffer(raw: RawEmployerOffer): EmployerOffer {
     compensation: raw.compensation,
     employmentType: raw.employment_type,
     workArrangement: raw.work_arrangement,
+    schedulingLink: raw.scheduling_link ?? null,
     status: raw.status,
     expiresAt: raw.expires_at,
     assessmentUnlockedAt: raw.assessment_unlocked_at,
@@ -83,7 +84,12 @@ export async function sendOffer(
 ): Promise<SendOfferResult> {
   const res = await authApi.post<ApiEnvelope<RawSendOfferResponse>>(
     "/employer/offers",
-    input,
+    {
+      candidate_ids: input.candidateIds,
+      role_id: input.roleId,
+      scheduling_link: input.schedulingLink,
+      message: input.message,
+    },
   );
   const raw = unwrapData(res);
   return {
@@ -115,6 +121,18 @@ export async function markOfferHired(offerId: string): Promise<EmployerOffer> {
 export async function withdrawOffer(offerId: string): Promise<EmployerOffer> {
   const res = await authApi.patch<ApiEnvelope<RawEmployerOffer>>(
     `/employer/offers/${offerId}/withdraw`,
+  );
+  return mapOffer(unwrapData(res));
+}
+
+/** Add an interview link to an accepted offer. */
+export async function addInterviewLink(
+  offerId: string,
+  link: string,
+): Promise<EmployerOffer> {
+  const res = await authApi.patch<ApiEnvelope<RawEmployerOffer>>(
+    `/employer/offers/${offerId}/interview-link`,
+    { interview_link: link },
   );
   return mapOffer(unwrapData(res));
 }

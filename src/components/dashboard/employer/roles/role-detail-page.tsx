@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { useCloseRole, useEmployerRole, useReopenRole } from "@/hooks/api";
 import { formatRoleCardDate } from "@/lib/format-date";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 type EmployerRoleDetailPageProps = {
   roleId: string;
@@ -109,6 +110,20 @@ export function EmployerRoleDetailPage({
               </span>{" "}
               <span className="text-[#667085]">offers sent</span>
             </p>
+            {role.applicant_cap !== null && (
+              <p className="text-sm font-medium text-[#101828]">
+                <span className="text-2xl font-semibold">
+                  {role.interested_count}
+                </span>{" "}
+                <span className="text-[#667085]">
+                  / {role.applicant_cap} applicants
+                </span>
+              </p>
+            )}
+            {role.applicant_cap !== null &&
+              role.interested_count >= role.applicant_cap && (
+                <StatusBadge variant="full" />
+              )}
           </div>
         </div>
 
@@ -128,6 +143,14 @@ export function EmployerRoleDetailPage({
           {compensation ? (
             <DetailField label="Salary range" value={compensation} />
           ) : null}
+          <DetailField
+            label="Visibility"
+            value={
+              role.visibility === "public"
+                ? "Shown on Explore Jobs"
+                : "Private (Best Match only)"
+            }
+          />
         </div>
 
         {role.description ? (
@@ -160,7 +183,13 @@ export function EmployerRoleDetailPage({
           <Button asChild variant="outline" className="h-10 rounded-lg">
             <Link href="/e/talents">Find candidates</Link>
           </Button>
-          <Button asChild className="h-10 rounded-lg">
+          <Button
+            asChild
+            className="h-10 rounded-lg bg-[#111827] text-white hover:bg-[#111827]/90"
+          >
+            <Link href={`/e/roles/${role.id}/candidates`}>View Candidates</Link>
+          </Button>
+          <Button asChild variant="secondary" className="h-10 rounded-lg">
             <Link href="/e/shortlist">View offers sent</Link>
           </Button>
         </div>

@@ -23,7 +23,7 @@ type BaseProps = {
 };
 export type InputModeProps = BaseProps & {
   mode?: "input";
-  type?: "text" | "email" | "password";
+  type?: "text" | "email" | "password" | "url";
   validateEmail?: boolean;
 } & Omit<
     React.ComponentProps<typeof Input>,

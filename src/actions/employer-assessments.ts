@@ -6,6 +6,7 @@ import type {
   ListEmployerAssessmentsResponse,
   ListEmployerAssessmentResultsResponse,
   RawEmployerAssessment,
+  InviteToAssessmentInput,
 } from "@/types/api/employer-assessments";
 import { unwrapData } from "./utils";
 
@@ -20,6 +21,8 @@ function normalizeAssessment(
     timeLimitMinutes: raw.time_limit_minutes,
     passingThreshold: raw.passing_threshold,
     status: raw.status,
+    type: raw.type ?? "internal",
+    token: raw.token ?? null,
     questionsCount: raw.questions?.length ?? 0,
     submissionsCount: raw.submissions_count ?? 0,
     createdAt: raw.created_at,
@@ -38,6 +41,7 @@ export async function createEmployerAssessment(
     questionSource: input.questionSource,
     shareViaLink: input.shareViaLink,
     sendToCandidates: input.sendToCandidates,
+    type: input.type,
   };
 
   if (input.questions && input.questions.length) {
@@ -89,4 +93,24 @@ export async function getEmployerAssessmentResults(
     ApiEnvelope<ListEmployerAssessmentResultsResponse>
   >(`/employer/assessments/${assessmentId}/results`, { params });
   return unwrapData(res);
+}
+
+export async function getAssessmentToken(
+  assessmentId: string,
+): Promise<{ token: string }> {
+  const res = await authApi.get<ApiEnvelope<{ token: string }>>(
+    `/employer/assessments/${assessmentId}/token`,
+  );
+  return unwrapData(res);
+}
+
+export async function inviteToAssessment(
+  input: InviteToAssessmentInput,
+): Promise<void> {
+  const { assessmentId, talentIds, emails } = input;
+  const body: Record<string, unknown> = {};
+  if (talentIds && talentIds.length > 0) body.talent_ids = talentIds;
+  if (emails && emails.length > 0) body.emails = emails;
+
+  await authApi.post(`/employer/assessments/${assessmentId}/invite`, body);
 }

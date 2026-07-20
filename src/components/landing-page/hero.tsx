@@ -220,12 +220,12 @@ export function HeroSection() {
           >
             <Link href="/signup">Get Started as a Talent</Link>
           </Button>
-          {/* <Button
+          <Button
             className="rounded-[8px] bg-white px-4.5 py-3 text-base font-semibold text-[#05060F] hover:bg-white/80 border-[0.5px] border-[#05060F]"
             asChild
           >
             <Link href="/signup?user=employer">Join as an employer</Link>
-          </Button> */}
+          </Button>
         </motion.div>
       </div>
 

@@ -76,6 +76,18 @@ export const OFFER_STATUS_META: Record<
     label: "WITHDRAWN",
     pillClass: "bg-[#E5E7EB] text-[#374151]",
   },
+  interview_invited: {
+    label: "INTERVIEW INVITED",
+    pillClass: "bg-[#E0E7FF] text-[#4338CA]",
+  },
+  interview_accepted: {
+    label: "INTERVIEW ACCEPTED",
+    pillClass: "bg-[#D1FAE5] text-[#065F46]",
+  },
+  interview_declined: {
+    label: "INTERVIEW DECLINED",
+    pillClass: "bg-[#FEE2E2] text-[#991B1B]",
+  },
 };
 
 /**

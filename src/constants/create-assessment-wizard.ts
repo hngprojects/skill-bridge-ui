@@ -21,7 +21,7 @@ export const CREATE_ASSESSMENT_STEP_META: Record<
       "Personalize your assessment question based on your hire preference",
   },
   preview: {
-    title: "Review and send offer",
+    title: "Review and send assessment",
     description: "Take a last look at your information before sending.",
   },
 };
@@ -74,14 +74,6 @@ export const ASSESSMENT_QUESTION_OPTIONS = [
   },
   {
     id: "skill-building-workshop",
-    title: "Skill-building workshop",
-    description:
-      "Participate in hands-on sessions to improve key competencies relevant to your field.",
-    estimatedTime: "2 hours",
-    recommended: false,
-  },
-  {
-    id: "skill-building-workshop-advanced",
     title: "Skill-building workshop",
     description:
       "Participate in hands-on sessions to improve key competencies relevant to your field.",

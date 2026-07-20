@@ -2,7 +2,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Copy } from "lucide-react";
 import { AssessmentHeroBanner } from "./assessment-hero-banner";
+import { AssessmentInviteModal } from "./assessment-invite-modal";
 import {
   useEmployerAssessments,
   useDeactivateEmployerAssessment,
@@ -18,6 +20,11 @@ export function EmployerAssessmentsPage() {
   const { data, isLoading, isError } = useEmployerAssessments({ page, limit });
   const deactivate = useDeactivateEmployerAssessment();
   const [deactivatingIds, setDeactivatingIds] = useState<string[]>([]);
+
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [inviteAssessmentId, setInviteAssessmentId] = useState<string | null>(
+    null,
+  );
 
   const total = data?.total ?? 0;
   const assessments = (data?.assessments ?? []).filter(
@@ -40,6 +47,15 @@ export function EmployerAssessmentsPage() {
         setDeactivatingIds((prev) => prev.filter((itemId) => itemId !== id));
       },
     });
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Link copied to clipboard!");
+    } catch {
+      toast.error("Failed to copy link.");
+    }
   };
 
   const renderDate = (dateString: string) => {
@@ -96,14 +112,55 @@ export function EmployerAssessmentsPage() {
                       {a.title}
                     </Link>
                     <p className="mt-1 text-sm text-[#667085]">
-                      {a.roleTrack || "—"} · {a.questionsCount} questions ·{" "}
-                      {a.submissionsCount} submissions
+                      {a.roleTrack || "—"} ·{" "}
+                      {a.type === "external" ? "External" : "Internal"} ·{" "}
+                      {a.questionsCount} questions · {a.submissionsCount}{" "}
+                      submissions
                     </p>
+                    {a.type === "external" && a.token && (
+                      <div className="mt-2 flex items-center gap-2 text-sm text-[#079455]">
+                        <span className="font-medium">Share link:</span>{" "}
+                        <a
+                          href={`/assessment/${a.token}`}
+                          className="underline truncate max-w-[250px] sm:max-w-[400px]"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          /assessment/{a.token}
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            copyToClipboard(
+                              typeof window !== "undefined"
+                                ? `${window.location.origin}/assessment/${a.token}`
+                                : "",
+                            )
+                          }
+                          className="flex items-center justify-center rounded p-1 hover:bg-[#079455]/10 text-[#079455] transition-colors"
+                          aria-label={`Copy link for ${a.title}`}
+                          title="Copy link"
+                        >
+                          <Copy className="size-4" />
+                        </button>
+                      </div>
+                    )}
                     <p className="mt-1 text-xs text-muted-foreground">
                       Created {renderDate(a.createdAt)}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        setInviteAssessmentId(a.id);
+                        setInviteModalOpen(true);
+                      }}
+                      className="text-sm"
+                    >
+                      Share
+                    </Button>
                     <Link
                       href={`/e/assessments/${a.id}`}
                       className="text-sm text-[#101828] underline"
@@ -154,6 +211,17 @@ export function EmployerAssessmentsPage() {
           </>
         )}
       </div>
+
+      {inviteAssessmentId && (
+        <AssessmentInviteModal
+          open={inviteModalOpen}
+          onOpenChange={(open) => {
+            setInviteModalOpen(open);
+            if (!open) setTimeout(() => setInviteAssessmentId(null), 200);
+          }}
+          assessmentId={inviteAssessmentId}
+        />
+      )}
     </div>
   );
 }
