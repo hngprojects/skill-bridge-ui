@@ -36,6 +36,9 @@ export type EmployerDiscoveryCandidate = {
   isSaved: boolean;
   offerSent: boolean;
   offerStatus: string | null;
+  averageHireRating: number | null;
+  hireRatingCount: number;
+  wouldHireAgainRate: number | null;
 };
 
 /** @deprecated Use {@link EmployerDiscoveryCandidate}. */
@@ -77,6 +80,9 @@ export type EmployerDiscoveryCandidateProfile = VerifiedProfileResponseData & {
   isSaved: boolean;
   offerSent: boolean;
   offerStatus: "pending" | "accepted" | null;
+  averageHireRating: number | null;
+  hireRatingCount: number;
+  wouldHireAgainRate: number | null;
 };
 
 // ─── Raw response (snake_case from the API) ──────────────────────────────────
@@ -109,6 +115,9 @@ export type RawEmployerDiscoveryCandidate = {
   is_saved: boolean;
   offer_sent: boolean;
   offer_status: "pending" | "accepted" | null;
+  average_hire_rating?: number | null;
+  hire_rating_count?: number;
+  would_hire_again_rate?: number | null;
 };
 
 /** @deprecated Use {@link RawEmployerDiscoveryCandidate}. */
@@ -134,4 +143,7 @@ export type RawEmployerDiscoveryCandidateProfile =
     is_saved: boolean;
     offer_sent: boolean;
     offer_status: "pending" | "accepted" | null;
+    average_hire_rating?: number | null;
+    hire_rating_count?: number;
+    would_hire_again_rate?: number | null;
   };

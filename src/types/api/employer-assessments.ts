@@ -39,6 +39,12 @@ export type EmployerAssessmentQuestion = {
   points: number;
 };
 
+/**
+ * Matches the actual backend swagger contract — confirmed by inspection,
+ * NOT the shape this file assumed before. Notably: no `status` enum (it's
+ * `is_active: boolean`), no `token` (it's `share_token`, plus a redundant
+ * `shareUrl`), and no `type`/`submissions_count` on the wire at all.
+ */
 export type RawEmployerAssessment = {
   id: string;
   employer_user_id: string;
@@ -50,11 +56,20 @@ export type RawEmployerAssessment = {
   question_source: string;
   share_via_link: boolean;
   send_to_candidates: boolean;
-  status: EmployerAssessmentStatus;
-  type: "internal" | "external";
-  token: string | null;
+  is_active: boolean;
+  share_token: string | null;
+  shareUrl?: string | null;
   questions?: EmployerAssessmentQuestion[];
+  /** None of the below are on the wire yet. Kept optional so the UI can
+   *  light up the moment backend adds them, without another rewrite. */
   submissions_count?: number;
+  talents_count?: number;
+  /** 0–100. */
+  pass_rate?: number;
+  /** ISO date-time the assessment closes/closed. */
+  closes_at?: string | null;
+  /** ISO date-time of the most recent activity on this assessment. */
+  last_activity_at?: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -67,18 +82,48 @@ export type EmployerAssessmentItem = {
   timeLimitMinutes: number;
   passingThreshold: number;
   status: EmployerAssessmentStatus;
-  type: "internal" | "external";
   token: string | null;
   questionsCount: number;
-  submissionsCount: number;
+  /** `null`, not 0, when the backend hasn't sent this — "no data" and
+   *  "zero" are different facts and the UI shouldn't blur them. */
+  submissionsCount: number | null;
+  talentsCount: number | null;
+  passRate: number | null;
+  closesAt: string | null;
+  lastActivityAt: string | null;
   createdAt: string;
+  updatedAt: string;
 };
 
+/**
+ * Aggregate counts for the assessments overview cards (active/completed
+ * counts, total candidates, trend deltas). Confirmed there's no backend
+ * endpoint for this — the swagger contract has nothing matching it, and
+ * the `/employer/assessments/stats` guess this file previously called was
+ * almost certainly hitting `/employer/assessments/{id}` with `id="stats"`,
+ * which explains the 400 (invalid id, not "not found"). Kept as a typed
+ * shape so the UI has something to bind to the moment backend adds this;
+ * nothing currently constructs one.
+ */
+export type EmployerAssessmentsStats = {
+  totalAssessments: number;
+  totalAssessmentsDeltaPct: number | null;
+  active: number;
+  activeDeltaPct: number | null;
+  completed: number;
+  completedDeltaPct: number | null;
+  totalCandidates: number;
+  totalCandidatesDeltaPct: number | null;
+};
+
+/** The real response has no `total`/`page`/`limit` — just `assessments`
+ *  and an (currently unused) `emptyState`. Kept optional rather than
+ *  assumed, in case backend adds real pagination later. */
 export type ListEmployerAssessmentsResponse = {
   assessments: RawEmployerAssessment[];
-  total: number;
-  page: number;
-  limit: number;
+  total?: number;
+  page?: number;
+  limit?: number;
 };
 
 export type AssessmentResultItem = {

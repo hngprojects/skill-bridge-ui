@@ -51,6 +51,12 @@ function notificationHref(
     return null;
   }
 
+  // Employer-only: the backend decided outcome feedback is due for a past
+  // hire. Route straight to the Offers Sent tab where "Rate this hire" lives.
+  if (notification.type === "hire_feedback_requested") {
+    return role === "employer" ? "/e/shortlist?tab=offers" : null;
+  }
+
   if (!looksOfferRelated) return null;
 
   if (role === "talent") {

@@ -62,6 +62,8 @@
   --color-error: var(--error);
   --color-error-foreground: var(--error-foreground);
   --color-success: var(--success);
+  --color-verified: var(--verified);
+  --color-verified-strong: var(--verified-strong);
   --color-google: #4285f4;
   --color-google-hover: #357ae8;
   --color-google-green: #34a853;
@@ -124,6 +126,11 @@
   --error: #b01e1e;
   --error-foreground: #e35151;
   --success: #047857;
+  /* Distinct from --success: this is SkillBridge's verification brand
+   * mark color (hexagon score badge, verified checkmark), not the
+   * generic semantic-success color used in toasts/forms. */
+  --verified: #009f6a;
+  --verified-strong: #008458;
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);

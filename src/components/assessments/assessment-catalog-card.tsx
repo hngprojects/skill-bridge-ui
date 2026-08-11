@@ -26,6 +26,8 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
   const isComingSoon = step.comingSoon === true;
   const isCompleted = !isComingSoon && step.state === "completed";
   const isLocked = !isComingSoon && step.state === "locked";
+
+  const hasViewableSummary = isCompleted || step.ctaLabel === "Retake";
   const startHref =
     step.href ??
     (step.state === "available" && step.slug != null
@@ -118,7 +120,7 @@ export function AssessmentCatalogCard({ step }: AssessmentCatalogCardProps) {
                 </Badge>
               ) : null}
 
-              {isCompleted && step.slug ? (
+              {hasViewableSummary && step.slug ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button

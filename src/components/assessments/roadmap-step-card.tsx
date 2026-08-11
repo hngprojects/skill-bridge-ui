@@ -26,6 +26,11 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
   const isComingSoon = step.comingSoon === true;
   const isLocked = !isComingSoon && step.state === "locked";
   const isCompleted = !isComingSoon && step.state === "completed";
+  // Skill attempts under the cap surface a "Retake" CTA (see
+  // `ctaLabelForSkillStep`) instead of flipping to "completed" — but the
+  // user still has a prior result to look at without being forced into a
+  // new attempt just to check it.
+  const hasViewableSummary = isCompleted || step.ctaLabel === "Retake";
   const sideBadge = isComingSoon ? (
     <Badge
       variant="outline"
@@ -113,7 +118,7 @@ export function RoadmapStepCard({ step }: RoadmapStepCardProps) {
               {isComingSoon || isLocked ? (
                 <div className="hidden sm:block">{sideBadge}</div>
               ) : null}
-              {isCompleted && step.slug ? (
+              {hasViewableSummary && step.slug ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button

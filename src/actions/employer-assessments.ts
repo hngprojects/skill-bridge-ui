@@ -20,12 +20,16 @@ function normalizeAssessment(
     experienceLevel: raw.experience_level,
     timeLimitMinutes: raw.time_limit_minutes,
     passingThreshold: raw.passing_threshold,
-    status: raw.status,
-    type: raw.type ?? "internal",
-    token: raw.token ?? null,
+    status: raw.is_active ? "active" : "inactive",
+    token: raw.share_token ?? null,
     questionsCount: raw.questions?.length ?? 0,
-    submissionsCount: raw.submissions_count ?? 0,
+    submissionsCount: raw.submissions_count ?? null,
+    talentsCount: raw.talents_count ?? null,
+    passRate: raw.pass_rate ?? null,
+    closesAt: raw.closes_at ?? null,
+    lastActivityAt: raw.last_activity_at ?? null,
     createdAt: raw.created_at,
+    updatedAt: raw.updated_at,
   };
 }
 
@@ -64,9 +68,13 @@ export async function getEmployerAssessments(params?: {
     { params },
   );
   const data = unwrapData(res);
+  const assessments = (data.assessments ?? []).map(normalizeAssessment);
   return {
-    assessments: (data.assessments ?? []).map(normalizeAssessment),
-    total: data.total ?? 0,
+    assessments,
+    // The backend doesn't send `total` — fall back to the page's own
+    // count so "is this account empty" never depends on a field that
+    // isn't actually on the wire.
+    total: data.total ?? assessments.length,
   };
 }
 

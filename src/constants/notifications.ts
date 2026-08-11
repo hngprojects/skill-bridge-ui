@@ -64,6 +64,7 @@ export const NOTIFICATION_TYPES = {
   INTERVIEW_INVITE_RECEIVED: "interview_invite_received",
   ASSESSMENT_PASSED: "assessment_passed",
   ASSESSMENT_FAILED: "assessment_failed",
+  HIRE_FEEDBACK_REQUESTED: "hire_feedback_requested",
 } as const;
 
 export type NotificationType =
