@@ -11,6 +11,7 @@ import type { DashboardHomeResponseData } from "@/types/api";
 
 import { SkillBreakdownSection } from "@/components/dashboard/skill-breakdown";
 import { JobReadyStatusCard } from "./job-ready-status-card";
+import { JobReadyTrackRecord } from "./job-ready-track-record";
 import { JobReadyVerifiedProfile } from "./job-ready-verified-profile";
 
 type JobReadyDashboardProps = {
@@ -48,6 +49,7 @@ export function JobReadyDashboard({ dashboardHome }: JobReadyDashboardProps) {
           role={roleLabel}
         />
       </div>
+      <JobReadyTrackRecord />
       <DashboardRecommended />
     </div>
   );

@@ -50,20 +50,16 @@ const useAntiCheat = ({
     const onVisibilityChange = () => {
       if (document.hidden) propose();
     };
-    const onWindowBlur = () => propose();
     const onKeyDown = (e: KeyboardEvent) => {
       if (!isScreenshotShortcut(e)) return;
       e.preventDefault();
       propose();
     };
-
     document.addEventListener("visibilitychange", onVisibilityChange);
-    window.addEventListener("blur", onWindowBlur);
     window.addEventListener("keydown", onKeyDown, true);
 
     return () => {
       document.removeEventListener("visibilitychange", onVisibilityChange);
-      window.removeEventListener("blur", onWindowBlur);
       window.removeEventListener("keydown", onKeyDown, true);
       if (timer != null) window.clearTimeout(timer);
     };

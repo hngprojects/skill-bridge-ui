@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SkillTitleCard from "@/components/verified-report/skill-title-card";
 import ProfessionalSkillCard from "@/components/verified-report/professional-skill-card";
+import { levelLabelForSkillInfo } from "@/components/verified-report/verified-report-utils";
 import { cn } from "@/lib/utils";
 import type { VerifiedProfileDetailedSkill } from "@/types/api";
 
@@ -42,6 +43,7 @@ const SkillsDisplay = ({ skills }: SkillDisplayProps) => {
             value={item.value}
             title={item.label}
             insight={item.insight}
+            levelLabel={levelLabelForSkillInfo(item)}
           />
         ))}
       </ul>

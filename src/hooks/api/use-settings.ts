@@ -14,7 +14,7 @@ import type {
   UpdateTalentAvailabilityInput,
   UpdateTalentSettingsProfileInput,
 } from "@/types/api";
-import { talentSettingsKeys } from "./keys";
+import { dashboardKeys, talentSettingsKeys } from "./keys";
 
 export function useTalentSettings(options?: { enabled?: boolean }) {
   return useQuery({
@@ -29,8 +29,10 @@ export function useUpdateTalentSettingsProfile() {
   return useMutation({
     mutationFn: (body: UpdateTalentSettingsProfileInput) =>
       updateTalentSettingsProfile(body),
-    onSuccess: () =>
-      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
+      void qc.invalidateQueries({ queryKey: dashboardKeys.all });
+    },
   });
 }
 
@@ -38,8 +40,10 @@ export function useUploadTalentResume() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (file: File) => uploadTalentResume(file),
-    onSuccess: () =>
-      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
+      void qc.invalidateQueries({ queryKey: dashboardKeys.all });
+    },
   });
 }
 
@@ -47,8 +51,10 @@ export function useDeleteTalentResume() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: () => deleteTalentResume(),
-    onSuccess: () =>
-      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
+      void qc.invalidateQueries({ queryKey: dashboardKeys.all });
+    },
   });
 }
 
@@ -57,8 +63,10 @@ export function useUpdateTalentAvailability() {
   return useMutation({
     mutationFn: (body: UpdateTalentAvailabilityInput) =>
       updateTalentAvailability(body),
-    onSuccess: () =>
-      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: talentSettingsKeys.detail() });
+      void qc.invalidateQueries({ queryKey: dashboardKeys.all });
+    },
   });
 }
 

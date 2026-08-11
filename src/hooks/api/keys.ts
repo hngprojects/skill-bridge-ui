@@ -111,6 +111,19 @@ export const notificationsKeys = {
     [...notificationsKeys.all, role, "unread-count"] as const,
 };
 
+export const publicVerifiedProfileKeys = {
+  all: ["public-verified-profile"] as const,
+  detail: (shareToken: string) =>
+    [...publicVerifiedProfileKeys.all, shareToken] as const,
+};
+
+export const hireFeedbackKeys = {
+  all: ["hire-feedback"] as const,
+  pending: () => [...hireFeedbackKeys.all, "pending"] as const,
+  talentTrackRecord: () =>
+    [...hireFeedbackKeys.all, "talent-track-record"] as const,
+};
+
 export const employerAssessmentsKeys = {
   all: ["employer-assessments"] as const,
   lists: () => [...employerAssessmentsKeys.all, "list"] as const,

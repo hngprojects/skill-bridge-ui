@@ -5,6 +5,7 @@ import type { DashboardHomeResponseData } from "@/types/api";
 
 import { DashboardJobRoadmap } from "./emerging-user-job-roadmap";
 import { SkillBreakdownSection } from "@/components/dashboard/skill-breakdown";
+import { JobReadyTrackRecord } from "@/components/dashboard/job-ready/job-ready-track-record";
 import { DashboardStatusCard } from "./emerging-user-status-card";
 
 type EmergingUserDashboardProps = {
@@ -37,6 +38,7 @@ export function EmergingUserDashboard({
         />
         <DashboardJobRoadmap journeyOverview={dashboardHome.journeyOverview} />
       </div>
+      <JobReadyTrackRecord />
       <DashboardRecommended />
     </div>
   );

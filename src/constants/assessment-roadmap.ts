@@ -150,7 +150,7 @@ export const ASSESSMENT_ROADMAP_STEPS: AssessmentRoadmapStep[] = [
     description:
       "To get verified score and become discoverable to top employers.",
     ctaLabel: "Start",
-    estimatedTime: "25 - 30 minutes",
+    estimatedTime: "30 minutes",
     panelTitle: "Get Job Ready!",
     panelIcon: BriefcaseBusiness,
     panelIconSrc: "/assets/icons/portfolio-icon.svg",
@@ -239,7 +239,7 @@ export const ASSESSMENT_CATALOG_STEPS: AssessmentCatalogStep[] = [
     state: "locked",
     category: "job-assessment",
     ctaLabel: "Start",
-    estimatedTime: "25 - 30 minutes",
+    estimatedTime: "30 minutes",
   },
   {
     id: "ai-mock-interview",

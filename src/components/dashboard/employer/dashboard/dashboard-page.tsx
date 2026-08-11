@@ -9,6 +9,7 @@ import { EmployerDashboardActions } from "./employer-dashboard-actions";
 import { EmployerDashboardHero } from "./employer-dashboard-hero";
 import { EmployerDashboardPipelineBanner } from "./employer-dashboard-pipeline-banner";
 import { EmployerDashboardTestimonials } from "./employer-dashboard-testimonials";
+import { EmployerPendingFeedbackBanner } from "./employer-pending-feedback-banner";
 import { EmployerRecentActivity } from "./employer-recent-activity";
 import { EmployerStatCards } from "./employer-stat-cards";
 
@@ -46,6 +47,7 @@ const NewEmployerDashboardPage = () => {
         </>
       ) : (
         <>
+          <EmployerPendingFeedbackBanner />
           <EmployerStatCards counts={overviewCounts} />
           <EmployerRecentActivity items={recentActivity} />
         </>

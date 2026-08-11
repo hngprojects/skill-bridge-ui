@@ -49,6 +49,9 @@ function mapDiscoveryCandidate(
     isSaved: raw.is_saved,
     offerSent: raw.offer_sent,
     offerStatus: raw.offer_status,
+    averageHireRating: raw.average_hire_rating ?? null,
+    hireRatingCount: raw.hire_rating_count ?? 0,
+    wouldHireAgainRate: raw.would_hire_again_rate ?? null,
   };
 }
 
@@ -69,8 +72,17 @@ function mapDiscoveryList(
 function mapDiscoveryProfile(
   raw: RawEmployerDiscoveryCandidateProfile,
 ): EmployerDiscoveryCandidateProfile {
-  const { user_id, email, is_saved, offer_sent, offer_status, ...profile } =
-    raw;
+  const {
+    user_id,
+    email,
+    is_saved,
+    offer_sent,
+    offer_status,
+    average_hire_rating,
+    hire_rating_count,
+    would_hire_again_rate,
+    ...profile
+  } = raw;
 
   return {
     ...profile,
@@ -79,6 +91,9 @@ function mapDiscoveryProfile(
     isSaved: is_saved,
     offerSent: offer_sent,
     offerStatus: offer_status,
+    averageHireRating: average_hire_rating ?? null,
+    hireRatingCount: hire_rating_count ?? 0,
+    wouldHireAgainRate: would_hire_again_rate ?? null,
   };
 }
 
