@@ -1,5 +1,6 @@
 "use client";
 
+import { useTalentTrackRecord } from "@/hooks/api";
 import { useVerifiedProfile } from "@/hooks/api/use-verified-profile";
 import { ApiError } from "@/lib/api";
 
@@ -10,6 +11,7 @@ import { VerifiedReportUnavailableState } from "./verified-report-unavailable-st
 
 const VerifiedReportPage = () => {
   const { data, isPending, isError, error } = useVerifiedProfile();
+  const { data: trackRecord } = useTalentTrackRecord();
 
   if (isPending) {
     return <VerifiedReportLoadingState />;
@@ -25,7 +27,19 @@ const VerifiedReportPage = () => {
 
   return (
     <div className="flex flex-col gap-y-6 my-8.5">
-      <VerifiedReportContent data={data} />
+      <VerifiedReportContent
+        data={data}
+        viewerMode="owner"
+        trackRecord={
+          trackRecord
+            ? {
+                averageRating: trackRecord.averageRating,
+                ratingCount: trackRecord.ratingCount,
+                wouldHireAgainRate: trackRecord.wouldHireAgainRate,
+              }
+            : null
+        }
+      />
     </div>
   );
 };

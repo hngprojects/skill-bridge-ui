@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { type ShortlistTabId } from "@/constants/employer-shortlist";
 import { useSavedCandidates } from "@/hooks/api/use-employer-discovery";
@@ -16,7 +17,12 @@ import { SHORTLIST_TAB_IDS, ShortlistToolbar } from "./shortlist-toolbar";
 const PAGE_SIZE = 20;
 
 export function ShortlistPage() {
-  const [activeTab, setActiveTab] = useState<ShortlistTabId>("shortlist");
+  const searchParams = useSearchParams();
+  // Deep-linkable — e.g. links from the dashboard's pending-feedback banner
+  // need to land straight on "Offers Sent", not the default shortlist tab.
+  const [activeTab, setActiveTab] = useState<ShortlistTabId>(
+    searchParams.get("tab") === "offers" ? "offers" : "shortlist",
+  );
   const [page, setPage] = useState(1);
   const [offersPage, setOffersPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");

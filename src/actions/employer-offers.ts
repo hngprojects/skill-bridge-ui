@@ -28,6 +28,7 @@ function mapOfferListItem(
     jobTitle: raw.job_title,
     dateSent: raw.date_sent,
     status: raw.status,
+    pendingHireFeedback: raw.pending_hire_feedback ?? false,
   };
 }
 

@@ -13,10 +13,13 @@ type JobReadyVerifiedProfileProps = {
   role?: string;
 };
 
+/** Returns "" on a missing/invalid date rather than a placeholder date —
+ *  showing a fabricated verification date would be worse than showing
+ *  nothing. Callers hide the "verified on" line when this is empty. */
 function formatVerifiedDate(iso: string | undefined): string {
-  if (!iso) return "May 19, 2026";
+  if (!iso) return "";
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "May 19, 2026";
+  if (Number.isNaN(date.getTime())) return "";
   return date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -76,26 +79,29 @@ export function JobReadyVerifiedProfile({
           <h3 className="text-[32px] font-bold tracking-tight text-gray-900 leading-none">
             {displayName}
           </h3>
-          <Badge className="bg-[#34A853] hover:bg-[#34A853]/90 text-white rounded-sm px-1.5 py-3.5 text-[12px] font-bold tracking-wider uppercase border-none shadow-none mt-1">
+          <Badge className="bg-verified hover:bg-verified/90 text-white rounded-sm px-1.5 py-3.5 text-[12px] font-bold tracking-wider uppercase border-none shadow-none mt-1">
             Verified Talent
           </Badge>
         </div>
         <p className="text-[20px] text-gray-800 mb-2 font-normal">
           {displayRole}
         </p>
-        <p className="text-[#A38A40] text-[15px] font-normal tracking-tight">
-          Top 1% Job Ready talent in selected role
-        </p>
       </div>
 
       {/* Footer */}
       <div className="flex flex-wrap items-center gap-3 text-[15px] text-[#4B5563]">
         <span className="font-normal">Verified by SkillBridge</span>
-        <Separator
-          orientation="vertical"
-          className="h-4 bg-[#D1D5DB] hidden sm:block"
-        />
-        <span className="font-normal">Profile verified on {verifiedOn}</span>
+        {verifiedOn ? (
+          <>
+            <Separator
+              orientation="vertical"
+              className="h-4 bg-[#D1D5DB] hidden sm:block"
+            />
+            <span className="font-normal">
+              Profile verified on {verifiedOn}
+            </span>
+          </>
+        ) : null}
       </div>
     </section>
   );

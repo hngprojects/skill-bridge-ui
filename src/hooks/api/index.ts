@@ -17,3 +17,5 @@ export * from "./use-employer-roles";
 export * from "./use-employer-offers";
 export * from "./use-employer-assessments";
 export * from "./use-talent-offers";
+export * from "./use-hire-feedback";
+export * from "./use-public-verified-profile";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { QuestionnaireMobileActions } from "@/components/assessments/questionnaire-mobile-actions";
 import { QuestionnaireMobileHeader } from "@/components/assessments/questionnaire-mobile-header";
@@ -141,11 +141,54 @@ export function QuestionnaireFlow({
           clearSummaryResult(user.id, name);
         }
       }
-      router.push(`/t/assessments/${name}/summary`);
+      // `replace`, not `push` — a submitted test must not sit in browser
+      // history. Otherwise the back button re-mounts this page with its
+      // last client-side state (stale session, frozen timer) instead of
+      // re-running the start/eligibility check, letting a submitted or
+      // retake-locked assessment appear re-enterable when it isn't.
+      router.replace(`/t/assessments/${name}/summary`);
     } catch (e) {
       appToast.error(authFailureMessage(e));
     }
   };
+
+  // Timer hitting zero didn't force a submission anywhere in this flow —
+  // the countdown just froze at 0:00 with no result and no way to retake
+  // (the session stayed open server-side). Auto-submit whatever's been
+  // answered so far, same as a manual submit on the last question.
+  const autoSubmittedRef = useRef(false);
+  useEffect(() => {
+    if (!showTimer || secondsLeft !== 0) return;
+    if (autoSubmittedRef.current || isSubmitting) return;
+    autoSubmittedRef.current = true;
+
+    timer.accumulate();
+    const builtAnswers = buildAnswers(questions, answers, otherAnswers);
+    const builtTimeByKey = timer.buildByKey(questions);
+
+    onSubmit(builtAnswers, builtTimeByKey)
+      .then((result) => {
+        if (isAssessmentSlug(name) && name !== "advanced" && user?.id) {
+          if (result != null) {
+            setSummaryResult(user.id, name, result);
+          } else {
+            clearSummaryResult(user.id, name);
+          }
+        }
+        appToast.warning(
+          "Time's up — your assessment was submitted automatically.",
+        );
+        // See handleNext — `replace`, not `push`, keeps this out of history.
+        router.replace(`/t/assessments/${name}/summary`);
+      })
+      .catch((e) => {
+        autoSubmittedRef.current = false;
+        appToast.error(authFailureMessage(e));
+      });
+    // Answers/questions intentionally excluded — this must fire exactly once,
+    // capturing whatever was filled in at the moment the clock hit zero.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [secondsLeft, showTimer, isSubmitting]);
 
   if (isLoading) return <QuestionnaireLoadingState />;
   if (!question) return <QuestionnaireEmptyState />;

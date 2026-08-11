@@ -1,226 +1,120 @@
 "use client";
-import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Copy } from "lucide-react";
+
+import { useMemo, useState } from "react";
+
+import { useEmployerAssessments } from "@/hooks/api/use-employer-assessments";
+
 import { AssessmentHeroBanner } from "./assessment-hero-banner";
-import { AssessmentInviteModal } from "./assessment-invite-modal";
+import { AssessmentStatCards } from "./assessment-stat-cards";
+import { AssessmentsPageHeader } from "./assessments-page-header";
+import { AssessmentsTable } from "./assessments-table";
 import {
-  useEmployerAssessments,
-  useDeactivateEmployerAssessment,
-} from "@/hooks/api/use-employer-assessments";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { formatDistanceToNow, parseISO, isValid } from "date-fns";
+  AssessmentsToolbar,
+  type AssessmentsViewTab,
+} from "./assessments-toolbar";
+import { DataPagination } from "../shared/data-pagination";
+
+const PAGE_SIZE = 10;
 
 export function EmployerAssessmentsPage() {
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const [searchValue, setSearchValue] = useState("");
+  const [activeTab, setActiveTab] = useState<AssessmentsViewTab>("all");
 
-  const { data, isLoading, isError } = useEmployerAssessments({ page, limit });
-  const deactivate = useDeactivateEmployerAssessment();
-  const [deactivatingIds, setDeactivatingIds] = useState<string[]>([]);
-
-  const [inviteModalOpen, setInviteModalOpen] = useState(false);
-  const [inviteAssessmentId, setInviteAssessmentId] = useState<string | null>(
-    null,
-  );
+  const { data, isLoading, isError } = useEmployerAssessments({
+    page,
+    limit: PAGE_SIZE,
+  });
 
   const total = data?.total ?? 0;
-  const assessments = (data?.assessments ?? []).filter(
-    (a) => a.status !== "inactive",
+
+  // Once we've confirmed the account has assessments, don't swap back to
+  // the full-page empty-state banner just because a background refetch
+  // transiently reports total: 0 (react-query refetches on window focus
+  // by default, and this list hits a staging API that's been flaky
+  // elsewhere). "Storing info from previous renders" pattern — setting
+  // state during render is intentional here, see React docs.
+  const [hasConfirmedAssessments, setHasConfirmedAssessments] = useState(false);
+  if (!hasConfirmedAssessments && total > 0) {
+    setHasConfirmedAssessments(true);
+  }
+
+  const assessments = useMemo(
+    () => (data?.assessments ?? []).filter((a) => a.status !== "inactive"),
+    [data?.assessments],
   );
 
-  const handleDeactivate = (id: string) => {
-    if (!window.confirm("Are you sure you want to deactivate this assessment?"))
-      return;
-    setDeactivatingIds((prev) => [...prev, id]);
-    deactivate.mutate(id, {
-      onSuccess: () => {
-        toast.success("Assessment deactivated");
-        setDeactivatingIds((prev) => prev.filter((itemId) => itemId !== id));
-      },
-      onError: (err: unknown) => {
-        toast.error(
-          err instanceof Error ? err.message : "Failed to deactivate",
-        );
-        setDeactivatingIds((prev) => prev.filter((itemId) => itemId !== id));
-      },
-    });
-  };
+  const searchTerm = searchValue.trim().toLowerCase();
+  const visibleAssessments = useMemo(() => {
+    let list = assessments;
 
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success("Link copied to clipboard!");
-    } catch {
-      toast.error("Failed to copy link.");
+    if (searchTerm) {
+      list = list.filter((a) =>
+        [a.title, a.roleTrack, a.status]
+          .filter(Boolean)
+          .some((field) => field.toLowerCase().includes(searchTerm)),
+      );
     }
-  };
 
-  const renderDate = (dateString: string) => {
-    if (!dateString) return "—";
-    try {
-      const parsed = parseISO(dateString);
-      return isValid(parsed)
-        ? formatDistanceToNow(parsed, { addSuffix: true })
-        : "—";
-    } catch {
-      return "—";
+    if (activeTab === "activity") {
+      list = [...list].sort((a, b) => {
+        const aTime = a.lastActivityAt ? Date.parse(a.lastActivityAt) : 0;
+        const bTime = b.lastActivityAt ? Date.parse(b.lastActivityAt) : 0;
+        return bTime - aTime;
+      });
     }
-  };
+
+    return list;
+  }, [assessments, searchTerm, activeTab]);
+
+  const isEmpty =
+    !isLoading && !isError && total === 0 && !hasConfirmedAssessments;
 
   return (
-    <div className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-274 flex-col py-6 sm:min-h-[calc(100dvh-4.5rem)] sm:py-8">
-      <AssessmentHeroBanner />
-      <div className="mx-auto w-full max-w-1100 px-4">
-        {isLoading ? (
-          <div className="py-12 text-center">Loading assessments…</div>
-        ) : isError ? (
-          <div className="py-12 text-center text-error">
-            Failed to load assessments.
-          </div>
-        ) : assessments.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-3 px-4 pb-8 text-center">
-            <Image
-              src="/assets/assessments/no-assessments.svg"
-              alt=""
-              width={56}
-              height={56}
-              aria-hidden
+    <div className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-274 flex-col gap-6 px-4 py-6 sm:min-h-[calc(100dvh-4.5rem)] sm:py-8">
+      {isEmpty ? (
+        <AssessmentHeroBanner />
+      ) : (
+        <>
+          <AssessmentsPageHeader />
+          <AssessmentStatCards
+            totalAssessments={total}
+            stats={null}
+            isStatsLoading={false}
+          />
+          <div className="flex flex-col gap-4 rounded-2xl border border-[#E4E7EC] bg-white p-4">
+            <AssessmentsToolbar
+              searchValue={searchValue}
+              onSearchChange={setSearchValue}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
             />
-            <p className="font-sans text-base font-semibold text-[#151515]">
-              No Assessments
-            </p>
-            <p className="font-sans text-sm text-[#757575]">
-              Once you create assessments, they will appear here.
-            </p>
+
+            {searchTerm ? (
+              <p className="text-sm text-[#757575]">
+                Search applies to the current page only. Browse pages or clear
+                search to see more results.
+              </p>
+            ) : null}
+
+            <AssessmentsTable
+              assessments={visibleAssessments}
+              isLoading={isLoading}
+              isError={isError}
+            />
+
+            {!isError && total > 0 ? (
+              <DataPagination
+                page={page}
+                totalPages={Math.max(1, Math.ceil(total / PAGE_SIZE))}
+                total={total}
+                pageSize={PAGE_SIZE}
+                itemLabel="assessments"
+                onPageChange={setPage}
+              />
+            ) : null}
           </div>
-        ) : (
-          <>
-            <div className="grid gap-4 py-6">
-              {assessments.map((a) => (
-                <div
-                  key={a.id}
-                  className="flex items-center justify-between gap-4 rounded-lg border border-border bg-white px-4 py-3"
-                >
-                  <div className="min-w-0">
-                    <Link
-                      href={`/e/assessments/${a.id}`}
-                      className="font-sans text-sm font-semibold text-[#101828] hover:underline"
-                    >
-                      {a.title}
-                    </Link>
-                    <p className="mt-1 text-sm text-[#667085]">
-                      {a.roleTrack || "—"} ·{" "}
-                      {a.type === "external" ? "External" : "Internal"} ·{" "}
-                      {a.questionsCount} questions · {a.submissionsCount}{" "}
-                      submissions
-                    </p>
-                    {a.type === "external" && a.token && (
-                      <div className="mt-2 flex items-center gap-2 text-sm text-[#079455]">
-                        <span className="font-medium">Share link:</span>{" "}
-                        <a
-                          href={`/assessment/${a.token}`}
-                          className="underline truncate max-w-[250px] sm:max-w-[400px]"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          /assessment/{a.token}
-                        </a>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            copyToClipboard(
-                              typeof window !== "undefined"
-                                ? `${window.location.origin}/assessment/${a.token}`
-                                : "",
-                            )
-                          }
-                          className="flex items-center justify-center rounded p-1 hover:bg-[#079455]/10 text-[#079455] transition-colors"
-                          aria-label={`Copy link for ${a.title}`}
-                          title="Copy link"
-                        >
-                          <Copy className="size-4" />
-                        </button>
-                      </div>
-                    )}
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Created {renderDate(a.createdAt)}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => {
-                        setInviteAssessmentId(a.id);
-                        setInviteModalOpen(true);
-                      }}
-                      className="text-sm"
-                    >
-                      Share
-                    </Button>
-                    <Link
-                      href={`/e/assessments/${a.id}`}
-                      className="text-sm text-[#101828] underline"
-                    >
-                      View
-                    </Link>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => handleDeactivate(a.id)}
-                      className="text-sm"
-                      disabled={deactivatingIds.includes(a.id)}
-                    >
-                      Deactivate
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {total > limit && (
-              <div className="flex items-center justify-between border-t border-border pt-4 text-sm text-muted-foreground">
-                <p>
-                  Page {page} of {Math.ceil(total / limit)}
-                </p>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                    disabled={page === 1}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      setPage((p) => (p * limit < total ? p + 1 : p))
-                    }
-                    disabled={page * limit >= total}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {inviteAssessmentId && (
-        <AssessmentInviteModal
-          open={inviteModalOpen}
-          onOpenChange={(open) => {
-            setInviteModalOpen(open);
-            if (!open) setTimeout(() => setInviteAssessmentId(null), 200);
-          }}
-          assessmentId={inviteAssessmentId}
-        />
+        </>
       )}
     </div>
   );

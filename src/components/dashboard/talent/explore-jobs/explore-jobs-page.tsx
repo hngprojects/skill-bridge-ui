@@ -22,7 +22,7 @@ export function ExploreJobsPage() {
     isError,
   } = useExploreJobs({ page, limit });
 
-  const hasHitWeeklyCap = true;
+  const hasHitWeeklyCap = capStatus?.weeklyRemaining === 0;
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 py-8">

@@ -1,7 +1,5 @@
 "use client";
 
-import { Check } from "lucide-react";
-
 import { VerifiedReportSkillsSection } from "@/components/verified-report/verified-report-skills-section";
 import { VerifiedReportSummary } from "@/components/verified-report/verified-report-summary";
 import { VerifiedReportErrorState } from "@/components/verified-report/verified-report-error-state";
@@ -9,7 +7,6 @@ import { VerifiedReportLoadingState } from "@/components/verified-report/verifie
 import { getSkillBreakdownTabs } from "@/components/verified-report/verified-report-utils";
 import { useDiscoveryCandidateProfile } from "@/hooks/api/use-employer-discovery";
 import { ApiError } from "@/lib/api";
-import { cn } from "@/lib/utils";
 
 import { EmployerTalentProfileHeader } from "../employer-talent-profile-header";
 import { EmployerTalentContactPanel } from "./employer-talent-contact-panel";
@@ -68,20 +65,16 @@ export function EmployerTalentProfilePage({
           email={data.email}
         />
       ) : null}
-      <div className="relative">
-        <VerifiedReportSummary data={data} />
-        {data.verified ? (
-          <div
-            className={cn(
-              "absolute z-20 flex size-8 items-center justify-center rounded-full text-sm font-bold text-white select-none shadow-sm",
-              "border-4 border-[#FAFAFA] bg-[#34A853]",
-              "top-7 left-27 sm:top-29 sm:left-29",
-            )}
-          >
-            <Check className="size-4" strokeWidth={3} aria-hidden="true" />
-          </div>
-        ) : null}
-      </div>
+      <VerifiedReportSummary
+        data={data}
+        viewerMode="employer"
+        trackRecord={{
+          averageRating: data.averageHireRating,
+          ratingCount: data.hireRatingCount,
+          wouldHireAgainRate: data.wouldHireAgainRate,
+        }}
+        isShortlisted={data.isSaved}
+      />
       <section className="flex flex-col gap-y-5">
         <VerifiedReportSkillsSection skills={getSkillBreakdownTabs(data)} />
       </section>

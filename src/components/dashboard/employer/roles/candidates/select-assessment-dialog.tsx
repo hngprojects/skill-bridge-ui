@@ -38,7 +38,7 @@ export function SelectAssessmentDialog({
   const { data, isLoading } = useEmployerAssessments({ limit: 100 });
 
   const activeAssessments = (data?.assessments ?? []).filter(
-    (a) => a.status === "active" && a.type === "internal",
+    (a) => a.status === "active",
   );
 
   const handleOpenChange = (nextOpen: boolean) => {

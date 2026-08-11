@@ -11,6 +11,7 @@ import type { EmployerDiscoveryCandidate } from "@/types/api/employer-discovery"
 import type { TalentViewMode } from "@/types/employer-talents";
 
 import { CandidateAvatar } from "../shared/candidate-avatar";
+import { VerifiedProfileTrackRecord } from "@/components/verified-report/verified-profile-track-record";
 import { ScoreBadge } from "../shared/score-badge";
 
 type TalentCardProps = {
@@ -153,6 +154,11 @@ export function TalentCard({ candidate, view = "list" }: TalentCardProps) {
             {tag}
           </span>
         ))}
+        <VerifiedProfileTrackRecord
+          averageRating={candidate.averageHireRating}
+          ratingCount={candidate.hireRatingCount}
+          wouldHireAgainRate={candidate.wouldHireAgainRate}
+        />
       </div>
     </div>
   );

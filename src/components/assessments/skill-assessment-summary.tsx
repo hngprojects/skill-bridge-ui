@@ -59,7 +59,10 @@ const SkillAssessementSummary = () => {
     (item) => item.key === "advanced",
   )?.status;
   const canContinueToAdvanced = advancedStatus === "available";
-  const showRetakeButton = !skillPassed && !noAttemptsLeft;
+  // Retake stays available whenever attempts remain, even after a pass —
+  // users can try for a higher validated level up to the attempt cap before
+  // they're required to move on with the level they were given.
+  const showRetakeButton = !noAttemptsLeft;
   return !isUserContextReady ? (
     <AssessmentContainer>
       <p className="text-base text-muted-foreground">

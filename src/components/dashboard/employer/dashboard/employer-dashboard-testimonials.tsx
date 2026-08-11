@@ -1,30 +1,5 @@
-import Image from "next/image";
-
 import { EMPLOYER_TESTIMONIALS } from "@/constants/employer-dashboard";
-
-const STAR = "/assets/employer-dashboard/star.svg";
-
-function StarRating() {
-  return (
-    <div
-      className="flex items-center gap-2"
-      aria-label="5 out of 5 stars"
-      role="img"
-    >
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Image
-          key={index}
-          src={STAR}
-          alt=""
-          width={18}
-          height={18}
-          className="size-4.5"
-          aria-hidden
-        />
-      ))}
-    </div>
-  );
-}
+import { StarRating } from "@/components/ui/star-rating";
 
 export function EmployerDashboardTestimonials() {
   return (
@@ -35,7 +10,7 @@ export function EmployerDashboardTestimonials() {
             <p className="text-base font-semibold leading-normal tracking-[0.017em] text-[#151515]">
               {testimonial.name}
             </p>
-            <StarRating />
+            <StarRating value={testimonial.rating} size={18} />
             <p className="text-base leading-normal text-[#151515]">
               {testimonial.quote}
             </p>

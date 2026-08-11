@@ -111,6 +111,7 @@ export const MOCK_EMPLOYER_OFFERS: EmployerOfferListItem[] = [
     jobTitle: "Lead Flutter Engineer",
     dateSent: "2026-05-18T09:00:00.000Z",
     status: "pending",
+    pendingHireFeedback: false,
   },
   {
     offerId: "offer-002",
@@ -122,6 +123,7 @@ export const MOCK_EMPLOYER_OFFERS: EmployerOfferListItem[] = [
     jobTitle: "Product Designer",
     dateSent: "2026-05-18T09:00:00.000Z",
     status: "pending",
+    pendingHireFeedback: false,
   },
   {
     offerId: "offer-003",
@@ -133,6 +135,7 @@ export const MOCK_EMPLOYER_OFFERS: EmployerOfferListItem[] = [
     jobTitle: "Backend Engineer",
     dateSent: "2026-05-18T09:00:00.000Z",
     status: "pending",
+    pendingHireFeedback: false,
   },
   {
     offerId: "offer-004",
@@ -144,6 +147,7 @@ export const MOCK_EMPLOYER_OFFERS: EmployerOfferListItem[] = [
     jobTitle: "Frontend Developer",
     dateSent: "2026-05-18T09:00:00.000Z",
     status: "pending",
+    pendingHireFeedback: false,
   },
 ];
 
