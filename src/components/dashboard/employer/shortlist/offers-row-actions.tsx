@@ -28,6 +28,7 @@ import type {
 } from "@/types/api/employer-offers";
 import { useAddInterviewLink } from "@/hooks/api/use-employer-offers";
 import { AddInterviewLinkDialog } from "@/components/dashboard/employer/pipeline/add-interview-link-dialog";
+import { RateHireDialog } from "./rate-hire-dialog";
 
 type OffersRowActionsProps = {
   offer: EmployerOfferListItem;
@@ -90,9 +91,11 @@ export function OffersRowActions({ offer }: OffersRowActionsProps) {
   const { canMarkHired, canWithdraw, canAddInterviewLink } = actionsForStatus(
     offer.status,
   );
+  const canRateHire = offer.status === "hired" && offer.pendingHireFeedback;
   const isSubmitting = isMarking || isWithdrawing || isAddingLink;
 
   const [isAddLinkOpen, setIsAddLinkOpen] = useState(false);
+  const [isRateHireOpen, setIsRateHireOpen] = useState(false);
 
   function handleConfirm() {
     if (!confirmKind) return;
@@ -161,6 +164,18 @@ export function OffersRowActions({ offer }: OffersRowActionsProps) {
               className="h-9 cursor-pointer rounded-md px-2 text-sm text-[#344054]"
             >
               Add interview link
+            </DropdownMenuItem>
+          ) : null}
+
+          {canRateHire ? (
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setIsRateHireOpen(true);
+              }}
+              className="h-9 cursor-pointer rounded-md px-2 text-sm text-[#344054]"
+            >
+              Rate this hire
             </DropdownMenuItem>
           ) : null}
 
@@ -241,6 +256,13 @@ export function OffersRowActions({ offer }: OffersRowActionsProps) {
             },
           );
         }}
+      />
+
+      <RateHireDialog
+        open={isRateHireOpen}
+        onOpenChange={setIsRateHireOpen}
+        offerId={offer.offerId}
+        candidateName={offer.candidateName}
       />
     </>
   );

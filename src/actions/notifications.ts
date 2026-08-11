@@ -50,6 +50,38 @@ function mapEmployerItem(
   };
 }
 
+/**
+ * Backend hasn't committed to a casing for the talent endpoint, so this
+ * accepts either camelCase or snake_case for every field and normalizes to
+ * the shape the UI relies on. Without this, fields silently come through as
+ * `undefined` (e.g. `isRead`/`createdAt` when the API responds snake_case),
+ * which reads as "always unread" and "always just now" in the UI.
+ */
+type RawTalentNotificationItem = Partial<NotificationApiItem> & {
+  id: string;
+  is_read?: boolean;
+  read_at?: Record<string, unknown> | null;
+  created_at?: string;
+  message?: string;
+};
+
+type RawTalentNotificationsResponse = {
+  items: RawTalentNotificationItem[];
+};
+
+function mapTalentItem(item: RawTalentNotificationItem): NotificationApiItem {
+  return {
+    id: item.id,
+    type: item.type ?? "",
+    title: item.title ?? "",
+    body: item.body ?? item.message ?? "",
+    data: item.data ?? {},
+    isRead: item.isRead ?? item.is_read ?? false,
+    readAt: item.readAt ?? item.read_at ?? null,
+    createdAt: item.createdAt ?? item.created_at ?? "",
+  };
+}
+
 export async function getNotifications(
   role: NotificationRole,
   limit = 20,
@@ -64,11 +96,12 @@ export async function getNotifications(
     return { items: (raw.items ?? []).map(mapEmployerItem) };
   }
 
-  const res = await authApi.get<ApiEnvelope<NotificationsListResponseData>>(
+  const res = await authApi.get<ApiEnvelope<RawTalentNotificationsResponse>>(
     basePath,
     { params: { limit } },
   );
-  return unwrapData(res);
+  const raw = unwrapData(res);
+  return { items: (raw.items ?? []).map(mapTalentItem) };
 }
 
 export async function getUnreadCount(

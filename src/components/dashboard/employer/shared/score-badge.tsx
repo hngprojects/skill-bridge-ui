@@ -27,8 +27,8 @@ export function ScoreBadge({ value, className }: ScoreBadgeProps) {
       >
         <polygon
           points="50,4 93,27 93,73 50,96 7,73 7,27"
-          fill="#34A853"
-          stroke="#34A853"
+          fill="var(--color-verified)"
+          stroke="var(--color-verified)"
           strokeWidth="6"
           strokeLinejoin="round"
         />

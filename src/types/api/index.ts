@@ -152,3 +152,4 @@ export type {
   VerifiedProfileSkillItem,
   VerifiedProfileSkillProficiency,
 } from "./verified-profile";
+export type { PublicVerifiedProfileResponseData } from "./public-verified-profile";

@@ -60,6 +60,7 @@ export type VerifiedProfileSkillInfo = {
   label: string;
   value: number;
   insight?: string;
+  validated_level?: string;
 };
 
 export type VerifiedProfileDetailedSkill = {
@@ -89,6 +90,7 @@ export type VerifiedProfileResponseData = {
   recommended_resources?: VerifiedProfileRecommendedResource[];
   resource_page_url?: string;
   resume_url?: string | null;
+  linkedin_url?: string | null;
   share_url: string;
   qr_code_url: string;
   is_owner: boolean;

@@ -20,8 +20,45 @@ function tabToDetailedSkill(
       label: item.label,
       value: item.percentage,
       insight: item.insight,
+      validated_level: item.validated_level,
     })),
   };
+}
+
+/** "mid" -> "Mid-level", "senior" -> "Senior". Mirrors the formatting
+ *  already used for assessment results (`skill-assessment-summary.tsx`). */
+export function formatValidatedLevel(level: string): string {
+  const formatted = level
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+  return /\blevel\b/i.test(formatted) ? formatted : `${formatted}-level`;
+}
+
+const QUALITATIVE_LEVEL_THRESHOLDS = [
+  { min: 85, label: "Expert" },
+  { min: 70, label: "Advanced" },
+  { min: 50, label: "Proficient" },
+  { min: 30, label: "Developing" },
+  { min: 0, label: "Foundational" },
+] as const;
+
+/** Fallback for when the assessor didn't attach a `validated_level` to this
+ *  specific competency — buckets the raw score into a plain-language tier
+ *  instead of showing a bare percentage with no context. */
+export function getQualitativeLevel(value: number): string {
+  return (
+    QUALITATIVE_LEVEL_THRESHOLDS.find((tier) => value >= tier.min)?.label ??
+    "Foundational"
+  );
+}
+
+export function levelLabelForSkillInfo(item: {
+  value: number;
+  validated_level?: string;
+}): string {
+  return item.validated_level
+    ? formatValidatedLevel(item.validated_level)
+    : getQualitativeLevel(item.value);
 }
 
 function getAssessmentInsightPercentage(
@@ -141,6 +178,33 @@ export function getSkillBreakdownTabs(
   }
 
   return buildTabsFromLegacyFields(data);
+}
+
+export type TopStrength = {
+  label: string;
+  value: number;
+  insight?: string;
+  levelLabel: string;
+};
+
+/** Highest-scoring competencies across every skill-breakdown tab, flattened
+ *  and ranked — surfaced above the fold instead of requiring a tab click to
+ *  discover. */
+export function getTopStrengths(
+  data: VerifiedProfileResponseData,
+  limit = 3,
+): TopStrength[] {
+  return getSkillBreakdownTabs(data)
+    .flatMap((tab) => tab.skill_info)
+    .filter((item) => item.value > 0)
+    .sort((a, b) => b.value - a.value)
+    .slice(0, limit)
+    .map((item) => ({
+      label: item.label,
+      value: item.value,
+      insight: item.insight,
+      levelLabel: levelLabelForSkillInfo(item),
+    }));
 }
 
 export function getAboutTags(data: VerifiedProfileResponseData): string[] {

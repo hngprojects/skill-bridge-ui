@@ -113,6 +113,9 @@ export type EmployerOfferListItem = {
   /** ISO date-time. */
   dateSent: string;
   status: EmployerOfferStatus;
+  /** True once the backend has an outcome-feedback request open for this
+   *  hire — drives the "Rate this hire" row action. Not on the wire yet. */
+  pendingHireFeedback: boolean;
 };
 
 export type EmployerOffersListData = {
@@ -136,6 +139,7 @@ export type RawEmployerOfferListItem = {
   job_title: string;
   date_sent: string;
   status: EmployerOfferStatus;
+  pending_hire_feedback?: boolean;
 };
 
 export type RawEmployerOffersListResponse = {
